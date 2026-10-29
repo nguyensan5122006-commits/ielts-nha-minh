@@ -3,7 +3,7 @@
 # Deploy:  cd realtime-worker && npx wrangler deploy
 # Chạy local: npm run realtime (ở thư mục gốc)
 # =============================================================================
-name = "ielts-realtime"
+name = "ielts-nha-minh-realtime"
 main = "src/index.ts"
 compatibility_date = "2026-09-01"
 # Không mở địa chỉ *.workers.dev: chỉ trang web (Pages) gọi tới được qua binding
@@ -21,5 +21,5 @@ new_sqlite_classes = ["FamilyHub"]
 # Dùng chung database với trang web
 [[d1_databases]]
 binding = "DB"
-database_name = "ielts-db"
-database_id = "d4017116-8fbd-48a9-aac5-6e3007ceb85b"
+database_name = "ielts-nha-minh-db"
+database_id = "DIEN-DATABASE-ID-MOI"  # cùng mã với wrangler.toml ở thư mục gốc
