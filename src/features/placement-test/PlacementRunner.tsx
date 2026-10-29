@@ -10,7 +10,6 @@
  *     (PlacementAudio.tsx: phát đúng giọng của câu bằng playAudioLine — 06-AUDIO.md)
  *   - lưu danh sách câu trả lời vào localStorage SAU MỖI CÂU (tải lại trang -> làm tiếp đúng câu)
  *   - 2 trong 3 câu đầu chưa đúng -> 1 lần duy nhất mời nhẹ "bắt đầu Level 1"
- *   - bé: bài kiểm tra mini 4–6 câu (dừng ở 6 câu, hoặc từ câu 4 nếu đã có 2 câu chưa đúng)
  *
  * Phím tắt: 1–4 chọn đáp án · Enter = Tiếp · 0 = Mình chưa biết · R = nghe lại · Esc = Lưu & thoát
  * ----------------------------------------------------------------------------
@@ -31,10 +30,8 @@ import { PlacementAudio } from './PlacementAudio'
 import { saveDraft, type PlacementDraft } from './placement-storage'
 import { usePlacementText } from './placement-text'
 
-/** Bé: kiểm tra mini (4–6 câu) — đủ để chọn điểm bắt đầu, không làm bé mệt. */
-const KID_MAX_ITEMS = 6
-const KID_MIN_ITEMS = 4
-const ADULT_MAX_ITEMS = 12
+/** Tối đa số câu (bài tự dừng sớm hơn khi đã đủ chắc) */
+const MAX_ITEMS = 12
 const MAX_PLAYS = 2
 
 export type RunnerFinish = { estimate: PlacementEstimate; answers: PlacementAnswer[]; via: 'test' | 'early' }
@@ -45,12 +42,6 @@ export interface PlacementRunnerProps {
   onFinish: (finish: RunnerFinish) => void
   /** bấm "Thoát" trong hộp thoại Lưu & thoát (bài vẫn được lưu) */
   onLeave: () => void
-}
-
-/** Bé đã làm đủ bài mini chưa? */
-function kidCheckDone(answers: PlacementAnswer[]): boolean {
-  const wrong = answers.filter((answer) => !answer.correct).length
-  return answers.length >= KID_MAX_ITEMS || (answers.length >= KID_MIN_ITEMS && wrong >= 2)
 }
 
 /** Pose cún theo dạng câu (đúng "ngôn ngữ" mascot của design system mục 5). */
@@ -71,15 +62,10 @@ export function PlacementRunner({ draft: initialDraft, onFinish, onLeave }: Plac
   const [offerOpen, setOfferOpen] = useState(false)
   const audioWrapRef = useRef<HTMLDivElement>(null)
 
-  const isKid = draft.setup.ageGroup === 'kid'
-  const maxItems = isKid ? KID_MAX_ITEMS : ADULT_MAX_ITEMS
   const answers = draft.answers
 
   // câu đang hỏi (hàm thuần -> tải lại trang ra đúng câu này)
-  const item = useMemo<PlacementItem | null>(() => {
-    if (isKid && kidCheckDone(answers)) return null
-    return nextPlacementItem(answers)
-  }, [answers, isKid])
+  const item = useMemo<PlacementItem | null>(() => nextPlacementItem(answers), [answers])
 
   // thứ tự đáp án xáo nhưng CỐ ĐỊNH theo id câu (mở lại vẫn y như cũ)
   const order = useMemo(() => (item ? stableOptionOrder(item.id, item.options) : []), [item])
@@ -98,11 +84,10 @@ export function PlacementRunner({ draft: initialDraft, onFinish, onLeave }: Plac
     (correct: boolean) => {
       if (!item) return
       const nextAnswers = [...answers, { itemId: item.id, correct }]
-      // lời mời "bắt đầu Level 1": 2 trong 3 câu đầu chưa đúng (chỉ 1 lần, không áp dụng cho bé).
+      // lời mời "bắt đầu Level 1": 2 trong 3 câu đầu chưa đúng (chỉ 1 lần).
       // Bài sắp tự dừng (VD sai 2 câu mức dễ nhất) thì khỏi mời — kết quả hiện luôn.
       const testContinues = nextPlacementItem(nextAnswers) !== null
       const showOffer =
-        !isKid &&
         testContinues &&
         !draft.levelOneOfferShown &&
         nextAnswers.length === 3 &&
@@ -115,7 +100,7 @@ export function PlacementRunner({ draft: initialDraft, onFinish, onLeave }: Plac
       playSound('tap')
       if (showOffer) setOfferOpen(true)
     },
-    [item, answers, draft, isKid],
+    [item, answers, draft],
   )
 
   const submitSelected = useCallback(() => {
@@ -156,20 +141,9 @@ export function PlacementRunner({ draft: initialDraft, onFinish, onLeave }: Plac
   }
 
   const questionNumber = answers.length + 1
-  const encouragementList = isKid ? text.encouragementsKid : text.encouragements
   // đổi câu động viên thưa thớt (không làm phiền): câu 1, 3, 5, 8, 10
-  const encouragementIndex = isKid
-    ? Math.min(encouragementList.length - 1, Math.floor(answers.length / 2))
-    : answers.length < 2
-      ? 0
-      : answers.length < 4
-        ? 1
-        : answers.length < 7
-          ? 2
-          : answers.length < 9
-            ? 3
-            : 4
-  const encouragement = encouragementList[encouragementIndex]
+  const encouragementIndex = answers.length < 2 ? 0 : answers.length < 4 ? 1 : answers.length < 7 ? 2 : answers.length < 9 ? 3 : 4
+  const encouragement = text.encouragements[encouragementIndex]
   const playsLeft = Math.max(0, MAX_PLAYS - plays)
 
   return (
@@ -178,10 +152,10 @@ export function PlacementRunner({ draft: initialDraft, onFinish, onLeave }: Plac
       <header className="pt-run__bar">
         <IconButton icon="close" label={text.saveAndExit} onClick={() => setExitOpen(true)} variant="ghost" />
         <div className="pt-run__progress">
-          <ProgressBar value={answers.length} max={maxItems} label={text.testTitle} size="md" />
+          <ProgressBar value={answers.length} max={MAX_ITEMS} label={text.testTitle} size="md" />
         </div>
         <span className="pt-run__count ds-num">
-          {text.questionNumber(questionNumber)} <span className="pt-run__count-max">· {isKid ? text.aboutMaxKid : text.aboutMax}</span>
+          {text.questionNumber(questionNumber)} <span className="pt-run__count-max">· {text.aboutMax}</span>
         </span>
       </header>
 

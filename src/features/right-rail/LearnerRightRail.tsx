@@ -1,5 +1,5 @@
 /**
- * LearnerRightRail.tsx — CỘT PHẢI CỦA NGƯỜI HỌC (teen / adult)
+ * LearnerRightRail.tsx — CỘT PHẢI CỦA NGƯỜI HỌC
  * ----------------------------------------------------------------------------
  * Gắn các ô vào cột phải của khung trang bằng <RightRail> (src/app/layout/RightRail.tsx —
  * React portal: đặt ở đâu trong trang cũng được, nội dung tự sang cột phải).

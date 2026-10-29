@@ -15,15 +15,11 @@
 import type { LevelId, SkillName, TrackId } from '../content/content-types'
 import { levelIdFromLegacyOrder, parseBandRange, unlockedLevelsFromLegacyOrder } from '../content/legacy-levels'
 import { levelProgress, nextLevelId, pathLessonIds } from '../content/path-selectors'
-import type { ActivityMetric } from '../game-economy/quests-and-achievements'
+import type { ActivityMetric } from '../gamification/quests-and-achievements'
 import { vietnamDay, vietnamWeekId } from '../../backend-helpers/vietnam-time'
 import { createSrsCard, isCardDue, reviewCard, type SrsRating } from './fsrs-scheduler'
-import { answerKidsWord, isKidsWordMastered, type KidsAnswerResult } from './kids-word-boxes'
 import {
-  createEmptyKidsProgress,
-  type AgeGroup,
   type BandEstimate,
-  type KidsProgress,
   type LearningProgress,
   type LessonResume,
   type MistakeEntry,
@@ -31,8 +27,8 @@ import {
   type StudyProfile,
   type WritingLogEntry,
 } from './progress-types'
-import { addStudyDate, applyShopStreakFreeze, registerStudy, settleStreak, type StudyKind } from './streak-rules'
-import { addDays, keepRecentDays, todayString, weekIdOf } from './study-calendar'
+import { addStudyDate, registerStudy, settleStreak, type StudyKind } from './streak-rules'
+import { addDays, keepRecentDays, todayString } from './study-calendar'
 
 export const MAX_MISTAKES = 300
 export const MAX_DRAFTS = 30
@@ -41,7 +37,6 @@ export const MAX_WRITING_LOG = 200
 export const RECENT_ANSWERS_KEPT = 40
 export const XP_DAYS_KEPT = 60
 export const MINUTES_DAYS_KEPT = 90
-export const KIDS_DAYS_KEPT = 60
 const LEVELS: LevelId[] = ['level-1', 'level-2', 'level-3']
 const TRACKS: TrackId[] = ['general', 'ielts']
 
@@ -109,30 +104,16 @@ export function addStudyMinutes(progress: LearningProgress, minutes: number, now
   return { ...progress, minutesByDay: keepRecentDays({ ...progress.minutesByDay, [today]: value }, MINUTES_DAYS_KEPT) }
 }
 
-/** Dùng món "Bảo vệ chuỗi" mua ở cửa hàng. */
-export function applyStreakFreeze(progress: LearningProgress, now = new Date()): LearningProgress {
-  return { ...progress, streak: applyShopStreakFreeze(progress.streak, now) }
-}
-
 /* ============================================================================
  * 2. HỒ SƠ, TRACK, LEVEL, XẾP LỚP
  * ========================================================================== */
 
 export function setProfile(progress: LearningProgress, patch: Partial<StudyProfile>): LearningProgress {
-  const profile = { ...progress.profile, ...patch }
-  // bé (kid) luôn có khu trò chơi
-  const kids = profile.ageGroup === 'kid' && !progress.kids ? createEmptyKidsProgress() : progress.kids
-  return { ...progress, profile, kids }
+  return { ...progress, profile: { ...progress.profile, ...patch } }
 }
 
 export function setTrack(progress: LearningProgress, track: TrackId): LearningProgress {
   return setProfile(progress, { track })
-}
-
-/** Đồng bộ nhóm tuổi từ tài khoản (máy chủ là nguồn đúng). */
-export function syncAgeGroup(progress: LearningProgress, ageGroup: AgeGroup): LearningProgress {
-  if (progress.profile.ageGroup === ageGroup && (ageGroup !== 'kid' || progress.kids)) return progress
-  return setProfile(progress, { ageGroup })
 }
 
 /**
@@ -244,7 +225,7 @@ export interface CompleteLessonInput {
 /**
  * Hoàn thành 1 bài (v3): ghi kết quả, tạo thẻ từ vựng, xoá chỗ đang làm, giữ chuỗi,
  * cộng phút học, đếm nhiệm vụ, và tự mở level sau nếu vừa học xong cả level.
- * (XP và chuối KHÔNG cộng ở đây — trang kết quả tự gọi addXp / earnBananas.)
+ * (XP KHÔNG cộng ở đây — trang kết quả tự gọi addXp.)
  */
 export function completeLesson(progress: LearningProgress, input: CompleteLessonInput, now = new Date()): LearningProgress {
   const previous = progress.lessons[input.lessonId]
@@ -408,12 +389,21 @@ export function updateBandEstimate(
 }
 
 /* ============================================================================
- * 6. TRÒ CHƠI HOÁ (giữ nguyên hành vi cũ)
+ * 6. TRÒ CHƠI HOÁ: nhiệm vụ (thưởng XP), huy hiệu, level tài khoản
  * ========================================================================== */
 
 export function markRewardClaimed(progress: LearningProgress, rewardKey: string): LearningProgress {
   if (progress.claimedRewards.includes(rewardKey)) return progress
   return { ...progress, claimedRewards: [...progress.claimedRewards, rewardKey].slice(-500) }
+}
+
+/**
+ * Nhận thưởng 1 nhiệm vụ: cộng XP + ghi "đã nhận" (rewardKey VD "daily:2026-10-06:d-lessons-2").
+ * Đã nhận rồi thì không cộng lần nữa.
+ */
+export function claimQuestReward(progress: LearningProgress, rewardKey: string, xp: number, now = new Date()): LearningProgress {
+  if (progress.claimedRewards.includes(rewardKey)) return progress
+  return markRewardClaimed(addXp(progress, xp, now), rewardKey)
 }
 
 export function unlockAchievements(progress: LearningProgress, achievementIds: string[]): LearningProgress {
@@ -425,80 +415,7 @@ export function setRewardedAccountLevel(progress: LearningProgress, level: numbe
 }
 
 /* ============================================================================
- * 7. KHU TRẺ EM
- * ========================================================================== */
-
-function withKids(progress: LearningProgress, change: (kids: KidsProgress) => KidsProgress): LearningProgress {
-  return { ...progress, kids: change(progress.kids ?? createEmptyKidsProgress()) }
-}
-
-/** Đóng "tem" hôm nay vào thẻ tem tuần. */
-function stampToday(kids: KidsProgress, now: Date): KidsProgress['weeklyStamps'] {
-  const today = todayString(now)
-  const weekId = weekIdOf(today)
-  const days = kids.weeklyStamps[weekId] ?? []
-  if (days.includes(today)) return kids.weeklyStamps
-  return keepRecentDays({ ...kids.weeklyStamps, [weekId]: [...days, today] }, 12) // giữ 12 tuần
-}
-
-/** Bé trả lời 1 từ (1 lần / câu hỏi, kết quả cuối cùng). */
-export function kidsAnswerWord(progress: LearningProgress, wordId: string, correct: boolean, usedHint = false, now = new Date()): LearningProgress {
-  const result: KidsAnswerResult = !correct ? 'wrong' : usedHint ? 'right-with-hint' : 'right'
-  return withKids(progress, (kids) => ({ ...kids, words: { ...kids.words, [wordId]: answerKidsWord(kids.words[wordId], result, todayString(now)) } }))
-}
-
-/** Từ này vừa lên "đã thuộc" ở lần trả lời này? (so trạng thái trước / sau) */
-export function kidsWordJustMastered(before: LearningProgress, after: LearningProgress, wordId: string): boolean {
-  return !isKidsWordMastered(before.kids?.words[wordId]) && isKidsWordMastered(after.kids?.words[wordId])
-}
-
-export function kidsAwardSticker(progress: LearningProgress, stickerId: string): LearningProgress {
-  return withKids(progress, (kids) => (kids.stickers.includes(stickerId) ? kids : { ...kids, stickers: [...kids.stickers, stickerId] }))
-}
-
-export function kidsUnlockOutfit(progress: LearningProgress, outfitId: string): LearningProgress {
-  return withKids(progress, (kids) => (kids.outfits.includes(outfitId) ? kids : { ...kids, outfits: [...kids.outfits, outfitId] }))
-}
-
-/** Mặc trang phục: chỉ được mặc đồ đã mở khoá (hoặc đồ mặc định 'classic'). */
-export function kidsEquipOutfit(progress: LearningProgress, outfitId: string): LearningProgress {
-  return withKids(progress, (kids) => (outfitId === 'classic' || kids.outfits.includes(outfitId) ? { ...kids, equippedOutfit: outfitId } : kids))
-}
-
-/**
- * Cộng thời gian chơi hôm nay (giây). KHÔNG đóng tem tuần ở đây (QA 29/10): trước đây chỉ cần mở sảnh,
- * rê chuột 20 giây là có tem -> tem mất ý nghĩa "ngày có chơi". Tem tuần do kidsRecordBestScore đóng
- * khi bé chơi xong 1 lượt.
- */
-export function kidsAddPlaySeconds(progress: LearningProgress, seconds: number, now = new Date()): LearningProgress {
-  if (!(seconds > 0)) return progress
-  const today = todayString(now)
-  return withKids(progress, (kids) => ({
-    ...kids,
-    playSecondsByDay: keepRecentDays({ ...kids.playSecondsByDay, [today]: (kids.playSecondsByDay[today] ?? 0) + Math.round(seconds) }, KIDS_DAYS_KEPT),
-  }))
-}
-
-export function kidsSetStoryChapter(progress: LearningProgress, chapter: number): LearningProgress {
-  return withKids(progress, (kids) => ({ ...kids, storyChapter: Math.max(kids.storyChapter, Math.floor(chapter)) }))
-}
-
-/**
- * Kết thúc 1 lượt chơi: cập nhật kỷ lục của trò (nếu cao hơn), đếm số lượt hôm nay, đóng tem tuần.
- * Gọi ĐÚNG 1 LẦN ở cuối mỗi lượt.
- */
-export function kidsRecordBestScore(progress: LearningProgress, gameId: string, score: number, now = new Date()): LearningProgress {
-  const today = todayString(now)
-  return withKids(progress, (kids) => ({
-    ...kids,
-    bestScores: { ...kids.bestScores, [gameId]: Math.max(kids.bestScores[gameId] ?? 0, score) },
-    roundsByDay: keepRecentDays({ ...kids.roundsByDay, [today]: (kids.roundsByDay[today] ?? 0) + 1 }, KIDS_DAYS_KEPT),
-    weeklyStamps: stampToday(kids, now),
-  }))
-}
-
-/* ============================================================================
- * 8. KHI MỞ WEB
+ * 7. KHI MỞ WEB
  * ========================================================================== */
 
 /** Chốt sổ chuỗi tới hôm nay (dùng freeze / mở cửa sổ sửa chuỗi). */

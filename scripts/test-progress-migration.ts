@@ -9,7 +9,7 @@
  *   4. Hoàn thành bài: thẻ từ vựng, xoá chỗ đang làm, tự mở level sau khi học hết level
  *   5. Trả lời câu hỏi -> thống kê kỹ năng, sổ lỗi, thẻ "item:"; ôn thẻ FSRS
  *   6. Hàng đợi ôn: giới hạn thẻ mới theo level, nợ ôn > 150 thì dừng thẻ mới
- *   7. Khu trẻ em: 5 hộp Leitner
+ *   7. Dữ liệu cũ của tính năng đã xoá (khu trẻ em, nhóm tuổi) bị bỏ êm; nhận thưởng nhiệm vụ = XP 1 lần
  *   8. Lộ trình: "Học tiếp" (bài dở trước), tiến độ level, "còn N bài tới mốc"
  *   9. Chọn bản mới hơn giữa localStorage và máy chủ
  */
@@ -18,7 +18,6 @@ import { findLevelInfo } from '../src/content/all-levels'
 import { LEGACY_LESSONS } from '../src/content/lesson-registry'
 import { findNextLesson, levelProgress, pathLessonIds, unitProgress, unitsFor } from '../src/content/path-selectors'
 import { BACKLOG_PAUSE_THRESHOLD, createSrsCard, dueCards, newCardsPerDayLimit, reviewCard, srsQueueInfo } from '../src/learning-progress/fsrs-scheduler'
-import { answerKidsWord, kidsWordsDueToday } from '../src/learning-progress/kids-word-boxes'
 import { chooseNewerProgress, migrateProgress } from '../src/learning-progress/progress-migration'
 import type { LearningProgress, LearningProgressV1 } from '../src/learning-progress/progress-types'
 import * as update from '../src/learning-progress/progress-updates'
@@ -135,7 +134,7 @@ test('mục tiêu 50 XP -> 15 phút; ngày có XP -> studyDates; trường mới
   assert.equal(v2.profile.dailyGoalMinutes, 15)
   assert.deepEqual(v2.studyDates, [daysAgo(5), daysAgo(2), daysAgo(1)])
   assert.equal(v2.resume, null)
-  assert.equal(v2.kids, null)
+  assert.equal('kids' in v2, false)
   assert.equal(v2.skillStats.reading.answered, 0)
   assert.equal(v2.savedAt, '')
 })
@@ -338,46 +337,28 @@ test(`nợ ôn > ${BACKLOG_PAUSE_THRESHOLD} -> dừng thẻ mới, tối đa 100
   assert.ok(queue.every((item) => !item.isNew))
 })
 
-console.log('\n7. Khu trẻ em (Leitner 5 hộp)')
-test('đúng lên hộp, gợi ý giữ hộp, sai ở hộp ≥ 2 lùi 2 hộp, sai ở hộp thấp về 0', () => {
-  const day = '2026-03-02'
-  let state = answerKidsWord(undefined, 'right', day)
-  assert.equal(state.box, 1)
-  assert.equal(state.due, '2026-03-03')
-  state = answerKidsWord(state, 'right-with-hint', day)
-  assert.equal(state.box, 1)
-  for (let i = 0; i < 4; i++) state = answerKidsWord(state, 'right', day)
-  assert.equal(state.box, 5) // đã thuộc
-  state = answerKidsWord(state, 'wrong', day)
-  assert.equal(state.box, 3)
-  state = answerKidsWord({ ...state, box: 1 }, 'wrong', day)
-  assert.equal(state.box, 0)
-  assert.equal(state.due, day)
-})
-test('kidsAnswerWord trong kho + cờ "vừa thuộc"; trần ôn 30 / ngày', () => {
-  let p: LearningProgress = migrateProgress(null)
-  let before = p
-  for (let i = 0; i < 5; i++) {
-    before = p
-    p = update.kidsAnswerWord(p, 'kids-animals-cat', true, false, at('2026-03-02'))
+console.log('\n7. Dữ liệu cũ của tính năng đã xoá · thưởng nhiệm vụ')
+test('bản v2 cũ còn khối kids + profile.ageGroup -> bỏ đi, không lỗi, giữ phần còn lại', () => {
+  const old = {
+    ...JSON.parse(JSON.stringify(v2)),
+    profile: { ...v2.profile, ageGroup: 'kid' },
+    kids: { words: { 'kids-animals-cat': { box: 5, due: '2026-03-02', seen: 5, right: 5, wrong: 0 } }, stickers: ['cat'], outfits: [] },
   }
-  assert.equal(p.kids?.words['kids-animals-cat'].box, 5)
-  assert.equal(update.kidsWordJustMastered(before, p, 'kids-animals-cat'), true)
-  const words: Record<string, ReturnType<typeof answerKidsWord>> = {}
-  for (let i = 0; i < 40; i++) words[`w${i}`] = { box: (i % 3) as 0 | 1 | 2, due: '2026-03-01', seen: 1, right: 1, wrong: 0 }
-  const due = kidsWordsDueToday({ ...p.kids!, words }, '2026-03-02')
-  assert.equal(due.length, 30)
-  assert.equal(words[due[0]].box, 0)
+  const migrated = migrateProgress(old)
+  assert.equal('kids' in migrated, false)
+  assert.equal('ageGroup' in migrated.profile, false)
+  assert.equal(migrated.xpTotal, v2.xpTotal)
+  assert.deepEqual(migrated.lessons, v2.lessons)
+  // khối kids hỏng / lạ cũng không làm sập
+  assert.doesNotThrow(() => migrateProgress({ version: 2, kids: 'oops', profile: { ageGroup: 42 } }))
 })
-test('lượt chơi: kỷ lục, đếm lượt, tem tuần; trang phục phải mở khoá mới mặc được', () => {
-  let p = update.kidsRecordBestScore(migrateProgress(null), 'listen-tap', 8, at('2026-03-02'))
-  p = update.kidsRecordBestScore(p, 'listen-tap', 5, at('2026-03-03'))
-  assert.equal(p.kids?.bestScores['listen-tap'], 8)
-  assert.equal(p.kids?.weeklyStamps['2026-03-02']?.length, 2)
-  p = update.kidsEquipOutfit(p, 'pilot')
-  assert.equal(p.kids?.equippedOutfit, 'classic')
-  p = update.kidsEquipOutfit(update.kidsUnlockOutfit(p, 'pilot'), 'pilot')
-  assert.equal(p.kids?.equippedOutfit, 'pilot')
+test('nhận thưởng nhiệm vụ: +XP và đánh dấu đã nhận; nhận lại không cộng nữa', () => {
+  const start: LearningProgress = migrateProgress(null)
+  const once = update.claimQuestReward(start, 'daily:2026-03-02:d-lessons-2', 15, at('2026-03-02'))
+  assert.equal(once.xpTotal, 15)
+  assert.ok(once.claimedRewards.includes('daily:2026-03-02:d-lessons-2'))
+  const twice = update.claimQuestReward(once, 'daily:2026-03-02:d-lessons-2', 15, at('2026-03-02'))
+  assert.equal(twice, once)
 })
 
 console.log('\n8. Lộ trình')

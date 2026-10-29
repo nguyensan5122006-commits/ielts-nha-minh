@@ -4,25 +4,21 @@
  *   BoardCard   : xếp hạng XP tuần của cả nhà (top 5, dòng của mình tô nổi)
  *   QuestsCard  : 3 nhiệm vụ hôm nay + số phần thưởng đang chờ nhận
  *   BadgesCard  : số huy hiệu đã có (vòng tiến độ) + huy hiệu sắp mở gần nhất
- *   ShopCard    : số chuối + sức mạnh thi đấu đang có
- * Mỗi thẻ có 1 nút đi tiếp (Nhận thưởng / Xem huy hiệu / Vào cửa hàng / Bảng đầy đủ).
+ * Mỗi thẻ có 1 nút đi tiếp (Nhận thưởng / Xem huy hiệu / Bảng đầy đủ).
  * ----------------------------------------------------------------------------
  */
 import type { ReactNode } from 'react'
 import { vietnamDay, vietnamWeekId } from '../../../../backend-helpers/vietnam-time'
 import { PlayerName } from '../../../components/PlayerIdentity'
 import { Button, Icon, ProgressBar, ProgressRing } from '../../../design-system'
-import { accountLevelFromXp } from '../../../game-economy/account-level'
-import { ACHIEVEMENTS, FAMILY_WEEKLY_QUEST, WEEKLY_QUESTS, pickDailyQuests } from '../../../game-economy/quests-and-achievements'
-import { SHOP_ITEMS } from '../../../game-economy/shop-catalog'
+import { accountLevelFromXp } from '../../../gamification/account-level'
+import { ACHIEVEMENTS, FAMILY_WEEKLY_QUEST, WEEKLY_QUESTS, pickDailyQuests } from '../../../gamification/quests-and-achievements'
 import { useFamily } from '../../../family-members/family-store'
 import { achievementMetricValue } from '../../../learning-progress/activity-stats'
 import { useProgress } from '../../../learning-progress/progress-store'
-import { useWallet } from '../../../player-wallet/wallet-store'
 import { useRealtime } from '../../../realtime/realtime-store'
 import { useAuth } from '../../../services/auth-context'
 import { useLanguage } from '../../../translations/language-context'
-import { BananaPill } from '../components/BananaPill'
 import { GameArt } from '../components/GameArt'
 import { RankRow } from '../components/RankRow'
 import { PLAY_ART } from '../game-catalog'
@@ -83,8 +79,8 @@ export function BoardCard() {
               <RankRow
                 key={member.id}
                 rank={rank}
-                name={<PlayerName name={member.displayName} nameColorItemId={member.nameColor} />}
-                avatar={{ avatarItemId: member.avatar, frameItemId: member.frame, online: online.includes(member.id) }}
+                name={<PlayerName name={member.displayName} />}
+                avatar={{ avatarItemId: member.avatar, online: online.includes(member.id) }}
                 meta={pick(accountLevelFromXp(member.totalXp).title)}
                 value={member.weekXp}
                 unit="XP"
@@ -169,7 +165,8 @@ export function BadgesCard() {
   const playText = usePlayText()
   const { pick } = useLanguage()
   const { progress } = useProgress()
-  const unlocked = progress.unlockedAchievements.length
+  // chỉ đếm huy hiệu còn trong danh sách (dữ liệu cũ có thể còn id huy hiệu của trò chơi đã xoá)
+  const unlocked = ACHIEVEMENTS.filter((achievement) => progress.unlockedAchievements.includes(achievement.id)).length
   // huy hiệu chưa mở mà gần xong nhất
   const next = ACHIEVEMENTS.filter((achievement) => !progress.unlockedAchievements.includes(achievement.id))
     .map((achievement) => ({ achievement, value: achievementMetricValue(progress, achievement.metric) }))
@@ -205,41 +202,6 @@ export function BadgesCard() {
             </span>
           </div>
         )}
-      </div>
-    </SideShell>
-  )
-}
-
-/* ---------------- Cửa hàng ---------------- */
-const POWERS = SHOP_ITEMS.filter((item) => item.category === 'power')
-
-export function ShopCard() {
-  const playText = usePlayText()
-  const { pick } = useLanguage()
-  const { bananas, quantityOf } = useWallet()
-  return (
-    <SideShell
-      art={PLAY_ART.shop}
-      title={playText('shopTitle')}
-      action={
-        <Button to="/shop" size="sm" variant="secondary" fullWidth iconRight="arrow-right">
-          {playText('shopOpen')}
-        </Button>
-      }
-    >
-      <div className="pg-shop-mini">
-        <BananaPill amount={bananas} size="lg" />
-        <p className="pg-side__note">{playText('shopText')}</p>
-        <span className="pg-side__label">{playText('shopPowers')}</span>
-        <ul className="pg-shop-mini__powers">
-          {POWERS.map((power) => (
-            <li key={power.id} title={pick(power.name)} className={quantityOf(power.id) === 0 ? 'is-empty' : undefined}>
-              <GameArt emoji={power.icon} size={26} />
-              <span className="ds-num">{quantityOf(power.id)}</span>
-              <span className="ds-visually-hidden">{pick(power.name)}</span>
-            </li>
-          ))}
-        </ul>
       </div>
     </SideShell>
   )

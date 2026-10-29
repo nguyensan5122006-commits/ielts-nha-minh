@@ -74,7 +74,7 @@ const VI = {
   // (f) nhiệm vụ ngày
   questsTitle: 'Nhiệm vụ hôm nay',
   questsAll: 'Tất cả',
-  questClaim: (n: number) => `Nhận ${n}`,
+  questClaim: (xp: number) => `Nhận +${xp} XP`,
   questClaimed: 'Đã nhận',
   questProgress: (value: number, target: number) => `${value}/${target}`,
 
@@ -145,7 +145,7 @@ const EN: RightRailText = {
 
   questsTitle: "Today's quests",
   questsAll: 'All',
-  questClaim: (n) => `Claim ${n}`,
+  questClaim: (xp) => `Claim +${xp} XP`,
   questClaimed: 'Claimed',
   questProgress: (value, target) => `${value}/${target}`,
 

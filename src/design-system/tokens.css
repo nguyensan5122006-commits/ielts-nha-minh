@@ -237,7 +237,7 @@
   --r-xl: 32px;
   --r-pill: 999px;
 
-  /* Chiều cao nút: lg = CTA chính, md = thường, sm = phụ. Khu trẻ em >= 56px */
+  /* Chiều cao nút: lg = CTA chính, md = thường, sm = phụ */
   --btn-h-lg: 56px;
   --btn-h-md: 44px;
   --btn-h-sm: 36px;

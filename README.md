@@ -1,22 +1,20 @@
 # IELTS Nhà Mình — Học IELTS từ 0 đến 6.5
 
-Web học IELTS cho gia đình. Học theo kiểu Duolingo, chia 6 level từ 0 đến 6.5, mỗi level có 5 kỹ năng. Có mini-test, bài test cuối level, phòng thi thử IELTS và AI (Gemini) chấm Writing/Speaking.
+Web học tiếng Anh cho gia đình. Học theo kiểu Duolingo với 2 lộ trình dùng chung nền: **Luyện thi IELTS** và **Tiếng Anh tổng quát** — 3 level (0–2.0, 2.0–4.0, 4.0–6.5), mỗi level đủ 5 kỹ năng. Có mini-test, bài test cuối level, phòng thi thử IELTS và AI (Gemini) chấm Writing/Speaking. Mọi tài khoản như nhau (không chia nhóm tuổi).
 
-Thêm phần vui chơi để cả nhà thi đua học:
+Thêm vài phần vui để cả nhà cùng học:
 - **Học vui:** thẻ từ theo chủ đề — cờ 197 nước, động vật, đồ ăn...
-- **Chuối 🍌:** tiền trong web, kiếm được khi học.
-- **Cửa hàng:** mua sức mạnh thi đấu, đồ học tập, đồ trang trí.
-- **Chat:** kênh gia đình và chat riêng.
-- **Đấu trường:** thi đấu trực tiếp kiểu Quizlet / Kahoot, có cược chuối.
-- **Mini game:** Spelling Bee, Nối từ, Đua xếp câu.
-- **Sự kiện:** Thử thách từ mỗi ngày (Wordle), Giải đấu tuần, Boss cả nhà.
-- **Thành tích:** nhiệm vụ, huy hiệu, level tài khoản.
+- **Trò chơi chữ:** Thử thách từ mỗi ngày (kiểu Wordle), Spelling Bee, Nối từ (chơi với máy) — có kỷ lục cả nhà.
+- **Chat:** kênh gia đình và chat riêng (sticker, ảnh, "đang gõ…", "đã xem").
+- **Thành tích:** XP, chuỗi ngày học, bảng xếp hạng gia đình, nhiệm vụ (thưởng XP), huy hiệu, level tài khoản.
+
+(29/10/2026 đã xoá hẳn: khu trẻ em, chuối 🍌 + cửa hàng, đấu trường / giải tuần / boss và các mini game khác.)
 
 **Chi phí: 0đ/tháng.** Mọi thứ chạy trên Cloudflare (gói miễn phí):
 - **Pages:** giao diện web
 - **Pages Functions:** API
 - **D1:** database
-- **Durable Objects:** realtime cho chat và thi đấu
+- **Durable Objects:** realtime cho chat (ai đang online, tin nhắn tức thì)
 
 ---
 
@@ -38,55 +36,56 @@ IELTS_ThienThao/
 │   ├── progress.ts             Đọc / lưu tiến độ học
 │   ├── xp.ts                   Ghi XP (cho bảng xếp hạng)
 │   ├── users.ts, profile.ts    Danh sách thành viên, trang cá nhân
-│   ├── economy/                Ví chuối: nhận thưởng, quà đăng nhập, mua / dùng / trang bị đồ
 │   ├── chat/                   Lịch sử tin nhắn, số tin chưa đọc
-│   ├── games/                  Kỷ lục mini game, Thử thách từ, Giải đấu tuần, Boss
+│   ├── games/                  Kỷ lục trò chơi chữ (records), Thử thách từ mỗi ngày (daily-word)
 │   ├── realtime.ts             Mở kết nối WebSocket -> chuyển sang worker realtime
-│   ├── welcome-news.ts         Tin mới cho bảng "Mừng quay lại"
 │   ├── exam-results.ts         Lưu / xem kết quả thi
 │   └── ai/                     grade-writing / grade-speaking / explain-mistake (gọi Gemini)
 │
 ├── realtime-worker/            ===== MÁY CHỦ REALTIME (worker riêng "ielts-realtime") =====
 │   ├── wrangler.toml
 │   └── src/
-│       ├── family-hub.ts       "Phòng sinh hoạt chung": ai online, chat, quản lý phòng đấu
-│       ├── battle-room.ts      Luật 1 trận đấu: câu hỏi, điểm, sức mạnh, nối từ, chia hũ chuối
-│       └── word-chain-dictionary.ts   Từ điển cho trò Nối từ
+│       └── family-hub.ts       "Phòng sinh hoạt chung": ai online, chat, "đang gõ…", "đã xem"
 │
 ├── backend-helpers/            Code dùng chung cho máy chủ
 │   ├── password-and-session.ts Băm mật khẩu, phiên đăng nhập
-│   ├── banana-ledger.ts        Sổ cái chuối: cộng / trừ an toàn, túi đồ
 │   ├── chat-queries.ts         Truy vấn chat
 │   ├── vietnam-time.ts         Ngày / tuần theo giờ Việt Nam
 │   ├── gemini-client.ts        Gọi Gemini (có thử lại + model dự phòng), giới hạn lượt AI
 │   └── server-environment.ts, read-logged-in-user.ts
 │
 ├── scripts/
-│   ├── generate-listening-audio.ts  Tạo file mp3 giọng AI cho bài nghe (npm run tts)
+│   ├── generate-audio-v3.ts         Tạo file mp3 giọng AI cho mọi câu cần nghe (npm run tts:v3)
+│   ├── generate-listening-audio.ts  Script tạo audio cũ (npm run tts) — giữ để tham khảo
 │   ├── validate-content.ts          Kiểm tra lỗi dữ liệu (npm run validate)
 │   └── test-progress-migration.ts   Kiểm thử kho tiến độ v2 + chuyển đổi dữ liệu cũ (npm run test:progress)
 │
 ├── public/
 │   ├── audio/                  File mp3 bài nghe + manifest.json
 │   ├── flags/                  Ảnh cờ SVG 197 nước (thư viện flag-icons, giấy phép MIT)
-│   └── dictionary/             Từ điển ~125.000 từ tiếng Anh (ENABLE, public domain)
+│   ├── word-images/            Ảnh minh hoạ từ vựng 3D (Fluent Emoji, MIT)
+│   ├── mascot/                 Ảnh cún Corgi (mascot) các tư thế
+│   └── dictionary/             Từ điển ~125.000 từ tiếng Anh cho trò Nối từ / Thử thách từ (ENABLE, public domain)
 │
 └── src/                        ===== GIAO DIỆN (React) =====
     ├── main.tsx, app/App.tsx   Điểm khởi động, bảng định tuyến URL -> trang
-    ├── pages/                  Mỗi file = 1 trang
+    ├── features/               Các khu giao diện v3 (mỗi thư mục 1 khu): landing, placement-test (/start), auth,
+    │                           learning-path (/learn), lesson-player, skill-*, vocabulary-review, mistakes-notebook,
+    │                           progress-dashboard, exam-room, exam-ui, playground (/play), right-rail, settings
+    ├── pages/                  Trang cũ (đã làm lại giao diện): chat, Học vui, nhiệm vụ, xếp hạng, hồ sơ,
+    │                           3 trò chơi chữ (DailyWordPage, SpellingBeePage, WordChainSoloPage)
     ├── components/             Mảnh giao diện dùng lại (avatar, thông báo nổi, bảng chào mừng...)
-    ├── exercise-types/         Dạng bài tập Duolingo + "máy chạy bài tập" ExercisePlayer
-    ├── exam-engine/            Phòng thi: hiển thị, giám khảo ảo, chấm điểm & quy đổi band
-    ├── learning-progress/      Tiến độ v2: XP, chuỗi ngày (freeze, sửa chuỗi), ôn tập FSRS, sổ lỗi sai, khu trẻ em,
+    ├── design-system/          Hệ thiết kế v3: màu, chữ, component (Button, Card, Mascot...) — xem /design
+    ├── exercise-types/         (v2) dạng bài tập cũ; exercise-shared.ts vẫn dùng để chấm đáp án
+    ├── exam-engine/            Chấm điểm & quy đổi band (exam-scoring.ts)
+    ├── learning-progress/      Tiến độ v2: XP, chuỗi ngày (freeze, sửa chuỗi), ôn tập FSRS, sổ lỗi sai,
     │                           tự nâng cấp dữ liệu cũ — tài liệu: docs/redesign-v3/03-DATA-LAYER.md
-    ├── player-wallet/          Ví chuối phía trình duyệt
     ├── family-members/         Danh sách thành viên gia đình
-    ├── realtime/               Kết nối WebSocket, trạng thái phòng đấu, tiếng "ting"
+    ├── realtime/               Kết nối WebSocket (ai online, chat), "ngôn ngữ" tin nhắn realtime, tiếng "ting"
     ├── chat/                   Khung chat, bong bóng chat, nén ảnh
-    ├── games/                  Hiển thị câu hỏi trò chơi, chạy lượt chơi 1 mình, chọn chủ đề
-    ├── game-economy/           LUẬT CHƠI dùng chung web + máy chủ: level, thưởng chuối, cửa hàng,
-    │                           nhiệm vụ, huy hiệu, giải tuần, boss — muốn chỉnh giá / thưởng: sửa ở đây
-    ├── game-questions/         Ngân hàng câu hỏi thi đấu + "ngôn ngữ" tin nhắn realtime
+    ├── games/                  Câu hỏi Spelling Bee, chạy 1 lượt chơi một mình, chọn chủ đề
+    ├── game-questions/         Ngân hàng câu hỏi trò chơi chữ (lấy từ theo chủ đề)
+    ├── gamification/           LUẬT TRÒ CHƠI HOÁ: level tài khoản, nhiệm vụ (thưởng XP), huy hiệu
     ├── services/               Gọi API, đăng nhập, phát âm thanh, nhận giọng nói, ghi âm
     ├── translations/           Song ngữ Việt / Anh (ui-text.ts = từ điển chữ giao diện)
     ├── styles/                 global.css (giao diện chung) + gamification.css (phần trò chơi)
@@ -97,14 +96,15 @@ IELTS_ThienThao/
         ├── path-selectors.ts   Hỏi đáp lộ trình: chặng của track, "Học tiếp", tiến độ level
         ├── all-exams.ts        Danh sách đề thi
         ├── all-fun-topics.ts   Danh sách chủ đề Học vui
-        ├── levels/             level-1-beginner, level-2-foundation (mỗi kỹ năng 10 bài)
+        ├── levels/             level-1-beginner, level-2-foundation, level-2-bridge, level-3-general, level-3-ielts
         ├── fun-topics/         16 chủ đề thẻ từ (632 thẻ)
         └── exams/              Bài xếp lớp, test Level 1, test Level 2, đề thi thử IELTS số 1
 ```
 
 **Gợi ý đọc code để học:**
-1. Phần học: `content-types.ts` → `all-levels.ts` → `content/path-selectors.ts` → `exercise-types/ExercisePlayer.tsx` → `learning-progress/progress-updates.ts` → `learning-progress/progress-store.tsx` → `functions/api/progress.ts`
-2. Phần thi đấu: `game-questions/realtime-protocol.ts` → `realtime/realtime-store.tsx` → `realtime-worker/src/family-hub.ts` → `realtime-worker/src/battle-room.ts`
+1. Phần học: `content-types.ts` → `all-levels.ts` → `content/path-selectors.ts` → `features/lesson-player/LessonPlayerPage.tsx` → `learning-progress/progress-updates.ts` → `learning-progress/progress-store.tsx` → `functions/api/progress.ts`
+2. Phần chat realtime: `realtime/realtime-protocol.ts` → `realtime/realtime-store.tsx` → `functions/api/realtime.ts` → `realtime-worker/src/family-hub.ts`
+3. Trò chơi chữ: `features/playground/game-catalog.ts` → `pages/SpellingBeePage.tsx` (+ `game-questions/question-bank.ts`) → `functions/api/games/records.ts`
 
 ---
 
@@ -122,7 +122,7 @@ Mở file `.dev.vars` rồi điền `GEMINI_API_KEY` và `INVITE_CODE`.
 Cần 2 cửa sổ terminal:
 
 ```bash
-# cửa sổ 1: máy chủ realtime (chat, thi đấu)
+# cửa sổ 1: máy chủ realtime (chat, ai online)
 npm run realtime
 
 # cửa sổ 2: web + API
@@ -130,7 +130,7 @@ npm run build
 npm run api                 # mở http://localhost:8788
 ```
 
-Muốn thử thi đấu một mình: mở 2 trình duyệt (hoặc 1 cửa sổ ẩn danh) và đăng nhập 2 tài khoản khác nhau.
+Muốn thử chat một mình: mở 2 trình duyệt (hoặc 1 cửa sổ ẩn danh) và đăng nhập 2 tài khoản khác nhau.
 
 Lưu ý khi chạy local: 2 tiến trình cùng dùng 1 file database. Thỉnh thoảng có thể báo `database is locked`. Nếu bị, tắt cả 2 cửa sổ rồi chạy lại. Trên Cloudflare thật không bị lỗi này.
 
@@ -150,7 +150,7 @@ npm run deploy
 npm run db:migrate:remote
 ```
 
-**Khi sửa thư mục `realtime-worker/`** (chat, thi đấu):
+**Khi sửa thư mục `realtime-worker/`** (chat, ai online):
 
 ```bash
 npm run deploy:realtime
@@ -165,9 +165,11 @@ Mã bí mật (`GEMINI_API_KEY`, `INVITE_CODE`) đổi ở **Cloudflare → Work
 ## 4. Tạo audio giọng AI cho bài nghe
 
 ```bash
-npm run tts            # tạo mp3 cho bài nghe + đề thi
-npm run tts -- --all   # thêm cả câu ví dụ, từ vựng (lâu hơn nhiều)
+npm run tts:v3                 # tạo mp3 còn thiếu cho mọi câu cần nghe (bài học, đề thi, bài nghe v3)
+npm run tts:v3 -- --dry-run    # chỉ đếm, không tạo
 ```
+
+Chi tiết: `docs/redesign-v3/06-AUDIO.md`.
 
 Câu nào chưa có mp3 thì web tự dùng giọng đọc của trình duyệt.
 
@@ -180,30 +182,26 @@ Câu nào chưa có mp3 thì web tự dùng giọng đọc của trình duyệt.
 3. Bài test cuối level: tạo file trong `src/content/exams/`, thêm vào `all-exams.ts`, đặt `levelTestId` trong `all-levels.ts`.
 4. Thêm chủ đề Học vui: tạo file trong `src/content/fun-topics/`, thêm vào `all-fun-topics.ts`.
 5. Kiểm tra lỗi dữ liệu: `npm run validate`.
-6. Tạo audio rồi đưa lên mạng: `npm run tts`, sau đó `npm run deploy`.
+6. Tạo audio rồi đưa lên mạng: `npm run tts:v3`, sau đó `npm run deploy`.
 
 ---
 
-## 6. Chỉnh luật chơi
-
-Mọi con số nằm trong `src/game-economy/`:
+## 6. Chỉnh luật trò chơi hoá
 
 | Muốn đổi | Sửa file |
 |---|---|
-| Chuối thưởng khi học, quà đăng nhập, giải tuần, boss | `banana-rewards.ts` |
-| Giá đồ, thêm avatar / khung / sticker | `shop-catalog.ts` |
-| Nhiệm vụ, huy hiệu | `quests-and-achievements.ts` |
-| XP lên level, danh hiệu | `account-level.ts` |
-| Chủ đề giải tuần, boss, máu boss | `weekly-events.ts` |
+| Nhiệm vụ (số XP thưởng), huy hiệu | `src/gamification/quests-and-achievements.ts` |
+| XP lên level, danh hiệu | `src/gamification/account-level.ts` |
+| Danh sách trò chơi chữ trên /play | `src/features/playground/game-catalog.ts` (+ tên trò trong `functions/api/games/records.ts`) |
 
-Sửa xong chạy `npm run deploy` (và `npm run deploy:realtime` nếu đổi luật thi đấu).
+Sửa xong chạy `npm run deploy`.
 
 ---
 
 ## 7. Lưu ý
 
 - **Quyền riêng tư Gemini:** gói miễn phí của Google có thể dùng dữ liệu gửi lên để cải thiện model.
-- **Giới hạn AI:** mỗi người tối đa 40 lượt AI/ngày (`AI_DAILY_LIMIT` trong `wrangler.toml`). Mua thêm lượt bằng chuối ở Cửa hàng.
+- **Giới hạn AI:** mỗi người tối đa 40 lượt AI/ngày (`AI_DAILY_LIMIT` trong `wrangler.toml`).
 - **Điểm AI chỉ là ước tính** để tham khảo.
 - **Trình duyệt:** dùng Chrome hoặc Edge. Thi Speaking và bài "đọc to" cần micro.
-- **Chuối do máy chủ quản lý:** trang web không tự cộng chuối được. Mỗi phần thưởng có giới hạn số lần / ngày.
+- **Database:** các bảng cũ của tính năng đã xoá (chuối, cửa hàng, đấu trường, giải tuần, boss) vẫn nằm trong D1 nhưng không còn code nào dùng — để nguyên cũng không sao.

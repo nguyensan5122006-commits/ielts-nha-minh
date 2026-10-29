@@ -10,5 +10,5 @@
     "skipLibCheck": true,
     "resolveJsonModule": true
   },
-  "include": ["./**/*.ts", "../backend-helpers/**/*.ts", "../src/game-economy/**/*.ts", "../src/chat/chat-channels.ts"]
+  "include": ["./**/*.ts", "../backend-helpers/**/*.ts", "../src/chat/chat-channels.ts"]
 }

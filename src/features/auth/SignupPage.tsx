@@ -6,7 +6,7 @@
  *      hiện "Kết quả xếp lớp của bạn: Level 2 · 2.5–3.5" -> đăng ký xong thì áp kết quả
  *      (useApplyPlacement) và vào thẳng bài đầu tiên của level đó.
  *   b) CHƯA làm bài: mời làm bài xếp lớp 5 phút (khuyến khích), hoặc đăng ký luôn:
- *      chọn track ngay trong form -> bắt đầu từ Level 1 (bài đầu tiên), bé -> /kids.
+ *      chọn track ngay trong form -> bắt đầu từ Level 1 (bài đầu tiên).
  * ----------------------------------------------------------------------------
  */
 import { useEffect, useState } from 'react'
@@ -16,7 +16,6 @@ import { findNextLesson } from '../../content/path-selectors'
 import { Button, Icon, SegmentedControl, WordImage } from '../../design-system'
 import { useProgress } from '../../learning-progress/progress-store'
 import { useAuth } from '../../services/auth-context'
-import type { AgeGroup } from '../../../backend-helpers/age-groups'
 import { loadResult } from '../placement-test/placement-storage'
 import { formatBandRange } from '../placement-test/study-plan'
 import { skipWelcomeModalToday, useApplyPlacement } from '../placement-test/use-apply-placement'
@@ -35,7 +34,6 @@ export function SignupPage() {
     return saved && !saved.appliedToUserId ? saved : null
   })
   const [track, setTrackChoice] = useState<TrackId>('general')
-  const [ageGroup, setAgeGroup] = useState<AgeGroup>(result?.setup.ageGroup ?? 'adult')
   /** đăng ký KHÔNG có kết quả xếp lớp: chờ tiến độ tải xong rồi đặt track + vào bài đầu */
   const [pendingTrack, setPendingTrack] = useState<TrackId | null>(null)
   /** đã bấm gửi form -> không tự chuyển về "/" khi `user` vừa xuất hiện (để còn đi vào bài đầu tiên) */
@@ -46,16 +44,13 @@ export function SignupPage() {
     if (apply.status === 'done' && apply.destination) navigate(apply.destination, { replace: true })
   }, [apply.status, apply.destination, navigate])
 
-  // (b) không có kết quả: tiến độ tải xong -> đặt track -> bài đầu tiên của Level 1 (bé -> /kids)
+  // (b) không có kết quả: tiến độ tải xong -> đặt track -> bài đầu tiên của Level 1
   useEffect(() => {
     if (!pendingTrack || !user || !isLoaded) return
     setTrack(pendingTrack)
     skipWelcomeModalToday(user.id) // vào thẳng bài đầu, không để bảng chào che bài
-    if (user.ageGroup === 'kid') navigate('/kids', { replace: true })
-    else {
-      const next = findNextLesson(progress, pendingTrack)
-      navigate(next ? `/lesson/${next.lesson.id}` : '/learn', { replace: true })
-    }
+    const next = findNextLesson(progress, pendingTrack)
+    navigate(next ? `/lesson/${next.lesson.id}` : '/learn', { replace: true })
     setPendingTrack(null)
   }, [pendingTrack, user, isLoaded, progress, setTrack, navigate])
 
@@ -63,9 +58,7 @@ export function SignupPage() {
   if (user && !submitted && !isWorking && !apply.isRequested) return <Navigate to="/" replace />
 
   const summary = result
-    ? result.setup.ageGroup === 'kid'
-      ? 'Level 1'
-      : `Level ${result.estimate.recommendedLevel.slice(-1)} · ${formatBandRange(result.estimate.bandLow, result.estimate.bandHigh)} (${result.estimate.cefrRange})`
+    ? `Level ${result.estimate.recommendedLevel.slice(-1)} · ${formatBandRange(result.estimate.bandLow, result.estimate.bandHigh)} (${result.estimate.cefrRange})`
     : ''
 
   return (
@@ -102,19 +95,17 @@ export function SignupPage() {
       }
     >
       <SignupForm
-        defaultAgeGroup={ageGroup}
-        onAgeGroupChange={setAgeGroup}
-        submitLabel={(age) => (age === 'kid' ? text.signupButtonKid : text.signupButton)}
+        submitLabel={text.signupButton}
         busy={isWorking}
         beforeSubmit={() => {
           setSubmitted(true)
           if (result) apply.request() // đăng ký xong thì áp kết quả xếp lớp
         }}
-        onRegistered={(age) => {
-          if (!result) setPendingTrack(age === 'kid' ? 'general' : track)
+        onRegistered={() => {
+          if (!result) setPendingTrack(track)
         }}
         extraFields={
-          !result && ageGroup !== 'kid' ? (
+          !result ? (
             <div className="au-field">
               <span className="au-label">{text.trackLabel}</span>
               <SegmentedControl<TrackId>

@@ -9,9 +9,9 @@
  *
  * Cấu hình (theo _research/notes/psych-adult.md mục A2 + D8):
  *   - desiredRetention 0.90, maximumInterval 365 ngày, fuzz bật (tránh dồn thẻ vào 1 ngày)
- *   - 2 nút "Quên / Nhớ"  = Again / Good  (người mới, trẻ em)
- *   - 4 nút "Quên / Khó / Nhớ / Dễ" = Again / Hard / Good / Easy (người lớn band cao)
- *   - Thẻ mới mỗi ngày theo band (D1): level-1: 5, level-2: 10, level-3: 15; teen/kid tối đa 10
+ *   - 2 nút "Quên / Nhớ"  = Again / Good  (Level 1–2)
+ *   - 4 nút "Quên / Khó / Nhớ / Dễ" = Again / Hard / Good / Easy (Level 3)
+ *   - Thẻ mới mỗi ngày theo band (D1): level-1: 5, level-2: 10, level-3: 15
  *   - Nợ ôn > 150 thẻ -> tạm dừng thẻ mới ("Ôn hết thẻ cũ trước để không quên")
  *   - Ôn tối đa ~100 thẻ / ngày
  *
@@ -231,11 +231,11 @@ export function cardMemoryLabel(card: SerializedFsrsCard): CardMemoryLabel {
  * 5. LUẬT THEO NGƯỜI HỌC: số nút, số thẻ mới / ngày
  * ========================================================================== */
 
-/** Số nút khi ôn: người học tự chọn, nếu không: level-3 người lớn = 4 nút, còn lại 2 nút. */
+/** Số nút khi ôn: người học tự chọn, nếu không: level-3 = 4 nút, còn lại 2 nút. */
 export function srsButtonModeFor(progress: LearningProgress): 2 | 4 {
   if (progress.profile.srsButtons) return progress.profile.srsButtons
   const level = progress.currentLevel[progress.profile.track]
-  return progress.profile.ageGroup === 'adult' && level === 'level-3' ? 4 : 2
+  return level === 'level-3' ? 4 : 2
 }
 
 /** Các mức chấm ứng với từng nút (theo thứ tự hiển thị trái -> phải). */
@@ -253,8 +253,7 @@ export function autoRating(correct: boolean, options: { seconds?: number; usedHi
 /** Số thẻ MỚI được mở mỗi ngày (psych-adult D1). */
 export function newCardsPerDayLimit(progress: LearningProgress): number {
   const level = progress.currentLevel[progress.profile.track]
-  const byLevel = level === 'level-1' ? 5 : level === 'level-2' ? 10 : 15
-  return progress.profile.ageGroup === 'adult' ? byLevel : Math.min(byLevel, 10)
+  return level === 'level-1' ? 5 : level === 'level-2' ? 10 : 15
 }
 
 /* ============================================================================

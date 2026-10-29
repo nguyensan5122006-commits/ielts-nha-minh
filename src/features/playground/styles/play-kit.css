@@ -1,13 +1,13 @@
 /* =============================================================================
  * play-kit.css — "BỘ ĐỒ CHƠI" GIAO DIỆN DÙNG CHUNG CỦA SÂN CHƠI
  * -----------------------------------------------------------------------------
- * Dùng cho trang /play và mọi trang cũ được làm lại (đấu trường, cửa hàng, sự kiện…).
+ * Dùng cho trang /play và mọi trang cũ được làm lại (trò chơi chữ, nhiệm vụ, xếp hạng, Học vui…).
  * Tiền tố lớp: pg- (playground). Chỉ dùng biến trong design-system/tokens.css,
  * nên chế độ tối tự chạy.
  *
  * Mục lục:
  *   1. Khung trang (pg-page) + đầu trang (pg-header, pg-back)
- *   2. Ảnh 3D (pg-art) + viên số chuối (pg-banana)
+ *   2. Ảnh 3D (pg-art)
  *   3. Tiêu đề mục (pg-section-*)
  *   4. Bảng xếp hạng (pg-rank) + bục nhận giải (pg-podium)
  *   5. Thẻ / khối dùng chung (pg-panel, pg-pill-tabs, pg-field, pg-empty-note)
@@ -88,7 +88,7 @@
   transform: rotate(180deg);
 }
 
-/* ---------- 2. ẢNH 3D + SỐ CHUỐI ---------- */
+/* ---------- 2. ẢNH 3D ---------- */
 .pg-art {
   --art-size: 56px;
   --art-tilt: 0deg;
@@ -161,54 +161,6 @@
 }
 .pg-art--writing {
   --plate: var(--skill-writing);
-}
-
-.pg-banana {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 4px 14px 4px 8px;
-  border-radius: var(--r-pill);
-  background: var(--c-gold-soft);
-  color: var(--c-gold-ink);
-  font-family: var(--font-display);
-  font-weight: 800;
-  line-height: 1;
-  white-space: nowrap;
-  box-shadow: var(--gloss-top), inset 0 0 0 1px color-mix(in srgb, var(--c-gold) 35%, transparent);
-}
-.pg-banana__value {
-  padding-top: 0.12em;
-}
-.pg-banana--sm {
-  padding: 2px 10px 2px 6px;
-  font-size: var(--fs-sm);
-  gap: 4px;
-}
-.pg-banana--md {
-  font-size: var(--fs-md);
-}
-.pg-banana--lg {
-  padding: 6px 18px 6px 10px;
-  font-size: var(--fs-xl);
-}
-.pg-banana.is-link {
-  transition: transform var(--dur-micro) var(--ease-out), box-shadow var(--dur-micro) var(--ease-out);
-}
-.pg-banana.is-link:hover {
-  text-decoration: none;
-  transform: translateY(-1px);
-  box-shadow: var(--gloss-top), inset 0 0 0 1px color-mix(in srgb, var(--c-gold) 60%, transparent), 0 6px 14px -8px var(--c-gold);
-}
-.pg-banana.is-gain {
-  background: var(--c-success-soft);
-  color: var(--c-success-ink);
-  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--c-success) 35%, transparent);
-}
-.pg-banana.is-loss {
-  background: var(--c-oops-soft);
-  color: var(--c-oops-ink);
-  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--c-oops) 35%, transparent);
 }
 
 /* ---------- 3. TIÊU ĐỀ MỤC ---------- */

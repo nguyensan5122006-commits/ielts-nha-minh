@@ -310,7 +310,7 @@ export interface Exam {
 
 /* ============================================================================
  * 6. HỌC VUI — THẺ TỪ THEO CHỦ ĐỀ (cờ, động vật, rau củ...)
- *    Chỉ là flashcard để xem + nghe; đồng thời là ngân hàng câu hỏi cho thi đấu.
+ *    Chỉ là flashcard để xem + nghe; đồng thời là nguồn từ cho trò chơi chữ (Spelling Bee…).
  * ========================================================================== */
 
 /** Hình minh hoạ của thẻ: emoji, hoặc cờ thật theo mã quốc gia ISO 2 chữ cái (VD "vn"). */
@@ -327,7 +327,7 @@ export interface FunCard {
   examples: { en: string; vi: string }[]
   /** Thông tin thêm hiện dưới thẻ, VD thủ đô, quốc tịch, mẹo nhớ */
   extraInfo?: BilingualText
-  /** Chỉ chủ đề quốc gia: thủ đô và quốc tịch (dùng tạo câu hỏi thi đấu) */
+  /** Chỉ chủ đề quốc gia: thủ đô và quốc tịch (hiện ở mặt sau thẻ) */
   capital?: string
   nationality?: string
 }
@@ -438,54 +438,4 @@ export interface SpeakingTask {
   usefulPhrases?: string[]
   /** Âm cần luyện (người Việt hay sai), VD "final -s", "/θ/" */
   targetSounds?: string[]
-}
-
-/* ============================================================================
- * 8. (v3) KHU TRÒ CHƠI TRẺ EM — ngân hàng từ Cambridge YLE
- * ========================================================================== */
-
-export type KidsWordLevel = 'starters' | 'movers' | 'flyers'
-
-export interface KidsWord {
-  id: string // "kids-animals-cat"
-  word: string // "cat"
-  meaningVi: string // "con mèo"
-  level: KidsWordLevel
-  /** Tên ảnh trong public/word-images (Fluent Emoji 3D), không có đuôi */
-  image: string
-  /** 1 câu mẫu ngắn dùng trong trò Ghép câu / Phiêu lưu */
-  example?: { en: string; vi: string }
-  /** Nhãn phụ, VD "color" (dùng cho trò Tô màu), "action" */
-  tags?: string[]
-}
-
-export interface KidsTopic {
-  id: string // "animals"
-  title: BilingualText
-  image: string // ảnh đại diện chủ đề
-  /** Trang phục mascot mở khoá khi sưu tập đủ sticker của chủ đề */
-  outfitId?: string
-  words: KidsWord[]
-}
-
-/** Mẫu câu cho trò Ghép câu: các khối chữ đúng thứ tự + nghĩa tiếng Việt */
-export interface KidsSentencePattern {
-  id: string
-  level: KidsWordLevel
-  sentence: string // "The cat is under the table."
-  meaningVi: string
-  /** Từ trong ngân hàng xuất hiện trong câu (để ôn lặp lại) */
-  wordIds: string[]
-}
-
-/** 1 chương truyện "Phiêu lưu cùng mascot": vài cảnh, mỗi cảnh 1 câu hỏi để đi tiếp */
-export interface KidsStoryChapter {
-  id: string
-  title: BilingualText
-  scenes: {
-    narrationEn: string
-    narrationVi: string
-    image: string
-    question: { promptEn: string; promptVi: string; options: string[]; correctIndex: number; wordId?: string }
-  }[]
 }

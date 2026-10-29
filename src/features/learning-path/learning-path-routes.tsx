@@ -1,7 +1,7 @@
 /**
  * learning-path-routes.tsx — KHAI BÁO ĐƯỜNG DẪN CỦA TRANG LỘ TRÌNH
  * ----------------------------------------------------------------------------
- *   ("/" do nhóm landing lo: khách -> landing; đã đăng nhập -> /learn, bé -> /kids)
+ *   ("/" do nhóm landing lo: khách -> landing; đã đăng nhập -> /learn)
  *   /learn            lộ trình "Tuyến tuần tra" (?level=level-2 để mở sẵn 1 level)
  *   /roadmap          (link cũ) -> lộ trình
  *   /level/:levelId   (link cũ) -> lộ trình mở sẵn level đó

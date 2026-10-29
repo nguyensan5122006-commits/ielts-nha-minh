@@ -50,7 +50,7 @@ export function ChatChannelList({ active, onSelect }: { active: string; onSelect
           return (
             <li key={member.id}>
               <button type="button" className={`chat-ch__item ${active === channel ? 'is-active' : ''} ${isOnline ? 'is-online' : ''}`} onClick={() => onSelect(channel)} aria-current={active === channel || undefined}>
-                <PlayerAvatar avatarItemId={member.avatar} frameItemId={member.frame} size={34} online={isOnline} />
+                <PlayerAvatar avatarItemId={member.avatar} size={34} online={isOnline} />
                 <span className="chat-ch__text">
                   <span className="chat-ch__name">{member.displayName}</span>
                 </span>

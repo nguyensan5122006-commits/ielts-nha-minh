@@ -14,16 +14,15 @@
  *   - studyDates   : danh sách ngày có học (tính "Tuần này x/7", lịch học)
  *   - miniTests, levelTests : giữ nguyên từ v1 (mini-test có tim + bài test cuối level)
  *   - streak.repairStreak / repairLessonsDone : cần để "sửa chuỗi trong 48 giờ"
- *   - profile.srsButtons : người học tự chọn 2 hay 4 nút khi ôn (không có = theo level/tuổi)
+ *   - profile.srsButtons : người học tự chọn 2 hay 4 nút khi ôn (không có = theo level)
  *   - SerializedFsrsCard.addedOn / firstReviewOn : đếm "thẻ mới hôm nay"
+ * Đã BỎ (2026-10-29): profile.ageGroup (mọi tài khoản như nhau) và khối kids (khu trẻ em đã xoá).
+ * Bản lưu cũ còn 2 trường này thì progress-migration.ts tự bỏ đi khi tải.
  * (Ghi chú chi tiết trong docs/redesign-v3/03-DATA-LAYER.md.)
  * ----------------------------------------------------------------------------
  */
-import type { ActivityMetric } from '../game-economy/quests-and-achievements'
+import type { ActivityMetric } from '../gamification/quests-and-achievements'
 import type { LevelId, SkillName, TrackId } from '../content/content-types'
-import type { AgeGroup } from '../../backend-helpers/age-groups'
-
-export type { AgeGroup } from '../../backend-helpers/age-groups'
 
 /* ============================================================================
  * 1. CÁC KHỐI DÙNG CHUNG (v1 và v2 đều có)
@@ -66,7 +65,7 @@ export interface GamificationFields {
   claimedRewards: string[]
   /** Huy hiệu đã mở khoá */
   unlockedAchievements: string[]
-  /** Level tài khoản cao nhất đã nhận thưởng */
+  /** Level tài khoản cao nhất đã báo "lên level" (để mỗi level chỉ chúc mừng 1 lần) */
   rewardedAccountLevel: number
 }
 
@@ -131,7 +130,6 @@ export interface SerializedFsrsCard {
 /** Cài đặt cá nhân. */
 export interface StudyProfile {
   track: TrackId
-  ageGroup: AgeGroup
   dailyGoalMinutes: number
   /** "Sau khi … thì mình học" (implementation intention), tuỳ chọn */
   studyCue?: string
@@ -139,7 +137,7 @@ export interface StudyProfile {
   studyTime?: string
   voice: 'gb' | 'us'
   theme: 'system' | 'light' | 'dark'
-  /** (thêm) Số nút khi ôn thẻ. Không đặt = tự chọn theo level / tuổi (xem fsrs-scheduler.ts) */
+  /** (thêm) Số nút khi ôn thẻ. Không đặt = tự chọn theo level (xem fsrs-scheduler.ts) */
   srsButtons?: 2 | 4
 }
 
@@ -207,30 +205,6 @@ export interface WritingLogEntry {
   at: string
 }
 
-/** Trạng thái 1 từ trong khu trẻ em (Leitner 5 hộp — xem kids-word-boxes.ts). */
-export interface KidsWordState {
-  /** 0..4 = 5 hộp Leitner (gặp lại trong buổi -> 1 ngày -> 3 ngày -> 7 ngày -> 14 ngày); 5 = ĐÃ THUỘC */
-  box: 0 | 1 | 2 | 3 | 4 | 5
-  /** Ngày đến hạn ôn "YYYY-MM-DD" */
-  due: string
-  seen: number
-  right: number
-  wrong: number
-}
-
-export interface KidsProgress {
-  words: Record<string, KidsWordState>
-  stickers: string[]
-  outfits: string[]
-  equippedOutfit: string
-  playSecondsByDay: Record<string, number>
-  roundsByDay: Record<string, number>
-  storyChapter: number
-  bestScores: Record<string, number>
-  /** weekId (ngày thứ Hai đầu tuần) -> các ngày có chơi. Thẻ tem tuần, không dùng chuỗi liên tục. */
-  weeklyStamps: Record<string, string[]>
-}
-
 export interface LearningProgressV2 extends GamificationFields {
   version: 2
   /** (thêm) Thời điểm thay đổi cuối (ISO). "" = chưa từng lưu bằng bản mới. */
@@ -261,7 +235,6 @@ export interface LearningProgressV2 extends GamificationFields {
   xpByDay: Record<string, number>
   placement: PlacementResultV2 | null
   writingLog: WritingLogEntry[]
-  kids: KidsProgress | null
 }
 
 /** Tên ngắn gọn dùng khắp nơi: luôn là bản mới nhất. */
@@ -279,26 +252,12 @@ export function createEmptySkillStats(): Record<SkillName, SkillStat> {
   return stats
 }
 
-export function createEmptyKidsProgress(): KidsProgress {
-  return {
-    words: {},
-    stickers: [],
-    outfits: [],
-    equippedOutfit: 'classic', // trang phục mặc định của mascot
-    playSecondsByDay: {},
-    roundsByDay: {},
-    storyChapter: 0,
-    bestScores: {},
-    weeklyStamps: {},
-  }
-}
-
 /** Tiến độ trống cho người mới. */
 export function createEmptyProgress(): LearningProgressV2 {
   return {
     version: 2,
     savedAt: '',
-    profile: { track: 'general', ageGroup: 'adult', dailyGoalMinutes: 10, voice: 'gb', theme: 'system' },
+    profile: { track: 'general', dailyGoalMinutes: 10, voice: 'gb', theme: 'system' },
     currentLevel: { general: 'level-1', ielts: 'level-1' },
     unlockedLevels: { general: ['level-1'], ielts: ['level-1'] },
     lessons: {},
@@ -317,7 +276,6 @@ export function createEmptyProgress(): LearningProgressV2 {
     xpByDay: {},
     placement: null,
     writingLog: [],
-    kids: null,
     lifetimeStats: {},
     questCounters: { day: '', week: '', daily: {}, weekly: {} },
     claimedRewards: [],

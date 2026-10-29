@@ -6,11 +6,10 @@
  *  < 1024px : thanh trên gọn (logo + công tắc) · nội dung · THANH TAB DƯỚI
  *
  * Sidebar: logo đầu mascot + "IELTS Nhà Mình" · Học · Ôn tập · Luyện thi · Sân chơi
- * · Chat · Hồ sơ (bé thấy "Khu vui chơi" đầu tiên) · dưới cùng: chuỗi ngày/chuối,
- * tài khoản, VI/EN, sáng/tối, tắt tiếng.
+ * · Chat · Hồ sơ · dưới cùng: chuỗi ngày + level tài khoản, tài khoản, VI/EN, sáng/tối, tắt tiếng.
  *
  * Component này CHỈ VẼ (nhận dữ liệu qua props) để dùng được cả ở trang /design.
- * Bản nối dữ liệu thật (đăng nhập, chat, ví) là AppShellRoute.tsx.
+ * Bản nối dữ liệu thật (đăng nhập, chat, tiến độ) là AppShellRoute.tsx.
  * ----------------------------------------------------------------------------
  */
 import { useEffect, useRef, useState, type ReactNode } from 'react'
@@ -22,42 +21,39 @@ import { SoundToggle } from '../../design-system/components/SoundToggle'
 import { StreakFlame } from '../../design-system/components/StreakFlame'
 import { ThemeToggle } from '../../design-system/components/ThemeToggle'
 import { useDsText } from '../../design-system/design-system-text'
-import { isNavItemActive, navItemsFor, type NavItem } from './nav-items'
+import { isNavItemActive, NAV_ITEMS, type NavItem } from './nav-items'
 import { RightRailSlotContext } from './RightRail'
 import './AppShell.css'
 
 export interface AppShellAccount {
   id: string | number
   displayName: string
-  ageGroup?: 'kid' | 'teen' | 'adult'
 }
 
 export interface AppShellProps {
   /** người đang đăng nhập (bỏ trống = ẩn khối tài khoản) */
   account?: AppShellAccount
-  /** avatar hiển thị (VD <PlayerAvatar …/> có khung mua ở cửa hàng) */
+  /** avatar hiển thị (VD <PlayerAvatar …/>) */
   avatar?: ReactNode
   /** số liệu nhỏ ở cuối sidebar */
-  stats?: { streak?: number; studiedToday?: boolean; bananas?: number; level?: number }
+  stats?: { streak?: number; studiedToday?: boolean; level?: number }
   /** số tin nhắn chưa đọc (hiện chấm đỏ cạnh mục Chat) */
   unreadChat?: number
   /** trạng thái lưu tiến độ */
   saveStatus?: 'saved' | 'saving' | 'error'
   onLogout?: () => void
-  /** đường dẫn trang "đổi trang phục / cửa hàng" trong menu tài khoản */
-  customizeTo?: string
   /** ép mục menu nào đang sáng (chỉ dùng cho trang xem trước /design/shell) */
   activePath?: string
   children: ReactNode
 }
 
-export function AppShell({ account, avatar, stats, unreadChat = 0, saveStatus, onLogout, customizeTo = '/shop', activePath, children }: AppShellProps) {
+export function AppShell({ account, avatar, stats, unreadChat = 0, saveStatus, onLogout, activePath, children }: AppShellProps) {
   const dsText = useDsText()
   const location = useLocation()
   const currentPath = activePath ?? location.pathname
   // ô cột phải: lưu phần tử DOM vào state để <RightRail> biết chỗ mà "dịch chuyển" nội dung tới
   const [railElement, setRailElement] = useState<HTMLElement | null>(null)
-  const items = navItemsFor(account?.ageGroup)
+  const items = NAV_ITEMS
 
   /** link thật của 1 mục (Hồ sơ cần id người dùng) */
   const hrefOf = (item: NavItem) => (item.id === 'profile' && account ? `/profile/${account.id}` : item.to)
@@ -104,7 +100,7 @@ export function AppShell({ account, avatar, stats, unreadChat = 0, saveStatus, o
 
           <div className="app-sidebar__bottom">
             {stats && <SidebarStats stats={stats} />}
-            {account && <AccountMenu account={account} avatar={avatar} saveStatus={saveStatus} onLogout={onLogout} customizeTo={customizeTo} />}
+            {account && <AccountMenu account={account} avatar={avatar} saveStatus={saveStatus} onLogout={onLogout} />}
             <div className="app-sidebar__toggles">
               <LanguageToggle />
               <ThemeToggle variant="compact" />
@@ -154,7 +150,7 @@ export function AppShell({ account, avatar, stats, unreadChat = 0, saveStatus, o
   )
 }
 
-/** Hàng số liệu nhỏ: chuỗi ngày · chuối · cấp */
+/** Hàng số liệu nhỏ: chuỗi ngày · cấp */
 function SidebarStats({ stats }: { stats: NonNullable<AppShellProps['stats']> }) {
   const dsText = useDsText()
   return (
@@ -163,12 +159,6 @@ function SidebarStats({ stats }: { stats: NonNullable<AppShellProps['stats']> })
         <span className="app-stats__item" title={dsText('streakLabel', { n: stats.streak })}>
           <StreakFlame count={stats.streak} active={stats.studiedToday ?? true} size="sm" />
         </span>
-      )}
-      {stats.bananas !== undefined && (
-        <Link to="/shop" className="app-stats__item app-stats__item--banana" title={dsText('bananasLabel', { n: stats.bananas })}>
-          <span aria-hidden>🍌</span>
-          <span className="ds-num">{stats.bananas}</span>
-        </Link>
       )}
       {stats.level !== undefined && (
         <span className="app-stats__item app-stats__item--level" title={dsText('levelLabel', { n: stats.level })}>
@@ -179,19 +169,17 @@ function SidebarStats({ stats }: { stats: NonNullable<AppShellProps['stats']> })
   )
 }
 
-/** Khối tài khoản: avatar + tên; bấm mở menu nhỏ (Hồ sơ · Đổi trang phục · Đăng xuất) */
+/** Khối tài khoản: avatar + tên; bấm mở menu nhỏ (Hồ sơ · Đăng xuất) */
 function AccountMenu({
   account,
   avatar,
   saveStatus,
   onLogout,
-  customizeTo,
 }: {
   account: AppShellAccount
   avatar?: ReactNode
   saveStatus?: AppShellProps['saveStatus']
   onLogout?: () => void
-  customizeTo: string
 }) {
   const dsText = useDsText()
   const [open, setOpen] = useState(false)
@@ -227,9 +215,6 @@ function AccountMenu({
         <div className="app-account__menu" role="menu" aria-label={dsText('accountMenu')}>
           <Link role="menuitem" to={`/profile/${account.id}`}>
             <Icon name="profile" size={18} /> {dsText('myProfile')}
-          </Link>
-          <Link role="menuitem" to={customizeTo}>
-            <Icon name="sparkle" size={18} /> {dsText('customize')}
           </Link>
           {onLogout && (
             <button type="button" role="menuitem" onClick={onLogout}>

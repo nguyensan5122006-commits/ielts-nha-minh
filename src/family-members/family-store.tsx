@@ -1,6 +1,6 @@
 /**
- * family-store.tsx — DANH SÁCH THÀNH VIÊN GIA ĐÌNH (tên, avatar, khung, màu tên, XP)
- * Tải 1 lần khi đăng nhập, tự làm mới mỗi phút. Chat, xếp hạng, thi đấu đều dùng.
+ * family-store.tsx — DANH SÁCH THÀNH VIÊN GIA ĐÌNH (tên, avatar, XP)
+ * Tải 1 lần khi đăng nhập, tự làm mới mỗi phút. Chat, bảng xếp hạng, nhiệm vụ cả nhà đều dùng.
  */
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react'
 import { api, type FamilyMember } from '../services/api-client'

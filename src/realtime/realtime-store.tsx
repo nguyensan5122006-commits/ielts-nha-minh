@@ -4,83 +4,26 @@
  * Mở 1 kết nối WebSocket tới /api/realtime khi đã đăng nhập, tự kết nối lại khi rớt mạng.
  * Cung cấp cho mọi trang:
  *   - online        : id những người đang online
- *   - rooms         : các phòng thi đấu đang chờ người
- *   - myRoom, game  : phòng mình đang ở + trạng thái trận đấu (câu hỏi, điểm, sức mạnh...)
  *   - unread        : số tin chat chưa đọc theo kênh
- *   - send(msg)     : gửi tin lên máy chủ
+ *   - send(msg)     : gửi tin lên máy chủ (chat, "đang gõ", khoe thành tích…)
  *   - useRealtimeEvent(fn) : nghe mọi tin máy chủ gửi về (trang Chat dùng)
- * Tin "bananas" (số dư mới) được chuyển cho ví chuối.
  * ----------------------------------------------------------------------------
  */
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
-import { useNavigate } from 'react-router-dom'
-import type { GameQuestion } from '../game-questions/question-bank'
-import type { ClientMessage, PlayerResult, PowerId, RoomSummary, ServerMessage } from '../game-questions/realtime-protocol'
+import type { ClientMessage, ServerMessage } from './realtime-protocol'
 import { useToast } from '../components/ToastCenter'
-import { useProgress } from '../learning-progress/progress-store'
-import { useWallet } from '../player-wallet/wallet-store'
 import { api } from '../services/api-client'
 import { useAuth } from '../services/auth-context'
-import { useLanguage } from '../translations/language-context'
 import { playNotificationSound } from './notification-sound'
-
-/** Trạng thái trận đấu đang diễn ra (phía người chơi). */
-export interface LiveGameState {
-  countdownStartsAt: number | null
-  question: GameQuestion | null
-  questionIndex: number
-  totalQuestions: number
-  questionStartedAt: number
-  timeLimitMs: number
-  extraMs: number
-  myAnswer: string | null
-  removedIndexes: number[]
-  frozenUntil: number
-  reveal: Extract<ServerMessage, { t: 'game:reveal' }> | null
-  scores: Record<number, number>
-  chain: Extract<ServerMessage, { t: 'game:chain-turn' }> | null
-  chainRejected: string | null
-  eliminated: number[]
-  powerLog: { fromId: number; power: PowerId; targetId?: number; blocked?: boolean; at: number }[]
-  powersUsed: number
-  over: { ranking: PlayerResult[]; pot: number; winnerIds: number[] } | null
-}
-
-const EMPTY_GAME: LiveGameState = {
-  countdownStartsAt: null,
-  question: null,
-  questionIndex: -1,
-  totalQuestions: 0,
-  questionStartedAt: 0,
-  timeLimitMs: 0,
-  extraMs: 0,
-  myAnswer: null,
-  removedIndexes: [],
-  frozenUntil: 0,
-  reveal: null,
-  scores: {},
-  chain: null,
-  chainRejected: null,
-  eliminated: [],
-  powerLog: [],
-  powersUsed: 0,
-  over: null,
-}
 
 interface RealtimeContextValue {
   connected: boolean
   online: number[]
-  rooms: RoomSummary[]
-  myRoom: RoomSummary | null
-  game: LiveGameState
   unread: Record<string, number>
   /** kênh chat đang mở trên màn hình (để không đếm tin chưa đọc kênh đó) */
   setOpenChannel: (channel: string | null) => void
   markChannelRead: (channel: string, messageId: number) => void
   send: (message: ClientMessage) => void
-  answer: (answer: string) => void
-  usePower: (power: PowerId, targetId?: number) => void
-  leaveRoom: () => void
   subscribe: (listener: (message: ServerMessage) => void) => () => void
 }
 
@@ -88,20 +31,13 @@ const RealtimeContext = createContext<RealtimeContextValue | null>(null)
 
 export function RealtimeProvider({ children }: { children: ReactNode }) {
   const { user } = useAuth()
-  const { setBalance } = useWallet()
-  const { recordActivity } = useProgress()
   const { showToast } = useToast()
-  const { t } = useLanguage()
-  const navigate = useNavigate()
 
   const socketRef = useRef<WebSocket | null>(null)
   const listeners = useRef(new Set<(message: ServerMessage) => void>())
   const openChannelRef = useRef<string | null>(null)
   const [connected, setConnected] = useState(false)
   const [online, setOnline] = useState<number[]>([])
-  const [rooms, setRooms] = useState<RoomSummary[]>([])
-  const [myRoom, setMyRoom] = useState<RoomSummary | null>(null)
-  const [game, setGame] = useState<LiveGameState>(EMPTY_GAME)
   const [unread, setUnread] = useState<Record<string, number>>({})
 
   const send = useCallback((message: ClientMessage) => {
@@ -114,17 +50,8 @@ export function RealtimeProvider({ children }: { children: ReactNode }) {
     (message: ServerMessage) => {
       switch (message.t) {
         case 'hello':
-          setOnline(message.online)
-          setRooms(message.rooms)
-          break
         case 'presence':
           setOnline(message.online)
-          break
-        case 'rooms':
-          setRooms(message.rooms)
-          break
-        case 'bananas':
-          setBalance(message.balance)
           break
         case 'error':
           showToast({ icon: '⚠️', text: message.message })
@@ -137,83 +64,10 @@ export function RealtimeProvider({ children }: { children: ReactNode }) {
           }
           break
         }
-        case 'room:update':
-          setMyRoom(message.room)
-          if (message.room.status === 'lobby') setGame(EMPTY_GAME)
-          break
-        case 'room:invite':
-          playNotificationSound()
-          showToast({
-            icon: '⚔️',
-            text: t('inviteToast', { name: message.fromName }),
-            durationMs: 15_000,
-            action: {
-              label: t('joinRoom'),
-              onClick: () => {
-                send({ t: 'room:join', roomId: message.room.id })
-                navigate('/arena/room')
-              },
-            },
-          })
-          break
-        case 'room:closed':
-          setMyRoom((current) => (current?.id === message.roomId ? null : current))
-          setGame(EMPTY_GAME)
-          showToast({ icon: 'ℹ️', text: message.reason })
-          break
-        case 'game:countdown':
-          setGame({ ...EMPTY_GAME, countdownStartsAt: message.startsAt })
-          break
-        case 'game:question':
-          setGame((current) => ({
-            ...current,
-            countdownStartsAt: null,
-            question: message.question,
-            questionIndex: message.index,
-            totalQuestions: message.total,
-            questionStartedAt: message.startedAt,
-            timeLimitMs: message.timeLimitMs,
-            extraMs: 0,
-            myAnswer: null,
-            removedIndexes: [],
-            reveal: null,
-          }))
-          break
-        case 'game:reveal':
-          setGame((current) => ({ ...current, reveal: message, scores: message.scores }))
-          break
-        case 'game:frozen':
-          setGame((current) => ({ ...current, frozenUntil: message.until }))
-          break
-        case 'game:fifty':
-          setGame((current) => (current.questionIndex === message.questionIndex ? { ...current, removedIndexes: message.removeIndexes } : current))
-          break
-        case 'game:extra-time':
-          setGame((current) => (current.questionIndex === message.questionIndex ? { ...current, extraMs: message.extraMs } : current))
-          break
-        case 'game:power-used':
-          setGame((current) => ({ ...current, powerLog: [...current.powerLog.slice(-5), { ...message, at: Date.now() }] }))
-          break
-        case 'game:chain-turn':
-          setGame((current) => ({ ...current, countdownStartsAt: null, chain: message, chainRejected: null, scores: message.scores }))
-          break
-        case 'game:chain-rejected':
-          setGame((current) => ({ ...current, chainRejected: `${message.word}: ${message.reason}` }))
-          break
-        case 'game:chain-out':
-          setGame((current) => ({ ...current, eliminated: [...new Set([...current.eliminated, message.playerId])] }))
-          break
-        case 'game:over': {
-          setGame((current) => ({ ...current, over: { ranking: message.ranking, pot: message.pot, winnerIds: message.winnerIds } }))
-          // ghi nhận cho nhiệm vụ / huy hiệu
-          recordActivity('battlesPlayed')
-          if (user && message.winnerIds.includes(user.id)) recordActivity('battlesWon')
-          break
-        }
       }
       for (const listener of listeners.current) listener(message)
     },
-    [user, setBalance, showToast, t, send, navigate, recordActivity],
+    [user, showToast],
   )
 
   // giữ hàm xử lý mới nhất trong ref để kết nối WebSocket không phải mở lại mỗi lần render
@@ -282,34 +136,6 @@ export function RealtimeProvider({ children }: { children: ReactNode }) {
     [send],
   )
 
-  // bản sao trạng thái trận mới nhất (đọc trong hàm mà không cần đưa vào danh sách phụ thuộc)
-  const gameRef = useRef(game)
-  gameRef.current = game
-
-  const answer = useCallback(
-    (value: string) => {
-      const current = gameRef.current
-      if (current.myAnswer !== null || !current.question) return
-      send({ t: 'game:answer', questionIndex: current.questionIndex, answer: value })
-      setGame((latest) => ({ ...latest, myAnswer: value }))
-    },
-    [send],
-  )
-
-  const usePower = useCallback(
-    (power: PowerId, targetId?: number) => {
-      send({ t: 'game:power', power, targetId })
-      setGame((current) => ({ ...current, powersUsed: current.powersUsed + 1 }))
-    },
-    [send],
-  )
-
-  const leaveRoom = useCallback(() => {
-    send({ t: 'room:leave' })
-    setMyRoom(null)
-    setGame(EMPTY_GAME)
-  }, [send])
-
   const subscribe = useCallback((listener: (message: ServerMessage) => void) => {
     listeners.current.add(listener)
     return () => {
@@ -318,8 +144,8 @@ export function RealtimeProvider({ children }: { children: ReactNode }) {
   }, [])
 
   const value = useMemo<RealtimeContextValue>(
-    () => ({ connected, online, rooms, myRoom, game, unread, setOpenChannel, markChannelRead, send, answer, usePower, leaveRoom, subscribe }),
-    [connected, online, rooms, myRoom, game, unread, setOpenChannel, markChannelRead, send, answer, usePower, leaveRoom, subscribe],
+    () => ({ connected, online, unread, setOpenChannel, markChannelRead, send, subscribe }),
+    [connected, online, unread, setOpenChannel, markChannelRead, send, subscribe],
   )
   return <RealtimeContext.Provider value={value}>{children}</RealtimeContext.Provider>
 }

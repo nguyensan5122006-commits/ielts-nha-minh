@@ -1,15 +1,13 @@
 /**
  * /api/games/records — KỶ LỤC MINI GAME CHƠI 1 MÌNH
  *   GET  ?game=spelling : bảng kỷ lục cả nhà của game đó
- *   POST { game, score } : gửi điểm vừa chơi; cao hơn kỷ lục cũ thì lưu, thưởng chuối
+ *   POST { game, score } : gửi điểm vừa chơi; cao hơn kỷ lục cũ thì lưu
+ * Game hợp lệ: Spelling Bee ('spelling') và Nối từ ('word-chain'). Thêm trò mới -> thêm tên vào GAMES.
  */
-import { BANANA_REWARDS } from '../../../src/game-economy/banana-rewards'
 import { errorResponse, jsonResponse, type ApiHandler } from '../../../backend-helpers/server-environment'
 import { readLoggedInUser } from '../../../backend-helpers/read-logged-in-user'
-import { countRewardsSince, grantBananas } from '../../../backend-helpers/banana-ledger'
-import { startOfVietnamDaySql } from '../../../backend-helpers/vietnam-time'
 
-const GAMES = ['spelling', 'word-chain', 'sentence', 'quiz']
+const GAMES = ['spelling', 'word-chain']
 const MAX_SCORE = 100_000
 
 export const onRequestGet: ApiHandler = async ({ request, env }) => {
@@ -38,17 +36,5 @@ export const onRequestPost: ApiHandler = async ({ request, env, data }) => {
       .bind(user.id, game, Math.round(score!))
       .run()
   }
-
-  // thưởng: chơi xong +2, phá kỷ lục (từ lần thứ 2 trở đi, và điểm > 0) +10 — có giới hạn / ngày
-  let bananas = 0
-  const since = startOfVietnamDaySql()
-  if ((await countRewardsSince(env.DB, user.id, 'game-played', since)) < BANANA_REWARDS['game-played'].dailyLimit) {
-    await grantBananas(env.DB, user.id, BANANA_REWARDS['game-played'].amount, 'game-played')
-    bananas += BANANA_REWARDS['game-played'].amount
-  }
-  if (isNewRecord && previous && score! > 0 && (await countRewardsSince(env.DB, user.id, 'game-record', since)) < BANANA_REWARDS['game-record'].dailyLimit) {
-    await grantBananas(env.DB, user.id, BANANA_REWARDS['game-record'].amount, 'game-record')
-    bananas += BANANA_REWARDS['game-record'].amount
-  }
-  return jsonResponse({ isNewRecord, previousBest: previous?.best_score ?? null, bananas })
+  return jsonResponse({ isNewRecord, previousBest: previous?.best_score ?? null })
 }

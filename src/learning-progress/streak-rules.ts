@@ -116,24 +116,6 @@ export function addStudyDate(studyDates: string[], day: string): string[] {
   return [...studyDates, day].sort().slice(-STUDY_DATES_TO_KEEP)
 }
 
-/**
- * Bảo vệ chuỗi MUA Ở CỬA HÀNG (món 'study-streak-freeze', khác với freeze tự kiếm):
- * dùng được khi lỡ ĐÚNG 1 ngày (lần học cuối = hôm kia) và chuỗi vừa đứt / sắp đứt.
- */
-export function canUseShopStreakFreeze(streak: StreakState, now = new Date()): boolean {
-  const today = todayString(now)
-  if (streak.lastStudyDate !== addDays(today, -2)) return false
-  return streak.current > 0 || (streak.repairStreak ?? 0) > 0
-}
-
-/** Áp món bảo vệ chuỗi mua ở cửa hàng: coi như hôm qua đã học, trả lại chuỗi nếu vừa đứt. */
-export function applyShopStreakFreeze(streak: StreakState, now = new Date()): StreakState {
-  if (!canUseShopStreakFreeze(streak, now)) return streak
-  const yesterday = addDays(todayString(now), -1)
-  if (streak.current > 0) return { ...streak, lastStudyDate: yesterday }
-  return { ...clearRepair(streak), current: streak.repairStreak ?? 0, lastStudyDate: yesterday }
-}
-
 /* ============================================================================
  * SỐ LIỆU HIỂN THỊ
  * ========================================================================== */

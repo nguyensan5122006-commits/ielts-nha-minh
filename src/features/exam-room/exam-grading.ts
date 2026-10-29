@@ -174,7 +174,7 @@ export function assembleResult({ exam, mode, sectionIndexes, answers, aiResults,
  * 4. GHI VÀO TIẾN ĐỘ HỌC (qua useProgress — không tự lưu)
  * ========================================================================== */
 
-/** Các hành động của useProgress() + ví chuối mà phòng thi cần (truyền vào để file này không phụ thuộc React). */
+/** Các hành động của useProgress() mà phòng thi cần (truyền vào để file này không phụ thuộc React). */
 export interface ProgressEffects {
   addXp: (amount: number) => void
   recordActivity: (metric: 'examsTaken') => void
@@ -185,7 +185,6 @@ export interface ProgressEffects {
   updateBandEstimate: (skill: ExamSection['skill'], low: number, high: number, confidence: 'low' | 'medium' | 'high') => void
   saveDraft: (taskId: string, text: string) => void
   logWriting: (entry: { taskId: string; words: number; aiLow?: number; aiHigh?: number }) => void
-  earnBananas: (reason: 'exam-placement' | 'exam-mock' | 'level-test') => Promise<number> | void
   flushSave: () => void
 }
 
@@ -257,11 +256,6 @@ export function applyProgressEffects(exam: Exam, result: StoredExamResult, effec
   if (result.placement) effects.setPlacementResult(result.placement.recommendedLevelOrder, result.placement.estimatedBand)
   const level = findLevelInfo(exam.levelId)
   if (result.levelTest?.passed && level) effects.passLevelTest(level.id, level.order, result.percent ?? 0)
-
-  // chuối: máy chủ tự giới hạn số lần / ngày
-  if (exam.kind === 'placement') void effects.earnBananas('exam-placement')
-  if (exam.kind === 'mock-ielts' && fullTest) void effects.earnBananas('exam-mock')
-  if (result.levelTest?.passed) void effects.earnBananas('level-test')
 
   effects.flushSave()
 }

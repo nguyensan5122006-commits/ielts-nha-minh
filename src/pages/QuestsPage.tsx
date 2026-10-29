@@ -2,14 +2,14 @@
  * QuestsPage.tsx — NHIỆM VỤ & HUY HIỆU
  * ----------------------------------------------------------------------------
  *  - Nhiệm vụ hôm nay (3 cái, đổi mỗi ngày) + nhiệm vụ tuần + nhiệm vụ cả nhà
- *    Đủ chỉ tiêu -> nút "Nhận" -> máy chủ cộng chuối (mỗi nhiệm vụ nhận 1 lần).
+ *    Đủ chỉ tiêu -> nút "Nhận" -> cộng XP (claimQuestReward, mỗi nhiệm vụ nhận 1 lần).
  *  - Huy hiệu: tự mở khoá khi đạt (GameWatchers lo việc đó), ở đây chỉ hiển thị
  *    huy hiệu đã có và tiến độ tới huy hiệu tiếp theo.
  * (v3) Giao diện làm lại: mỗi nhiệm vụ có ảnh 3D theo loại việc, nút "Nhận" nổi bật khi xong;
  *      huy hiệu là ô ảnh 3D (chưa mở = xám + thanh tiến độ). /quests#badges cuộn tới huy hiệu.
  * ----------------------------------------------------------------------------
  */
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { useLocation } from 'react-router-dom'
 import { vietnamDay, vietnamWeekId } from '../../backend-helpers/vietnam-time'
 import {
@@ -20,9 +20,8 @@ import {
   type AchievementDefinition,
   type ActivityMetric,
   type QuestDefinition,
-} from '../game-economy/quests-and-achievements'
+} from '../gamification/quests-and-achievements'
 import { PlayerAvatar } from '../components/PlayerIdentity'
-import { useToast } from '../components/ToastCenter'
 import { Badge, Button, Icon, playSound, ProgressBar, ProgressRing } from '../design-system'
 import { GameArt } from '../features/playground/components/GameArt'
 import { PlayPageHeader } from '../features/playground/components/PlayPageHeader'
@@ -31,7 +30,6 @@ import { usePlayText } from '../features/playground/playground-text'
 import { useFamily } from '../family-members/family-store'
 import { achievementMetricValue } from '../learning-progress/activity-stats'
 import { useProgress } from '../learning-progress/progress-store'
-import { useWallet } from '../player-wallet/wallet-store'
 import { useAuth } from '../services/auth-context'
 import { useLanguage } from '../translations/language-context'
 import '../features/playground/styles/play-kit.css'
@@ -44,12 +42,9 @@ const METRIC_ART: Record<ActivityMetric, string> = {
   perfectMiniTests: 'star',
   reviews: 'repeat-button',
   xp: 'high-voltage',
-  battlesPlayed: 'crossed-swords',
-  battlesWon: 'trophy',
   miniGames: 'joystick',
   funCards: 'rainbow',
   dailyWords: 'input-latin-letters',
-  bossHits: 'dragon-face',
   examsTaken: 'memo',
   chatMessages: 'speech-balloon',
   studyDays: 'spiral-calendar',
@@ -67,12 +62,9 @@ export function QuestsPage() {
   const { t, pick } = useLanguage()
   const playText = usePlayText()
   const { user } = useAuth()
-  const { progress, markRewardClaimed } = useProgress()
-  const { claimReward } = useWallet()
+  const { progress, claimQuestReward } = useProgress()
   const { members } = useFamily()
-  const { showToast } = useToast()
   const location = useLocation()
-  const [claiming, setClaiming] = useState<string | null>(null)
 
   const day = vietnamDay()
   const week = vietnamWeekId()
@@ -86,20 +78,12 @@ export function QuestsPage() {
     if (location.hash === '#badges') document.getElementById('badges')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
   }, [location.hash])
 
-  async function claim(kind: string, id: string, rewardKey: string) {
-    setClaiming(rewardKey)
-    try {
-      await claimReward(kind, id)
-      markRewardClaimed(rewardKey)
-      playSound('sticker')
-    } catch (error) {
-      showToast({ icon: '⚠️', text: (error as Error).message })
-    } finally {
-      setClaiming(null)
-    }
+  function claim(rewardKey: string, xp: number) {
+    claimQuestReward(rewardKey, xp)
+    playSound('sticker')
   }
 
-  function QuestRow({ quest, value, kind, rewardKey }: { quest: QuestDefinition; value: number; kind: string; rewardKey: string }) {
+  function QuestRow({ quest, value, rewardKey }: { quest: QuestDefinition; value: number; rewardKey: string }) {
     const done = value >= quest.target
     const claimed = progress.claimedRewards.includes(rewardKey)
     return (
@@ -120,12 +104,12 @@ export function QuestsPage() {
               {t('claimed')}
             </Badge>
           ) : done ? (
-            <Button size="sm" loading={claiming === rewardKey} onClick={() => claim(kind, quest.id, rewardKey)} iconLeft={<GameArt slug="banana" size={18} />}>
-              {playText('claimShort')} {quest.bananas}
+            <Button size="sm" onClick={() => claim(rewardKey, quest.xp)} iconLeft={<GameArt slug="high-voltage" size={18} />}>
+              {playText('claimShort')} +{quest.xp} XP
             </Button>
           ) : (
             <span className="quest__prize">
-              <GameArt slug="banana" size={18} /> {quest.bananas}
+              <GameArt slug="high-voltage" size={18} /> +{quest.xp} XP
             </span>
           )}
         </div>
@@ -136,7 +120,8 @@ export function QuestsPage() {
   const familyKey = `family:${week}`
   const familyDone = familyXp >= FAMILY_WEEKLY_QUEST.targetXp
   const familyClaimed = progress.claimedRewards.includes(familyKey)
-  const unlockedCount = progress.unlockedAchievements.length
+  // chỉ đếm huy hiệu còn trong danh sách (huy hiệu của trò chơi đã xoá vẫn có thể nằm trong dữ liệu cũ)
+  const unlockedCount = ACHIEVEMENTS.filter((achievement) => progress.unlockedAchievements.includes(achievement.id)).length
 
   return (
     <main className="page pg-page quests">
@@ -152,7 +137,7 @@ export function QuestsPage() {
             <ul className="quest-list">
               {user &&
                 pickDailyQuests(day, user.id).map((quest) => (
-                  <QuestRow key={quest.id} quest={quest} value={dailyCounts[quest.metric] ?? 0} kind="daily-quest" rewardKey={`daily:${day}:${quest.id}`} />
+                  <QuestRow key={quest.id} quest={quest} value={dailyCounts[quest.metric] ?? 0} rewardKey={`daily:${day}:${quest.id}`} />
                 ))}
             </ul>
           </section>
@@ -164,7 +149,7 @@ export function QuestsPage() {
             </h2>
             <ul className="quest-list">
               {WEEKLY_QUESTS.map((quest) => (
-                <QuestRow key={quest.id} quest={quest} value={weeklyCounts[quest.metric] ?? 0} kind="weekly-quest" rewardKey={`weekly:${week}:${quest.id}`} />
+                <QuestRow key={quest.id} quest={quest} value={weeklyCounts[quest.metric] ?? 0} rewardKey={`weekly:${week}:${quest.id}`} />
               ))}
             </ul>
           </section>
@@ -191,7 +176,7 @@ export function QuestsPage() {
                 .slice(0, 8)
                 .map((m) => (
                   <li key={m.id} className={m.id === user?.id ? 'is-me' : undefined}>
-                    <PlayerAvatar avatarItemId={m.avatar} frameItemId={m.frame} size={24} />
+                    <PlayerAvatar avatarItemId={m.avatar} size={24} />
                     <span>{m.displayName}</span>
                     <strong className="ds-num">{m.weekXp}</strong>
                   </li>
@@ -205,8 +190,8 @@ export function QuestsPage() {
                   {t('claimed')}
                 </Badge>
               ) : (
-                <Button size="sm" disabled={!familyDone} loading={claiming === familyKey} onClick={() => claim('family-quest', 'family-xp', familyKey)} iconLeft={<GameArt slug="banana" size={18} />}>
-                  {familyDone ? `${playText('claimShort')} ${FAMILY_WEEKLY_QUEST.bananas}` : FAMILY_WEEKLY_QUEST.bananas}
+                <Button size="sm" disabled={!familyDone} onClick={() => claim(familyKey, FAMILY_WEEKLY_QUEST.xp)} iconLeft={<GameArt slug="high-voltage" size={18} />}>
+                  {familyDone ? `${playText('claimShort')} +${FAMILY_WEEKLY_QUEST.xp} XP` : `+${FAMILY_WEEKLY_QUEST.xp} XP`}
                 </Button>
               )}
             </div>

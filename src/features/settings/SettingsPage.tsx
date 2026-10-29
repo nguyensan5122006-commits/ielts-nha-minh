@@ -5,7 +5,7 @@
  *   1. Hiển thị & âm thanh : ngôn ngữ VI/EN · giao diện sáng/tối/theo máy · hiệu ứng âm thanh
  *   2. Mục tiêu & giờ học  : mục tiêu phút/ngày · hẹn "Sau khi … lúc …" (chỉ nhắc trong web)
  *   3. Cách học            : lộ trình General/IELTS · 2 hay 4 nút khi ôn thẻ · giọng đọc Anh-Anh/Anh-Mỹ
- *   4. Tài khoản           : tên, nhóm tuổi (chỉ xem), đăng xuất
+ *   4. Tài khoản           : tên hiển thị, tên đăng nhập, đăng xuất
  * Nơi lưu:
  *   - ngôn ngữ  -> LanguageProvider (localStorage)
  *   - giao diện -> design-system/theme.ts (localStorage) + progress.profile.theme (đồng bộ máy khác)
@@ -158,7 +158,6 @@ export function SettingsPage() {
     navigate('/login', { replace: true })
   }
 
-  const ageLabel = user?.ageGroup === 'kid' ? settingsText('ageKid') : user?.ageGroup === 'teen' ? settingsText('ageTeen') : settingsText('ageAdult')
   const saveText = saveStatus === 'saving' ? settingsText('saving') : saveStatus === 'error' ? settingsText('saveError') : settingsText('saved')
 
   return (
@@ -232,14 +231,7 @@ export function SettingsPage() {
               <dt>{settingsText('username')}</dt>
               <dd>{user?.username}</dd>
             </div>
-            <div>
-              <dt>{settingsText('ageGroup')}</dt>
-              <dd>
-                <span className="st-age">{ageLabel}</span>
-              </dd>
-            </div>
           </dl>
-          <p className="st-row__hint">{settingsText('ageGroupHint')}</p>
           <div className="st-account__actions">
             <Button variant="secondary" to={user ? `/profile/${user.id}` : '/play'} iconLeft="profile">
               {settingsText('profileLink')}

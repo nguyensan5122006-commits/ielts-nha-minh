@@ -1,19 +1,17 @@
 /**
- * GameQuestionView.tsx — HIỂN THỊ 1 CÂU HỎI TRÒ CHƠI (dùng cho cả chơi 1 mình và đấu trực tiếp)
+ * GameQuestionView.tsx — HIỂN THỊ 1 CÂU SPELLING BEE (nghe từ rồi gõ đúng chính tả)
  * ----------------------------------------------------------------------------
- *   choice  : hình / câu hỏi + 4 nút đáp án (phím 1-4)
- *   type    : nghe từ rồi gõ (Spelling Bee)
- *   arrange : bấm thẻ từ theo thứ tự để ghép câu (Đua xếp câu)
- * Sau khi lật đáp án (reveal): đáp án đúng tô xanh + dấu ✓, đáp án mình chọn sai tô cam san hô
- * (không đỏ chói — 04-DESIGN-SYSTEM mục 1), các đáp án khác mờ đi.
- * (v3) Giao diện làm lại: thẻ đáp án lớn có số phím, ô gõ to, thẻ từ dạng viên kẹo.
- *      Lớp CSS: gq-* trong src/features/playground/styles/game.css
+ *   hình (nếu có) + gợi ý nghĩa + nút nghe lại + ô gõ to (Enter để gửi)
+ * Sau khi lật đáp án (reveal): ô gõ tô xanh (đúng) hoặc cam san hô (sai — không đỏ chói,
+ * 04-DESIGN-SYSTEM mục 1) + dòng "Đáp án đúng: …".
+ * Cũng chứa thanh thời gian TimerBar / TimerBarIdle (trang Nối từ dùng lại).
+ * Lớp CSS: gq-* trong src/features/playground/styles/game.css
  * ----------------------------------------------------------------------------
  */
 import { useEffect, useRef, useState, type FormEvent } from 'react'
 import type { GameQuestion } from '../game-questions/question-bank'
 import { CardImage } from '../components/PlayerIdentity'
-import { Button, Icon, IconButton } from '../design-system'
+import { Button, IconButton } from '../design-system'
 import { speak } from '../services/text-to-speech'
 import { useLanguage } from '../translations/language-context'
 import '../features/playground/styles/game.css'
@@ -21,46 +19,31 @@ import '../features/playground/styles/game.css'
 interface GameQuestionViewProps {
   question: GameQuestion
   onAnswer: (answer: string) => void
-  /** đã trả lời / hết giờ / bị đóng băng -> khoá */
+  /** đã trả lời / hết giờ -> khoá */
   locked: boolean
   myAnswer: string | null
   /** sau khi lật: đáp án đúng */
-  reveal?: { correctIndex?: number; correctAnswer: string } | null
-  removedIndexes?: number[]
+  reveal?: { correctAnswer: string } | null
 }
 
-export function GameQuestionView({ question, onAnswer, locked, myAnswer, reveal, removedIndexes = [] }: GameQuestionViewProps) {
+export function GameQuestionView({ question, onAnswer, locked, myAnswer, reveal }: GameQuestionViewProps) {
   const { t } = useLanguage()
   const [typed, setTyped] = useState('')
-  const [chosenTiles, setChosenTiles] = useState<number[]>([])
   const inputRef = useRef<HTMLInputElement>(null)
 
-  // câu mới: xoá ô gõ, tự đọc câu nghe
+  // câu mới: xoá ô gõ, tự đọc từ cần đánh vần
   useEffect(() => {
     setTyped('')
-    setChosenTiles([])
-    if (question.audioText && question.kind !== 'arrange') void speak(question.audioText)
-    if (question.kind === 'type') window.setTimeout(() => inputRef.current?.focus(), 50)
+    void speak(question.audioText)
+    window.setTimeout(() => inputRef.current?.focus(), 50)
   }, [question])
-
-  // phím 1-4 cho câu trắc nghiệm
-  useEffect(() => {
-    if (question.kind !== 'choice') return
-    function onKey(event: KeyboardEvent) {
-      const index = Number(event.key) - 1
-      if (!locked && index >= 0 && index < (question.options?.length ?? 0) && !removedIndexes.includes(index)) onAnswer(String(index))
-    }
-    window.addEventListener('keydown', onKey)
-    return () => window.removeEventListener('keydown', onKey)
-  }, [question, locked, removedIndexes, onAnswer])
 
   function submitTyped(event: FormEvent) {
     event.preventDefault()
     if (!locked && typed.trim()) onAnswer(typed.trim())
   }
 
-  const tiles = question.tiles ?? []
-  const builtSentence = chosenTiles.map((i) => tiles[i]).join(' ')
+  const isRight = !!myAnswer && !!reveal && myAnswer.trim().toLowerCase() === reveal.correctAnswer.trim().toLowerCase()
 
   return (
     <div className={`gq ${reveal ? 'is-revealed' : ''}`}>
@@ -71,94 +54,28 @@ export function GameQuestionView({ question, onAnswer, locked, myAnswer, reveal,
       )}
       <div className="gq__prompt-row">
         <div className="gq__prompt">{question.prompt}</div>
-        {question.audioText && question.kind !== 'arrange' && (
-          <IconButton icon="volume" label={t('listenNormal')} variant="primary" size="lg" className="gq__speaker" onClick={() => speak(question.audioText!)} />
-        )}
+        <IconButton icon="volume" label={t('listenNormal')} variant="primary" size="lg" className="gq__speaker" onClick={() => speak(question.audioText)} />
       </div>
 
-      {/* -------- trắc nghiệm -------- */}
-      {question.kind === 'choice' && (
-        <div className="gq-options">
-          {(question.options ?? []).map((option, index) => {
-            const isRemoved = removedIndexes.includes(index)
-            let state = myAnswer === String(index) ? 'is-selected' : ''
-            if (reveal) {
-              if (index === reveal.correctIndex) state = 'is-correct'
-              else if (myAnswer === String(index)) state = 'is-wrong'
-              else state = 'is-muted'
-            }
-            return (
-              <button
-                key={index}
-                type="button"
-                className={`gq-option ${state}`}
-                disabled={locked || isRemoved}
-                style={isRemoved ? { visibility: 'hidden' } : undefined}
-                onClick={() => onAnswer(String(index))}
-              >
-                <span className="gq-option__key" aria-hidden>
-                  {state === 'is-correct' ? <Icon name="check" size={16} strokeWidth={3} /> : state === 'is-wrong' ? <Icon name="close" size={16} strokeWidth={3} /> : index + 1}
-                </span>
-                <span className="gq-option__text">{option}</span>
-              </button>
-            )
-          })}
-        </div>
-      )}
+      <form onSubmit={submitTyped} className="gq-type">
+        <input
+          ref={inputRef}
+          className={`pg-input pg-input--big gq-type__input ${reveal ? (isRight ? 'is-correct' : 'is-wrong') : ''}`}
+          value={locked ? (myAnswer ?? typed) : typed}
+          onChange={(e) => setTyped(e.target.value)}
+          disabled={locked}
+          autoComplete="off"
+          autoCapitalize="off"
+          spellCheck={false}
+          placeholder={t('typeTheWord')}
+          aria-label={t('typeTheWord')}
+        />
+        <Button type="submit" size="lg" disabled={locked || !typed.trim()}>
+          {t('submit')}
+        </Button>
+      </form>
 
-      {/* -------- gõ chữ (Spelling Bee) -------- */}
-      {question.kind === 'type' && (
-        <form onSubmit={submitTyped} className="gq-type">
-          <input
-            ref={inputRef}
-            className={`pg-input pg-input--big gq-type__input ${reveal ? (myAnswer && myAnswer.trim().toLowerCase() === reveal.correctAnswer.trim().toLowerCase() ? 'is-correct' : 'is-wrong') : ''}`}
-            value={locked ? (myAnswer ?? typed) : typed}
-            onChange={(e) => setTyped(e.target.value)}
-            disabled={locked}
-            autoComplete="off"
-            autoCapitalize="off"
-            spellCheck={false}
-            placeholder={t('typeTheWord')}
-            aria-label={t('typeTheWord')}
-          />
-          <Button type="submit" size="lg" disabled={locked || !typed.trim()}>
-            {t('submit')}
-          </Button>
-        </form>
-      )}
-
-      {/* -------- xếp câu -------- */}
-      {question.kind === 'arrange' && (
-        <>
-          <div className={`gq-line ${chosenTiles.length === 0 ? 'is-empty' : ''}`}>
-            {chosenTiles.map((tileIndex) => (
-              <button key={tileIndex} type="button" className="gq-tile is-placed" disabled={locked} onClick={() => setChosenTiles(chosenTiles.filter((i) => i !== tileIndex))}>
-                {tiles[tileIndex]}
-              </button>
-            ))}
-          </div>
-          <div className="gq-bank">
-            {tiles.map((tile, index) => (
-              <button
-                key={index}
-                type="button"
-                className={`gq-tile ${chosenTiles.includes(index) ? 'is-used' : ''}`}
-                disabled={locked || chosenTiles.includes(index)}
-                onClick={() => setChosenTiles([...chosenTiles, index])}
-              >
-                {tile}
-              </button>
-            ))}
-          </div>
-          <div className="gq-submit">
-            <Button size="lg" disabled={locked || chosenTiles.length !== tiles.length} onClick={() => onAnswer(builtSentence)}>
-              {t('submit')}
-            </Button>
-          </div>
-        </>
-      )}
-
-      {reveal && question.kind !== 'choice' && (
+      {reveal && (
         <p className="gq-answer">
           {t('correctAnswerIs')} <strong>{reveal.correctAnswer}</strong>
         </p>

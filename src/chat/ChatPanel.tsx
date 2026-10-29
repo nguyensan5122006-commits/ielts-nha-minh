@@ -3,7 +3,7 @@
  * ----------------------------------------------------------------------------
  *  - Tải 40 tin gần nhất, cuộn lên đầu bấm "Xem tin cũ hơn" để tải thêm
  *  - Nghe tin mới realtime, hiện "X đang gõ...", "Đã xem"
- *  - Gửi: chữ, emoji, sticker (miễn phí + bộ đã mua), ảnh (tự nén), hiệu ứng (đã mua)
+ *  - Gửi: chữ, emoji, sticker (bộ miễn phí bên dưới), ảnh (tự nén)
  * Dùng ở cả trang Chat (to) lẫn bong bóng chat góc màn hình (compact).
  * (v3) Giao diện làm lại: bong bóng tin bo tròn (của mình màu cam nhạt bên phải), gom tin
  *      liên tiếp cùng người, giờ chỉ hiện ở tin cuối nhóm, ô soạn tin dạng viên thuốc,
@@ -12,13 +12,11 @@
  */
 import { useCallback, useEffect, useRef, useState, type FormEvent } from 'react'
 import { Link } from 'react-router-dom'
-import type { ChatMessage } from '../game-questions/realtime-protocol'
-import { FREE_STICKERS, SHOP_ITEMS } from '../game-economy/shop-catalog'
+import type { ChatMessage } from '../realtime/realtime-protocol'
 import { PlayerAvatar } from '../components/PlayerIdentity'
 import { Button, EmptyState, Icon } from '../design-system'
 import { usePlayText } from '../features/playground/playground-text'
 import { useFamily } from '../family-members/family-store'
-import { useWallet } from '../player-wallet/wallet-store'
 import { useRealtime, useRealtimeEvent } from '../realtime/realtime-store'
 import { api } from '../services/api-client'
 import { useAuth } from '../services/auth-context'
@@ -26,7 +24,9 @@ import { useLanguage } from '../translations/language-context'
 import { compressImage } from './image-compression'
 import '../features/playground/styles/chat.css'
 
-const EMOJIS = '😀 😂 🥰 😎 🤔 😮 😢 😡 👍 👏 🙏 💪 🎉 ❤️ 🔥 ✅ 📚 ✍️ 🎧 🗣️ 🍌 🏆 ⭐ 💯'.split(' ')
+const EMOJIS = '😀 😂 🥰 😎 🤔 😮 😢 😡 👍 👏 🙏 💪 🎉 ❤️ 🔥 ✅ 📚 ✍️ 🎧 🗣️ 🏆 ⭐ 💯'.split(' ')
+/** Sticker miễn phí ai cũng dùng được (gửi đi như 1 emoji cỡ lớn). */
+const STICKERS = '👍 👏 😂 😍 😮 😢 😡 🙏 🎉 ❤️ 🤔 👋'.split(' ')
 
 interface ChatPanelProps {
   channel: string
@@ -39,7 +39,6 @@ export function ChatPanel({ channel, compact = false }: ChatPanelProps) {
   const playText = usePlayText()
   const { memberById } = useFamily()
   const { send, setOpenChannel, markChannelRead, connected } = useRealtime()
-  const { owns } = useWallet()
 
   const [messages, setMessages] = useState<ChatMessage[]>([])
   const [reads, setReads] = useState<Record<number, number>>({}) // userId -> id tin đã đọc tới
@@ -48,7 +47,6 @@ export function ChatPanel({ channel, compact = false }: ChatPanelProps) {
   const [text, setText] = useState('')
   const [typingUsers, setTypingUsers] = useState<Record<number, number>>({}) // userId -> hết hạn lúc
   const [panel, setPanel] = useState<'none' | 'emoji' | 'sticker'>('none')
-  const [effect, setEffect] = useState<string | null>(null)
   const [error, setError] = useState('')
   const listRef = useRef<HTMLDivElement>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
@@ -82,7 +80,7 @@ export function ChatPanel({ channel, compact = false }: ChatPanelProps) {
   /* ---------- đánh dấu đã đọc tin mới nhất ---------- */
   const lastMessage = messages[messages.length - 1]
   useEffect(() => {
-    // Đánh dấu cả khi tin cuối là của mình: tin hệ thống ("X thắng trận", "X mở huy hiệu") mang id của chính
+    // Đánh dấu cả khi tin cuối là của mình: tin hệ thống ("X lên Lv.5", "X mở huy hiệu") mang id của chính
     // người đó, nếu bỏ qua thì các tin của người khác phía trên không bao giờ được tính là đã đọc (số đỏ đứng mãi).
     if (lastMessage && document.visibilityState === 'visible') markChannelRead(channel, lastMessage.id)
   }, [lastMessage, channel, markChannelRead])
@@ -121,11 +119,10 @@ export function ChatPanel({ channel, compact = false }: ChatPanelProps) {
         return
       }
       setError('')
-      send({ t: 'chat:send', channel, kind, body, effect: effect ?? undefined })
-      setEffect(null)
+      send({ t: 'chat:send', channel, kind, body })
       setPanel('none')
     },
-    [connected, send, channel, effect, t],
+    [connected, send, channel, t],
   )
 
   function handleSubmit(event: FormEvent) {
@@ -152,11 +149,6 @@ export function ChatPanel({ channel, compact = false }: ChatPanelProps) {
     }
   }
 
-  const ownedStickers = [FREE_STICKERS, ...SHOP_ITEMS.filter((i) => i.category === 'sticker-pack' && owns(i.id)).map((i) => i.value ?? '')]
-    .join(' ')
-    .split(' ')
-    .filter(Boolean)
-  const ownedEffects = SHOP_ITEMS.filter((i) => i.category === 'chat-effect' && owns(i.id))
   const typingNames = Object.entries(typingUsers)
     .filter(([id, until]) => until > Date.now() && Number(id) !== user?.id)
     .map(([id]) => memberById(Number(id))?.displayName ?? '...')
@@ -200,14 +192,14 @@ export function ChatPanel({ channel, compact = false }: ChatPanelProps) {
                 <div className="chat-row__avatar">
                   {showHeader && (
                     <Link to={`/profile/${message.senderId}`} aria-label={sender?.displayName}>
-                      <PlayerAvatar avatarItemId={sender?.avatar} frameItemId={sender?.frame} size={32} />
+                      <PlayerAvatar avatarItemId={sender?.avatar} size={32} />
                     </Link>
                   )}
                 </div>
               )}
               <div className="chat-row__stack">
                 {showHeader && <div className="chat-row__name">{sender?.displayName}</div>}
-                <div className={`chat-bubble2 chat-bubble2--${message.kind} ${message.effect ? 'has-effect' : ''}`} title={timeOf(message.createdAt)}>
+                <div className={`chat-bubble2 chat-bubble2--${message.kind}`} title={timeOf(message.createdAt)}>
                   {message.kind === 'image' ? (
                     <a href={message.body} target="_blank" rel="noreferrer">
                       <img src={message.body} alt="" className="chat-bubble2__image" />
@@ -215,7 +207,6 @@ export function ChatPanel({ channel, compact = false }: ChatPanelProps) {
                   ) : (
                     message.body
                   )}
-                  {message.effect && <span className="chat-bubble2__effect">{message.effect === 'fireworks' ? '🎆' : '💕'}</span>}
                 </div>
                 {lastOfGroup && <div className="chat-row__time">{timeOf(message.createdAt)}</div>}
               </div>
@@ -240,16 +231,11 @@ export function ChatPanel({ channel, compact = false }: ChatPanelProps) {
       {/* bảng emoji / sticker */}
       {panel !== 'none' && (
         <div className={`chat-picker2 ${panel === 'sticker' ? 'is-stickers' : ''}`}>
-          {(panel === 'emoji' ? EMOJIS : ownedStickers).map((item, i) => (
+          {(panel === 'emoji' ? EMOJIS : STICKERS).map((item, i) => (
             <button key={`${item}-${i}`} type="button" onClick={() => (panel === 'emoji' ? setText((current) => current + item) : sendMessage('sticker', item))}>
               {item}
             </button>
           ))}
-          {panel === 'sticker' && (
-            <Link to="/shop" className="chat-picker2__more">
-              + {t('moreStickers')}
-            </Link>
-          )}
         </div>
       )}
 
@@ -264,18 +250,6 @@ export function ChatPanel({ channel, compact = false }: ChatPanelProps) {
           <button type="button" className="chat-tool2" onClick={() => fileInputRef.current?.click()} aria-label={playText('chatImage')} title={playText('chatImage')}>
             🖼️
           </button>
-          {ownedEffects.map((item) => (
-            <button
-              key={item.id}
-              type="button"
-              className={`chat-tool2 ${effect === item.value ? 'is-active' : ''}`}
-              onClick={() => setEffect(effect === item.value ? null : (item.value ?? null))}
-              aria-pressed={effect === item.value}
-              title={item.name[language]}
-            >
-              {item.icon}
-            </button>
-          ))}
         </div>
         <input ref={fileInputRef} type="file" accept="image/*" hidden onChange={(e) => void handleImage(e.target.files?.[0])} />
         <input className="chat-composer__input" value={text} onChange={(e) => handleTyping(e.target.value)} placeholder={t('typeMessage')} maxLength={2000} aria-label={t('typeMessage')} />

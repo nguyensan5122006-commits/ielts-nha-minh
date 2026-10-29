@@ -11,9 +11,9 @@
  * rồi gửi lên API local (PUT /api/progress) của tài khoản test.
  *
  * 2 hồ sơ mẫu:
- *   'ielts-adult'  — người lớn luyện IELTS, xếp lớp Level 2 (band 3.5–4.0), học ~7 tuần,
- *                    xong Level 2 -> đang ở Level 3 (4 nút chấm), có đề thi thử + bài viết.
- *   'general-teen' — học sinh track tổng quát, Level 1, mới học 2 tuần (ít dữ liệu: band ẩn).
+ *   'ielts-learner'    — luyện IELTS, xếp lớp Level 2 (band 3.5–4.0), học ~7 tuần,
+ *                        xong Level 2 -> đang ở Level 3 (4 nút chấm), có đề thi thử + bài viết.
+ *   'general-beginner' — track tổng quát, Level 1, mới học 2 tuần (ít dữ liệu: band ẩn).
  * ----------------------------------------------------------------------------
  */
 import { ALL_EXAMS } from '../../../content/all-exams'
@@ -26,7 +26,7 @@ import { autoRating, createSrsCard, dueCards, type SrsRating } from '../../../le
 import { createEmptyProgress, type LearningProgress, type NewMistake } from '../../../learning-progress/progress-types'
 import * as update from '../../../learning-progress/progress-updates'
 
-export type DemoProfile = 'ielts-adult' | 'general-teen'
+export type DemoProfile = 'ielts-learner' | 'general-beginner'
 
 /* ---------- số ngẫu nhiên "có hạt giống": chạy lại ra đúng dữ liệu cũ ---------- */
 function seededRandom(seed: number) {
@@ -83,7 +83,6 @@ const SKILL_DIFFICULTY: Record<SkillName, number> = { vocabulary: 0.04, reading:
 
 interface ProfileRecipe {
   track: TrackId
-  ageGroup: 'adult' | 'teen'
   dailyGoalMinutes: number
   placement: { level: LevelId; bandLow: number; bandHigh: number } | null
   /** số ngày mô phỏng (tính lùi từ hôm qua) */
@@ -97,9 +96,8 @@ interface ProfileRecipe {
 }
 
 const RECIPES: Record<DemoProfile, ProfileRecipe> = {
-  'ielts-adult': {
+  'ielts-learner': {
     track: 'ielts',
-    ageGroup: 'adult',
     dailyGoalMinutes: 15,
     placement: { level: 'level-2', bandLow: 3.5, bandHigh: 4 },
     days: 52,
@@ -109,9 +107,8 @@ const RECIPES: Record<DemoProfile, ProfileRecipe> = {
     accuracyAt: (t, level) => (level === 'level-3' ? 0.72 + 0.1 * t : 0.77 + 0.14 * t),
     levels: ['level-2', 'level-3'],
   },
-  'general-teen': {
+  'general-beginner': {
     track: 'general',
-    ageGroup: 'teen',
     dailyGoalMinutes: 10,
     placement: null,
     days: 13,
@@ -239,7 +236,6 @@ export function buildDemoProgress(profile: DemoProfile, now = new Date(), seed =
   let progress: LearningProgress = createEmptyProgress()
   progress = update.setProfile(progress, {
     track: recipe.track,
-    ageGroup: recipe.ageGroup,
     dailyGoalMinutes: recipe.dailyGoalMinutes,
     studyTime: '20:30',
     studyCue: 'Sau khi ăn tối',
@@ -299,14 +295,14 @@ export function buildDemoProgress(profile: DemoProfile, now = new Date(), seed =
     }
 
     // 4) hồ sơ IELTS: 1 đề thi thử sau ~6 tuần -> band Nghe/Đọc từ đề thi
-    if (profile === 'ielts-adult' && day === recipe.days - 9) {
+    if (profile === 'ielts-learner' && day === recipe.days - 9) {
       progress = simulateMockExam(progress, new Date(clock + 10 * MINUTE), random)
       progress = update.updateBandEstimate(progress, 'listening', 4.5, 5.5, 'medium', new Date(clock + 60 * MINUTE))
       progress = update.updateBandEstimate(progress, 'reading', 5, 5.5, 'medium', new Date(clock + 60 * MINUTE))
     }
 
     // 5) hồ sơ IELTS, 6 ngày cuối: "Lưu vào sổ từ" vài từ gặp khi đọc bài (thẻ mới, hẹn ôn từ hôm sau)
-    if (profile === 'ielts-adult' && day >= recipe.days - 6) {
+    if (profile === 'ielts-learner' && day >= recipe.days - 6) {
       const extraWords = SAVED_WORD_LESSONS.flatMap((lessonId) => findLessonById(lessonId)?.words ?? [])
       for (const word of extraWords.slice(savedWordCount, savedWordCount + 5)) {
         const key = `word:${word.id}`

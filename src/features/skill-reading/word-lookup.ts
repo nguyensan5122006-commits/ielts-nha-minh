@@ -6,7 +6,7 @@
  * Nguồn, theo thứ tự ưu tiên:
  *   1. từ vựng của CHÍNH bài đang học (lesson.words) — nghĩa đúng ngữ cảnh, có phiên âm + id
  *   2. từ điển nhỏ có sẵn (reading-glossary.ts) — các từ hay gặp trong bài đọc v3
- *   3. thẻ Học vui + từ khu trẻ em (nghĩa đơn giản) — tải LƯỜI bằng prepareWordLookup()
+ *   3. thẻ Học vui (nghĩa đơn giản) — tải LƯỜI bằng prepareWordLookup()
  * Không có -> meaningVi = null (giao diện hiện "Chưa có nghĩa — lưu để tra sau").
  *
  * KHÔNG import lesson-registry.ts (nạp toàn bộ ~2,3 MB nội dung — xem lesson-loader.ts).
@@ -34,20 +34,19 @@ interface Entry {
   ipa?: string
 }
 
-/** Từ điển phụ (Học vui + khu trẻ em) — rỗng cho tới khi prepareWordLookup() tải xong. */
+/** Từ điển phụ (thẻ Học vui) — rỗng cho tới khi prepareWordLookup() tải xong. */
 const extraDictionary = new Map<string, Entry>()
 let extraLoading: Promise<void> | null = null
 
 /** Tải trước từ điển phụ (gọi khi mở bài đọc ở chế độ luyện tập). Gọi nhiều lần không sao. */
 export function prepareWordLookup(): Promise<void> {
-  extraLoading ??= Promise.all([import('../../content/all-fun-topics'), import('../../content/kids/index')])
-    .then(([fun, kids]) => {
+  extraLoading ??= import('../../content/all-fun-topics')
+    .then((fun) => {
       const add = (word: string, entry: Entry) => {
         const key = word.trim().toLowerCase()
         if (key && !extraDictionary.has(key)) extraDictionary.set(key, entry)
       }
       for (const card of fun.allFunCards()) add(card.word, { meaningVi: card.meaningVi, ipa: card.ipa })
-      for (const word of kids.ALL_KIDS_WORDS) add(word.word, { meaningVi: word.meaningVi })
     })
     .catch(() => {
       extraLoading = null // mất mạng: lần sau thử lại

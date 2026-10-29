@@ -2,7 +2,7 @@
  * check-word-images.ts — KIỂM TRA TÊN ẢNH MINH HOẠ TRONG NỘI DUNG CÓ TỒN TẠI KHÔNG
  * ----------------------------------------------------------------------------
  * Quét mọi file src/content/**\/*.ts, tìm các giá trị dạng chuỗi:
- *     image: 'red-apple'      (KidsWord, KidsTopic, cảnh truyện…)
+ *     image: 'red-apple'      (ảnh minh hoạ trong nội dung)
  *     icon: 'airplane'        (Unit — chặng học)
  * rồi so với danh sách ảnh có thật (WORD_IMAGE_SLUGS trong src/content/word-image-catalog.ts,
  * file ảnh ở public/word-images/<slug>.webp).

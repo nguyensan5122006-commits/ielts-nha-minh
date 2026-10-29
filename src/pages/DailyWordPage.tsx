@@ -6,7 +6,7 @@
  *   🟩 xanh  : đúng chữ, đúng vị trí
  *   🟨 vàng  : có chữ này nhưng sai vị trí
  *   ⬜ xám   : từ bí ẩn không có chữ này
- * Đoán xong: so kết quả với cả nhà (chỉ hiện ô màu, không lộ từ), nhận chuối.
+ * Đoán xong: so kết quả với cả nhà (chỉ hiện ô màu, không lộ từ).
  * Từ bí ẩn chọn từ các từ trong bài học & Học vui, theo ngày (giống nhau cho cả nhà).
  * (v3) Giao diện làm lại: ô chữ lật màu lần lượt, bàn phím ảo bo tròn, kết quả có mascot
  *      (đúng = ăn mừng, chưa ra = an ủi) + nghĩa + nút nghe; cột phải là kết quả cả nhà.
@@ -18,13 +18,11 @@ import { allFunCards } from '../content/all-fun-topics'
 import { allLessonWords } from '../content/lesson-registry'
 import { CardImage } from '../components/PlayerIdentity'
 import { Button, Icon, IconButton, Mascot } from '../design-system'
-import { BananaPill } from '../features/playground/components/BananaPill'
 import { GameArt } from '../features/playground/components/GameArt'
 import { PlayPageHeader } from '../features/playground/components/PlayPageHeader'
 import { PLAY_ART } from '../features/playground/game-catalog'
 import { usePlayText } from '../features/playground/playground-text'
 import { useProgress } from '../learning-progress/progress-store'
-import { useWallet } from '../player-wallet/wallet-store'
 import { api, type DailyWordState } from '../services/api-client'
 import { speak } from '../services/text-to-speech'
 import { useLanguage } from '../translations/language-context'
@@ -80,7 +78,6 @@ export function DailyWordPage() {
   const { t } = useLanguage()
   const playText = usePlayText()
   const { recordActivity } = useProgress()
-  const { refreshWallet } = useWallet()
   const day = vietnamDay()
   const candidates = useMemo(answerCandidates, [])
   const target = useMemo(() => wordOfDay(day, candidates), [day, candidates])
@@ -97,7 +94,8 @@ export function DailyWordPage() {
   const [current, setCurrent] = useState('')
   const [message, setMessage] = useState('')
   const [server, setServer] = useState<DailyWordState | null>(null)
-  const [reward, setReward] = useState<number | null>(null)
+  /** đã gửi kết quả hôm nay lên máy chủ (chỉ gửi 1 lần) */
+  const [submitted, setSubmitted] = useState(false)
 
   const solved = guesses.includes(target.word)
   const finished = solved || guesses.length >= MAX_GUESSES || !!server?.mine
@@ -117,18 +115,17 @@ export function DailyWordPage() {
 
   // chơi xong lần đầu -> gửi kết quả lên máy chủ
   useEffect(() => {
-    if (!(solved || guesses.length >= MAX_GUESSES) || server?.mine || reward !== null) return
+    if (!(solved || guesses.length >= MAX_GUESSES) || server?.mine || submitted) return
+    setSubmitted(true)
     const pattern = guesses.map((g) => scoreGuess(g, target.word).map((s) => STATE_EMOJI[s]).join('')).join('\n')
     void api
       .submitDailyWord({ guesses: guesses.length, solved, pattern })
-      .then((res) => {
-        setReward(res.reward)
+      .then(() => {
         if (solved) recordActivity('dailyWords')
-        void refreshWallet()
         return api.getDailyWord().then(setServer)
       })
-      .catch(() => setReward(0))
-  }, [solved, guesses, server, reward, target.word, recordActivity, refreshWallet])
+      .catch(() => {})
+  }, [solved, guesses, server, submitted, target.word, recordActivity])
 
   const submitGuess = useCallback(() => {
     if (finished) return
@@ -237,14 +234,10 @@ export function DailyWordPage() {
                 <p className="wordle-result__meaning">
                   {playText('wordleMeaning')}: {target.meaningVi}
                 </p>
-                {reward !== null && reward > 0 && <BananaPill amount={reward} signed />}
               </div>
               <div className="pg-actions wordle-result__actions">
-                <Button to="/play" variant="secondary">
+                <Button to="/play" iconRight="arrow-right">
                   {playText('soloBackToPlay')}
-                </Button>
-                <Button to="/tournament" iconRight="arrow-right">
-                  {playText('tourPlay')}
                 </Button>
               </div>
             </div>

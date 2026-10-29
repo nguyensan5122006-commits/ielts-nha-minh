@@ -1,7 +1,7 @@
 /**
- * ToastCenter.tsx — THÔNG BÁO NHỎ NỔI GÓC MÀN HÌNH ("+5 🍌", "Mở khoá huy hiệu!"...)
- * Dùng: const { showToast } = useToast(); showToast({ icon: '🍌', text: '+5 chuối' })
- * Thông báo tự biến mất sau vài giây. Có thể kèm 1 nút hành động (VD "Vào phòng").
+ * ToastCenter.tsx — THÔNG BÁO NHỎ NỔI GÓC MÀN HÌNH ("Lên Lv.5!", "Mở khoá huy hiệu!"...)
+ * Dùng: const { showToast } = useToast(); showToast({ icon: '🏅', text: 'Mở khoá huy hiệu!' })
+ * Thông báo tự biến mất sau vài giây. Có thể kèm 1 nút hành động (VD "Mở chat").
  */
 import { createContext, useCallback, useContext, useMemo, useState, type ReactNode } from 'react'
 

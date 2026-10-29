@@ -1,19 +1,19 @@
 /**
  * MiniTestPage.tsx — /lesson/:lessonId/mini-test · MINI-TEST CÓ TIM CUỐI BÀI (bản v3)
  * ----------------------------------------------------------------------------
- * Theo quyết định v3: bài học KHÔNG có tim; tim chỉ còn ở mini-test (và đấu trường).
+ * Theo quyết định v3: bài học KHÔNG có tim; tim chỉ còn ở mini-test.
  *   - Bài có `miniTest` (100 bài cũ của Level 1–2, mỗi bài 6 câu): làm ở đây.
  *   - Bài v3 có `miniTest: []` -> quay thẳng về trình học /lesson/:id (không ngõ cụt, không màn trống).
  *   - Bài không tồn tại -> về /learn.
  *
  * Luật (giữ như bản cũ src/_legacy-v2/MiniTestPage.tsx): 5 tim, sai 1 câu mất 1 tim, không làm lại câu đã qua.
  *   Còn tim tới câu cuối = qua: 5 tim = 3 sao · 3–4 tim = 2 sao · 1–2 tim = 1 sao.
- *   Hết tim: nếu túi đồ có "Hồi tim" (cửa hàng) -> hỏi có dùng không; không thì màn "Hết tim rồi".
+ *   Hết tim: màn "Hết tim rồi" -> làm lại từ đầu hoặc ôn lại bài.
  *   "Máy chưa nghe rõ" (bài nói) không trừ tim.
  * Dạng bài vẽ bằng ExerciseView + chấm bằng checkExerciseAnswer của nhóm lesson-player (giống
  * parts/MistakeReplay.tsx) -> mini-test trông và chạy y như bài học.
  * Ghi tiến độ: recordAnswer từng câu (câu sai -> sổ lỗi + thẻ ôn "item:"), cuối lượt
- * recordMiniTestAttempt + addXp + earnBananas + markStudyDay (mini-test tính là có học hôm nay).
+ * recordMiniTestAttempt + addXp + markStudyDay (mini-test tính là có học hôm nay).
  * Mini-test ngắn (6 câu) nên không lưu giữa chừng — thoát là làm lại từ đầu (hộp thoại nói rõ).
  * ----------------------------------------------------------------------------
  */
@@ -26,7 +26,6 @@ import { useLesson } from '../../../content/use-lesson'
 import { Button, EmptyState, Icon, Kbd, Mascot, Modal, ProgressBar, Skeleton } from '../../../design-system'
 import { playSound } from '../../../design-system/sound-kit'
 import { useProgress } from '../../../learning-progress/progress-store'
-import { useWallet } from '../../../player-wallet/wallet-store'
 import { stopSpeaking } from '../../../services/text-to-speech'
 import { useLanguage } from '../../../translations/language-context'
 import { checkExerciseAnswer, isSelfSubmitting, type CheckOutcome } from '../../lesson-player/exercises/exercise-contract'
@@ -42,8 +41,6 @@ import './mini-test.css'
 
 /** Số tim mỗi lượt. */
 export const MINI_TEST_HEARTS = 5
-/** Món "Hồi tim" trong cửa hàng (game-economy/shop-catalog.ts). */
-const HEART_REFILL_ITEM = 'study-heart-refill'
 
 export function starsFromHearts(hearts: number): 1 | 2 | 3 {
   if (hearts >= MINI_TEST_HEARTS) return 3
@@ -83,8 +80,6 @@ function MiniTestRun({ lesson }: { lesson: Lesson }) {
   const { pick } = useLanguage()
   const navigate = useNavigate()
   const { progress, recordAnswer, recordMiniTestAttempt, addXp, markStudyDay } = useProgress()
-  // đổi tên useItem -> spendItem: đây là hàm của ví, không phải React hook
-  const { earnBananas, quantityOf, useItem: spendItem } = useWallet()
   const exercises = lesson.miniTest
   const location = findUnitOfLesson(lesson.id)
   const levelId = location?.level.id
@@ -96,13 +91,10 @@ function MiniTestRun({ lesson }: { lesson: Lesson }) {
   const [outcome, setOutcome] = useState<CheckOutcome | null>(null)
   const [hearts, setHearts] = useState(MINI_TEST_HEARTS)
   const [heartBump, setHeartBump] = useState(0)
-  const [refillOpen, setRefillOpen] = useState(false)
   const [exitOpen, setExitOpen] = useState(false)
   const [reward, setReward] = useState<{ stars: number; xp: number } | null>(null)
   const correctCount = useRef(0)
   const checkedAt = useRef(0)
-  // đã dùng "Hồi tim" trong lượt này -> vẫn qua nhưng tối đa 1 sao (trước đây hồi đầy 5 tim = 3 sao dù sai 5/6 câu)
-  const refillUsed = useRef(false)
   const exercise: Exercise | undefined = exercises[index]
   const previous = progress.miniTests[lesson.id]
   const lessonDone = !!progress.lessons[lesson.id]
@@ -110,7 +102,6 @@ function MiniTestRun({ lesson }: { lesson: Lesson }) {
   const restart = () => {
     stopSpeaking()
     correctCount.current = 0
-    refillUsed.current = false
     setIndex(0)
     setAnswer(null)
     setOutcome(null)
@@ -158,24 +149,22 @@ function MiniTestRun({ lesson }: { lesson: Lesson }) {
         setPhase('failed')
         return
       }
-      const stars = refillUsed.current ? 1 : starsFromHearts(heartsLeft)
+      const stars = starsFromHearts(heartsLeft)
       const xp = (previous ? 5 : 15) + stars * 5
       recordMiniTestAttempt(lesson.id, true, stars)
       addXp(xp)
-      void earnBananas(stars === 3 ? 'mini-test-3' : stars === 2 ? 'mini-test-2' : 'mini-test-1')
       setReward({ stars, xp })
       playSound('complete')
       setPhase('passed')
     },
-    [lesson.id, previous, recordMiniTestAttempt, addXp, earnBananas, markStudyDay],
+    [lesson.id, previous, recordMiniTestAttempt, addXp, markStudyDay],
   )
 
   const next = useCallback(() => {
     if (!outcome || Date.now() - checkedAt.current < 300) return
     stopSpeaking()
     if (hearts <= 0) {
-      if (quantityOf(HEART_REFILL_ITEM) > 0) setRefillOpen(true)
-      else finish(false, 0)
+      finish(false, 0)
       return
     }
     if (index + 1 >= exercises.length) {
@@ -185,11 +174,11 @@ function MiniTestRun({ lesson }: { lesson: Lesson }) {
     setIndex(index + 1)
     setAnswer(null)
     setOutcome(null)
-  }, [outcome, hearts, index, exercises.length, finish, quantityOf])
+  }, [outcome, hearts, index, exercises.length, finish])
 
   /* ---------- phím: Enter kiểm tra / tiếp · Space, R nghe lại ---------- */
   useEffect(() => {
-    if (phase !== 'test' || refillOpen || exitOpen) return
+    if (phase !== 'test' || exitOpen) return
     const onKey = (event: KeyboardEvent) => {
       const target = event.target as HTMLElement
       if (target.closest('[role="dialog"]')) return
@@ -204,7 +193,7 @@ function MiniTestRun({ lesson }: { lesson: Lesson }) {
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
-  }, [phase, refillOpen, exitOpen, outcome, next, check, exercise])
+  }, [phase, exitOpen, outcome, next, check, exercise])
 
   // màn mở đầu: Enter = bắt đầu
   useEffect(() => {
@@ -328,7 +317,7 @@ function MiniTestRun({ lesson }: { lesson: Lesson }) {
     <FocusLayout
       onExit={onExit}
       exitLabel={text('miniExit')}
-      exitOnEscape={!refillOpen && !exitOpen}
+      exitOnEscape={!exitOpen}
       width={passage ? 'wide' : 'normal'}
       progress={<ProgressBar value={index + (outcome ? 1 : 0)} max={exercises.length} label={text('miniProgress')} valueText={`${index + 1}/${exercises.length}`} />}
       trailing={heartsBadge}
@@ -367,49 +356,6 @@ function MiniTestRun({ lesson }: { lesson: Lesson }) {
         </div>
       </div>
 
-      <Modal
-        open={refillOpen}
-        onClose={() => {
-          setRefillOpen(false)
-          finish(false, 0)
-        }}
-        size="sm"
-        title={text('miniRefillTitle')}
-        mascotPose="comfort"
-        footer={
-          <>
-            <Button
-              variant="secondary"
-              onClick={() => {
-                setRefillOpen(false)
-                finish(false, 0)
-              }}
-            >
-              {text('miniRefillNo')}
-            </Button>
-            <Button
-              onClick={() => {
-                void spendItem(HEART_REFILL_ITEM).then((used) => {
-                  setRefillOpen(false)
-                  if (!used) return finish(false, 0)
-                  refillUsed.current = true
-                  setHearts(MINI_TEST_HEARTS)
-                  if (index + 1 >= exercises.length) finish(true, MINI_TEST_HEARTS)
-                  else {
-                    setIndex(index + 1)
-                    setAnswer(null)
-                    setOutcome(null)
-                  }
-                })
-              }}
-            >
-              ❤ {text('miniRefillUse')}
-            </Button>
-          </>
-        }
-      >
-        <p className="xr-dialog-text">{text('miniRefillText', { n: quantityOf(HEART_REFILL_ITEM) })}</p>
-      </Modal>
       <Modal
         open={exitOpen}
         onClose={() => setExitOpen(false)}

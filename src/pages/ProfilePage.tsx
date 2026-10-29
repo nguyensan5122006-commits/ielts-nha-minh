@@ -1,15 +1,15 @@
 /**
  * ProfilePage.tsx — TRANG CÁ NHÂN /profile/:userId
- * Avatar + khung + tên màu + danh hiệu, level tài khoản, thống kê học tập,
- * thành tích thi đấu, kỷ lục mini game, cúp giải tuần, huy hiệu.
- * Xem người khác: có nút "Nhắn riêng" và "Thách đấu".
+ * Avatar + tên + danh hiệu (theo level), level tài khoản, thống kê học tập,
+ * kỷ lục trò chơi chữ, huy hiệu.
+ * Xem người khác: có nút "Nhắn riêng".
  * (v3) Giao diện làm lại: thẻ đầu trang lớn, ô thống kê có ảnh 3D, kỷ lục theo trò chơi,
  *      tường huy hiệu; trang của mình có nút Cài đặt. /profile (không id) -> trang của mình.
  */
 import { useEffect, useState } from 'react'
 import { Link, Navigate, useParams } from 'react-router-dom'
-import { accountLevelFromXp } from '../game-economy/account-level'
-import { ACHIEVEMENTS } from '../game-economy/quests-and-achievements'
+import { accountLevelFromXp } from '../gamification/account-level'
+import { ACHIEVEMENTS } from '../gamification/quests-and-achievements'
 import { PlayerAvatar, PlayerName } from '../components/PlayerIdentity'
 import { Badge, Button, EmptyState, Icon, ProgressBar, Skeleton } from '../design-system'
 import { GameArt } from '../features/playground/components/GameArt'
@@ -70,10 +70,11 @@ export function ProfilePage() {
     ['fire', t('statLongestStreak'), stats.longestStreak],
     ['chequered-flag', t('statLevelTests'), stats.levelTests],
     ['rainbow', t('statFunCards'), stats.funCards ?? 0],
-    ['crossed-swords', t('statBattles'), `${profile.battles.won}/${profile.battles.played}`],
-    ['trophy', t('statTrophies'), profile.tournamentWins],
+    ['input-latin-letters', t('statDailyWords'), stats.dailyWords ?? 0],
   ]
+  // chỉ hiện huy hiệu / kỷ lục còn trong danh sách (dữ liệu cũ có thể còn của trò chơi đã xoá)
   const badges = ACHIEVEMENTS.filter((a) => profile.achievements.includes(a.id))
+  const records = profile.records.filter((record) => miniGameInfo(record.game))
 
   return (
     <main className="page pg-page profile">
@@ -86,10 +87,10 @@ export function ProfilePage() {
 
       {/* thẻ đầu trang */}
       <section className="profile-hero">
-        <PlayerAvatar avatarItemId={profile.user.avatar} frameItemId={profile.user.frame} size={112} online={online.includes(profile.user.id)} />
+        <PlayerAvatar avatarItemId={profile.user.avatar} size={112} online={online.includes(profile.user.id)} />
         <div className="profile-hero__text">
           <h1 className="profile-hero__name">
-            <PlayerName name={profile.user.displayName} nameColorItemId={profile.user.nameColor} titleItemId={profile.user.title} fallbackTitle={pick(level.title)} showTitle />
+            <PlayerName name={profile.user.displayName} title={pick(level.title)} showTitle />
           </h1>
           <div className="profile-hero__level">
             <Badge tone="olive" variant="solid">
@@ -103,23 +104,13 @@ export function ProfilePage() {
         </div>
         <div className="profile-hero__actions">
           {isMe ? (
-            <>
-              <Button to="/settings" variant="ghost" iconLeft="settings">
-                {playText('profileSettings')}
-              </Button>
-              <Button to="/shop" variant="secondary" iconLeft={<GameArt slug="artist-palette" size={20} />}>
-                {t('customize')}
-              </Button>
-            </>
+            <Button to="/settings" variant="ghost" iconLeft="settings">
+              {playText('profileSettings')}
+            </Button>
           ) : (
-            <>
-              <Button to={`/chat?dm=${profile.user.id}`} variant="secondary" iconLeft="chat">
-                {t('messagePrivately')}
-              </Button>
-              <Button to={`/arena?challenge=${profile.user.id}`} iconLeft={<GameArt slug="crossed-swords" size={20} />}>
-                {t('challenge')}
-              </Button>
-            </>
+            <Button to={`/chat?dm=${profile.user.id}`} variant="secondary" iconLeft="chat">
+              {t('messagePrivately')}
+            </Button>
           )}
         </div>
       </section>
@@ -140,11 +131,11 @@ export function ProfilePage() {
           <h2 className="pg-panel__title">
             <GameArt slug="joystick" size={28} /> {t('gameRecords')}
           </h2>
-          {profile.records.length === 0 ? (
+          {records.length === 0 ? (
             <p className="profile-empty">{t('noRecordsYet')}</p>
           ) : (
             <ul className="profile-records">
-              {profile.records.map((record) => {
+              {records.map((record) => {
                 const game = miniGameInfo(record.game)
                 return (
                   <li key={record.game}>
@@ -161,7 +152,7 @@ export function ProfilePage() {
           <h2 className="pg-panel__title">
             <GameArt slug="sports-medal" size={28} /> {t('badges')}
             <span className="pg-panel__aside ds-num">
-              {profile.achievements.length}/{ACHIEVEMENTS.length}
+              {badges.length}/{ACHIEVEMENTS.length}
             </span>
           </h2>
           {badges.length === 0 ? (

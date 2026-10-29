@@ -11,7 +11,7 @@ import { errorResponse, type ApiHandler } from '../../backend-helpers/server-env
 import { getLoggedInUser } from '../../backend-helpers/password-and-session'
 
 /** Các đường dẫn không cần đăng nhập. */
-const PUBLIC_PATHS = ['/api/auth/login', '/api/auth/register', '/api/auth/me']
+const PUBLIC_PATHS = ['/api/auth/login', '/api/auth/register', '/api/auth/me', '/api/auth/signup-options']
 
 export const onRequest: ApiHandler = async (context) => {
   try {

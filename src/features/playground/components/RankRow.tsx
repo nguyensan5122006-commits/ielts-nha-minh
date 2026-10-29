@@ -1,9 +1,9 @@
 /**
  * RankRow.tsx — 1 DÒNG TRONG BẢNG XẾP HẠNG (dùng chung cho: xếp hạng gia đình,
- * giải tuần, kỷ lục mini game, kết quả trận đấu, người góp sức đánh boss)
+ * kỷ lục trò chơi chữ)
  * ----------------------------------------------------------------------------
  *   <ol className="pg-rank-list">
- *     <RankRow rank={1} name="Mẹ Lan" avatar={{ avatarItemId, frameItemId }} value="420" unit="XP" isMe={false} to="/profile/3" />
+ *     <RankRow rank={1} name="Mẹ Lan" avatar={{ avatarItemId }} value="420" unit="XP" isMe={false} to="/profile/3" />
  *   </ol>
  * - Hạng 1–3: huy chương 3D vàng / bạc / đồng; từ hạng 4: số.
  * - isMe: dòng của chính người đang xem được tô nổi (nền cam nhạt + viền) và có nhãn "Bạn".
@@ -21,15 +21,15 @@ export interface RankRowProps {
   rank: number
   /** tên (chuỗi hoặc <PlayerName/> có màu + danh hiệu) */
   name: ReactNode
-  /** avatar mua ở cửa hàng; bỏ trống = không hiện avatar */
-  avatar?: { avatarItemId?: string | null; frameItemId?: string | null; online?: boolean }
+  /** avatar (id trong users.avatar); bỏ trống = không hiện avatar */
+  avatar?: { avatarItemId?: string | null; online?: boolean }
   /** con số chính bên phải (XP, điểm…) */
   value: ReactNode
   /** đơn vị nhỏ sau số (XP, điểm) */
   unit?: string
   /** dòng chữ nhỏ dưới tên */
   meta?: ReactNode
-  /** phần thêm bên phải con số (VD +20 🍌) */
+  /** phần thêm bên phải con số (VD "+20") */
   extra?: ReactNode
   isMe?: boolean
   /** cả dòng là link (VD tới hồ sơ) */
@@ -43,7 +43,7 @@ export function RankRow({ rank, name, avatar, value, unit, meta, extra, isMe = f
   const body = (
     <>
       <span className="pg-rank__place">{rank <= 3 ? <GameArt slug={MEDALS[rank - 1]} size={30} /> : <span className="ds-num">{rank}</span>}</span>
-      {avatar && <PlayerAvatar avatarItemId={avatar.avatarItemId} frameItemId={avatar.frameItemId} size={40} online={avatar.online} />}
+      {avatar && <PlayerAvatar avatarItemId={avatar.avatarItemId} size={40} online={avatar.online} />}
       <span className="pg-rank__who">
         <span className="pg-rank__name">
           {name}

@@ -25,7 +25,6 @@ import type { LevelId, TrackId } from '../../content/content-types'
 import type { CefrLabel } from '../../content/exams/index-v3'
 import { findLessonSummary } from '../../content/lesson-index'
 import { pathLessonIds, unitsFor } from '../../content/path-selectors'
-import type { AgeGroup } from '../../../backend-helpers/age-groups'
 
 /** Mục tiêu đạt được của cả lộ trình (đỉnh Level 3). */
 export const GOAL_BAND = 6.5
@@ -91,9 +90,8 @@ export function estimateNextMilestone(bandPoint: number, minutesPerDay: number):
   return { label: next.label, hours: Math.round(hours), months: Math.max(1, Math.round(hours / hoursPerMonth)) }
 }
 
-/** Phút/ngày gợi ý sẵn (D1): người mới ít phút để dễ giữ thói quen; bé 15 phút (giới hạn chơi 30). */
-export function defaultDailyMinutes(level: LevelId, ageGroup: AgeGroup): number {
-  if (ageGroup === 'kid') return 15
+/** Phút/ngày gợi ý sẵn (D1): người mới ít phút để dễ giữ thói quen. */
+export function defaultDailyMinutes(level: LevelId): number {
   if (level === 'level-1') return 10
   if (level === 'level-2') return 15
   return 20

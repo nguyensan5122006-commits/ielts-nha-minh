@@ -4,7 +4,7 @@
  * Thay cho src/pages/LoginPage.tsx cũ (trang cũ gộp cả đăng ký; giờ đăng ký nằm ở /signup
  * và ngay trên màn kết quả xếp lớp).
  *
- *  - Đã đăng nhập -> về "/" (cổng landing tự chuyển: bé -> /kids, người khác -> /learn).
+ *  - Đã đăng nhập -> về "/" (cổng landing tự chuyển sang /learn).
  *  - Đến từ màn kết quả xếp lớp ("Đã có tài khoản? Đăng nhập"): hiện dòng "kết quả sẽ được lưu",
  *    đăng nhập xong thì useApplyPlacement chép kết quả vào tài khoản rồi đi thẳng vào học.
  *  - Đăng nhập thường: đặt cờ JUST_LOGGED_IN_KEY để bảng "Mừng quay lại" (WelcomeModal) hiện như cũ.
@@ -37,9 +37,7 @@ export function LoginPage() {
   // kết quả xếp lớp đang chờ lưu (khách bấm "Đăng nhập" từ màn kết quả)
   const pendingResult = apply.isRequested ? loadResult() : null
   const pendingSummary = pendingResult
-    ? pendingResult.setup.ageGroup === 'kid'
-      ? 'Level 1'
-      : `Level ${pendingResult.estimate.recommendedLevel.slice(-1)} · ${formatBandRange(pendingResult.estimate.bandLow, pendingResult.estimate.bandHigh)}`
+    ? `Level ${pendingResult.estimate.recommendedLevel.slice(-1)} · ${formatBandRange(pendingResult.estimate.bandLow, pendingResult.estimate.bandHigh)}`
     : ''
 
   // áp kết quả xong -> vào học luôn

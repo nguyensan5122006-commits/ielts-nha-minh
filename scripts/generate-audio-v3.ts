@@ -5,7 +5,7 @@
  *
  *   npm run tts:v3                 tạo các file còn thiếu (file đã có thì bỏ qua)
  *   npm run tts:v3 -- --dry-run    chỉ đếm: cần bao nhiêu file, ước tính dung lượng
- *   npm run tts:v3 -- --only kids-word,kids-word-slow   chỉ tạo vài loại
+ *   npm run tts:v3 -- --only word,example   chỉ tạo vài loại (tên loại: AudioClipKind trong audio-clip-keys.ts)
  *   npm run tts:v3 -- --limit 50   tạo tối đa 50 file (thử nhanh)
  *   npm run tts:v3 -- --prune      xoá file trong public/audio/v3 không còn dùng
  *   npm run tts:v3 -- --with-fun-topics   gom thêm thẻ "Học vui" (mặc định không)
@@ -107,8 +107,6 @@ async function main() {
   console.log(`Đọc được ${collected.loadedFiles.length} file nội dung.`)
   for (const failed of collected.failedFiles) console.log(`  ⚠ bỏ qua file lỗi: ${failed.file} — ${failed.error}`)
   for (const collision of collected.hashCollisions) console.log(`  ⚠ trùng mã băm (câu sau bị bỏ): ${collision}`)
-  console.log(collected.mascotName ? `Tên mascot thay cho {mascot}: "${collected.mascotName}"` : '⚠ Không tìm thấy tên mascot — câu có {mascot} bị bỏ qua.')
-  console.log(`Lệnh tô màu: ${collected.colourCommandSource === 'explicit-list' ? 'theo danh sách có sẵn' : collected.colourCommandSource === 'template' ? 'tự tạo theo mẫu "Colour the … …."' : 'không có'}`)
 
   const allJobs = collected.jobs
   const isMissing = (job: AudioJob) => {
@@ -229,20 +227,12 @@ function writeManifests(collected: Awaited<ReturnType<typeof collectAudioJobs>>)
       bytes: info.bytes,
     }
   }
-  // chỉ giữ id câu hướng dẫn có file thật
-  const voiceLines: AudioManifestV3['voiceLines'] = {}
-  for (const [id, keys] of Object.entries(collected.voiceLines)) {
-    const available = Object.fromEntries(Object.entries(keys).filter(([, key]) => key && entries[key]))
-    if (Object.keys(available).length) voiceLines[id] = available
-  }
-
-  const manifest: AudioManifestV3 = { version: 3, generatedAt: new Date().toISOString(), format: AUDIO_FORMAT, entries, voiceLines }
+  const manifest: AudioManifestV3 = { version: 3, generatedAt: new Date().toISOString(), format: AUDIO_FORMAT, entries }
   // mỗi mục 1 dòng: vừa gọn vừa dễ đọc / so sánh
   const entryLines = Object.entries(manifest.entries).map(([key, entry]) => `    ${JSON.stringify(key)}: ${JSON.stringify(entry)}`)
-  const voiceLineLines = Object.entries(manifest.voiceLines).map(([id, keys]) => `    ${JSON.stringify(id)}: ${JSON.stringify(keys)}`)
   const json =
     `{\n  "version": 3,\n  "generatedAt": ${JSON.stringify(manifest.generatedAt)},\n  "format": ${JSON.stringify(manifest.format)},\n` +
-    `  "entries": {\n${entryLines.join(',\n')}\n  },\n  "voiceLines": {\n${voiceLineLines.join(',\n')}\n  }\n}\n`
+    `  "entries": {\n${entryLines.join(',\n')}\n  }\n}\n`
   writeFileSync(join(AUDIO_DIR, 'manifest-v3.json'), json)
 
   // manifest cũ: mọi file <mã>.mp3 ở thư mục gốc (giống script cũ) -> speak() cũ dùng
@@ -252,7 +242,7 @@ function writeManifests(collected: Awaited<ReturnType<typeof collectAudioJobs>>)
   writeFileSync(join(AUDIO_DIR, 'manifest.json'), JSON.stringify(legacyIds))
 
   const totalKeys = collected.fileByKey.size
-  console.log(`Manifest v3: ${Object.keys(entries).length}/${totalKeys} mã đã có file; ${Object.keys(voiceLines).length} câu hướng dẫn có id.`)
+  console.log(`Manifest v3: ${Object.keys(entries).length}/${totalKeys} mã đã có file.`)
   return { badFiles }
 }
 

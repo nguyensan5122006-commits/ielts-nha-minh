@@ -1,6 +1,6 @@
 # Báo cáo ảnh minh hoạ từ vựng (word-images)
 
-Sinh tự động bởi `scripts/check-word-images.ts` lúc 2026-10-28 19:34 (UTC).
+Sinh tự động bởi `scripts/check-word-images.ts` lúc 2026-10-29 07:07 (UTC).
 Chạy lại (ở thư mục gốc):
 
 ```
@@ -8,7 +8,7 @@ npx esbuild scripts/check-word-images.ts --bundle --platform=node --format=esm -
 node node_modules/.cache/check-word-images.mjs --md docs/redesign-v3/word-image-report.md
 ```
 
-Ảnh: `public/word-images/<slug>.webp` (160×160, Fluent Emoji 3D, MIT). Có 1595 ảnh.
+Ảnh: `public/word-images/<slug>.webp` (160×160, Fluent Emoji 3D, MIT). Có 1532 ảnh.
 Danh sách slug: `WORD_IMAGE_SLUGS` trong `src/content/word-image-catalog.ts`; tra từ khoá: `public/word-images/catalog.json`.
 Lưu ý: tài liệu cũ ghi tên file `<slug>-128.webp` — tên đúng là `<slug>.webp` (giá trị `image`/`icon` chỉ ghi slug, không đuôi).
 
@@ -16,17 +16,15 @@ Lưu ý: tài liệu cũ ghi tên file `<slug>-128.webp` — tên đúng là `<s
 
 | Loại | Số lượng |
 |---|---|
-| Giá trị `image`/`icon` quét được | 476 (trong 24 file) |
-| Đúng slug, có ảnh | 411 (349 ảnh khác nhau) |
-| **Slug không tồn tại — cần sửa** | **1** |
-| Để trống (`''` = cố ý không có ảnh) | 48 |
+| Giá trị `image`/`icon` quét được | 55 (trong 22 file) |
+| Đúng slug, có ảnh | 39 (30 ảnh khác nhau) |
+| **Slug không tồn tại — cần sửa** | **0** |
+| Để trống (`''` = cố ý không có ảnh) | 0 |
 | Ký tự emoji (chưa dùng ảnh 3D) | 16 |
 
 ## Slug không tồn tại (cần sửa)
 
-| File:dòng | Trường | Giá trị | Từ gần đó | Sửa thành | Gợi ý khác |
-|---|---|---|---|---|---|
-| `src/content/all-levels.ts:59` | icon | `family` |  | **`people-hugging`** | `fairy` |
+Không có — mọi slug đều có ảnh. ✓
 
 ## Ký tự emoji → ảnh 3D tương ứng
 
@@ -55,7 +53,7 @@ Các chỗ này đang dùng ký tự emoji (hiển thị bằng font hệ điề
 
 | File | image | icon | sai |
 |---|---|---|---|
-| `src/content/all-levels.ts` | 0 | 18 | 1 |
+| `src/content/all-levels.ts` | 0 | 18 |  |
 | `src/content/fun-topics/animals.ts` | 0 | 1 |  |
 | `src/content/fun-topics/body.ts` | 0 | 1 |  |
 | `src/content/fun-topics/clothes.ts` | 0 | 1 |  |
@@ -72,8 +70,6 @@ Các chỗ này đang dùng ký tự emoji (hiển thị bằng font hệ điề
 | `src/content/fun-topics/sports-hobbies.ts` | 0 | 1 |  |
 | `src/content/fun-topics/vehicles.ts` | 0 | 1 |  |
 | `src/content/fun-topics/weather-seasons.ts` | 0 | 1 |  |
-| `src/content/kids/kids-stories.ts` | 30 | 0 |  |
-| `src/content/kids/kids-topics.ts` | 391 | 0 |  |
 | `src/content/levels/level-2-bridge/general/units.ts` | 0 | 4 |  |
 | `src/content/levels/level-2-bridge/ielts/units.ts` | 0 | 4 |  |
 | `src/content/levels/level-3-general/units.ts` | 0 | 5 |  |

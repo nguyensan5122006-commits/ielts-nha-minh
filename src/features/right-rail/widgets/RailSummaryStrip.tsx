@@ -40,7 +40,7 @@ export function RailSummaryStrip() {
       <Link className="rr-strip__item" to="/leaderboard">
         <span className="rr-strip__avatars" aria-hidden>
           {ranked.slice(0, 3).map((member) => (
-            <PlayerAvatar key={member.id} avatarItemId={member.avatar} frameItemId={member.frame} size={26} />
+            <PlayerAvatar key={member.id} avatarItemId={member.avatar} size={26} />
           ))}
         </span>
         <span className="rr-strip__text">

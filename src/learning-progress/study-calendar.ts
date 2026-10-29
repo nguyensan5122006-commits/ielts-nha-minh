@@ -38,11 +38,6 @@ export function weekStartDay(day: string): string {
   return addDays(day, -daysSinceMonday)
 }
 
-/** Mã tuần đơn giản = ngày thứ Hai đầu tuần, VD "2026-10-26". Dùng làm khoá cho thẻ tem tuần. */
-export function weekIdOf(day: string): string {
-  return weekStartDay(day)
-}
-
 /** Chỉ giữ `keep` ngày gần nhất trong 1 bảng "ngày -> số" (cho JSON gọn). */
 export function keepRecentDays<T>(byDay: Record<string, T>, keep: number): Record<string, T> {
   const days = Object.keys(byDay).sort()

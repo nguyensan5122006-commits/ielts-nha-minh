@@ -21,7 +21,7 @@ export interface AudioButtonProps {
   text?: string
   /** hoặc đường dẫn file âm thanh có sẵn */
   src?: string
-  /** sm 36px · md 52px · lg 72px · xl 88px (khu trẻ em) */
+  /** sm 36px · md 52px · lg 72px · xl 88px (nút rất to) */
   size?: 'sm' | 'md' | 'lg' | 'xl'
   /** hiện nút "rùa" đọc chậm bên cạnh (mặc định có, trừ size sm) */
   showSlow?: boolean

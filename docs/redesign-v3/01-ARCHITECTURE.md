@@ -2,7 +2,14 @@
 
 > Tài liệu "hợp đồng" chung cho mọi nhóm (code, nội dung, 3D, kiểm thử).
 > Quyết định của chủ nhà: xem `C:\Users\San\.claude\projects\E--IELTS-ThienThao\memory\ielts-family-site.md` (phần Redesign v3).
-> Nghiên cứu: `E:\IELTS_ThienThao\_research\notes\*.md` (đặc biệt `psych-adult.md` mục D và `psych-kids.md` mục 12).
+> Nghiên cứu: `E:\IELTS_ThienThao\_research\notes\*.md` (đặc biệt `psych-adult.md` mục D).
+>
+> **Cập nhật 29/10/2026 — chủ nhà thu hẹp phạm vi.** Web còn: track IELTS + Tiếng Anh tổng quát, phòng thi, chat,
+> 3 trò chơi chữ (Thử thách từ mỗi ngày `/daily-word`, Spelling Bee `/games/spelling`, Nối từ `/games/word-chain`),
+> Học vui `/fun`, nhiệm vụ / huy hiệu / XP / chuỗi / bảng xếp hạng. **Đã xoá hẳn:** khu trẻ em (`/kids…`),
+> nhóm tuổi tài khoản (kid / teen / adult — mọi tài khoản như nhau; cột `users.age_group` để nguyên, không dùng),
+> chuối 🍌 + cửa hàng + quà đăng nhập + hồi tim mini-test, đấu trường / phòng đấu / giải tuần / boss / Đố vui / Đua xếp câu.
+> Các mục bên dưới còn nhắc những phần đó là lịch sử thiết kế — đã đánh dấu (ĐÃ XOÁ).
 
 ## 0. Tóm tắt quyết định
 
@@ -11,15 +18,14 @@
 | Thiết bị | **Desktop trước** (≥ 1280px là chính, phải dùng được từ 1024px). Mobile/tablet làm sau, nhưng CSS không được vỡ ở 768px. |
 | Ngôn ngữ | Song ngữ VI/EN có nút chuyển (giữ `translations/`). Nội dung học luôn là tiếng Anh; chỉ hướng dẫn/giải thích đổi ngôn ngữ. |
 | Lộ trình | 2 track dùng chung nền: `general` (Tiếng Anh tổng quát) và `ielts` (Luyện thi IELTS). 3 level: `level-1` 0–2.0, `level-2` 2.0–4.0, `level-3` 4.0–6.5. |
-| Tài khoản | Mỗi người 1 tài khoản (username + mật khẩu + mã mời gia đình) — giữ backend cũ. Thêm nhóm tuổi `kid` / `teen` / `adult`. Không có khu phụ huynh. |
+| Tài khoản | Mỗi người 1 tài khoản (username + mật khẩu + mã mời gia đình) — giữ backend cũ. Mọi tài khoản như nhau (nhóm tuổi kid / teen / adult ĐÃ XOÁ 29/10). Không có khu phụ huynh. |
 | Lần đầu | Khách làm **bài xếp lớp trước** (≤ 12 câu, ≤ 6 phút) → kết quả + lộ trình → tạo tài khoản 1 form để lưu. |
 | Lưu tiến độ | 1 cục JSON / người trong D1 (giữ `/api/progress`), nâng `version: 2`, tự chuyển đổi từ v1. Autosave ≤ 5 giây, quay lại đúng câu đang làm. |
 | Chấm Writing/Speaking | Tự chấm checklist 4 tiêu chí → so bài mẫu theo band → Gemini (band dạng khoảng ±0.5). |
 | Phong cách | **Vui nhộn kiểu game** (chủ nhà chọn), nhưng *liều game hoá* theo `psych-adult.md` D10: game giữ thói quen + làm tiến bộ hiện rõ, không cạnh tranh với nội dung. |
-| Tính năng cũ | Giữ hết: chat, đấu trường + cược chuối (bé không được cược), chuối + cửa hàng, sự kiện + mini game. Bảng xếp hạng gia đình **trên trang chủ**. |
-| Tim | Không có tim trong bài học (câu sai quay lại cuối bài). Tim chỉ ở mini-test + đấu trường. |
+| Tính năng cũ | (29/10) Giữ: chat, 3 trò chơi chữ, Học vui, nhiệm vụ / huy hiệu. ĐÃ XOÁ: đấu trường + cược, chuối + cửa hàng, giải tuần, boss, các mini game khác. Bảng xếp hạng gia đình **trên trang chủ**. |
+| Tim | Không có tim trong bài học (câu sai quay lại cuối bài). Tim chỉ ở mini-test (hết tim → làm lại). |
 | Nhắc học | Chỉ trong web (mascot ngủ gật, banner giữ chuỗi). |
-| Khu trẻ em | Bé 9–11 tuổi (đọc được tiếng Việt). Từ vựng Cambridge Starters–Movers–Flyers. Giọng đọc cho mọi từ + mọi hướng dẫn. 30 phút/ngày chỉ nhắc nhẹ, không khoá. |
 | Giọng | Anh-Anh mặc định; level-3 trộn thêm Úc/Mỹ. TTS bằng `msedge-tts` (đã có `scripts/generate-listening-audio.ts`). |
 | Mascot | Corgi vàng cam + trắng, đồ chơi vinyl, chibi, đồng phục CAND cách điệu vừa phải, tư thế chính đứng chào. Làm trong Blender → `public/mascot/`. |
 
@@ -33,7 +39,7 @@ KHÁCH (chưa đăng nhập)
 /login                  Đăng nhập
 /signup                 Tạo tài khoản (nhận kết quả xếp lớp nếu có)
 
-NGƯỜI HỌC (teen/adult) — bố cục 3 cột desktop: sidebar trái | nội dung | cột phải
+NGƯỜI HỌC — bố cục 3 cột desktop: sidebar trái | nội dung | cột phải
 /                       = /learn
 /learn                  Lộ trình: chọn track (tab), level, các chặng (unit) dạng đường đi; nút "Học tiếp" luôn nổi bật
                         Cột phải: streak + mục tiêu ngày, BẢNG XẾP HẠNG GIA ĐÌNH (top 5), nhiệm vụ ngày, ôn tập đến hạn
@@ -43,18 +49,11 @@ NGƯỜI HỌC (teen/adult) — bố cục 3 cột desktop: sidebar trái | nộ
 /mistakes               Sổ câu sai → "Ôn lại câu sai"
 /progress               Dashboard tiến độ: theo kỹ năng, band ước tính dạng khoảng, lịch học, chuỗi ngày
 /exams, /exam/:id, /exam-result/:id   Phòng thi thử (giữ, làm lại giao diện kiểu máy thi IELTS)
-/play                   Sân chơi gia đình: đấu trường, sự kiện, mini game, cửa hàng (gom các trang cũ)
-  /arena, /arena/room, /games/*, /daily-word, /tournament, /boss, /shop, /quests, /leaderboard  (giữ đường dẫn cũ)
+/play                   Sân chơi gia đình: trò chơi chữ, nhiệm vụ, huy hiệu, xếp hạng, Học vui (sảnh)
+  /daily-word, /games/spelling, /games/word-chain, /quests, /leaderboard, /fun, /fun/:topicId
 /chat                   Chat (giữ) + bong bóng chat nổi
 /profile/:userId        Trang cá nhân
 /settings               Cài đặt: ngôn ngữ, chế độ tối, mục tiêu ngày, giờ học, giọng đọc, track
-
-BÉ (kid) — trang chủ là khu trò chơi
-/kids                   Sảnh khu trò chơi: mascot chào (có giọng), 1 nút "Chơi tiếp", chọn 1 trong 3 trò hôm nay
-/kids/play/:gameId      Một lượt chơi (8–12 câu, 2–4 phút)
-/kids/album             Sổ sưu tập sticker theo chủ đề
-/kids/wardrobe          Tủ đồ mascot (trang phục mở khoá)
-/kids/learn             Lối sang lộ trình general level-1
 ```
 
 Không có ngõ cụt: mọi màn hình kết thúc đều có 1 nút chính (Học tiếp / Làm bài tiếp theo / Ôn lại câu sai / Chơi tiếp) + 1 nút phụ (Dừng ở đây / Về trang chính).
@@ -142,7 +141,6 @@ src/content/
   levels/level-2-bridge/      MỚI: phần 3.0–4.0 (general + IELTS làm quen)
   levels/level-3-ielts/       MỚI: listening/reading/writing/speaking theo dạng đề
   levels/level-3-general/     MỚI: B1–B2 giao tiếp, công việc, phim/báo
-  kids/                       MỚI: ngân hàng từ Cambridge YLE theo chủ đề + mẫu câu + truyện
   exams/                      placement mới (thích ứng), level tests, mock IELTS
 ```
 
@@ -156,7 +154,7 @@ src/content/
 ```ts
 interface LearningProgressV2 {
   version: 2
-  profile: { track: TrackId; ageGroup: 'kid'|'teen'|'adult'; dailyGoalMinutes: number; studyCue?: string; studyTime?: string;
+  profile: { track: TrackId; dailyGoalMinutes: number; studyCue?: string; studyTime?: string;
              voice: 'gb'|'us'; theme: 'system'|'light'|'dark' }
   currentLevel: Record<TrackId, LevelId>
   unlockedLevels: Record<TrackId, LevelId[]>
@@ -173,31 +171,23 @@ interface LearningProgressV2 {
   xpTotal: number; xpByDay: Record<string, number>
   placement: { level: LevelId; track: TrackId; bandLow: number; bandHigh: number; takenAt: string } | null
   writingLog: { taskId: string; words: number; selfBand?: number; aiLow?: number; aiHigh?: number; at: string }[]
-  kids: KidsProgress | null
   …các trường game hoá cũ (lifetimeStats, questCounters, claimedRewards, unlockedAchievements, rewardedAccountLevel)
 }
-interface KidsProgress {
-  words: Record<string, { box: 0|1|2|3|4|5; due: string; seen: number; right: number; wrong: number }>  // Leitner 5 hộp (psych-kids luật 35)
-  stickers: string[]; outfits: string[]; equippedOutfit: string
-  playSecondsByDay: Record<string, number>; roundsByDay: Record<string, number>
-  storyChapter: number; bestScores: Record<string, number>
-  weeklyStamps: Record<string, string[]>   // weekId -> các ngày có chơi (thẻ tem tuần, không dùng chuỗi liên tục)
-}
+// (29/10) profile.ageGroup và khối kids đã bỏ — migrateProgress tự xoá khỏi bản lưu cũ.
 ```
 
 Autosave: store đã gửi PUT sau 1,5 giây im lặng — giữ. Thêm: ghi `resume` sau **mỗi câu trả lời**; `localStorage` luôn có bản mới nhất (mất mạng vẫn chạy, có mạng gửi lại).
 
 Backend thay đổi tối thiểu:
-- migration `0003_redesign_v3.sql`: `ALTER TABLE users ADD COLUMN age_group TEXT NOT NULL DEFAULT 'adult'`.
-- `/api/auth/register` nhận `ageGroup`; `/api/auth/me` trả `ageGroup`.
-- realtime-worker: người chơi `age_group = 'kid'` không được đặt cược (cược = 0, thắng nhận thưởng cố định).
+- migration `0003_redesign_v3.sql`: `ALTER TABLE users ADD COLUMN age_group TEXT NOT NULL DEFAULT 'adult'` (cột vẫn còn; từ 29/10 máy chủ không dùng).
+- realtime-worker: chỉ còn online / chat (đấu trường đã xoá 29/10).
 - Không đụng database thật trên Cloudflare (remote) khi chưa được chủ nhà đồng ý.
 
 ## 4. Luồng học chính
 
-1. **Landing** → "Bắt đầu học" → `/start` (chọn nhanh: "Tôi học để biết" / "Tôi luyện thi IELTS" + nhóm tuổi; hoặc "Tôi mới bắt đầu từ 0" bỏ qua test).
+1. **Landing** → "Bắt đầu học" → `/start` (chọn nhanh: "Tôi học để biết" / "Tôi luyện thi IELTS"; hoặc "Tôi mới bắt đầu từ 0" bỏ qua test).
 2. **Bài xếp lớp thích ứng**: 10–12 câu (từ vựng/ngữ pháp → nghe → đọc), dễ lên khó; sai 2 câu liền ở một mức thì dừng mức đó. Không đồng hồ. Thanh tiến độ.
-3. **Kết quả**: mascot vui + "Bạn ở Level 2 · khoảng band 2.5–3.0 (A2)" + câu can-do + bản đồ 3 level với chấm "bạn ở đây" + mục tiêu 6.5 → form tạo tài khoản (tên hiển thị, tên đăng nhập, mật khẩu, mã gia đình, nhóm tuổi đã chọn sẵn) → vào thẳng bài đầu tiên.
+3. **Kết quả**: mascot vui + "Bạn ở Level 2 · khoảng band 2.5–3.0 (A2)" + câu can-do + bản đồ 3 level với chấm "bạn ở đây" + mục tiêu 6.5 → form tạo tài khoản (tên hiển thị, tên đăng nhập, mật khẩu, mã gia đình) → vào thẳng bài đầu tiên.
 4. **Lộ trình /learn**: đường đi các chặng; nút "Học tiếp" luôn trỏ bài kế tiếp; "còn N bài tới mốc".
 5. **Bài học** (`/lesson/:id`): thẻ dạy (≤ 3) → bài tập (6–15 câu, ≥ 70% là tự nhớ/tự chọn) → (nếu có) task kỹ năng → câu sai quay lại cuối → kết quả.
    - Feedback ≤ 300ms: đúng/sai + đáp án đúng + 1 dòng "vì sao". Không buzz, không đỏ toàn màn ở level-1.
@@ -210,7 +200,7 @@ Trình kỹ năng (dùng trong bài và trong phòng thi):
 - **Writing**: đề + biểu đồ (Task 1) bên trái, editor bên phải; đếm từ trực tiếp, đồng hồ (ẩn được), autosave nháp; nộp → tự chấm checklist 4 tiêu chí → so bài mẫu band 4/5.5/6.5 → Gemini.
 - **Speaking**: ghi âm trình duyệt (MediaRecorder), sóng âm, nghe lại, so audio mẫu; Part 2 cue card 60s chuẩn bị + 120s nói; tự chấm + Gemini (giữ API cũ).
 
-## 5. Khu trẻ em
+## 5. Khu trẻ em (ĐÃ XOÁ 29/10/2026 — giữ lại làm lịch sử thiết kế)
 
 Trò chơi (mỗi trò dùng chung ngân hàng từ `src/content/kids/` + SRS 5 hộp):
 1. **Nghe và chạm** (Listen & Tap) — LÀM HOÀN CHỈNH TRƯỚC (mẫu cho các trò khác).
@@ -234,7 +224,6 @@ public/mascot/
            listening (tai nghe), reading (cầm sách), writing (cầm bút), speaking (cầm micro)
   head/head-<size>.png            size: 32 | 64 | 128 | 192 | 512 (logo/favicon)
   turnaround/{front,three-quarter,side,back}-1024.webp
-  outfits/<outfitId>-512.webp     mascot mặc trang phục mở khoá (khu trẻ em)
   stickers/<stickerId>-256.webp
   anim/<name>.webm                VP9 có alpha, ≤ 600KB; name: idle-breathe, tail-wag, blink, tongue, celebrate
   mascot.glb                      Draco, ≤ 2.5MB, có actions: idle, wave, celebrate, blink
@@ -246,7 +235,7 @@ public/art/
 
 Code dùng component `<Mascot pose="salute" size={256} />` và `<SkillIcon skill="reading" />` — nếu file chưa có thì hiện ảnh tạm (placeholder) để không vỡ trang.
 
-Ảnh minh hoạ từ vựng (trẻ em + từ vựng người lớn): **Microsoft Fluent Emoji 3D** (giấy phép MIT) → `public/word-images/<slug>.webp` (160px). Âm thanh hiệu ứng: tự tổng hợp bằng Web Audio hoặc gói CC0 (Kenney) → `public/sounds/`.
+Ảnh minh hoạ từ vựng: **Microsoft Fluent Emoji 3D** (giấy phép MIT) → `public/word-images/<slug>.webp` (160px). Âm thanh hiệu ứng: tự tổng hợp bằng Web Audio hoặc gói CC0 (Kenney) → `public/sounds/`.
 
 ## 7. Cấu trúc code mới và quyền sở hữu file
 
@@ -263,7 +252,6 @@ src/
     vocabulary-review/    FSRS (ts-fsrs), /review, /words
     mistakes-notebook/
     progress-dashboard/
-    kids-zone/            sảnh, games/<gameId>/, album, wardrobe, kids-sounds
     playground/           /play hub; các trang cũ trong src/pages/ được restyle bằng design-system
     settings/
   content/  learning-progress/  services/  translations/ (mỗi feature có file chữ riêng: features/x/x-text.ts)

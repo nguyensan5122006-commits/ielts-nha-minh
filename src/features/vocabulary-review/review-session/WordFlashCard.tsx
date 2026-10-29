@@ -2,7 +2,7 @@
  * WordFlashCard.tsx — THẺ TỪ VỰNG 2 MẶT TRONG PHIÊN ÔN
  * ----------------------------------------------------------------------------
  * Mặt trước (chọn theo trình độ, psych-adult D8 luật 35):
- *   - "listen"  (người mới, level-1 / trẻ em): ảnh 3D + loa tự đọc từ -> nhớ lại từ đó
+ *   - "listen"  (người mới, level-1): ảnh 3D + loa tự đọc từ -> nhớ lại từ đó
  *   - "meaning" (còn lại): nghĩa tiếng Việt + câu ví dụ có chỗ trống -> tự nhớ ra từ tiếng Anh
  * Mặt sau: từ to + phiên âm + loa giọng Anh + nghĩa + câu ví dụ (từ được tô) + độ nhớ hiện tại.
  *

@@ -3,10 +3,9 @@
  * ----------------------------------------------------------------------------
  * Dùng <AppShell> thật với dữ liệu GIẢ (không cần đăng nhập) + widget mẫu ở cột
  * phải, để kiểm tra bố cục ở các độ rộng: ≥1280 (3 cột), 1024–1279 (cột phải
- * xuống dưới), <1024 (thanh tab dưới). Thêm ?kid=1 để xem menu của tài khoản bé.
+ * xuống dưới), <1024 (thanh tab dưới).
  * ----------------------------------------------------------------------------
  */
-import { useSearchParams } from 'react-router-dom'
 import { AppShell } from '../../app/layout/AppShell'
 import { RightRail } from '../../app/layout/RightRail'
 import { Avatar } from '../components/Avatar'
@@ -29,14 +28,11 @@ const DEMO_LESSONS = [
 ] as const
 
 export function ShellPreview() {
-  const [params] = useSearchParams()
-  const isKid = params.get('kid') === '1'
-
   return (
     <AppShell
-      account={{ id: 1, displayName: isKid ? 'Bé Na' : 'Thiên Thảo', ageGroup: isKid ? 'kid' : 'adult' }}
-      avatar={<Avatar name={isKid ? 'Bé Na' : 'Thiên Thảo'} emoji={isKid ? '🐰' : '🦊'} size={38} online />}
-      stats={{ streak: 12, studiedToday: true, bananas: 340, level: 7 }}
+      account={{ id: 1, displayName: 'Thiên Thảo' }}
+      avatar={<Avatar name="Thiên Thảo" emoji="🦊" size={38} online />}
+      stats={{ streak: 12, studiedToday: true, level: 7 }}
       unreadChat={3}
       saveStatus="saved"
       onLogout={() => undefined}

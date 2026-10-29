@@ -4,7 +4,7 @@
  * Mặt trước: hình (emoji / cờ) + từ tiếng Anh + phiên âm + nút nghe.
  * Bấm thẻ (hoặc phím Space) để lật: nghĩa tiếng Việt, câu ví dụ, thông tin thêm.
  * Phím ← → để chuyển thẻ. Có chế độ "Đoán nghĩa" (ẩn chữ, chỉ hiện hình).
- * Thẻ đã xem được nhớ trong máy (localStorage) để hiện tiến độ; xem hết 1 chủ đề được thưởng chuối.
+ * Thẻ đã xem được nhớ trong máy (localStorage) để hiện tiến độ; xem hết 1 chủ đề -> tiếng "ting" chúc mừng.
  * (v3) Giao diện làm lại: thẻ lật 3D bo tròn, nút tròn ← 🔊 →, gợi ý phím, công tắc "Đoán nghĩa",
  *      xem hết chủ đề -> mascot ăn mừng + nút sang chủ đề tiếp theo.
  * ----------------------------------------------------------------------------
@@ -20,7 +20,6 @@ import { emojiArtSlug } from '../features/playground/emoji-art'
 import { PLAY_ART } from '../features/playground/game-catalog'
 import { usePlayText } from '../features/playground/playground-text'
 import { useProgress } from '../learning-progress/progress-store'
-import { useWallet } from '../player-wallet/wallet-store'
 import { speak } from '../services/text-to-speech'
 import { useLanguage } from '../translations/language-context'
 import '../features/playground/styles/play-kit.css'
@@ -51,7 +50,6 @@ export function FunFlashcardsPage() {
   const { t, pick } = useLanguage()
   const playText = usePlayText()
   const { recordActivity } = useProgress()
-  const { earnBananas } = useWallet()
   const [index, setIndex] = useState(0)
   const [flipped, setFlipped] = useState(false)
   const [guessMode, setGuessMode] = useState(false)
@@ -59,18 +57,15 @@ export function FunFlashcardsPage() {
 
   const card = topic?.cards[index]
 
-  // đánh dấu thẻ đang xem là "đã xem"; xem đủ cả chủ đề lần đầu -> thưởng chuối
+  // đánh dấu thẻ đang xem là "đã xem"; xem đủ cả chủ đề lần đầu -> tiếng chúc mừng
   useEffect(() => {
     if (!topic || !card || seen.has(card.id)) return
     const next = new Set(seen).add(card.id)
     setSeen(next)
     saveSeenCards(topic.id, next)
     recordActivity('funCards')
-    if (next.size === topic.cards.length) {
-      playSound('sticker')
-      void earnBananas('fun-topic')
-    }
-  }, [topic, card, seen, recordActivity, earnBananas])
+    if (next.size === topic.cards.length) playSound('sticker')
+  }, [topic, card, seen, recordActivity])
 
   const go = useCallback(
     (delta: number) => {

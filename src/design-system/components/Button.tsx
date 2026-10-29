@@ -22,7 +22,7 @@ export type ButtonSize = 'sm' | 'md' | 'lg' | 'xl'
 interface ButtonOwnProps {
   /** primary = cam (hành động chính) · secondary = kem · ghost = chỉ chữ · danger = đỏ · navy = xanh đậm */
   variant?: ButtonVariant
-  /** sm 36px · md 44px · lg 56px (CTA chính) · xl 64px (khu trẻ em) */
+  /** sm 36px · md 44px · lg 56px (CTA chính) · xl 64px (nút rất to) */
   size?: ButtonSize
   /** icon bên trái chữ: tên trong bộ Icon hoặc 1 phần tử bất kỳ (VD emoji) */
   iconLeft?: IconName | ReactNode

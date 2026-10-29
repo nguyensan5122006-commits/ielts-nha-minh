@@ -1,13 +1,11 @@
 /**
  * /api/games/daily-word — THỬ THÁCH TỪ MỖI NGÀY (kiểu Wordle)
  *   GET  : kết quả hôm nay của cả nhà (chỉ hiện ô màu, không lộ chữ) + kết quả của mình
- *   POST { guesses, solved, pattern } : lưu kết quả (mỗi ngày 1 lần), thưởng chuối nếu đoán đúng
+ *   POST { guesses, solved, pattern } : lưu kết quả (mỗi ngày 1 lần)
  * Từ bí ẩn được chọn ở trang web theo ngày (giống nhau cho cả nhà).
  */
-import { dailyWordReward } from '../../../src/game-economy/banana-rewards'
 import { errorResponse, jsonResponse, type ApiHandler } from '../../../backend-helpers/server-environment'
 import { readLoggedInUser } from '../../../backend-helpers/read-logged-in-user'
-import { grantBananas } from '../../../backend-helpers/banana-ledger'
 import { vietnamDay } from '../../../backend-helpers/vietnam-time'
 
 export const onRequestGet: ApiHandler = async ({ env, data }) => {
@@ -35,7 +33,5 @@ export const onRequestPost: ApiHandler = async ({ request, env, data }) => {
   } catch {
     return errorResponse('Hôm nay bạn đã chơi rồi / Already played today', 409)
   }
-  const reward = solved ? dailyWordReward(guesses!) : 0
-  if (reward) await grantBananas(env.DB, user.id, reward, 'daily-word', `daily-word:${day}:${user.id}`)
-  return jsonResponse({ reward })
+  return jsonResponse({ ok: true })
 }

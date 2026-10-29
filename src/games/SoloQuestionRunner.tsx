@@ -1,17 +1,15 @@
 /**
- * SoloQuestionRunner.tsx — CHẠY 1 LƯỢT CÂU HỎI KHI CHƠI MỘT MÌNH
+ * SoloQuestionRunner.tsx — CHẠY 1 LƯỢT SPELLING BEE (chơi một mình)
  * ----------------------------------------------------------------------------
- * Dùng cho: Đố vui / Spelling Bee / Đua xếp câu (chơi 1 mình), Giải đấu tuần, Đánh Boss.
  * Mỗi câu có đồng hồ riêng. Trả lời (hoặc hết giờ) -> hiện đúng/sai 1,2 giây -> câu sau.
- * Điểm: đúng 50 + thưởng tốc độ tới 50 (giống đấu trực tiếp).
- * onAnswered: gọi sau mỗi câu (trang Boss dùng để tính đòn đánh).
+ * Điểm: đúng 50 + thưởng tốc độ tới 50 (pointsForAnswer trong question-bank.ts).
  * (v3) Giao diện: thanh trên (câu n/N · chuỗi đúng liền · điểm), khung phản hồi trượt lên
  *      dưới câu hỏi (xanh "Đúng rồi! +85" / cam san hô "Chưa đúng — đáp án: …"),
  *      âm thanh nhẹ correct / oops (tắt được trong Cài đặt).
  * ----------------------------------------------------------------------------
  */
-import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react'
-import { correctAnswerText, isGameAnswerCorrect, pointsForAnswer, type GameQuestion } from '../game-questions/question-bank'
+import { useCallback, useEffect, useRef, useState } from 'react'
+import { isGameAnswerCorrect, pointsForAnswer, type GameQuestion } from '../game-questions/question-bank'
 import { Icon, playSound, ProgressBar } from '../design-system'
 import { usePlayText } from '../features/playground/playground-text'
 import { useLanguage } from '../translations/language-context'
@@ -30,12 +28,9 @@ interface SoloQuestionRunnerProps {
   questions: GameQuestion[]
   secondsPerQuestion: number
   onFinish: (result: SoloRunResult) => void
-  onAnswered?: (isCorrect: boolean, combo: number) => void
-  /** phần hiển thị thêm phía trên (VD thanh máu Boss) */
-  header?: ReactNode
 }
 
-export function SoloQuestionRunner({ questions, secondsPerQuestion, onFinish, onAnswered, header }: SoloQuestionRunnerProps) {
+export function SoloQuestionRunner({ questions, secondsPerQuestion, onFinish }: SoloQuestionRunnerProps) {
   const { t } = useLanguage()
   const playText = usePlayText()
   const [index, setIndex] = useState(0)
@@ -66,9 +61,8 @@ export function SoloQuestionRunner({ questions, secondsPerQuestion, onFinish, on
       setCombo(newCombo)
       setBestCombo((b) => Math.max(b, newCombo))
       playSound(isCorrect ? 'correct' : 'oops')
-      onAnswered?.(isCorrect, newCombo)
     },
-    [revealed, question, startedAt, timeLimitMs, combo, onAnswered],
+    [revealed, question, startedAt, timeLimitMs, combo],
   )
 
   // hết giờ = trả lời trống
@@ -104,7 +98,6 @@ export function SoloQuestionRunner({ questions, secondsPerQuestion, onFinish, on
 
   return (
     <div className="gq-stage">
-      {header}
       <div className="gq-stage__bar">
         <span className="gq-chip ds-num">
           {t('question')} {index + 1}/{questions.length}
@@ -129,7 +122,7 @@ export function SoloQuestionRunner({ questions, secondsPerQuestion, onFinish, on
           onAnswer={handleAnswer}
           locked={revealed}
           myAnswer={myAnswer}
-          reveal={revealed ? { correctIndex: question.correctIndex, correctAnswer: correctAnswerText(question) } : null}
+          reveal={revealed ? { correctAnswer: question.answer } : null}
         />
         {revealed && (
           <div className={`gq-feedback ${wasCorrect ? 'is-good' : 'is-oops'}`} role="status">
@@ -137,11 +130,7 @@ export function SoloQuestionRunner({ questions, secondsPerQuestion, onFinish, on
               <Icon name={wasCorrect ? 'check' : timedOut ? 'clock' : 'close'} size={18} strokeWidth={3} />
             </span>
             <strong>{wasCorrect ? playText('roomCorrect') : timedOut ? playText('roomTimeout') : playText('roomWrong')}</strong>
-            {wasCorrect ? (
-              <span className="gq-feedback__points ds-num">+{lastPoints}</span>
-            ) : (
-              question.kind === 'choice' && <span className="gq-feedback__answer">{playText('roomAnswerWas', { answer: correctAnswerText(question) })}</span>
-            )}
+            {wasCorrect && <span className="gq-feedback__points ds-num">+{lastPoints}</span>}
           </div>
         )}
       </div>

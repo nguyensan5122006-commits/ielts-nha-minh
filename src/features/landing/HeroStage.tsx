@@ -24,7 +24,7 @@ import { MascotModel, useReducedMotion, WordImage } from '../../design-system'
 import { speak } from '../../services/text-to-speech'
 import { useLandingText } from './landing-text'
 
-/** Thẻ từ bay quanh cún: slug ảnh Fluent 3D + từ tiếng Anh (từ quen thuộc của Level 1 + khu trẻ em) */
+/** Thẻ từ bay quanh cún: slug ảnh Fluent 3D + từ tiếng Anh (từ quen thuộc của Level 1) */
 const ORBIT_WORDS: { slug: string; word: string }[] = [
   { slug: 'red-apple', word: 'apple' },
   { slug: 'airplane', word: 'airplane' },

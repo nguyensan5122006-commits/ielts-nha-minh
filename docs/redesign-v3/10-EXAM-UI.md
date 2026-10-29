@@ -163,7 +163,7 @@ Modal: Đã làm x/y · N câu bỏ trống · N câu gắn cờ · lưới số
 - Đăng ký: `skill-reading/register-skill-tasks.ts` (`layout: 'full'`). Luyện riêng: `/reading/:lessonId`.
 - Bài đọc Source Serif 4, 18px × cỡ chữ, nhãn đoạn A–G ở lề trái; tay nắm kéo 2 cột; tô vàng + ghi chú (lưu cùng resume).
 - Luyện tập: bấm 1 từ → từ thành chip tím, nghĩa tiếng Việt hiện NGAY TRÊN từ (dòng tự giãn, không che chữ) + 🔊 + "Lưu vào sổ từ";
-  từ điển: từ của bài → `reading-glossary.ts` (~820 từ hay gặp trong bài đọc v3, tự soạn) → thẻ Học vui + từ khu trẻ em (tải lười).
+  từ điển: từ của bài → `reading-glossary.ts` (~820 từ hay gặp trong bài đọc v3, tự soạn) → thẻ Học vui (tải lười).
   Không có → "Chưa có nghĩa — lưu để tra sau". Esc đóng.
 - Thi thật (bài có `examMinutes`): đồng hồ êm, hết giờ tự nộp ("Hết giờ — bài đã được nộp tự động"), không tra từ, không chip gợi ý.
 - Xem lại: "Tìm trong bài" cuộn tới đoạn + tô câu bằng chứng "Q5"; "Giải thích" = câu hỏi ↔ trong bài + từ khoá + paraphrase.

@@ -1,7 +1,7 @@
 /* =============================================================================
- * game.css — 1 CÂU HỎI TRÒ CHƠI (GameQuestionView) + LƯỢT CHƠI 1 MÌNH (SoloQuestionRunner)
+ * game.css — 1 CÂU SPELLING BEE (GameQuestionView) + LƯỢT CHƠI 1 MÌNH (SoloQuestionRunner)
  * -----------------------------------------------------------------------------
- * Dùng ở: mini game, giải tuần, đánh boss, phòng đấu trực tiếp.
+ * Dùng ở: Spelling Bee; trang Nối từ dùng lại khung thẻ, thanh điểm, thanh thời gian, ô gõ.
  * Tiền tố: gq- (game question).
  * Màu phản hồi theo spec: đúng = --c-success (xanh), sai = --c-oops (cam san hô, không đỏ chói).
  * ========================================================================== */
@@ -150,107 +150,6 @@
   white-space: pre-line;
 }
 
-/* 4 đáp án: thẻ lớn có ô số phím 1–4 */
-.gq-options {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: var(--s-3);
-}
-.gq-option {
-  display: flex;
-  align-items: center;
-  gap: var(--s-3);
-  min-height: 64px;
-  padding: 10px 16px 10px 10px;
-  border-radius: var(--r-md);
-  border: 2px solid var(--c-line-strong);
-  background: var(--c-surface);
-  color: var(--c-ink);
-  font-size: var(--fs-md);
-  font-weight: 600;
-  text-align: left;
-  box-shadow: 0 2px 0 var(--c-line);
-  transition:
-    border-color var(--dur-micro) var(--ease-out),
-    background-color var(--dur-micro) var(--ease-out),
-    transform var(--dur-press) var(--ease-out),
-    opacity var(--dur-panel) var(--ease-out);
-}
-.gq-option:hover:not(:disabled) {
-  border-color: color-mix(in srgb, var(--c-primary) 55%, var(--c-line-strong));
-  background: color-mix(in srgb, var(--c-primary) 5%, var(--c-surface));
-}
-.gq-option:active:not(:disabled) {
-  transform: scale(0.98);
-}
-.gq-option:disabled {
-  cursor: default;
-}
-.gq-option__key {
-  display: grid;
-  place-items: center;
-  flex: none;
-  width: 34px;
-  height: 34px;
-  border-radius: 11px;
-  background: var(--c-surface-2);
-  color: var(--c-ink-2);
-  font-family: var(--font-display);
-  font-weight: 800;
-  font-size: var(--fs-md);
-  box-shadow: inset 0 -2px 0 var(--c-line);
-}
-.gq-option__text {
-  min-width: 0;
-  overflow-wrap: anywhere;
-}
-.gq-option.is-selected {
-  border-color: var(--c-navy);
-  background: var(--c-navy-soft);
-  animation: ds-squish 180ms var(--ease-out);
-}
-.gq-option.is-selected .gq-option__key {
-  background: var(--c-navy);
-  color: var(--c-on-navy);
-  box-shadow: none;
-}
-.gq-option.is-correct {
-  border-color: var(--c-success);
-  background: var(--c-success-soft);
-  color: var(--c-ink);
-  animation: ds-pop 300ms var(--ease-spring);
-}
-.gq-option.is-correct .gq-option__key {
-  background: var(--grad-success);
-  color: #fff;
-  box-shadow: none;
-}
-.gq-option.is-wrong {
-  border-color: var(--c-oops);
-  background: var(--c-oops-soft);
-  animation: gq-shake 320ms var(--ease-out);
-}
-.gq-option.is-wrong .gq-option__key {
-  background: var(--grad-oops);
-  color: #fff;
-  box-shadow: none;
-}
-.gq-option.is-muted {
-  opacity: 0.5;
-}
-@keyframes gq-shake {
-  0%,
-  100% {
-    transform: translateX(0);
-  }
-  25% {
-    transform: translateX(-5px);
-  }
-  60% {
-    transform: translateX(4px);
-  }
-}
-
 /* gõ chữ */
 .gq-type {
   display: flex;
@@ -270,53 +169,6 @@
   background: var(--c-oops-soft);
 }
 
-/* xếp câu: dòng đáp án + kho thẻ từ */
-.gq-line {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  align-content: flex-start;
-  gap: var(--s-2);
-  min-height: 64px;
-  padding: var(--s-3);
-  border-radius: var(--r-md);
-  border: 2px dashed var(--c-line-strong);
-  background: var(--c-surface-2);
-}
-.gq-bank {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: var(--s-2);
-}
-.gq-tile {
-  min-height: 44px;
-  padding: 0 16px;
-  border-radius: var(--r-sm);
-  border: 1.5px solid var(--c-line-strong);
-  background: var(--c-surface);
-  color: var(--c-ink);
-  font-size: var(--fs-md);
-  font-weight: 600;
-  box-shadow: 0 2px 0 var(--c-line-strong);
-  transition: transform var(--dur-press) var(--ease-out), opacity var(--dur-micro) var(--ease-out);
-}
-.gq-tile:hover:not(:disabled) {
-  transform: translateY(-1px);
-}
-.gq-tile.is-placed {
-  border-color: color-mix(in srgb, var(--c-primary) 60%, var(--c-line-strong));
-  background: var(--c-primary-soft);
-  animation: ds-pop 200ms var(--ease-spring);
-}
-.gq-tile.is-used {
-  opacity: 0.25;
-  box-shadow: none;
-}
-.gq-submit {
-  display: flex;
-  justify-content: center;
-}
 .gq-answer {
   margin: 0;
   text-align: center;
@@ -369,10 +221,6 @@
   font-size: var(--fs-xl);
   animation: ds-pop 360ms var(--ease-spring) 80ms both;
 }
-.gq-feedback__answer {
-  color: var(--c-ink);
-  font-weight: 600;
-}
 @keyframes gq-feedback-in {
   from {
     opacity: 0;
@@ -384,11 +232,8 @@
   }
 }
 
-/* màn hẹp: đáp án 1 cột */
+/* màn hẹp: thẻ câu hỏi bớt đệm */
 @container pg-page (max-width: 560px) {
-  .gq-options {
-    grid-template-columns: minmax(0, 1fr);
-  }
   .gq-card {
     padding: var(--s-4);
   }

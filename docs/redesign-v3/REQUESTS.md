@@ -2,6 +2,10 @@
 
 Mỗi nhóm thêm 1 mục riêng bên dưới (không sửa mục của nhóm khác).
 
+> **Lưu ý 29/10/2026 (dọn phạm vi):** các mục cũ bên dưới còn nhắc khu trẻ em, nhóm tuổi, chuối / cửa hàng,
+> đấu trường, giải tuần, boss — những phần đó **đã xoá hẳn** khỏi code (xem đầu `01-ARCHITECTURE.md`).
+> Các mục được giữ nguyên làm lịch sử; đừng làm theo yêu cầu nào liên quan tới phần đã xoá.
+
 ---
 
 ## Nhóm "Bài xếp lớp + test level" (`src/content/exams/`) → gửi nhóm nền móng + nhóm UI

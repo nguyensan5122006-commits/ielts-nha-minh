@@ -21,7 +21,7 @@
 ## Chạy thử local
 - API dùng chung đã chạy sẵn ở `http://127.0.0.1:8788` (wrangler pages dev, D1 local đã migrate 0003). KHÔNG tự chạy thêm wrangler (2 tiến trình chung SQLite sẽ lỗi SQLITE_BUSY). Nếu 8788 không trả lời, ghi vào REQUESTS.md và báo trong kết quả.
 - Mỗi nhóm tự chạy Vite riêng ở cổng riêng: `npx vite --port <cổng của bạn> --strictPort` (proxy /api → 8788 có sẵn trong vite.config.ts).
-- Tài khoản test: đăng ký qua giao diện hoặc `curl -s http://127.0.0.1:8788/api/auth/register -H 'content-type: application/json' -d '{"username":"<ten>","displayName":"<Tên>","password":"<mk>","inviteCode":"<INVITE_CODE trong .dev.vars>","ageGroup":"adult|teen|kid"}'`. Đặt username có tiền tố nhóm (VD `qa-path-1`).
+- Tài khoản test: đăng ký qua giao diện hoặc `curl -s http://127.0.0.1:8788/api/auth/register -H 'content-type: application/json' -d '{"username":"<ten>","displayName":"<Tên>","password":"<mk>","inviteCode":"<INVITE_CODE trong .dev.vars>"}'` (không còn `ageGroup` — mọi tài khoản như nhau). Đặt username có tiền tố nhóm (VD `qa-path-1`).
 - Trình duyệt riêng: `node E:/IELTS_ThienThao/_research/tools/browser-server.mjs <tên-nhóm> <cổng-trình-duyệt> desktop` (cách dùng ở đầu file). Script phụ để trong thư mục scratchpad RIÊNG có tên nhóm (đừng dùng tên chung như b.sh — các agent từng ghi đè nhau).
 - NHÌN BẰNG MẮT: chụp màn hình từng trạng thái (light + dark, 1440 + 1100), mở bằng Read, sửa tới khi thật sự đẹp, gọn, rõ bước tiếp theo, không tràn chữ, tương phản đủ.
 
@@ -36,6 +36,4 @@
 | vocab-mistakes-dashboard | 5186 | 9336 |
 | exam-room | 5187 | 9337 |
 | playground-restyle | 5188 | 9338 |
-| kids games 2–5 | 5189 | 9339 |
-| kids games 6–8 | 5190 | 9340 |
 | QA 1/2/3 | 5191–5193 | 9341–9343 |

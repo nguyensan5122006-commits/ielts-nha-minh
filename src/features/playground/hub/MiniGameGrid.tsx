@@ -1,5 +1,5 @@
 /**
- * MiniGameGrid.tsx — 4 Ô MINI GAME CHƠI MỘT MÌNH (Đố vui, Spelling Bee, Đua xếp câu, Nối từ)
+ * MiniGameGrid.tsx — CÁC Ô TRÒ CHƠI CHỮ CHƠI MỘT MÌNH (danh sách MINI_GAMES trong game-catalog.ts)
  * ----------------------------------------------------------------------------
  * Mỗi ô: ảnh 3D trên "đĩa" màu riêng, tên + 1 dòng mô tả, kỷ lục của cả nhà,
  * cả ô là 1 link vào trò chơi (bước tiếp theo = "Chơi").
@@ -14,7 +14,7 @@ import { MINI_GAMES } from '../game-catalog'
 import { usePlayText } from '../playground-text'
 import type { GameRecord } from '../use-playground-data'
 
-/** records bỏ trống = không hiện dòng kỷ lục (VD trong tab "Chơi một mình" của Đấu trường) */
+/** records bỏ trống = không hiện dòng kỷ lục */
 export function MiniGameGrid({ records }: { records?: Record<string, GameRecord[]> }) {
   const playText = usePlayText()
   const { t } = useLanguage()

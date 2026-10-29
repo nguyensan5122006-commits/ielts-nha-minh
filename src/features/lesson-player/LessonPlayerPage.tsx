@@ -13,7 +13,7 @@
  * Tiến độ (03-DATA-LAYER mục 5):
  *   - mở bài: có progress.resume của bài này -> quay về ĐÚNG câu; không -> startLesson()
  *   - mỗi câu: recordAnswer(kỹ năng, đúng?, id câu, lỗi sai) rồi saveResume({...})
- *   - hết bài: completeLessonV3(...) -> addXp -> earnBananas('lesson') -> màn kết quả
+ *   - hết bài: completeLessonV3(...) -> addXp -> màn kết quả
  *
  * Các phần giao diện nằm trong parts/ (thẻ dạy, khung phản hồi, kết quả…),
  * các dạng bài trong exercises/. Mỗi file có giải thích ở đầu.
@@ -35,7 +35,6 @@ import { useToast } from '../../design-system/components/Toast'
 import { playSound } from '../../design-system/sound-kit'
 import '../../design-system/theme' // áp sáng/tối ngay cả khi mở thẳng link bài học
 import { useProgress } from '../../learning-progress/progress-store'
-import { useWallet } from '../../player-wallet/wallet-store'
 import { stopSpeaking } from '../../services/text-to-speech'
 import {
   checkExerciseAnswer,
@@ -154,7 +153,6 @@ function LessonRun({ lesson }: { lesson: Lesson }) {
   const [searchParams] = useSearchParams()
   const store = useProgress()
   const { progress } = store
-  const { earnBananas } = useWallet()
   const { showToast } = useToast()
 
   const taskMode = skillTaskModeOf(lesson)
@@ -386,9 +384,8 @@ function LessonRun({ lesson }: { lesson: Lesson }) {
     const xp = calculateLessonXp({ summary, taskMode, taskResult: state.taskResult, isRepeat, minutesTodayBefore: store.todayMinutes })
     store.completeLessonV3(lesson.id, summary.accuracy, lesson.words?.map((word) => word.id) ?? [], minutes)
     store.addXp(xp)
-    void earnBananas('lesson')
     setCompletion({ summary, xp, minutes, isRepeat, taskResult: state.taskResult })
-  }, [finished, lesson, unit, level, track, progress, store, taskMode, earnBananas])
+  }, [finished, lesson, unit, level, track, progress, store, taskMode])
 
   // mốc (xong trạm / level / chuỗi 7-30-100): tính 1 lần ngay khi có kết quả (tiến độ đã cập nhật)
   const [milestone, setMilestone] = useState<{ value: Milestone | null; seen: boolean } | null>(null)

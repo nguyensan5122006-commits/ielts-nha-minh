@@ -4,7 +4,7 @@
  * QUẢN LÝ ĐĂNG NHẬP cho toàn app.
  *  - Khi mở web: hỏi máy chủ "/api/auth/me" xem đã đăng nhập chưa.
  *  - useAuth() trả về: user (null nếu chưa đăng nhập), login, register, logout.
- *  - user.ageGroup (v3): 'kid' | 'teen' | 'adult' — đăng ký có thể gửi kèm ageGroup.
+ *  - Mọi tài khoản như nhau (không chia nhóm tuổi).
  * ----------------------------------------------------------------------------
  */
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react'

@@ -9,7 +9,7 @@
  *   const apply = useApplyPlacement()
  *   apply.request()            // gọi TRƯỚC khi đăng ký / đăng nhập (đặt cờ chờ áp)
  *   apply.status               // 'idle' -> 'applying' -> 'done'
- *   apply.destination          // khi 'done': '/lesson/<id>' (bài đầu tiên) · '/kids' · '/learn'
+ *   apply.destination          // khi 'done': '/lesson/<id>' (bài đầu tiên) hoặc '/learn'
  *
  * Vì sao phải CHỜ chứ không gọi ngay sau `await register()`?
  *   Đăng ký xong, progress-store mới bắt đầu tải tiến độ của tài khoản từ máy chủ.
@@ -22,12 +22,10 @@
  *   - setProfile({ dailyGoalMinutes, studyCue, studyTime }) -> kế hoạch chọn trên màn kết quả
  *   - nếu đã làm bài thật: markStudyDay() + addStudyMinutes() -> ngày học đầu tiên được tính
  *     ("tiến độ tặng sẵn có lý do thật" — psych-adult A9: bạn ĐÃ học 5 phút rồi)
- *   - bé (kid): luôn track 'general' + level-1, đích đến là /kids
  * ----------------------------------------------------------------------------
  */
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { findNextLesson } from '../../content/path-selectors'
-import type { LevelId } from '../../content/content-types'
 import { useProgress } from '../../learning-progress/progress-store'
 import { todayString } from '../../learning-progress/study-calendar'
 import { useAuth } from '../../services/auth-context'
@@ -66,7 +64,6 @@ export function useApplyPlacement(): ApplyPlacement {
   const [destination, setDestination] = useState<string | null>(null)
   /** Thời điểm bắt đầu áp — để nhận ra lần vẽ lại có tiến độ ĐÃ cập nhật */
   const appliedAt = useRef(0)
-  const isKidRef = useRef(false)
 
   const request = useCallback(() => {
     markPendingApply()
@@ -78,23 +75,18 @@ export function useApplyPlacement(): ApplyPlacement {
     if (!isRequested || status !== 'idle' || !user || !isLoaded) return
     const result = loadResult()
     clearPendingApply()
-    const isKid = user.ageGroup === 'kid'
-    isKidRef.current = isKid
     skipWelcomeModalToday(user.id)
     // (QA) Kết quả đã áp cho BẤT KỲ tài khoản nào (kể cả người khác trong nhà dùng chung máy) thì
     // không áp nữa — tránh chép trình độ của người trước vào tài khoản mới tạo trên cùng trình duyệt.
     if (!result || result.appliedToUserId != null) {
       // không có gì để áp (hoặc đã áp rồi): đi thẳng vào học
-      setDestination(isKid ? '/kids' : '/learn')
+      setDestination('/learn')
       setStatus('done')
       return
     }
     const { estimate, setup, plan } = result
-    // bé luôn bắt đầu ở Khu trò chơi + Tiếng Anh tổng quát Level 1 (07-KIDS-ZONE / brief onboarding)
-    const level: LevelId = isKid ? 'level-1' : estimate.recommendedLevel
-    const track = isKid ? 'general' : setup.track
     appliedAt.current = Date.now()
-    setPlacementV3({ level, track, bandLow: estimate.bandLow, bandHigh: estimate.bandHigh })
+    setPlacementV3({ level: estimate.recommendedLevel, track: setup.track, bandLow: estimate.bandLow, bandHigh: estimate.bandHigh })
     setProfile({
       dailyGoalMinutes: plan.dailyGoalMinutes,
       ...(plan.studyCue ? { studyCue: plan.studyCue } : {}),
@@ -114,11 +106,8 @@ export function useApplyPlacement(): ApplyPlacement {
     if (status !== 'applying') return
     const takenAt = progress.placement ? new Date(progress.placement.takenAt).getTime() : 0
     if (takenAt < appliedAt.current - 5_000) return // kho chưa kịp cập nhật
-    if (isKidRef.current) setDestination('/kids')
-    else {
-      const next = findNextLesson(progress)
-      setDestination(next ? `/lesson/${next.lesson.id}` : '/learn')
-    }
+    const next = findNextLesson(progress)
+    setDestination(next ? `/lesson/${next.lesson.id}` : '/learn')
     setStatus('done')
   }, [status, progress])
 

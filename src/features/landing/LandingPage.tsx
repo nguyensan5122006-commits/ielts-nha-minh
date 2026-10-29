@@ -10,7 +10,7 @@
  *   2. Bậc thang — 3 level, "Bạn ở đây?" → "Mục tiêu 6.5" (ý Mochi, làm lại kiểu mình)
  *   3. 2 lộ trình — Tiếng Anh tổng quát / Luyện thi IELTS
  *   4. 5 kỹ năng — icon 3D SkillIcon
- *   5. Khu trẻ em + Bảng xếp hạng gia đình (2 thẻ cạnh nhau)
+ *   5. Bảng xếp hạng gia đình (mẫu minh hoạ)
  *   6. Kêu gọi cuối + chân trang
  *
  * Nút chính tự đổi chữ khi khách đang làm dở bài xếp lớp ("Làm tiếp … câu 4") hoặc đã có
@@ -29,15 +29,6 @@ import { useLandingText } from './landing-text'
 import './landing.css'
 
 const SKILLS: SkillName[] = ['listening', 'reading', 'writing', 'speaking', 'vocabulary']
-
-/** Ảnh 3D minh hoạ cho thẻ khu trẻ em */
-const KIDS_WORDS = [
-  { slug: 'cat', word: 'cat' },
-  { slug: 'ice-cream', word: 'ice cream' },
-  { slug: 'balloon', word: 'balloon' },
-  { slug: 'teddy-bear', word: 'teddy bear' },
-  { slug: 'kite', word: 'kite' },
-]
 
 /** Bảng xếp hạng MẪU (minh hoạ, không phải người thật): ảnh đại diện + XP tuần */
 const SAMPLE_FAMILY = [
@@ -167,38 +158,8 @@ export function LandingPage() {
         </ul>
       </section>
 
-      {/* ================= 5. KHU TRẺ EM + BẢNG XẾP HẠNG GIA ĐÌNH ================= */}
-      <section className="lp-section ob-container lp-duo" aria-label={`${text.kidsTitle} · ${text.familyTitle}`}>
-        <article className="lp-kids">
-          <div className="lp-kids__sky" aria-hidden>
-            <span className="lp-cloud lp-cloud--1" />
-            <span className="lp-cloud lp-cloud--2" />
-          </div>
-          <div className="lp-kids__copy">
-            <span className="lp-kicker lp-kicker--kids">{text.kidsEyebrow}</span>
-            <h2 className="lp-h3 ob-display">{text.kidsTitle}</h2>
-            <p>{text.kidsBody}</p>
-            <ul className="lp-kids__points">
-              {text.kidsPoints.map((point) => (
-                <li key={point}>
-                  <Icon name="star" size={14} />
-                  {point}
-                </li>
-              ))}
-            </ul>
-          </div>
-          <div className="lp-kids__art">
-            <Mascot pose="wave" size={150} />
-            <div className="lp-kids__words">
-              {KIDS_WORDS.map((item) => (
-                <span key={item.slug} className="lp-kids__word">
-                  <WordImage slug={item.slug} word={item.word} size={44} decorative />
-                </span>
-              ))}
-            </div>
-          </div>
-        </article>
-
+      {/* ================= 5. BẢNG XẾP HẠNG GIA ĐÌNH ================= */}
+      <section className="lp-section ob-container lp-family-section" aria-label={text.familyTitle}>
         <article className="lp-family">
           <span className="lp-kicker">{text.familyEyebrow}</span>
           <h2 className="lp-h3 ob-display">{text.familyTitle}</h2>

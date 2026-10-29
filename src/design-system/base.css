@@ -149,11 +149,6 @@ hr {
   border: 0;
 }
 
-/* Khu trẻ em: chữ to hơn (body 20px) — đặt class này lên khung ngoài cùng */
-.ds-kids {
-  font-size: var(--fs-lg);
-}
-
 /* Người dùng bật "giảm chuyển động" trong máy: tắt nảy/bay/pháo giấy,
  * vẫn giữ chuyển màu (transition màu vẫn chạy). */
 @media (prefers-reduced-motion: reduce) {

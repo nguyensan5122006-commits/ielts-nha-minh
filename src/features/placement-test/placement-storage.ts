@@ -20,7 +20,6 @@
  */
 import type { TrackId } from '../../content/content-types'
 import type { PlacementAnswer, PlacementEstimate } from '../../content/exams/index-v3'
-import type { AgeGroup } from '../../../backend-helpers/age-groups'
 
 const DRAFT_KEY = 'ielts-placement-v3-draft'
 const RESULT_KEY = 'ielts-placement-v3-result'
@@ -29,10 +28,9 @@ const PENDING_KEY = 'ielts-placement-v3-pending'
 /** Kết quả quá cũ thì coi như không còn (người học nên làm lại cho đúng trình độ hiện tại). */
 const RESULT_MAX_AGE_DAYS = 30
 
-/** Lựa chọn ở bước 1 của /start. */
+/** Lựa chọn ở bước 1 của /start (bản lưu cũ có thêm ageGroup — bỏ qua, không dùng nữa). */
 export interface PlacementSetup {
   track: TrackId
-  ageGroup: AgeGroup
 }
 
 /** Bài đang làm dở. */

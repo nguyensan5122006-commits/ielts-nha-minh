@@ -88,21 +88,9 @@ export const BROWSER_LANG_BY_VOICE: Record<VoiceId, string> = {
 /** Giọng mặc định của web: nữ Anh-Anh. */
 export const DEFAULT_VOICE: VoiceId = 'gb-female'
 
-/** Khu trẻ em: giọng nữ Anh-Anh rõ, ấm (Libby) cho mọi chữ tiếng Anh. */
-export const KIDS_ENGLISH_VOICE = 'en-GB-LibbyNeural'
-/** Hướng dẫn tiếng Việt (khu trẻ em): giọng nữ Hoài My. */
-export const VIETNAMESE_VOICE = 'vi-VN-HoaiMyNeural'
-
-/**
- * Tốc độ đọc (đơn vị % của Edge TTS: "-15%" = chậm hơn 15%).
- * Theo nghiên cứu psych-kids.md luật 30: câu ~0.9×, từ mục tiêu chậm hơn (~0.75×).
- */
+/** Tốc độ đọc (đơn vị % của Edge TTS: "-15%" = chậm hơn 15%). Mọi file hiện đọc ở tốc độ thường. */
 export const SPEECH_RATE = {
   normal: '+0%',
-  kidsWord: '-15%', // từ vựng trẻ em, nút loa thường
-  kidsWordSlow: '-35%', // nút con rùa 🐢
-  kidsSentence: '-10%', // câu mẫu, lệnh tô màu, truyện (tiếng Anh)
-  kidsVietnamese: '-5%', // hướng dẫn tiếng Việt cho bé
 } as const
 
 /* ============================================================================
@@ -220,30 +208,6 @@ export function segmentKey(lines: AudioLine[]): string {
   return hashAudioText('v3-seg|' + voiced.map((line) => `${EDGE_VOICE_BY_ID[line.voice]}>${line.text.trim()}`).join('\n'))
 }
 
-/** Mã cho từ vựng khu trẻ em (giọng Libby; slow = nút rùa 🐢). */
-export function kidsWordKey(word: string, slow = false): string {
-  return clipKey(word, KIDS_ENGLISH_VOICE, slow ? SPEECH_RATE.kidsWordSlow : SPEECH_RATE.kidsWord)
-}
-
-/** Mã cho câu tiếng Anh khu trẻ em (câu mẫu, lệnh tô màu, lời kể truyện). */
-export function kidsSentenceKey(sentence: string): string {
-  return clipKey(sentence, KIDS_ENGLISH_VOICE, SPEECH_RATE.kidsSentence)
-}
-
-/** Mã cho 1 câu hướng dẫn (voice line) của bé theo ngôn ngữ. */
-export function voiceLineKey(text: string, lang: 'vi' | 'en'): string {
-  return lang === 'vi' ? clipKey(text, VIETNAMESE_VOICE, SPEECH_RATE.kidsVietnamese) : kidsSentenceKey(text)
-}
-
-/**
- * Câu lệnh trò "Nghe lệnh tô màu". Trò chơi PHẢI dùng hàm này để tạo câu,
- * vì script tạo audio cũng dùng đúng hàm này -> chữ khớp -> có file mp3.
- * VD kidsColourCommand('cat', 'red') -> "Colour the cat red."
- */
-export function kidsColourCommand(thing: string, colour: string): string {
-  return `Colour the ${thing} ${colour}.`
-}
-
 /* ============================================================================
  * 5. KIỂU DỮ LIỆU CỦA public/audio/manifest-v3.json
  * ========================================================================== */
@@ -257,14 +221,6 @@ export type AudioClipKind =
   | 'exam-script' // kịch bản nghe trong đề thi
   | 'placement-line' // câu nghe bài xếp lớp có giọng riêng
   | 'listening-segment' // 1 đoạn trong bài nghe v3 (ghép nhiều giọng)
-  | 'kids-word' // từ trẻ em (chậm 15%)
-  | 'kids-word-slow' // từ trẻ em, nút rùa (chậm 35%)
-  | 'kids-word-meaning' // nghĩa tiếng Việt của từ trẻ em ("con mèo")
-  | 'kids-letter' // chữ cái A–Z (trò Xếp chữ), có cả bản thường và bản chậm
-  | 'kids-sentence' // câu mẫu trẻ em
-  | 'kids-colour-command' // "Colour the cat red."
-  | 'kids-story' // lời kể / câu hỏi truyện phiêu lưu
-  | 'kids-voice-line' // hướng dẫn, tên chủ đề… (tiếng Việt hoặc tiếng Anh)
 
 export interface AudioManifestEntry {
   /** đường dẫn file tính từ /audio/, VD "v3/1a2b3c4d.mp3" hoặc "1a2b3c4d.mp3" */
@@ -283,6 +239,4 @@ export interface AudioManifestV3 {
   format: string
   /** mã -> file + thông tin */
   entries: Record<string, AudioManifestEntry>
-  /** id câu hướng dẫn trẻ em -> mã theo ngôn ngữ (dùng cho playVoiceLine(id, lang)) */
-  voiceLines: Record<string, { vi?: string; en?: string }>
 }

@@ -1,6 +1,6 @@
 /* =============================================================================
  * welcome.css — BẢNG CHÀO (WelcomeModal) bên trong <Modal> của hệ thiết kế.
- * Ngắn, bình tĩnh: quà hôm nay · 3 con số · tối đa 3 tin · bài tiếp theo.
+ * Ngắn, bình tĩnh: 2 con số · tối đa 2 tin · bài tiếp theo.
  * ========================================================================== */
 
 .welcome {
@@ -17,27 +17,6 @@
   margin-bottom: 4px;
   font-size: var(--fs-xs);
   font-weight: 700;
-  color: var(--c-ink-2);
-}
-.welcome__gift {
-  display: flex;
-  align-items: center;
-  gap: var(--s-3);
-  padding: var(--s-3) var(--s-4);
-  border-radius: var(--r-md);
-  background: linear-gradient(135deg, var(--c-gold-soft), var(--c-primary-soft));
-  animation: ds-rise-in 260ms var(--ease-out);
-}
-.welcome__gift div {
-  display: flex;
-  flex-direction: column;
-}
-.welcome__gift strong {
-  font-family: var(--font-display);
-  font-size: var(--fs-lg);
-}
-.welcome__gift span {
-  font-size: var(--fs-xs);
   color: var(--c-ink-2);
 }
 .welcome__stats {

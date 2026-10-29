@@ -1,7 +1,7 @@
 /**
  * AppShellRoute.tsx — KHUNG TRANG CHÍNH ĐÃ NỐI DỮ LIỆU THẬT (dùng trong App.tsx)
  * ----------------------------------------------------------------------------
- * Lấy dữ liệu từ các "kho" chung (đăng nhập, tiến độ, ví chuối, realtime) rồi
+ * Lấy dữ liệu từ các "kho" chung (đăng nhập, tiến độ, thành viên gia đình, realtime) rồi
  * đưa vào <AppShell> (chỉ vẽ). Các trang con hiện ở vị trí <Outlet />.
  *
  * Trong App.tsx:
@@ -14,9 +14,9 @@
 import { Suspense } from 'react'
 import { Outlet } from 'react-router-dom'
 import { PlayerAvatar } from '../../components/PlayerIdentity'
-import { accountLevelFromXp } from '../../game-economy/account-level'
+import { accountLevelFromXp } from '../../gamification/account-level'
+import { useFamily } from '../../family-members/family-store'
 import { useProgress } from '../../learning-progress/progress-store'
-import { useWallet } from '../../player-wallet/wallet-store'
 import { useRealtime } from '../../realtime/realtime-store'
 import { useAuth } from '../../services/auth-context'
 import { Skeleton } from '../../design-system/components/Skeleton'
@@ -36,7 +36,7 @@ function PageLoading() {
 export function AppShellRoute() {
   const { user, logout } = useAuth()
   const { progress, visibleStreak, streak, saveStatus } = useProgress()
-  const { bananas, economy } = useWallet()
+  const { memberById } = useFamily()
   const { unread, connected } = useRealtime()
 
   const totalUnread = Object.values(unread).reduce((sum, count) => sum + count, 0)
@@ -44,9 +44,9 @@ export function AppShellRoute() {
 
   return (
     <AppShell
-      account={user ? { id: user.id, displayName: user.displayName, ageGroup: user.ageGroup } : undefined}
-      avatar={<PlayerAvatar avatarItemId={economy?.equipped.avatar} frameItemId={economy?.equipped.frame} size={38} online={connected} />}
-      stats={{ streak: visibleStreak, studiedToday: streak?.studiedToday, bananas, level }}
+      account={user ? { id: user.id, displayName: user.displayName } : undefined}
+      avatar={<PlayerAvatar avatarItemId={user ? memberById(user.id)?.avatar : undefined} size={38} online={connected} />}
+      stats={{ streak: visibleStreak, studiedToday: streak?.studiedToday, level }}
       unreadChat={totalUnread}
       saveStatus={saveStatus}
       onLogout={logout}

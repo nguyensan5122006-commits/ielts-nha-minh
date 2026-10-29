@@ -2,7 +2,7 @@
  * ChatPage.tsx — TRANG CHAT TO: danh sách kênh bên trái, tin nhắn bên phải.
  * /chat?dm=5 -> mở thẳng chat riêng với người id 5.
  * (v3) Giao diện làm lại: khung 2 cột cao vừa màn hình, đầu khung có avatar + trạng thái online;
- *      chat riêng có nút xem hồ sơ / thách đấu (bước tiếp theo).
+ *      chat riêng có nút xem hồ sơ (bước tiếp theo).
  */
 import { useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
@@ -48,7 +48,7 @@ export function ChatPage() {
         <section className="chat-shell__main" aria-label={other?.displayName ?? t('familyChannel')}>
           <header className="chat-shell__head">
             {other ? (
-              <PlayerAvatar avatarItemId={other.avatar} frameItemId={other.frame} size={42} online={isOnline} />
+              <PlayerAvatar avatarItemId={other.avatar} size={42} online={isOnline} />
             ) : (
               <span className="chat-ch__family-art chat-ch__family-art--lg">
                 <GameArt slug="house-with-garden" size={32} />
@@ -63,9 +63,6 @@ export function ChatPage() {
               <div className="chat-shell__actions">
                 <Button to={`/profile/${other.id}`} variant="ghost" size="sm" iconLeft="profile">
                   {playText('chatProfile')}
-                </Button>
-                <Button to={`/arena?challenge=${other.id}`} variant="secondary" size="sm" iconLeft={<GameArt slug="crossed-swords" size={18} />}>
-                  {t('challenge')}
                 </Button>
               </div>
             )}

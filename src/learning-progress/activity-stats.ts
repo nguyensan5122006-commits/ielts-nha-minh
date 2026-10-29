@@ -3,8 +3,8 @@
  * Một số chỉ số lấy thẳng từ bộ đếm (lifetimeStats), một số tính từ dữ liệu học
  * (VD số bài học khác nhau đã xong, số từ đã học, streak dài nhất).
  */
-import { accountLevelFromXp } from '../game-economy/account-level'
-import { ACHIEVEMENTS, type AchievementDefinition } from '../game-economy/quests-and-achievements'
+import { accountLevelFromXp } from '../gamification/account-level'
+import { ACHIEVEMENTS, type AchievementDefinition } from '../gamification/quests-and-achievements'
 import type { LearningProgress } from './progress-types'
 
 /** Số từ vựng đã học = số thẻ ôn "word:..." (tạo khi học xong bài từ vựng). */

@@ -39,7 +39,6 @@ const VI = {
   trackGeneral: 'Tiếng Anh tổng quát',
   trackIelts: 'Luyện thi IELTS',
   signupButton: 'Tạo tài khoản & học ngay',
-  signupButtonKid: 'Tạo tài khoản & vào chơi',
   haveAccount: 'Đã có tài khoản?',
   loginLink: 'Đăng nhập',
 
@@ -59,10 +58,6 @@ const VI = {
   inviteCodeMissing: 'Cần mã gia đình để tạo tài khoản.',
   // (QA) máy chủ báo "Mã mời không đúng" — đổi sang đúng tên ô "Mã gia đình" cho khỏi rối
   inviteCodeWrong: 'Mã gia đình chưa đúng — hỏi lại người lập web trong nhà.',
-  ageGroup: 'Nhóm tuổi',
-  ageKid: 'Tiểu học',
-  ageTeen: '12–18',
-  ageAdult: 'Người lớn',
   required: 'Bắt buộc',
   genericError: 'Có lỗi xảy ra, thử lại nhé.',
   networkError: 'Không kết nối được máy chủ. Kiểm tra mạng rồi thử lại.',
@@ -92,7 +87,6 @@ const EN: AuthText = {
   trackGeneral: 'General English',
   trackIelts: 'IELTS preparation',
   signupButton: 'Create account & start',
-  signupButtonKid: 'Create account & play',
   haveAccount: 'Have an account?',
   loginLink: 'Log in',
 
@@ -110,10 +104,6 @@ const EN: AuthText = {
   inviteCodeHint: 'Ask whoever set up the site',
   inviteCodeMissing: 'You need the family code to create an account.',
   inviteCodeWrong: 'That family code is not right — ask whoever set up the site.',
-  ageGroup: 'Age group',
-  ageKid: 'Primary',
-  ageTeen: '12–18',
-  ageAdult: 'Adult',
   required: 'Required',
   genericError: 'Something went wrong — please try again.',
   networkError: 'Cannot reach the server. Check your connection and try again.',

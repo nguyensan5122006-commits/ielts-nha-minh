@@ -9,7 +9,7 @@
  * Mỗi tình huống dùng 1 pose cố định (spec mục 5) để người học hiểu "ngôn ngữ" của mascot:
  *   chào: salute · đúng: happy · sai: comfort · gợi ý: thinking · xong bài: celebrate
  *   cổ vũ: thumbs-up · chưa học hôm nay: sleepy · còn câu trống: surprised
- *   kỹ năng: listening / reading / writing / speaking · khu trẻ em: wave
+ *   kỹ năng: listening / reading / writing / speaking · vẫy chào: wave
  *
  * ẢNH (hợp đồng 01-ARCHITECTURE mục 6): /mascot/poses/<pose>-<256|512|1024>.webp
  * Nếu ảnh chưa có -> thử ảnh đầu /mascot/head/head-192.png -> nếu vẫn không có thì

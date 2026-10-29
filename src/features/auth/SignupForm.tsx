@@ -2,21 +2,20 @@
  * SignupForm.tsx — FORM TẠO TÀI KHOẢN (dùng chung cho /start/result và /signup)
  * ----------------------------------------------------------------------------
  *   <SignupForm
- *     defaultAgeGroup="teen"                       // chọn sẵn theo bước 1 của /start
- *     submitLabel={(age) => age === 'kid' ? 'Lưu & vào chơi' : 'Lưu lộ trình & học ngay'}
+ *     submitLabel="Lưu lộ trình & học ngay"
  *     beforeSubmit={() => apply.request()}         // VD đặt cờ "đăng ký xong thì áp kết quả xếp lớp"
- *     onRegistered={(age) => …}                    // tài khoản đã tạo + đã đăng nhập
+ *     onRegistered={() => …}                       // tài khoản đã tạo + đã đăng nhập
  *     busy={apply.status !== 'idle'}               // giữ nút ở trạng thái "đang xử lý" tới khi chuyển trang
  *   />
  *
- * 1 form, 5 ô: tên gọi trong nhà · tên đăng nhập (tự gợi ý từ tên gọi) · mật khẩu (có nút hiện/ẩn)
- * · mã gia đình (chỉ hiện khi máy chủ có đặt INVITE_CODE) · nhóm tuổi. Gửi đúng API cũ `register()` + trường mới `ageGroup` (03-DATA-LAYER mục 11).
+ * 1 form, 4 ô: tên gọi trong nhà · tên đăng nhập (tự gợi ý từ tên gọi) · mật khẩu (có nút hiện/ẩn)
+ * · mã gia đình (chỉ hiện khi máy chủ có đặt INVITE_CODE). Gửi API `register()`.
+ * Mọi tài khoản như nhau — không hỏi nhóm tuổi.
  * Kiểm tra tại chỗ trước khi gửi (đúng luật của functions/api/auth/register.ts) để báo lỗi ngay cạnh ô.
  * ----------------------------------------------------------------------------
  */
 import { useEffect, useId, useState, type FormEvent, type ReactNode } from 'react'
-import type { AgeGroup } from '../../../backend-helpers/age-groups'
-import { Button, Icon, SegmentedControl } from '../../design-system'
+import { Button, Icon } from '../../design-system'
 import { callApi } from '../../services/api-client'
 import { useAuth } from '../../services/auth-context'
 import { useAuthText } from './auth-text'
@@ -45,15 +44,12 @@ export function suggestUsername(displayName: string): string {
 type FieldName = 'displayName' | 'username' | 'password' | 'inviteCode'
 
 export interface SignupFormProps {
-  defaultAgeGroup?: AgeGroup
-  /** chữ trên nút gửi (có thể đổi theo nhóm tuổi đang chọn) */
-  submitLabel: string | ((ageGroup: AgeGroup) => string)
+  /** chữ trên nút gửi */
+  submitLabel: string
   /** chạy ngay trước khi gửi (sau khi dữ liệu hợp lệ) */
-  beforeSubmit?: (ageGroup: AgeGroup) => void
+  beforeSubmit?: () => void
   /** đã tạo tài khoản và đăng nhập xong */
-  onRegistered?: (ageGroup: AgeGroup) => void
-  /** báo ra ngoài khi đổi nhóm tuổi (VD đổi chữ "học" <-> "chơi") */
-  onAgeGroupChange?: (ageGroup: AgeGroup) => void
+  onRegistered?: () => void
   /** trang cha đang xử lý tiếp (áp kết quả, chuyển trang) -> nút vẫn quay */
   busy?: boolean
   /** ô thêm chèn trước nút gửi (VD chọn track ở /signup) */
@@ -62,12 +58,11 @@ export interface SignupFormProps {
   formId?: string
 }
 
-export function SignupForm({ defaultAgeGroup = 'adult', submitLabel, beforeSubmit, onRegistered, onAgeGroupChange, busy = false, extraFields, formId }: SignupFormProps) {
+export function SignupForm({ submitLabel, beforeSubmit, onRegistered, busy = false, extraFields, formId }: SignupFormProps) {
   const text = useAuthText()
   const { register } = useAuth()
   const idPrefix = useId()
   const [form, setForm] = useState({ displayName: '', username: '', password: '', inviteCode: '' })
-  const [ageGroup, setAgeGroup] = useState<AgeGroup>(defaultAgeGroup)
   /** người học đã tự gõ tên đăng nhập -> thôi tự gợi ý */
   const [usernameTouched, setUsernameTouched] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
@@ -106,11 +101,6 @@ export function SignupForm({ defaultAgeGroup = 'adult', submitLabel, beforeSubmi
     setFieldErrors((current) => ({ ...current, [name]: undefined }))
   }
 
-  function changeAgeGroup(next: AgeGroup) {
-    setAgeGroup(next)
-    onAgeGroupChange?.(next)
-  }
-
   /** Kiểm tra tại chỗ — trả về lỗi theo từng ô (rỗng = hợp lệ) */
   function validate(): Partial<Record<FieldName, string>> {
     const errors: Partial<Record<FieldName, string>> = {}
@@ -142,22 +132,20 @@ export function SignupForm({ defaultAgeGroup = 'adult', submitLabel, beforeSubmi
     }
     setIsSubmitting(true)
     try {
-      beforeSubmit?.(ageGroup)
+      beforeSubmit?.()
       await register({
         username: form.username.trim(),
         displayName: form.displayName.trim() || form.username.trim(),
         password: form.password,
         inviteCode: form.inviteCode.trim(),
-        ageGroup,
       })
-      onRegistered?.(ageGroup)
+      onRegistered?.()
     } catch (error) {
       showServerError((error as Error).message)
       setIsSubmitting(false)
     }
   }
 
-  const label = typeof submitLabel === 'function' ? submitLabel(ageGroup) : submitLabel
   const errorId = (name: FieldName) => (fieldErrors[name] ? `${fieldId(name)}-error` : undefined)
 
   return (
@@ -270,23 +258,6 @@ export function SignupForm({ defaultAgeGroup = 'adult', submitLabel, beforeSubmi
         )}
       </div>
 
-      <div className="au-field">
-        <span className="au-label" id={fieldId('age-label')}>
-          {text.ageGroup}
-        </span>
-        <SegmentedControl<AgeGroup>
-          className="au-segmented"
-          label={text.ageGroup}
-          value={ageGroup}
-          onChange={changeAgeGroup}
-          options={[
-            { value: 'kid', label: text.ageKid },
-            { value: 'teen', label: text.ageTeen },
-            { value: 'adult', label: text.ageAdult },
-          ]}
-        />
-      </div>
-
       {extraFields}
 
       {formError && (
@@ -296,7 +267,7 @@ export function SignupForm({ defaultAgeGroup = 'adult', submitLabel, beforeSubmi
       )}
 
       <Button type="submit" size="lg" fullWidth loading={isSubmitting || busy} iconRight="arrow-right">
-        {label}
+        {submitLabel}
       </Button>
     </form>
   )

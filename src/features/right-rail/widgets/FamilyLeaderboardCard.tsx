@@ -78,10 +78,10 @@ function BoardRow({ member, rank, isMe, online, leaderXp }: { member: FamilyMemb
     <li className={`rr-board__row${isMe ? ' is-me' : ''}`}>
       <Link to={`/profile/${member.id}`} className="rr-board__link">
         <span className="rr-board__rank">{medal ? <img src={`/word-images/${medal}.webp`} width={26} height={26} alt={`#${rank}`} /> : rank}</span>
-        <PlayerAvatar avatarItemId={member.avatar} frameItemId={member.frame} size={34} online={online} />
+        <PlayerAvatar avatarItemId={member.avatar} size={34} online={online} />
         <span className="rr-board__who">
           <span className="rr-board__name">
-            <PlayerName name={member.displayName} nameColorItemId={member.nameColor} />
+            <PlayerName name={member.displayName} />
             {isMe && <span className="rr-board__you">{text.leaderboardYou}</span>}
           </span>
           <span className="rr-board__bar" aria-hidden>

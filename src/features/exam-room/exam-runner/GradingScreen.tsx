@@ -16,7 +16,6 @@ import type { Exam } from '../../../content/content-types'
 import { Button } from '../../../design-system/components/Button'
 import { Icon } from '../../../design-system/components/Icon'
 import { useProgress } from '../../../learning-progress/progress-store'
-import { useWallet } from '../../../player-wallet/wallet-store'
 import { api } from '../../../services/api-client'
 import { stopSpeaking } from '../../../services/text-to-speech'
 import { useLanguage } from '../../../translations/language-context'
@@ -54,7 +53,6 @@ export function GradingScreen({ exam, handle, takesRef, display }: GradingScreen
   const { pick } = useLanguage()
   const navigate = useNavigate()
   const progress = useProgress()
-  const { earnBananas } = useWallet()
   const session = handle.latest.current
   const sectionIndexes = session.sectionOrder
 
@@ -112,7 +110,7 @@ export function GradingScreen({ exam, handle, takesRef, display }: GradingScreen
       const result = resultRef.current
       if (!effectsApplied.current) {
         effectsApplied.current = true
-        applyProgressEffects(exam, result, { ...progress, earnBananas })
+        applyProgressEffects(exam, result, progress)
       }
       try {
         const { id } = await api.saveExamResult(exam.id, result)
@@ -125,7 +123,7 @@ export function GradingScreen({ exam, handle, takesRef, display }: GradingScreen
         setPhase('save-failed')
       }
     },
-    [exam, handle, navigate, progress, earnBananas, speaking],
+    [exam, handle, navigate, progress, speaking],
   )
   finishRef.current = finish
 

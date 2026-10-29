@@ -1,8 +1,14 @@
 # 03 — Tầng dữ liệu v3 (tiến độ học, ôn tập, lộ trình, tài khoản)
 
 > Dành cho các nhóm giao diện (learning-path, lesson-player, vocabulary-review, mistakes-notebook,
-> progress-dashboard, kids-zone, settings, placement, auth). Đọc file này là dùng được, không cần đọc hết code.
+> progress-dashboard, settings, placement, auth). Đọc file này là dùng được, không cần đọc hết code.
 > Hợp đồng gốc: `01-ARCHITECTURE.md` mục 3. Chỗ nào khác hợp đồng đều ghi rõ ở mục 2.
+>
+> **Cập nhật 29/10/2026 (thu hẹp phạm vi):** đã XOÁ khu trẻ em (`progress.kids`, các hành động `kids…`,
+> `kids-word-boxes.ts`), nhóm tuổi (`profile.ageGroup`, `user.ageGroup`, `backend-helpers/age-groups.ts`),
+> chuối 🍌 / cửa hàng (`earnBananas`, `applyStreakFreeze` mua ở cửa hàng) và đấu trường. Bản lưu cũ còn
+> `kids` / `profile.ageGroup` được `migrateProgress` bỏ đi êm (không lỗi). Nhiệm vụ thưởng **XP** qua
+> `claimQuestReward(rewardKey, xp)`.
 
 ---
 
@@ -29,12 +35,11 @@ const queue = dueCards(progress)                   // thẻ ôn ngay bây giờ
 
 | File | Vai trò |
 |---|---|
-| `src/learning-progress/progress-types.ts` | Kiểu `LearningProgress` (= V2), `LearningProgressV1`, `SerializedFsrsCard`, `KidsProgress`, `createEmptyProgress()` |
+| `src/learning-progress/progress-types.ts` | Kiểu `LearningProgress` (= V2), `LearningProgressV1`, `SerializedFsrsCard`, `createEmptyProgress()` |
 | `src/learning-progress/progress-store.tsx` | `<ProgressProvider>` + `useProgress()` — đọc tiến độ, gọi hành động, tự lưu |
 | `src/learning-progress/progress-updates.ts` | Hàm **thuần** tính tiến độ mới cho từng hành động (store chỉ gọi lại các hàm này) |
 | `src/learning-progress/progress-migration.ts` | `migrateProgress(raw)` v1 → v2, `chooseNewerProgress(local, server)` |
 | `src/learning-progress/fsrs-scheduler.ts` | Bọc thư viện `ts-fsrs` (FSRS-7): tạo / ôn thẻ, hàng đợi ôn, giới hạn thẻ mới |
-| `src/learning-progress/kids-word-boxes.ts` | 5 hộp Leitner cho bé |
 | `src/learning-progress/streak-rules.ts` | Chuỗi ngày: freeze tự kiếm, sửa chuỗi 48 giờ, "Tuần này x/7" |
 | `src/learning-progress/study-calendar.ts` | Hàm ngày tháng: `todayString`, `addDays`, `daysBetween`, `weekStartDay`, `weekIdOf` |
 | `src/learning-progress/activity-stats.ts` | Chỉ số cho huy hiệu (`countWordsLearned`, `newlyEarnedAchievements`) |
@@ -45,7 +50,6 @@ const queue = dueCards(progress)                   // thẻ ôn ngay bây giờ
 | `src/content/content-lookup.ts` | Tra bài tập / từ / đoạn đọc theo id: `findExercise`, `findWord`, `findPassage`, `findLesson` |
 | `src/content/skill-meta.ts` | `SKILL_ORDER`, `SKILL_COLORS`, `SKILL_ICONS` (trước nằm ở `unlock-rules.ts` — đã bỏ) |
 | `src/content/legacy-levels.ts` | Đổi 6 level cũ → 3 level mới (chỉ dùng cho dữ liệu cũ) |
-| `backend-helpers/age-groups.ts` | `AgeGroup = 'kid' | 'teen' | 'adult'`, `isAgeGroup`, `normalizeAgeGroup` |
 
 Đã **bỏ**: `learning-progress/spaced-repetition.ts` (Leitner cũ), `learning-progress/unlock-rules.ts`, `ALL_LEVELS` / `findLevel` (6 level cũ).
 Trang học cũ nằm trong `src/_legacy-v2/` (không build, chỉ để tham khảo).
@@ -56,7 +60,7 @@ Trang học cũ nằm trong `src/_legacy-v2/` (không build, chỉ để tham kh
 
 | Trường | Ý nghĩa |
 |---|---|
-| `profile` | `{ track, ageGroup, dailyGoalMinutes, studyCue?, studyTime?, voice: 'gb'|'us', theme, srsButtons?: 2|4 }` |
+| `profile` | `{ track, dailyGoalMinutes, studyCue?, studyTime?, voice: 'gb'|'us', theme, srsButtons?: 2|4 }` |
 | `currentLevel[track]`, `unlockedLevels[track]` | Level đang học / đã mở theo từng track (`'general' | 'ielts'`) |
 | `lessons[lessonId]` | `{ completedAt, bestAccuracy (0..1), attempts }` — có mục này = bài đã xong |
 | `miniTests`, `levelTests` | Giữ từ v1 (mini-test có tim; test cuối level đã qua) |
@@ -71,7 +75,6 @@ Trang học cũ nằm trong `src/_legacy-v2/` (không build, chỉ để tham kh
 | `minutesByDay`, `xpByDay`, `xpTotal` | Phút học (90 ngày), XP (60 ngày), tổng XP |
 | `placement` | `{ level, track, bandLow, bandHigh, takenAt }` hoặc `null` |
 | `writingLog` | Nhật ký bài viết (200 bài gần nhất) |
-| `kids` | `KidsProgress` hoặc `null` (tự tạo khi `ageGroup = 'kid'` hoặc khi gọi hành động kids) |
 | `lifetimeStats`, `questCounters`, `claimedRewards`, `unlockedAchievements`, `rewardedAccountLevel` | Trò chơi hoá — giữ nguyên như cũ |
 | `savedAt` | Thời điểm thay đổi cuối (ISO) — kho tự điền, dùng chọn bản mới hơn |
 
@@ -96,14 +99,14 @@ Trang học cũ nằm trong `src/_legacy-v2/` (không build, chỉ để tham kh
 
 ## 4. `useProgress()` — hành động
 
-### 4.1 Giữ nguyên từ bản cũ (các trang đấu trường, cửa hàng, nhiệm vụ, phòng thi đang dùng)
+### 4.1 Giữ từ bản cũ (các trang trò chơi chữ, Học vui, nhiệm vụ, phòng thi đang dùng)
 
 | Hành động | Ghi chú |
 |---|---|
 | `addXp(amount)` | Cộng XP + ghi XP bảng xếp hạng. **Không còn tự tăng chuỗi** (chuỗi chỉ tính bài học / phiên ôn / bài thi) |
 | `recordActivity(metric, amount?)` | Đếm nhiệm vụ / huy hiệu |
-| `markRewardClaimed(key)`, `unlockAchievements(ids)`, `setRewardedAccountLevel(level)` | Như cũ |
-| `applyStreakFreeze()` | Món "Bảo vệ chuỗi" **mua ở cửa hàng** (GameWatchers tự dùng, xem `canUseShopStreakFreeze`) |
+| `claimQuestReward(rewardKey, xp)` | Nhận thưởng nhiệm vụ: +XP (ghi cả bảng xếp hạng) + ghi `claimedRewards`; nhận rồi thì bỏ qua |
+| `unlockAchievements(ids)`, `setRewardedAccountLevel(level)` | GameWatchers gọi khi mở huy hiệu / báo lên level |
 | `recordMistake(mistake)` | Thêm sổ lỗi; câu không phải đề thi còn tạo thẻ `item:` |
 | `setMistakeResolved(id, resolved)` | Đánh dấu "đã hiểu" |
 | `passLevelTest(levelId, levelOrder, percent)` | Ghi điểm + mở level sau (cả 2 track) + tính ngày học |
@@ -122,7 +125,7 @@ Trang học cũ nằm trong `src/_legacy-v2/` (không build, chỉ để tham kh
 | `saveResume({ lessonId, stepIndex, queue, answers })` | **Sau mỗi câu trả lời** — ghi localStorage ngay, máy chủ sau 1,5 giây |
 | `clearResume()` | Người học bỏ bài dở |
 | `recordAnswer(skill, correct, itemKey?, mistake?)` | Mỗi câu chấm được. `itemKey` = id bài tập/câu hỏi → thẻ `item:<itemKey>`; `mistake` (khi sai) → sổ lỗi |
-| `completeLessonV3(lessonId, accuracy, learnedWordIds, minutes)` | Hết bài. Tạo thẻ `word:` (hẹn ôn từ mai), xoá `resume`, +1 ngày học, +phút, tự mở level sau nếu xong cả level. **Không** cộng XP/chuối — trang kết quả tự gọi `addXp` + `earnBananas('lesson')` |
+| `completeLessonV3(lessonId, accuracy, learnedWordIds, minutes)` | Hết bài. Tạo thẻ `word:` (hẹn ôn từ mai), xoá `resume`, +1 ngày học, +phút, tự mở level sau nếu xong cả level. **Không** cộng XP — trang kết quả tự gọi `addXp` |
 | `addStudyMinutes(minutes)` | Thời gian học ngoài bài (VD đọc thêm) |
 | `markStudyDay()` | Làm xong 1 bài thi (phòng thi đã gọi sẵn) |
 | `saveDraft(taskId, text)` | Writing autosave (text rỗng = xoá nháp) |
@@ -132,23 +135,13 @@ Trang học cũ nằm trong `src/_legacy-v2/` (không build, chỉ để tham kh
 | `completeReviewSession(minutes?)` | Hết phiên ôn trọn vẹn → giữ chuỗi ngày |
 | `flushSave()` | Gửi ngay (VD bấm `Esc` thoát bài) |
 
-### 4.3 Khu trẻ em
-
-| Hành động | Ghi chú |
-|---|---|
-| `kidsAnswerWord(wordId, correct, usedHint?)` → `{ state, justMastered }` | Gọi **1 lần / câu hỏi** với kết quả cuối (đúng ngay / đúng nhờ gợi ý / sai sau 3 lần). `justMastered = true` → trao sticker |
-| `kidsAwardSticker(id)`, `kidsUnlockOutfit(id)`, `kidsEquipOutfit(id)` | Chỉ mặc được đồ đã mở (hoặc `'classic'`) |
-| `kidsAddPlaySeconds(seconds)` | Cộng giờ chơi hôm nay + đóng tem tuần (nhắc nghỉ khi `playSecondsByDay[hôm nay] ≥ 1800`) |
-| `kidsSetStoryChapter(n)` | Chỉ tăng, không giảm |
-| `kidsRecordBestScore(gameId, score)` | **1 lần cuối mỗi lượt**: kỷ lục + đếm lượt + tem tuần |
-
 ---
 
 ## 5. Luồng chuẩn cho trình học (`/lesson/:lessonId`)
 
 1. Mở bài: nếu `progress.resume?.lessonId === lessonId` → khôi phục `stepIndex`, `queue`, `answers`; nếu không → `startLesson(lessonId, queue)`.
 2. Mỗi câu: `recordAnswer(lesson.skill, correct, exercise.id, correct ? undefined : { source: 'lesson', itemId: exercise.id, parentId: lesson.id, question, userAnswer, correctAnswer, explanation })` rồi `saveResume({...})`.
-3. Hết bài: `completeLessonV3(lesson.id, đúng / tổng, lesson.words?.map(w => w.id) ?? [], phút)` → `addXp(n)` → `earnBananas('lesson')`.
+3. Hết bài: `completeLessonV3(lesson.id, đúng / tổng, lesson.words?.map(w => w.id) ?? [], phút)` → `addXp(n)`.
 4. Nút "Học tiếp" trên màn kết quả: `findNextLesson(progress)` — tính khi **vẽ** màn kết quả (lần render sau completeLessonV3),
    không tính ngay trong cùng hàm xử lý click (biến `progress` trong hàm đó vẫn là bản trước khi cập nhật).
    Mọi hành động đều đọc bản mới nhất bên trong kho, nên gọi nhiều hành động liên tiếp trong 1 hàm vẫn đúng.
@@ -188,7 +181,7 @@ Cấu hình: retention 0.90, khoảng tối đa 365 ngày, fuzz bật, bước h
 | `ratingsForButtonMode(mode)` | `['again','good']` hoặc `['again','hard','good','easy']` |
 | `autoRating(correct, { seconds?, usedHint? })` | Thẻ tự chấm: sai → again; đúng chậm > 10s / dùng gợi ý → hard; đúng → good |
 | `cardMemoryLabel(card)` / `countCardsByLabel(progress, 'word:')` | `'new' \| 'learning' \| 'reviewing' \| 'known'` (known = độ bền ≥ 21 ngày) — cho `/words` |
-| `newCardsPerDayLimit(progress)` | level-1: 5, level-2: 10, level-3: 15; kid/teen tối đa 10 |
+| `newCardsPerDayLimit(progress)` | level-1: 5, level-2: 10, level-3: 15 |
 
 Luật: nợ ôn > 150 thẻ → `backlogPaused` (không mở thẻ mới — hiện "Ôn hết thẻ cũ trước để không quên"); tối đa 100 lượt ôn / ngày.
 Thẻ `word:<id>`: tra từ bằng `findWord(id)`. Thẻ `item:<id>`: tra bài tập bằng `findExercise(id)` (câu thi không có thẻ).
@@ -203,12 +196,7 @@ Thẻ `word:<id>`: tra từ bằng `findWord(id)`. Thẻ `item:<id>`: tra bài t
 - Luôn hiện cạnh chuỗi: `streak.thisWeekDays` ("Tuần này x/7") và `streak.totalStudyDays` — không bao giờ giảm.
 - Lời nhắn: không đổ lỗi ("Hôm qua bận à? Không sao") — xem psych-adult A10.
 
-## 9. Khu trẻ em — `kids-word-boxes.ts`
-
-box `0..4` = 5 hộp (trong buổi → 1 → 3 → 7 → 14 ngày), box `5` = **đã thuộc** (ôn lại mỗi 30 ngày).
-Đúng ngay → lên 1 hộp; đúng nhờ gợi ý → giữ hộp; sai → hộp ≥ 2 lùi 2 hộp, hộp 0–1 về 0.
-`kidsWordsDueToday(kids, today, 30)` (trần 30 từ / ngày, hộp thấp trước), `pickNewKidsWords(kids, ids, 3)`, `kidsTopicProgress(kids, wordIds)` → album "12/20".
-Thói quen của bé = **tem tuần** (`kids.weeklyStamps[weekIdOf(today)]`), không dùng chuỗi liên tục.
+## 9. (Đã xoá 29/10/2026 — khu trẻ em, hộp Leitner của bé)
 
 ---
 
@@ -234,19 +222,15 @@ Máy chủ còn v1 → nâng cấp rồi tự gửi bản v2 lên. `/api/progres
 
 ## 11. Tài khoản & máy chủ
 
-- `UserAccount` (`useAuth().user`) có thêm `ageGroup: 'kid' | 'teen' | 'adult'`. `/api/auth/me`, `/login`, `/register` đều trả trường này.
-- `register({ username, displayName, password, inviteCode, ageGroup? })` — thiếu = `'adult'`, giá trị lạ → lỗi 400. **Nhóm auth: form đăng ký cần gửi `ageGroup`.**
-- Kho tiến độ tự đồng bộ `progress.profile.ageGroup` theo tài khoản (máy chủ là nguồn đúng) và tạo `progress.kids` cho bé.
-- Migration `database/migrations/0003_redesign_v3.sql`: `users.age_group TEXT NOT NULL DEFAULT 'adult'` (có CHECK). Đã chạy **local**.
-- Đấu trường (realtime-worker): bé tạo phòng → cược 0; bé vào phòng có cược → tiền cược của bé = 0. Hũ chỉ chia cho người lớn thắng.
-  Bé thắng → `KID_BATTLE_WIN_REWARD = 10` 🍌 (tối đa `KID_BATTLE_WIN_DAILY_LIMIT = 3` lần/ngày, `src/game-economy/banana-rewards.ts`).
-  Chỉ bé thắng → hũ trả lại người lớn. `RoomSummary.players[].isKid`, `PlayerResult.isKid` cho giao diện. Trang Arena đã ẩn phần cược với bé.
-- **Thứ tự deploy khi chủ nhà đồng ý:** `npm run db:migrate:remote` → `npm run deploy:realtime` → `npm run deploy`.
-  (Lỡ deploy trước migration: đăng nhập / API vẫn chạy — truy vấn dùng `SELECT *` — nhưng đăng ký lỗi tới khi chạy migration.)
+- `UserAccount` (`useAuth().user`) = `{ id, username, displayName }`. Mọi tài khoản như nhau — **không còn nhóm tuổi**.
+- `register({ username, displayName, password, inviteCode })`. Cột `users.age_group` (migration 0003) vẫn còn trong database
+  nhưng máy chủ không đọc / ghi nữa (tài khoản mới nhận giá trị mặc định của cột) — không cần migration xoá cột.
+- Realtime (`realtime-worker`) chỉ còn: ai online, chat, "đang gõ…", "đã xem". Đấu trường / cược đã xoá.
+- **Thứ tự deploy khi chủ nhà đồng ý:** `npm run deploy:realtime` → `npm run deploy`.
 
 ## 12. Kiểm thử
 
-- `npm run test:progress` — 37 kiểm thử: chuyển đổi v1 → v2, chuỗi, FSRS, hàng đợi ôn, Leitner bé, lộ trình, chọn bản mới hơn.
+- `npm run test:progress` — 36 kiểm thử: chuyển đổi v1 → v2, chuỗi, FSRS, hàng đợi ôn, bỏ dữ liệu cũ (kids / ageGroup), thưởng nhiệm vụ, lộ trình, chọn bản mới hơn.
 - `npm run validate` — kiểm tra nội dung v3 (chặng trỏ đúng bài, id không trùng, `segmentId` / `paragraphLabel` hợp lệ, task Writing/Speaking có bài mẫu…).
 
 ## 13. Còn mở / gợi ý
@@ -254,7 +238,6 @@ Máy chủ còn v1 → nâng cấp rồi tự gửi bản v2 lên. `/api/progres
 - Chưa lưu "revlog" FSRS đầy đủ (psych-adult D8.33) để tối ưu trọng số sau này — JSON sẽ to; nếu cần, tách bảng D1 riêng.
 - Audio bài nghe v3 (`listeningTask.segments`): do `npm run tts:v3` của nhóm âm thanh tạo (scripts/generate-audio-v3.ts, docs 06-AUDIO.md); `npm run tts` cũ chỉ còn để tương thích.
 - Phòng thi đang liệt kê cả test level cũ (`level-1-test`, `level-2-test`) lẫn mới — nhóm giao diện nên ẩn đề cũ khỏi danh sách (giữ để mở kết quả cũ).
-- Route `/`, `/learn`, `/roadmap`, `/level/:id`, `/lesson/:id`, `/lesson/:id/mini-test`, `/review`, `/mistakes` đang trỏ `ComingSoonPage` — nhóm giao diện thay trong `src/app/App.tsx`.
 
 ---
 

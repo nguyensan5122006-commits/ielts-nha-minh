@@ -9,5 +9,5 @@
     "noEmit": true,
     "skipLibCheck": true
   },
-  "include": ["src/**/*.ts", "src/text-modules.d.ts"]
+  "include": ["src/**/*.ts"]
 }

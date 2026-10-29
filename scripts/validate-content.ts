@@ -20,7 +20,7 @@ import type { Exercise, ExamQuestion, Lesson, TrackId } from '../src/content/con
 import { ALL_LESSONS, LEGACY_LESSONS } from '../src/content/lesson-registry'
 import { buildLessonIndex, renderLessonIndexFile } from '../src/content/lesson-index-builder'
 import { LESSON_SOURCE_IDS, LESSON_SOURCES, type LessonSourceId } from '../src/content/lesson-sources'
-import { generateQuestions, listGameTopics } from '../src/game-questions/question-bank'
+import { generateSpellingQuestions, listGameTopics } from '../src/game-questions/question-bank'
 
 const problems: string[] = []
 const warnings: string[] = []
@@ -240,16 +240,10 @@ for (const topic of ALL_FUN_TOPICS) {
   }
 }
 
-// chủ đề nào cũng phải ra được câu
+// chủ đề nào của Spelling Bee cũng phải ra được câu
 for (const topic of listGameTopics()) {
-  for (const gameType of ['quiz', 'spelling', 'sentence'] as const) {
-    const questions = generateQuestions(gameType, topic.id, 10, 42)
-    if (questions.length < 5) problems.push(`Chủ đề ${topic.id} chỉ tạo được ${questions.length} câu ${gameType}`)
-    for (const q of questions) {
-      if (q.kind === 'choice' && (q.options?.length ?? 0) < 2) problems.push(`Câu ${q.id} (${topic.id}) có ít hơn 2 đáp án`)
-      if (q.kind === 'choice' && new Set(q.options).size !== q.options?.length) problems.push(`Câu ${q.id} (${topic.id}) có đáp án trùng`)
-    }
-  }
+  const questions = generateSpellingQuestions(topic.id, 10, 42)
+  if (questions.length < 5) problems.push(`Chủ đề ${topic.id} chỉ tạo được ${questions.length} câu Spelling Bee`)
 }
 
 /* ============================================================================

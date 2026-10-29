@@ -15,18 +15,13 @@
  *   speak(text, rate)              (cũ) đọc 1 câu / 1 kịch bản "Anna: …\nTom: …"
  *   playAudioLine(line)            đọc 1 dòng AudioLine đúng giọng (gb-female, au-male…)
  *   playSegment(segment)           phát 1 đoạn nghe (file ghép sẵn; chưa có thì đọc từng dòng, nghỉ 350 ms)
- *   playKidsWord(word, {slow})     từ vựng khu trẻ em (slow = nút rùa 🐢)
- *   playKidsLetter('c') / playKidsMeaning(word)   tên chữ cái / nghĩa tiếng Việt của từ
- *   playKidsSentence(text, {slow}) câu mẫu / lệnh tô màu / lời kể truyện của bé
- *   playVoiceLine(id, lang)        câu hướng dẫn của mascot (tiếng Việt hoặc tiếng Anh)
- *   preload(urls) / preloadClips(keys)  tải trước file để bấm là phát ngay
  *   stopSpeaking()                 dừng mọi âm thanh
  *
  * Mọi hàm play… trả về 1 PlaybackHandle: `await handle.finished` = chờ phát xong;
  * có pause / resume / seek / setRate / currentTime / duration cho trình nghe (Listening player).
  * ----------------------------------------------------------------------------
  */
-import type { AudioLine, KidsWord, VoiceId } from '../content/content-types'
+import type { AudioLine, VoiceId } from '../content/content-types'
 import {
   BROWSER_LANG_BY_VOICE,
   DEFAULT_VOICE,
@@ -34,12 +29,9 @@ import {
   audioLineKey,
   clipKey,
   hashAudioText,
-  kidsSentenceKey,
-  kidsWordKey,
   resolveLineVoices,
   scriptToVoicedLines,
   segmentKey,
-  voiceLineKey,
   type AudioManifestV3,
 } from './audio-clip-keys'
 
@@ -67,7 +59,7 @@ function loadLegacyManifest(): Promise<Set<string>> {
 }
 
 let v3Manifest: Promise<AudioManifestV3 | null> | null = null
-/** manifest-v3.json: mã -> { file, durationMs, … } + bảng id câu hướng dẫn. Tải 1 lần, khi cần. */
+/** manifest-v3.json: mã -> { file, durationMs, … }. Tải 1 lần, khi cần. */
 function loadV3Manifest(): Promise<AudioManifestV3 | null> {
   v3Manifest ??= fetch('/audio/manifest-v3.json')
     .then(async (response) => (response.ok ? ((await response.json()) as AudioManifestV3) : null))
@@ -81,11 +73,6 @@ export async function getClipInfo(key: string): Promise<{ url: string; durationS
   const entry = manifest?.entries[key]
   if (entry) return { url: `/audio/${entry.file}`, durationSec: entry.durationMs / 1000 }
   return null
-}
-
-/** Đường dẫn file theo mã (null nếu chưa tạo). Dùng kèm preload(). */
-export async function audioUrlForKey(key: string): Promise<string | null> {
-  return (await getClipInfo(key))?.url ?? null
 }
 
 /* ============================================================================
@@ -166,7 +153,7 @@ export interface PlayOptions {
 type PlaybackState = 'loading' | 'playing' | 'paused' | 'ended' | 'stopped'
 
 export class PlaybackHandle {
-  /** Kết thúc khi phát xong HOẶC bị dừng. VD: await playKidsWord('cat').finished */
+  /** Kết thúc khi phát xong HOẶC bị dừng. VD: await playAudioLine(line).finished */
   readonly finished: Promise<void>
   private resolveFinished!: () => void
   private steps: PlaybackStep[] = []
@@ -490,71 +477,4 @@ export function playSegment(segment: { id?: string; lines: AudioLine[] }, option
     const info = await getClipInfo(segmentKey(segment.lines))
     return info ? [fileStep(info.url, info.durationSec, perLine)] : perLine
   }, options)
-}
-
-/** Từ vựng khu trẻ em (giọng Libby, chậm 15%); slow = nút rùa 🐢 (chậm 35%). */
-export function playKidsWord(word: string | KidsWord, options: PlayOptions & { slow?: boolean } = {}): PlaybackHandle {
-  const text = typeof word === 'string' ? word : word.word
-  return startPlayback(async () => {
-    const speech = speechStep(text, 'en-GB', 'female', 0, options.slow ? 0.65 : 0.85)
-    const info = await getClipInfo(kidsWordKey(text, options.slow))
-    return [info ? fileStep(info.url, info.durationSec, [speech]) : speech]
-  }, options)
-}
-
-/** Tên 1 chữ cái (trò Xếp chữ): playKidsLetter('c') đọc "see". */
-export function playKidsLetter(letter: string, options: PlayOptions & { slow?: boolean } = {}): PlaybackHandle {
-  return playKidsWord(letter.trim().toUpperCase(), options)
-}
-
-/** Nghĩa tiếng Việt của 1 từ trẻ em ("con mèo") — đọc khi bé trả lời đúng hoặc ở gợi ý bậc 2. */
-export function playKidsMeaning(word: KidsWord, options: PlayOptions = {}): PlaybackHandle {
-  return playVoiceLine(`${word.id}.meaning`, 'vi', { ...options, fallbackText: word.meaningVi })
-}
-
-/** Câu tiếng Anh khu trẻ em: câu mẫu, mẫu câu Ghép câu, lệnh tô màu, lời kể truyện. slow = phát chậm 0.8×. */
-export function playKidsSentence(sentence: string, options: PlayOptions & { slow?: boolean } = {}): PlaybackHandle {
-  const rate = (options.rate ?? 1) * (options.slow ? 0.8 : 1)
-  return startPlayback(async () => {
-    const speech = speechStep(sentence, 'en-GB', 'female', 0, 0.9)
-    const info = await getClipInfo(kidsSentenceKey(sentence))
-    return [info ? fileStep(info.url, info.durationSec, [speech]) : speech]
-  }, { ...options, rate })
-}
-
-/**
- * Câu hướng dẫn / lời mascot của khu trẻ em.
- * @param id   id câu (VD 'kids-vl-instr-listen-tap'), hoặc chính câu chữ cần đọc
- * @param lang 'vi' (giọng Hoài My) hoặc 'en' (giọng Libby)
- * @param fallbackText chữ hiển thị (đã thay {mascot}) — dùng khi chưa có file để trình duyệt đọc
- */
-export function playVoiceLine(id: string, lang: 'vi' | 'en', options: PlayOptions & { fallbackText?: string } = {}): PlaybackHandle {
-  return startPlayback(async () => {
-    const manifest = await loadV3Manifest()
-    const text = options.fallbackText ?? (/\s/.test(id) ? id : '')
-    const key = manifest?.voiceLines[id]?.[lang] ?? (text ? voiceLineKey(text, lang) : null)
-    const speech = text ? [speechStep(text, lang === 'vi' ? 'vi-VN' : 'en-GB', 'female', 0, lang === 'vi' ? 0.95 : 0.9)] : []
-    const info = key ? await getClipInfo(key) : null
-    return info ? [fileStep(info.url, info.durationSec, speech)] : speech
-  }, options)
-}
-
-/* ============================================================================
- * 7. TẢI TRƯỚC
- * ========================================================================== */
-
-const preloaded = new Set<string>()
-
-/** Tải trước danh sách file (vào bộ nhớ đệm trình duyệt) — VD 10 từ của 1 vòng chơi. */
-export function preload(urls: (string | null | undefined)[]): void {
-  for (const url of urls) {
-    if (!url || preloaded.has(url)) continue
-    preloaded.add(url)
-    void fetch(url).catch(() => preloaded.delete(url))
-  }
-}
-
-/** Tải trước theo mã (kidsWordKey(w), segmentKey(lines)…) — mã chưa có file thì bỏ qua. */
-export async function preloadClips(keys: string[]): Promise<void> {
-  preload(await Promise.all(keys.map(audioUrlForKey)))
 }

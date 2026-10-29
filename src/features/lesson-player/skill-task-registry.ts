@@ -54,7 +54,7 @@
  *   BẠN (player):   useProgress().recordAnswer(skill, correct, question.id, mistake?)
  *                   cho từng câu chấm được — vì chỉ bạn biết id câu hỏi.
  *                   Writing: saveDraft / logWriting / updateBandEstimate như 03-DATA-LAYER.
- *   TRÌNH HỌC:      completeLessonV3 (phút học, thẻ từ, xoá resume), XP, chuối,
+ *   TRÌNH HỌC:      completeLessonV3 (phút học, thẻ từ, xoá resume), XP,
  *                   màn kết quả, "Ôn lại câu sai". KHÔNG gọi recordAnswer lại cho task.
  *
  * ----------------------------------------------------------------------------

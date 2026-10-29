@@ -46,9 +46,6 @@
   width: 100%;
   margin: 0 auto;
 }
-.pt-choices--three {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-}
 
 /* thẻ lựa chọn lớn */
 .pt-choice {
@@ -82,9 +79,6 @@
   border-color: var(--c-primary);
   background: color-mix(in srgb, var(--c-primary) 9%, var(--c-surface));
   box-shadow: var(--gloss-top), 0 12px 26px -14px color-mix(in srgb, var(--c-primary-deep) 70%, transparent);
-}
-.pt-choice.is-muted {
-  opacity: 0.45;
 }
 .pt-choice__art {
   flex: none;
@@ -130,17 +124,6 @@
 }
 .pt-choice.is-selected .pt-choice__check {
   transform: scale(1);
-}
-
-.pt-kid-note {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--s-2);
-  margin: 0;
-  font-size: var(--fs-sm);
-  color: var(--c-ink-2);
-  text-align: center;
 }
 
 .pt-choose__actions {
@@ -555,34 +538,6 @@
   color: var(--c-on-primary);
 }
 
-.pt-kids-zone {
-  display: flex;
-  align-items: center;
-  gap: var(--s-4);
-  margin-bottom: var(--s-5);
-  padding: var(--s-3) var(--s-5);
-  border-radius: var(--r-lg);
-  background: linear-gradient(180deg, #bde7ff 0%, #fff3d6 100%);
-  color: #1e2347;
-}
-:root[data-theme='dark'] .pt-kids-zone {
-  background: linear-gradient(180deg, #1b3768 0%, #3a2f5c 100%);
-  color: #f4f1ff;
-}
-.pt-kids-zone > div:nth-child(2) {
-  display: flex;
-  flex-direction: column;
-  font-size: var(--fs-sm);
-}
-.pt-kids-zone strong {
-  font-size: var(--fs-lg);
-}
-.pt-kids-zone__words {
-  display: flex;
-  gap: var(--s-2);
-  margin-left: auto;
-}
-
 /* 3. kế hoạch */
 .pt-plan__tiles {
   display: grid;
@@ -802,7 +757,6 @@
 
 @media (max-width: 760px) {
   .pt-choices--two,
-  .pt-choices--three,
   .pt-options--grid,
   .pt-plan__tiles {
     grid-template-columns: 1fr;

@@ -11,16 +11,14 @@
  *      + 1 dòng hẹn giờ học tuỳ chọn "Tôi sẽ học sau … lúc …" (D2 luật 3)
  *   4. "Xem lại các câu đã làm" (đáp án + 1 dòng vì sao) — gập sẵn
  * Cột phải (dính khi cuộn): form tạo tài khoản 1 bước -> "Lưu lộ trình & học ngay"
- *   -> đăng ký (gửi ageGroup) -> useApplyPlacement chép kết quả vào tiến độ -> vào thẳng bài đầu tiên.
+ *   -> đăng ký -> useApplyPlacement chép kết quả vào tiến độ -> vào thẳng bài đầu tiên.
  *   "Đã có tài khoản? Đăng nhập" giữ kết quả và áp sau khi đăng nhập.
- * Bé (kid): không hiện số band (psych-adult D1 cột Y), lộ trình là Khu trò chơi + Level 1 tổng quát.
  * ----------------------------------------------------------------------------
  */
 import { useEffect, useMemo, useState } from 'react'
 import { Navigate, useNavigate } from 'react-router-dom'
 import type { LevelId } from '../../content/content-types'
 import { PLACEMENT_V3_ITEMS, type PlacementSkill } from '../../content/exams/index-v3'
-import { findLevelInfo } from '../../content/all-levels'
 import { Badge, Button, fireConfetti, Icon, Mascot, SegmentedControl, useReducedMotion, WordImage } from '../../design-system'
 import { useAuth } from '../../services/auth-context'
 import { useLanguage } from '../../translations/language-context'
@@ -37,8 +35,6 @@ const ITEM_BY_ID = new Map(PLACEMENT_V3_ITEMS.map((item) => [item.id, item]))
 const SKILL_ORDER: PlacementSkill[] = ['vocabulary', 'grammar', 'listening', 'reading']
 /** Giờ gợi ý theo mốc sinh hoạt (người học sửa được) */
 const CUE_DEFAULT_TIME = ['20:00', '21:30', '12:30', '17:00', '06:30']
-/** Số trò chơi của khu trẻ em (01-ARCHITECTURE mục 5) */
-const KIDS_GAME_COUNT = 8
 
 export function ResultPage() {
   const text = usePlacementText()
@@ -57,14 +53,13 @@ export function ResultPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  // áp xong vào tài khoản -> đi thẳng vào bài đầu tiên (bé -> /kids)
+  // áp xong vào tài khoản -> đi thẳng vào bài đầu tiên
   useEffect(() => {
     if (apply.status === 'done' && apply.destination) navigate(apply.destination, { replace: true })
   }, [apply.status, apply.destination, navigate])
 
   if (!result) return <Navigate to="/start" replace />
 
-  const isKid = result.setup.ageGroup === 'kid'
   const changePlan = (patch: Partial<StudyPlanChoices>) => {
     const plan = { ...result.plan, ...patch }
     updateResult({ plan })
@@ -78,7 +73,7 @@ export function ResultPage() {
         <div className="pt-result__main">
           <ResultSummary result={result} />
           <RouteCard result={result} />
-          {isKid ? <KidPlanCard result={result} /> : <PlanCard result={result} onChange={changePlan} />}
+          <PlanCard result={result} onChange={changePlan} />
           {result.answers.length > 0 && <AnswerReview result={result} />}
           <p className="pt-result__retake">
             <Button variant="ghost" size="sm" to="/start">
@@ -88,7 +83,7 @@ export function ResultPage() {
         </div>
 
         <aside className="pt-result__side">
-          <SaveCard result={result} apply={apply} userName={user?.displayName ?? null} isLoggedIn={!!user} />
+          <SaveCard apply={apply} userName={user?.displayName ?? null} isLoggedIn={!!user} />
         </aside>
       </main>
     </div>
@@ -102,9 +97,7 @@ function ResultSummary({ result }: { result: SavedPlacementResult }) {
   const text = usePlacementText()
   const { pick } = useLanguage()
   const { estimate, setup, via } = result
-  const isKid = setup.ageGroup === 'kid'
   const levelNumber = Number(estimate.recommendedLevel.slice(-1))
-  const levelInfo = findLevelInfo(isKid ? 'level-1' : estimate.recommendedLevel)
   const stretchNumber = estimate.stretchLevel ? Number(estimate.stretchLevel.slice(-1)) : null
 
   return (
@@ -113,31 +106,23 @@ function ResultSummary({ result }: { result: SavedPlacementResult }) {
       <div className="pt-summary__copy">
         <span className="pt-eyebrow">{text.resultEyebrow}</span>
         <h1 id="pt-summary-title" className="pt-summary__title ob-display">
-          {isKid ? text.resultTitleKid : text.resultTitle(levelNumber)}
+          {text.resultTitle(levelNumber)}
         </h1>
         <div className="pt-summary__chips">
-          {isKid ? (
-            <Badge tone="olive" size="md">
-              Level 1 · {pick(levelInfo?.title)}
-            </Badge>
-          ) : (
-            <>
-              <Badge tone="primary" variant="solid" size="md">
-                {text.bandChip(formatBandRange(estimate.bandLow, estimate.bandHigh))}
-              </Badge>
-              <Badge tone="navy" size="md">
-                {estimate.cefrRange}
-              </Badge>
-            </>
-          )}
+          <Badge tone="primary" variant="solid" size="md">
+            {text.bandChip(formatBandRange(estimate.bandLow, estimate.bandHigh))}
+          </Badge>
+          <Badge tone="navy" size="md">
+            {estimate.cefrRange}
+          </Badge>
           <Badge tone="neutral" size="md">
-            {setup.track === 'ielts' && !isKid ? text.trackIelts : text.trackGeneral}
+            {setup.track === 'ielts' ? text.trackIelts : text.trackGeneral}
           </Badge>
         </div>
         <p className="pt-summary__cando">{pick(CAN_DO_BY_CEFR[estimate.cefr])}</p>
         {via === 'beginner' && <p className="pt-summary__note">{text.selfReported}</p>}
         {via !== 'beginner' && estimate.confidence === 'low' && <p className="pt-summary__note">{text.lowConfidence}</p>}
-        {!isKid && stretchNumber && <p className="pt-summary__note pt-summary__note--stretch">{text.stretchHint(stretchNumber, levelNumber)}</p>}
+        {stretchNumber && <p className="pt-summary__note pt-summary__note--stretch">{text.stretchHint(stretchNumber, levelNumber)}</p>}
 
         {estimate.itemsAnswered > 0 && (
           <div className="pt-skills" aria-label={text.bySkillTitle}>
@@ -162,9 +147,8 @@ function ResultSummary({ result }: { result: SavedPlacementResult }) {
 function RouteCard({ result }: { result: SavedPlacementResult }) {
   const text = usePlacementText()
   const { pick } = useLanguage()
-  const isKid = result.setup.ageGroup === 'kid'
-  const level: LevelId = isKid ? 'level-1' : result.estimate.recommendedLevel
-  const track = isKid ? 'general' : result.setup.track
+  const level: LevelId = result.estimate.recommendedLevel
+  const track = result.setup.track
   const numbers = useMemo(() => levelPlanNumbers(track, level), [track, level])
 
   return (
@@ -173,31 +157,15 @@ function RouteCard({ result }: { result: SavedPlacementResult }) {
         <h2 id="pt-route-title" className="pt-card__title ob-display">
           {text.routeTitle}
         </h2>
-        <p className="pt-card__sub">{isKid ? text.routeSubKid : text.routeSub}</p>
+        <p className="pt-card__sub">{text.routeSub}</p>
       </div>
-
-      {isKid && (
-        <div className="pt-kids-zone">
-          <Mascot pose="wave" size={88} />
-          <div>
-            <strong className="ob-display">{text.resultTitleKid}</strong>
-            <span>{text.kidPlanGamesSub}</span>
-          </div>
-          <div className="pt-kids-zone__words" aria-hidden>
-            {['cat', 'balloon', 'ice-cream', 'teddy-bear'].map((slug) => (
-              <WordImage key={slug} slug={slug} word={slug} size={36} decorative />
-            ))}
-          </div>
-        </div>
-      )}
 
       <LevelStaircase
         currentLevel={level}
-        band={isKid ? undefined : { low: result.estimate.bandLow, high: result.estimate.bandHigh }}
-        youAreHereLabel={isKid ? text.youAreHereKid : text.youAreHere}
-        goalLabel={isKid ? text.goalKid : text.goal}
+        band={{ low: result.estimate.bandLow, high: result.estimate.bandHigh }}
+        youAreHereLabel={text.youAreHere}
+        goalLabel={text.goal}
         pose="happy"
-        hideBands={isKid}
       />
 
       {/* tiến độ tặng sẵn có lý do thật: bài xếp lớp đã xong -> ô 1 đã tick */}
@@ -228,7 +196,7 @@ function RouteCard({ result }: { result: SavedPlacementResult }) {
 }
 
 /* ============================================================================
- * 3. KẾ HOẠCH (người lớn / teen) — con số cụ thể, trung thực
+ * 3. KẾ HOẠCH — con số cụ thể, trung thực
  * ========================================================================== */
 function PlanCard({ result, onChange }: { result: SavedPlacementResult; onChange: (patch: Partial<StudyPlanChoices>) => void }) {
   const text = usePlacementText()
@@ -320,43 +288,6 @@ function StudyIntention({ plan, onChange }: { plan: StudyPlanChoices; onChange: 
 }
 
 /* ============================================================================
- * 3b. KẾ HOẠCH CỦA BÉ (không có band, không có số tháng)
- * ========================================================================== */
-function KidPlanCard({ result }: { result: SavedPlacementResult }) {
-  const text = usePlacementText()
-  return (
-    <section className="pt-card pt-plan" aria-labelledby="pt-plan-title">
-      <div className="pt-card__head">
-        <h2 id="pt-plan-title" className="pt-card__title ob-display">
-          {text.planTitle}
-        </h2>
-      </div>
-      <div className="pt-plan__tiles">
-        <div className="pt-tile">
-          <WordImage slug="video-game" word="games" size={44} decorative />
-          <strong className="pt-tile__value ob-display">
-            {KIDS_GAME_COUNT} {text.kidPlanGames}
-          </strong>
-          <span className="pt-tile__sub">{text.kidPlanGamesSub}</span>
-        </div>
-        <div className="pt-tile">
-          <WordImage slug="alarm-clock" word="minutes" size={44} decorative />
-          <strong className="pt-tile__value ob-display">
-            {result.plan.dailyGoalMinutes} {text.kidPlanMinutes}
-          </strong>
-          <span className="pt-tile__sub">{text.kidPlanMinutesSub}</span>
-        </div>
-        <div className="pt-tile">
-          <WordImage slug="star-struck" word="stickers" size={44} decorative />
-          <strong className="pt-tile__value ob-display">{text.kidPlanStickers}</strong>
-          <span className="pt-tile__sub">{text.kidPlanStickersSub}</span>
-        </div>
-      </div>
-    </section>
-  )
-}
-
-/* ============================================================================
  * 4. XEM LẠI CÂU ĐÃ LÀM (gập sẵn — chỉ xem khi muốn)
  * ========================================================================== */
 function AnswerReview({ result }: { result: SavedPlacementResult }) {
@@ -403,19 +334,16 @@ function AnswerReview({ result }: { result: SavedPlacementResult }) {
  * 5. LƯU: form tạo tài khoản (khách) / nút lưu (đã đăng nhập)
  * ========================================================================== */
 function SaveCard({
-  result,
   apply,
   userName,
   isLoggedIn,
 }: {
-  result: SavedPlacementResult
   apply: ReturnType<typeof useApplyPlacement>
   userName: string | null
   isLoggedIn: boolean
 }) {
   const text = usePlacementText()
   const navigate = useNavigate()
-  const isKid = result.setup.ageGroup === 'kid'
   const busy = apply.status !== 'idle' || (apply.isRequested && isLoggedIn)
   /** vừa đăng ký bằng form này -> giữ nguyên form (nút đang quay) tới khi chuyển trang, không nhảy giao diện */
   const [usedForm, setUsedForm] = useState(false)
@@ -441,10 +369,9 @@ function SaveCard({
       <h2 id="pt-save-title" className="pt-card__title ob-display">
         {text.saveTitle}
       </h2>
-      <p className="pt-card__sub">{isKid ? text.saveSubKid : text.saveSub}</p>
+      <p className="pt-card__sub">{text.saveSub}</p>
       <SignupForm
-        defaultAgeGroup={result.setup.ageGroup}
-        submitLabel={(age) => (age === 'kid' ? text.saveButtonKid : text.saveButton)}
+        submitLabel={text.saveButton}
         // đặt cờ "áp kết quả" ngay khi gửi; đăng ký xong, hook CHỜ tiến độ tải xong rồi mới áp
         // (nếu áp sớm, bản tiến độ rỗng tải từ máy chủ sẽ đè mất kết quả)
         beforeSubmit={() => {

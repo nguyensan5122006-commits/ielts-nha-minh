@@ -179,7 +179,7 @@
   gap: var(--s-3);
 }
 
-/* hàng số liệu: lửa · chuối · cấp */
+/* hàng số liệu: lửa · cấp */
 .app-stats {
   display: flex;
   align-items: center;
@@ -203,10 +203,6 @@
 .app-stats__item:hover {
   text-decoration: none;
 }
-.app-stats__item--banana {
-  color: var(--c-gold-ink);
-}
-.app-stats__item--banana span:last-child,
 .app-stats__item--level {
   padding-top: 0.12em;
 }

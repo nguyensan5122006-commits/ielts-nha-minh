@@ -3,7 +3,7 @@
  *
  * Redesign v3: màu, chữ, bo góc, bóng đổ giờ lấy từ HỆ THIẾT KẾ MỚI
  * (src/design-system/tokens.css). Các biến cũ (--color-primary, --radius…) được
- * "nối" sang biến mới ở mục 1, nên trang cũ (đấu trường, cửa hàng, chat, thi…)
+ * "nối" sang biến mới ở mục 1, nên trang cũ (chat, trò chơi chữ, Học vui…)
  * tự đổi sang phong cách "Vinyl Toy" mà KHÔNG phải sửa code trang.
  * Trang MỚI nên dùng component trong src/design-system/ thay cho các class ở đây.
  *
@@ -11,7 +11,7 @@
  *   0. Nạp hệ thiết kế (biến, font, chuyển động)
  *   1. Biến cũ -> biến mới
  *   2. Nền tảng (phần còn riêng của trang cũ)
- *   3. Bố cục (thanh menu cũ, khung nội dung)
+ *   3. Bố cục (khung nội dung)
  *   4. Nút bấm cũ (.button) — kiểu vinyl
  *   5. Thẻ (card), huy hiệu (badge), thanh tiến độ, ô nhập
  *   6. Bài tập (dạng câu hỏi cũ)
@@ -70,82 +70,6 @@ details > summary {
 }
 
 /* ---------- 3. BỐ CỤC ---------- */
-/* (thanh menu trên cũ — redesign v3 dùng AppShell, giữ lại cho an toàn) */
-.top-navigation {
-  position: sticky;
-  top: 0;
-  z-index: 20;
-  background: color-mix(in srgb, var(--color-surface) 92%, transparent);
-  backdrop-filter: blur(8px);
-  border-bottom: 1px solid var(--color-border);
-}
-.top-navigation__inner {
-  max-width: 1180px;
-  margin: 0 auto;
-  padding: 0 24px;
-  height: 64px;
-  display: flex;
-  align-items: center;
-  gap: 24px;
-}
-.brand {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-weight: 700;
-  font-size: 1.05rem;
-  color: var(--color-text);
-  white-space: nowrap;
-}
-.brand:hover {
-  text-decoration: none;
-}
-.brand__logo {
-  width: 34px;
-  height: 34px;
-  border-radius: 10px;
-  background: var(--grad-primary);
-  color: var(--c-on-primary);
-  display: grid;
-  place-items: center;
-  font-size: 0.8rem;
-  font-weight: 800;
-}
-.nav-links {
-  display: flex;
-  gap: 4px;
-  flex: 1;
-}
-.nav-links a {
-  padding: 8px 12px;
-  border-radius: var(--radius-small);
-  color: var(--color-muted);
-  font-weight: 500;
-  font-size: 0.95rem;
-  white-space: nowrap;
-}
-.nav-links a:hover {
-  background: var(--color-surface-soft);
-  color: var(--color-text);
-  text-decoration: none;
-}
-.nav-links a.active {
-  background: var(--color-primary-soft);
-  color: var(--c-ink);
-}
-.nav-status {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  font-weight: 600;
-  white-space: nowrap;
-}
-.nav-status__streak {
-  color: var(--color-streak);
-}
-.nav-status__xp {
-  color: var(--color-primary);
-}
 .page {
   max-width: 1180px;
   margin: 0 auto;
@@ -197,21 +121,12 @@ details > summary {
 }
 
 @media (max-width: 900px) {
-  .nav-links a {
-    padding: 8px 8px;
-    font-size: 0.85rem;
-  }
   .dashboard-grid,
   .grid-3 {
     grid-template-columns: 1fr;
   }
 }
 @media (max-width: 700px) {
-  .top-navigation__inner {
-    padding: 0 16px;
-    gap: 12px;
-    overflow-x: auto;
-  }
   .page {
     padding: 20px 16px 48px;
   }
@@ -321,16 +236,6 @@ details > summary {
 }
 .button--wide {
   width: 100%;
-}
-.language-toggle {
-  border: none;
-  background: var(--c-surface-2);
-  border-radius: var(--r-pill);
-  padding: 6px 12px;
-  font-size: 0.8rem;
-  font-weight: 800;
-  cursor: pointer;
-  box-shadow: var(--gloss-top), inset 0 0 0 1px var(--c-line);
 }
 
 /* ---------- 5. THẺ, HUY HIỆU, THANH TIẾN ĐỘ, Ô NHẬP ---------- */

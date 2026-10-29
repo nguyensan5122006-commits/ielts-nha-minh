@@ -1,35 +1,32 @@
 /**
  * PlayerIdentity.tsx — HIỂN THỊ "DANH TÍNH" NGƯỜI CHƠI
- *  - PlayerAvatar : avatar emoji trong vòng tròn, có khung (mua ở cửa hàng) và chấm xanh online
- *  - PlayerName   : tên có màu (mua ở cửa hàng) + danh hiệu nhỏ bên dưới
+ *  - PlayerAvatar : avatar emoji trong vòng tròn + chấm xanh online
+ *  - PlayerName   : tên + danh hiệu nhỏ bên dưới (danh hiệu theo level tài khoản)
  *  - CardImage    : hình của thẻ Học vui (emoji hoặc cờ thật)
+ *
+ * Avatar lưu ở cột users.avatar dạng id (VD 'avatar-cat'). Chỉ còn 4 avatar miễn phí dưới đây;
+ * id khác (đồ cũ từng mua bằng chuối — tính năng đã xoá) hiện avatar mặc định 🙂.
  */
 import type { FunCardImage } from '../content/content-types'
-import { findShopItem } from '../game-economy/shop-catalog'
-import { useLanguage } from '../translations/language-context'
+
+/** id avatar -> emoji. 'avatar-smile' là mặc định của tài khoản mới (cột users.avatar). */
+const AVATAR_EMOJI: Record<string, string> = {
+  'avatar-smile': '🙂',
+  'avatar-cool': '😎',
+  'avatar-cat': '🐱',
+  'avatar-dog': '🐶',
+}
 
 interface AvatarProps {
   avatarItemId?: string | null
-  frameItemId?: string | null
   size?: number
   online?: boolean
 }
 
-export function PlayerAvatar({ avatarItemId, frameItemId, size = 40, online }: AvatarProps) {
-  const emoji = findShopItem(avatarItemId ?? '')?.value ?? '🙂'
-  const frame = frameItemId ? findShopItem(frameItemId)?.value : undefined
+export function PlayerAvatar({ avatarItemId, size = 40, online }: AvatarProps) {
+  const emoji = AVATAR_EMOJI[avatarItemId ?? ''] ?? AVATAR_EMOJI['avatar-smile']
   return (
-    <span
-      className="player-avatar"
-      style={{
-        width: size,
-        height: size,
-        fontSize: size * 0.55,
-        // có khung: viền dày tô gradient; không có: viền xám mảnh
-        padding: frame ? Math.max(2, size * 0.07) : 1,
-        background: frame ?? 'var(--color-border)',
-      }}
-    >
+    <span className="player-avatar" style={{ width: size, height: size, fontSize: size * 0.55, padding: 1, background: 'var(--color-border)' }}>
       <span className="player-avatar__inner">{emoji}</span>
       {online !== undefined && <span className={`player-avatar__dot ${online ? 'is-online' : ''}`} />}
     </span>
@@ -38,24 +35,15 @@ export function PlayerAvatar({ avatarItemId, frameItemId, size = 40, online }: A
 
 interface NameProps {
   name: string
-  nameColorItemId?: string | null
-  titleItemId?: string | null
-  /** danh hiệu theo level (khi không mua danh hiệu) */
-  fallbackTitle?: string
+  /** danh hiệu theo level tài khoản */
+  title?: string
   showTitle?: boolean
 }
 
-export function PlayerName({ name, nameColorItemId, titleItemId, fallbackTitle, showTitle = false }: NameProps) {
-  const { language } = useLanguage()
-  const color = nameColorItemId ? findShopItem(nameColorItemId)?.value : undefined
-  // danh hiệu mua lưu dạng "Tiếng Việt|English"
-  const boughtTitle = titleItemId ? findShopItem(titleItemId)?.value?.split('|')[language === 'vi' ? 0 : 1] : undefined
-  const title = boughtTitle ?? fallbackTitle
+export function PlayerName({ name, title, showTitle = false }: NameProps) {
   return (
     <span className="player-name">
-      <span className={color === 'rainbow' ? 'rainbow-text' : undefined} style={color && color !== 'rainbow' ? { color, fontWeight: 700 } : { fontWeight: 600 }}>
-        {name}
-      </span>
+      <span style={{ fontWeight: 600 }}>{name}</span>
       {showTitle && title && <span className="player-name__title">{title}</span>}
     </span>
   )

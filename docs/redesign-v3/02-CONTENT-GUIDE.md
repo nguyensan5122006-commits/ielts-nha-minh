@@ -2,7 +2,7 @@
 
 Đọc trước: `docs/redesign-v3/01-ARCHITECTURE.md`, kiểu dữ liệu `src/content/content-types.ts` (mục 7, 8 là phần mới),
 một file mẫu cũ (VD `src/content/levels/level-2-foundation/reading-lessons.ts`) để theo đúng văn phong, và
-`_research/notes/psych-adult.md` mục D (luật thiết kế bài học) hoặc `psych-kids.md` mục 12 (khu trẻ em).
+`_research/notes/psych-adult.md` mục D (luật thiết kế bài học). (Khu trẻ em đã xoá 29/10/2026.)
 
 ## Luật bắt buộc
 1. **Tự soạn 100%.** Đúng định dạng đề IELTS thật, nhưng không chép đề/bài mẫu từ sách Cambridge, British Council, IDP hay bất kỳ nguồn có bản quyền nào. Không dùng tên người thật nổi tiếng, thương hiệu thật làm nội dung chính.
@@ -43,7 +43,6 @@ một file mẫu cũ (VD `src/content/levels/level-2-foundation/reading-lessons.
 | Level 3 IELTS Writing + Speaking | `levels/level-3-ielts/writing-speaking` | `l3-i-wri-…`, `l3-i-spk-…`, chặng `u3-i…` |
 | Level 3 general (B1–B2) | `levels/level-3-general` | `l3-g-…`, chặng `u3-g…` |
 | Bài xếp lớp + test level | `exams/` | `placement-v3-…`, `level-test-…` |
-| Khu trẻ em | `kids/` | `kids-…` |
 
 ## Ghi chú thống nhất (cập nhật trong đêm)
 - `canDo` là câu đầy đủ ("Sau chặng này bạn có thể…" / "After this unit, you can…"). Giao diện KHÔNG tự thêm tiền tố.

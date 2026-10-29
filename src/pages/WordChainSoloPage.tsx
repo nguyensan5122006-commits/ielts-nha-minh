@@ -14,19 +14,16 @@ import { allFunCards } from '../content/all-fun-topics'
 import { allLessonWords } from '../content/lesson-registry'
 import { TimerBar, TimerBarIdle } from '../games/GameQuestionView'
 import { Button, Mascot, playSound } from '../design-system'
-import { BananaPill } from '../features/playground/components/BananaPill'
 import { GameArt } from '../features/playground/components/GameArt'
 import { PlayPageHeader } from '../features/playground/components/PlayPageHeader'
 import { usePlayText } from '../features/playground/playground-text'
 import { useProgress } from '../learning-progress/progress-store'
-import { useWallet } from '../player-wallet/wallet-store'
 import { api } from '../services/api-client'
 import { speak } from '../services/text-to-speech'
 import { useLanguage } from '../translations/language-context'
 import '../features/playground/styles/play-kit.css'
 import '../features/playground/styles/game.css'
-import '../features/playground/styles/battle.css'
-import '../features/playground/styles/events.css'
+import '../features/playground/styles/word-games.css'
 
 const TURN_MS = 15_000
 const COMPUTER_THINK_MS = 1200
@@ -56,7 +53,6 @@ export function WordChainSoloPage() {
   const { t } = useLanguage()
   const playText = usePlayText()
   const { recordActivity } = useProgress()
-  const { refreshWallet } = useWallet()
   const vocabulary = useMemo(computerVocabulary, [])
   const [dictionary, setDictionary] = useState<Set<string> | null>(null)
   const [phase, setPhase] = useState<'ready' | 'playing' | 'over'>('ready')
@@ -66,7 +62,7 @@ export function WordChainSoloPage() {
   const [input, setInput] = useState('')
   const [message, setMessage] = useState('')
   const [score, setScore] = useState(0)
-  const [outcome, setOutcome] = useState<{ won: boolean; reason: string; isNewRecord: boolean; bananas: number } | null>(null)
+  const [outcome, setOutcome] = useState<{ won: boolean; reason: string; isNewRecord: boolean } | null>(null)
   const inputRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
@@ -83,19 +79,16 @@ export function WordChainSoloPage() {
       playSound(won ? 'complete' : 'oops')
       recordActivity('miniGames')
       let isNewRecord = false
-      let bananas = 0
       try {
         const saved = await api.submitGameScore('word-chain', finalScore)
         // 0 điểm (lượt đầu, hết giờ chưa gõ chữ nào) không phải "kỷ lục mới" dù máy chủ coi lượt đầu là kỷ lục
         isNewRecord = saved.isNewRecord && finalScore > 0
-        bananas = saved.bananas
-        void refreshWallet()
       } catch {
         /* bỏ qua */
       }
-      setOutcome({ won, reason, isNewRecord, bananas })
+      setOutcome({ won, reason, isNewRecord })
     },
-    [recordActivity, refreshWallet],
+    [recordActivity],
   )
 
   function start() {
@@ -155,13 +148,13 @@ export function WordChainSoloPage() {
   }
 
   return (
-    <main className="page pg-page pg-page--narrow events">
+    <main className="page pg-page pg-page--narrow word-games">
       <PlayPageHeader back art="link" artPlate="primary" title={t('game_word-chain')} intro={t('gameDesc_word-chain')} />
 
       {phase === 'ready' && (
-        <section className="pg-panel ev-result">
+        <section className="pg-panel wg-result">
           <Mascot pose="thinking" size={120} />
-          <p className="ev-chain-start" aria-label="apple, egg, green, night">
+          <p className="wg-chain-start" aria-label="apple, egg, green, night">
             <span>apple</span>
             <i>→</i>
             <span>egg</span>
@@ -178,7 +171,7 @@ export function WordChainSoloPage() {
       )}
 
       {phase !== 'ready' && (
-        <section className={`gq-card bt-chain ${phase === 'playing' && turn === 'me' ? 'is-my-turn' : ''}`}>
+        <section className={`gq-card wg-chain ${phase === 'playing' && turn === 'me' ? 'is-my-turn' : ''}`}>
           <div className="gq-stage__bar">
             <span className="gq-chip">{t('wordsInChain', { n: chain.length - 1 })}</span>
             <span className="gq-score">
@@ -192,17 +185,17 @@ export function WordChainSoloPage() {
           {phase === 'playing' && (
             <>
               {turn === 'me' ? <TimerBar key={turnStartedAt} startedAt={turnStartedAt} durationMs={TURN_MS} /> : <TimerBarIdle />}
-              <div className="bt-chain__turn">
+              <div className="wg-chain__turn">
                 {turn === 'me' ? (
                   <>
-                    <span className="bt-chain__who">{t('yourTurnLetter')}</span>
-                    <span className="bt-chain__letter" key={`letter-${requiredLetter}`}>
+                    <span className="wg-chain__who">{t('yourTurnLetter')}</span>
+                    <span className="wg-chain__letter" key={`letter-${requiredLetter}`}>
                       {requiredLetter.toUpperCase()}
                     </span>
                   </>
                 ) : (
-                  <span className="bt-chain__who ev-chain-thinking">
-                    <span className="bt-waiting__dots" aria-hidden>
+                  <span className="wg-chain__who wg-chain-thinking">
+                    <span className="wg-dots" aria-hidden>
                       <i />
                       <i />
                       <i />
@@ -214,9 +207,9 @@ export function WordChainSoloPage() {
             </>
           )}
 
-          <div className="bt-chain__words" aria-live="polite">
+          <div className="wg-chain__words" aria-live="polite">
             {chain.map((item, index) => (
-              <span key={index} className={`bt-chain__word ${item.by === 'me' ? 'is-me' : item.by === 'start' ? 'is-start' : ''}`}>
+              <span key={index} className={`wg-chain__word ${item.by === 'me' ? 'is-me' : item.by === 'start' ? 'is-start' : ''}`}>
                 {item.word}
               </span>
             ))}
@@ -245,19 +238,18 @@ export function WordChainSoloPage() {
           )}
 
           {phase === 'over' && outcome && (
-            <div className="ev-result">
+            <div className="wg-result">
               <Mascot pose={outcome.won ? 'celebrate' : 'comfort'} size={120} />
               <h2>{outcome.won ? t('youWin') : t('gameOver')}</h2>
-              <p className="ev-empty">{outcome.reason}</p>
-              <div className="ev-result__score">
+              <p className="wg-empty">{outcome.reason}</p>
+              <div className="wg-result__score">
                 <strong className="ds-num">{score}</strong>
                 {outcome.isNewRecord && (
-                  <span className="ev-record">
+                  <span className="wg-record">
                     <GameArt slug="trophy" size={24} /> {t('newRecord')}
                   </span>
                 )}
               </div>
-              {outcome.bananas > 0 && <BananaPill amount={outcome.bananas} signed size="lg" />}
               <div className="pg-actions">
                 <Button variant="secondary" to="/play">
                   {playText('soloBackToPlay')}

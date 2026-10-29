@@ -1,7 +1,7 @@
 /**
  * GET /api/profile?id=<userId> — TRANG CÁ NHÂN CỦA 1 THÀNH VIÊN
- * Gom: thông tin + trang trí, tổng XP, thống kê học (đọc từ tiến độ JSON),
- * thành tích thi đấu, kỷ lục mini game, số cúp giải tuần, huy hiệu đã mở.
+ * Gom: thông tin + avatar, tổng XP, thống kê học (đọc từ tiến độ JSON),
+ * kỷ lục mini game, huy hiệu đã mở.
  * Tiến độ có thể là bản cũ (version 1: reviewCards, placement.estimatedBand) hoặc bản mới
  * (version 2: srs, placement.bandLow/bandHigh) — đọc được cả 2.
  */
@@ -22,22 +22,16 @@ interface StoredProgress {
 export const onRequestGet: ApiHandler = async ({ request, env }) => {
   const id = Number(new URL(request.url).searchParams.get('id'))
   const user = await env.DB.prepare(
-    'SELECT id, display_name AS displayName, avatar, frame, name_color AS nameColor, title, created_at AS createdAt, last_active_at AS lastActiveAt FROM users WHERE id = ?',
+    'SELECT id, display_name AS displayName, avatar, created_at AS createdAt, last_active_at AS lastActiveAt FROM users WHERE id = ?',
   )
     .bind(id)
     .first()
   if (!user) return errorResponse('Không tìm thấy thành viên', 404)
 
-  const [xp, progressRow, battles, records, trophies] = await Promise.all([
+  const [xp, progressRow, records] = await Promise.all([
     env.DB.prepare('SELECT COALESCE(SUM(amount), 0) AS total FROM xp_events WHERE user_id = ?').bind(id).first<{ total: number }>(),
     env.DB.prepare('SELECT data_json FROM learning_progress WHERE user_id = ?').bind(id).first<{ data_json: string }>(),
-    env.DB.prepare(
-      `SELECT COUNT(*) AS played, SUM(CASE WHEN winner_ids LIKE ? THEN 1 ELSE 0 END) AS won FROM battles WHERE player_ids LIKE ?`,
-    )
-      .bind(`%,${id},%`, `%,${id},%`)
-      .first<{ played: number; won: number | null }>(),
     env.DB.prepare('SELECT game, best_score AS bestScore FROM game_records WHERE user_id = ?').bind(id).all(),
-    env.DB.prepare("SELECT COUNT(*) AS n FROM banana_events WHERE user_id = ? AND reason LIKE 'weekly-rank-1%'").bind(id).first<{ n: number }>(),
   ])
 
   const progress: StoredProgress = progressRow ? JSON.parse(progressRow.data_json) : {}
@@ -60,9 +54,7 @@ export const onRequestGet: ApiHandler = async ({ request, env }) => {
       placementBand,
       ...(progress.lifetimeStats ?? {}),
     },
-    battles: { played: battles?.played ?? 0, won: battles?.won ?? 0 },
     records: records.results,
-    tournamentWins: trophies?.n ?? 0,
     achievements: progress.unlockedAchievements ?? [],
   })
 }

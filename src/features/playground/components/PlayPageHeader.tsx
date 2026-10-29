@@ -2,13 +2,13 @@
  * PlayPageHeader.tsx — ĐẦU TRANG CHUNG CỦA CÁC TRANG TRONG SÂN CHƠI
  * ----------------------------------------------------------------------------
  *   <PlayPageHeader
- *     art="trophy"                          // ảnh 3D lớn bên trái (slug Fluent Emoji)
- *     title="Giải đấu tuần"
- *     intro="1 chủ đề mỗi tuần…"
+ *     art="honeybee"                        // ảnh 3D lớn bên trái (slug Fluent Emoji)
+ *     title="Spelling Bee"
+ *     intro="Nghe từ rồi gõ đúng chính tả…"
  *     back                                  // hiện nút "← Sân chơi" (về /play)
- *     actions={<BananaPill amount={120} />} // bên phải: số chuối, nút phụ…
+ *     actions={<Button …/>}                 // bên phải: nút phụ (tuỳ chọn)
  *   />
- * Mọi trang con (đấu trường, cửa hàng, sự kiện…) dùng cùng 1 đầu trang -> người dùng
+ * Mọi trang con (trò chơi chữ, nhiệm vụ, xếp hạng, Học vui…) dùng cùng 1 đầu trang -> người dùng
  * luôn biết mình đang ở đâu và đường quay về Sân chơi (không ngõ cụt).
  * ----------------------------------------------------------------------------
  */
@@ -27,7 +27,7 @@ export interface PlayPageHeaderProps {
   intro?: ReactNode
   /** true = về /play; hoặc { to, label } để về chỗ khác (VD "← Học vui") */
   back?: boolean | { to: string; label: string }
-  /** phần bên phải (số chuối, nút) */
+  /** phần bên phải (nút phụ…) */
   actions?: ReactNode
   className?: string
 }

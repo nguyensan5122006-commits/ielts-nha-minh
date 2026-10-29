@@ -25,7 +25,7 @@ GEMINI_FALLBACK_MODEL = "gemini-flash-lite-latest"
 # Mỗi người được gọi AI tối đa bao nhiêu lần / ngày (bảo vệ quota miễn phí)
 AI_DAILY_LIMIT = "40"
 
-# Durable Object realtime (chat, online, thi đấu) nằm trong worker riêng "ielts-realtime"
+# Durable Object realtime (chat, ai đang online) nằm trong worker riêng "ielts-realtime"
 # (thư mục realtime-worker). Phải deploy worker đó TRƯỚC khi deploy trang web.
 [[durable_objects.bindings]]
 name = "FAMILY_HUB"

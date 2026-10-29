@@ -39,7 +39,6 @@ Tỉ lệ tương phản chữ ≥ 4.5:1 (chữ trên nút cam dùng `#1E2347` h
 - Giao diện & nội dung: **"Be Vietnam Pro"** (đang dùng) 400–700.
 - Bài đọc dài (Reading passage, bài mẫu Writing): **"Source Serif 4"** (đang dùng) — dễ đọc lâu.
 - Thang cỡ (desktop): 13 / 15 / **17 (body)** / 20 / 24 / 32 / 44 / 60. Line-height body 1.6; bài đọc 1.75, 18px.
-- Khu trẻ em: body 20px, nút 22px Baloo 2.
 
 ## 3. Hình khối, bóng, chất liệu ("vinyl")
 
@@ -47,7 +46,7 @@ Tỉ lệ tương phản chữ ≥ 4.5:1 (chữ trên nút cam dùng `#1E2347` h
 - Thẻ: nền trắng, viền 1px `--c-line`, bóng mềm 2 lớp `0 1px 0 rgba(30,35,71,.04), 0 10px 30px -12px rgba(30,35,71,.18)`. Thẻ nổi bật (CTA "Học tiếp"): gradient nhẹ từ `--c-primary` → `--c-primary-deep`, chữ trắng, có ảnh mascot tràn ra khỏi mép thẻ.
 - **Nút chính "vinyl"**: pill, gradient dọc (sáng trên → đậm dưới), viền trong 1px trắng 35% ở trên (highlight bóng như đồ chơi), bóng màu cùng tông phía dưới `0 8px 18px -8px <màu 60%>`. Hover: sáng hơn 4%, nâng 1px. Nhấn: `scale(.97)` + bóng ngắn lại (80ms). KHÔNG dùng kiểu đế dày border-bottom.
 - Nút phụ: nền `--c-surface-2`, chữ `--c-ink`, cùng hình pill. Nút "ghost": chỉ chữ + icon.
-- Kích thước nút: lg 56px (CTA chính), md 44px, sm 36px. Khu trẻ em tối thiểu 56px, vùng bấm ≥ 48px.
+- Kích thước nút: lg 56px (CTA chính), md 44px, sm 36px; vùng bấm ≥ 48px.
 - Viền focus: vòng 3px `--c-navy` 40% (truy cập bằng bàn phím luôn thấy).
 
 ## 4. Chuyển động & âm thanh
@@ -78,14 +77,14 @@ Tỉ lệ tương phản chữ ≥ 4.5:1 (chữ trên nút cam dùng `#1E2347` h
 | Chưa học hôm nay (nhắc) | `sleepy` |
 | Còn câu bỏ trống / ngạc nhiên | `surprised` |
 | Listening / Reading / Writing / Speaking | `listening` / `reading` / `writing` / `speaking` |
-| Khu trẻ em: vẫy chào | `wave` |
+| Vẫy chào (trang trống, chat) | `wave` |
 
 Khi file ảnh chưa có: hiện placeholder là ảnh `head` nếu có, nếu không có thì một hình tròn cam có chữ viết tắt tên mascot — không để vỡ layout.
 Tên mascot tạm: **"Ki"** (token `{mascot}` trong nội dung). Có thể đổi ở 1 chỗ: `src/design-system/mascot-name.ts`.
 
 ## 6. Bố cục desktop
 
-- Khung chính (người lớn/teen): **sidebar trái 240px** (logo đầu mascot + "IELTS Nhà Mình"; mục: Học · Ôn tập · Luyện thi · Sân chơi · Chat · Hồ sơ; dưới cùng: nút VI/EN, sáng/tối) | **nội dung** (tối đa 720px cho lộ trình) | **cột phải 340px** (chuỗi ngày + mục tiêu ngày dạng vòng, thẻ "Học tiếp", **bảng xếp hạng gia đình top 5**, "Thời điểm vàng" ôn từ, nhiệm vụ ngày).
+- Khung chính: **sidebar trái 240px** (logo đầu mascot + "IELTS Nhà Mình"; mục: Học · Ôn tập · Luyện thi · Sân chơi · Chat · Hồ sơ; dưới cùng: nút VI/EN, sáng/tối) | **nội dung** (tối đa 720px cho lộ trình) | **cột phải 340px** (chuỗi ngày + mục tiêu ngày dạng vòng, thẻ "Học tiếp", **bảng xếp hạng gia đình top 5**, "Thời điểm vàng" ôn từ, nhiệm vụ ngày).
 - ≥ 1280px: 3 cột. 1024–1279px: cột phải gập xuống dưới. < 1024px: sidebar thành thanh dưới (chuẩn bị cho bản mobile sau).
 - Màn học/thi: toàn màn, không sidebar; thanh trên chỉ có nút thoát (tự lưu), thanh tiến độ, và nút âm thanh.
 
@@ -115,8 +114,7 @@ Mỗi component: file `.tsx` + CSS cùng tên (`Button.css`), comment đầu fil
 - Khen cụ thể theo quá trình/kết quả ("Bạn nghe ra được số điện thoại rồi đó!"); cấm "thông minh/thiên tài/giỏi quá". Sai = "Chưa đúng" + bước tiếp theo.
 - Câu ngắn, ≤ 2 dòng; tiêu đề ≤ 6 từ. Không dùng ngôn ngữ gây tội lỗi khi bỏ học.
 
-## 12. Khu trẻ em (khác biệt)
-Cùng hệ màu nhưng sáng hơn: nền bầu trời gradient `#BDE7FF → #FFF3D6`, mây, đồi cỏ; nút 64px; mọi chữ tiếng Anh có loa; mascot `wave` ở góc luôn; không đồng hồ đếm ngược (trừ chế độ đua tuỳ chọn); thanh "thời gian hôm nay" mờ ở góc.
+## 12. (Đã xoá 29/10/2026 — khu trẻ em)
 
 ## 13. Phòng thi & trình kỹ năng (từ research ielts.org, IELTS Online Tests, Magoosh)
 - **2 chế độ tách bạch** trước khi làm: "Luyện tập" (không giờ hoặc tự chọn giờ, chọn phần, chữa ngay sau từng phần) và "Thi thử" (giờ thật, tự nộp khi hết giờ, chấm cuối bài).

@@ -1,7 +1,7 @@
 /**
  * placement-routes.tsx — ĐƯỜNG DẪN CỦA BÀI XẾP LỚP (khách làm được, không cần đăng nhập)
  * ----------------------------------------------------------------------------
- *   /start          chọn mục tiêu + nhóm tuổi -> bài xếp lớp thích ứng (tự lưu, tải lại làm tiếp)
+ *   /start          chọn mục tiêu -> bài xếp lớp thích ứng (tự lưu, tải lại làm tiếp)
  *   /start/result   kết quả + lộ trình + form tạo tài khoản ngay trên trang
  *
  * 2 trang chỉ tải khi mở tới (lazy) -> trang landing mở nhanh hơn.

@@ -1,7 +1,7 @@
 # Redesign v3 — Thư viện component (hướng dẫn cho các nhóm tính năng)
 
 > Xem trực tiếp mọi component (cả sáng/tối): mở web và vào **`/design`** (không cần đăng nhập).
-> Khung 3 cột mẫu: **`/design/shell`** (thêm `?kid=1` để xem menu của bé) · Màn học mẫu: **`/design/focus`**.
+> Khung 3 cột mẫu: **`/design/shell`** · Màn học mẫu: **`/design/focus`**.
 > Spec gốc: `04-DESIGN-SYSTEM.md`. File này nói **cách dùng**.
 
 ## 0. Nguyên tắc chung
@@ -31,7 +31,7 @@
 </Route>
 ```
 - ≥ 1280px: sidebar 240 | nội dung | cột phải 340. 1024–1279: cột phải xuống dưới nội dung. < 1024: thanh tab dưới.
-- Menu: Học · Ôn tập · Luyện thi · Sân chơi · Chat · Hồ sơ (tài khoản `ageGroup: 'kid'` thấy **Khu vui chơi** đầu tiên). Sửa menu ở `src/app/layout/nav-items.ts`.
+- Menu: Học · Ôn tập · Luyện thi · Sân chơi · Chat · Hồ sơ (mọi tài khoản như nhau). Sửa menu ở `src/app/layout/nav-items.ts`.
 - Trang tự đặt lề trong: nội dung chính nên tự giới hạn chiều rộng (VD lộ trình `max-width: 720px; margin: 0 auto`).
 
 ### RightRail — đặt widget vào cột phải
@@ -74,7 +74,7 @@ Route của màn này đặt **ngoài** `AppShellRoute` (không có sidebar).
 <Button variant="navy">Vào phòng thi</Button>
 <Button variant="danger">Xoá</Button>
 <Button size="lg" iconRight={<Kbd onColor>Enter</Kbd>}>Kiểm tra</Button>  // CTA 56px
-<Button size="xl">Chơi tiếp</Button>                        // khu trẻ em 64px
+<Button size="xl">Chơi tiếp</Button>                        // nút rất to 64px
 <Button to="/learn">Về lộ trình</Button>                    // thành <Link>
 <Button loading>Lưu</Button>  <Button fullWidth>…</Button>
 ```
@@ -91,7 +91,7 @@ Route của màn này đặt **ngoài** `AppShellRoute` (không có sidebar).
 ```tsx
 <Icon name="learn" />  <Icon name="volume" label="Bật âm thanh" size={24} />
 ```
-Tên có sẵn: learn, review, exam, play, chat, profile, kids, sun, moon, system, volume, volume-off, globe, close, check, exit, arrow-right, retry, chevron-down, chevron-right, flag, play-fill, pause, turtle, clock, eye, eye-off, sparkle, hint, star, star-outline, lock, plus, menu, settings. Thêm icon: sửa `ICON_PATHS` trong `Icon.tsx`.
+Tên có sẵn: learn, review, exam, play, chat, profile, sun, moon, system, volume, volume-off, globe, close, check, exit, arrow-right, retry, chevron-down, chevron-right, flag, play-fill, pause, turtle, clock, eye, eye-off, sparkle, hint, star, star-outline, lock, plus, menu, settings. Thêm icon: sửa `ICON_PATHS` trong `Icon.tsx`.
 
 ### Tabs / SegmentedControl
 ```tsx
@@ -187,7 +187,7 @@ Pose theo tình huống (bắt buộc giữ đúng để người học hiểu "
 | Chưa học hôm nay | `sleepy` |
 | Còn câu bỏ trống / ngạc nhiên | `surprised` |
 | Kỹ năng | `listening` `reading` `writing` `speaking` |
-| Khu trẻ em | `wave` |
+| Vẫy chào (trang trống, chat) | `wave` |
 
 Ảnh: `/mascot/poses/<pose>-<256|512|1024>.webp` (tự chọn theo độ nét) → thiếu thì `/mascot/head/head-192.png` → thiếu nữa thì "cún tạm" vẽ bằng CSS. Khung luôn đúng kích thước, không vỡ trang.
 
@@ -205,7 +205,7 @@ Chỉ tải thư viện `@google/model-viewer` khi file `/mascot/mascot.glb` th�
 <LevelBadge level={1} />                                     // /art/badges/level-1-512.webp hoặc khiên SVG
 <Avatar name="Thiên Thảo" emoji="🦊" size={40} ring="gold" online />
 ```
-Avatar mua ở cửa hàng vẫn dùng `PlayerAvatar` cũ (`src/components/PlayerIdentity.tsx`, đã đổi giao diện bằng CSS).
+Avatar của thành viên (cột `users.avatar`, 4 emoji miễn phí) vẫn dùng `PlayerAvatar` cũ (`src/components/PlayerIdentity.tsx`, đã đổi giao diện bằng CSS). Cửa hàng / khung / màu tên mua bằng chuối đã xoá 29/10/2026.
 
 ## 6. Phản hồi
 
@@ -270,9 +270,9 @@ const left = useCountdown(60 * 60, { running: true, onExpire: submit })
 
 ## 8. Trang cũ
 
-Các trang giữ lại (đấu trường, cửa hàng, chat, sự kiện, hồ sơ, phòng thi) **không đổi markup**: `global.css` nối biến cũ (`--color-primary`, `--radius`…) sang biến mới và vẽ lại `.button`, `.card`, `.badge`, `.option-button`, `.toast`, `.modal`… theo kiểu vinyl (mục 1 và mục 10 của `global.css`, mục 13 của `gamification.css`). Lưu ý: `--color-primary` cũ giờ là **navy** (đủ tương phản cho cả chữ lẫn nền chữ trắng); nút chính `.button--primary` được tô cam riêng.
+Các trang giữ lại (chat, trò chơi chữ, Học vui, hồ sơ, phòng thi) **không đổi markup**: `global.css` nối biến cũ (`--color-primary`, `--radius`…) sang biến mới và vẽ lại `.button`, `.card`, `.badge`, `.option-button`, `.toast`, `.modal`… theo kiểu vinyl (mục 1 và mục 10 của `global.css`, mục 5 của `gamification.css`). Lưu ý: `--color-primary` cũ giờ là **navy** (đủ tương phản cho cả chữ lẫn nền chữ trắng); nút chính `.button--primary` được tô cam riêng.
 
 ## 9. Tiện ích CSS nhỏ
 
-`ds-stack` (dọc, cách 16px) · `ds-row` (ngang) · `ds-row--between` · `ds-gap-1…7` · `ds-auto-grid` (`--min`) · `ds-eyebrow` · `ds-muted` · `ds-display` · `ds-reading` (bài đọc serif 18px) · `ds-num` (số đều cột) · `ds-visually-hidden` · `ds-kids` (chữ 20px) · hiệu ứng `ds-anim-pop|rise|fade|float|glow|squish|nudge`.
+`ds-stack` (dọc, cách 16px) · `ds-row` (ngang) · `ds-row--between` · `ds-gap-1…7` · `ds-auto-grid` (`--min`) · `ds-eyebrow` · `ds-muted` · `ds-display` · `ds-reading` (bài đọc serif 18px) · `ds-num` (số đều cột) · `ds-visually-hidden` · hiệu ứng `ds-anim-pop|rise|fade|float|glow|squish|nudge`.
 Keyframes dùng chung (motion.css): `ds-slide-up`, `ds-peek-in`, `ds-pop`, `ds-glow-breathe`, `ds-glow-drop`, `ds-shimmer`, `ds-sparkle`, `ds-float`, `ds-flame-burst`, `ds-number-flip`, `ds-nudge`.

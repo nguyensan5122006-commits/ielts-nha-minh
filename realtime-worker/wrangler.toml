@@ -1,5 +1,5 @@
 # =============================================================================
-# wrangler.toml — WORKER REALTIME (chat, online, thi đấu trực tiếp)
+# wrangler.toml — WORKER REALTIME (chat, ai đang online)
 # Deploy:  cd realtime-worker && npx wrangler deploy
 # Chạy local: npm run realtime (ở thư mục gốc)
 # =============================================================================
@@ -23,9 +23,3 @@ new_sqlite_classes = ["FamilyHub"]
 binding = "DB"
 database_name = "ielts-db"
 database_id = "d4017116-8fbd-48a9-aac5-6e3007ceb85b"
-
-# Cho phép import file .txt (từ điển) như 1 chuỗi
-[[rules]]
-type = "Text"
-globs = ["**/*.txt"]
-fallthrough = true

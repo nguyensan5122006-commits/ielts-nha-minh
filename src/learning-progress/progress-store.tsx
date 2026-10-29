@@ -14,23 +14,21 @@
  *   4. Sau 1,5 giây không có thay đổi mới -> gửi cả cục lên máy chủ (PUT /api/progress).
  *      Gửi lỗi -> thử lại sau 15 giây / khi có mạng lại / khi ẩn tab.
  *
- * Các trang không phải học (đấu trường, cửa hàng, nhiệm vụ...) vẫn dùng các hàm cũ
- * (addXp, recordActivity, markRewardClaimed...) với đúng chữ ký cũ.
+ * Các trang không phải học (trò chơi chữ, Học vui, nhiệm vụ...) dùng các hàm chung
+ * addXp, recordActivity, claimQuestReward...
  * Tài liệu đầy đủ cho các nhóm giao diện: docs/redesign-v3/03-DATA-LAYER.md
  * ----------------------------------------------------------------------------
  */
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
 import type { LevelId, SkillName, TrackId } from '../content/content-types'
-import type { ActivityMetric } from '../game-economy/quests-and-achievements'
+import type { ActivityMetric } from '../gamification/quests-and-achievements'
 import { api } from '../services/api-client'
 import { useAuth } from '../services/auth-context'
-import { normalizeAgeGroup } from '../../backend-helpers/age-groups'
 import type { SrsRating } from './fsrs-scheduler'
 import { chooseNewerProgress, migrateProgress } from './progress-migration'
 import {
   createEmptyProgress,
   type BandEstimate,
-  type KidsWordState,
   type LearningProgress,
   type LessonResume,
   type NewMistake,
@@ -59,13 +57,12 @@ export interface ProgressActions {
   setPlacementResult: (recommendedLevelOrder: number, estimatedBand: string) => void
   recordMistake: (mistake: NewMistake) => void
   setMistakeResolved: (mistakeId: string, resolved: boolean) => void
-  /** Ghi nhận 1 hoạt động cho nhiệm vụ / huy hiệu (VD xem thẻ Học vui, chơi game, thắng trận) */
+  /** Ghi nhận 1 hoạt động cho nhiệm vụ / huy hiệu (VD xem thẻ Học vui, chơi xong 1 trò chơi chữ) */
   recordActivity: (metric: ActivityMetric, amount?: number) => void
-  markRewardClaimed: (rewardKey: string) => void
+  /** Nhận thưởng nhiệm vụ: +XP (ghi cả cho bảng xếp hạng) và đánh dấu đã nhận. Nhận rồi thì bỏ qua. */
+  claimQuestReward: (rewardKey: string, xp: number) => void
   unlockAchievements: (achievementIds: string[]) => void
   setRewardedAccountLevel: (level: number) => void
-  /** Dùng món "Bảo vệ chuỗi" mua ở cửa hàng */
-  applyStreakFreeze: () => void
 
   /* ---------- v3: hồ sơ, track, xếp lớp ---------- */
   setProfile: (patch: Partial<StudyProfile>) => void
@@ -95,17 +92,6 @@ export interface ProgressActions {
   reviewSrsCard: (key: string, rating: SrsRating) => void
   /** Xong 1 phiên ôn trọn vẹn (giữ chuỗi ngày) */
   completeReviewSession: (minutes?: number) => void
-
-  /* ---------- v3: khu trẻ em ---------- */
-  /** Trả về trạng thái mới của từ + cờ "vừa thuộc" (để trao sticker) */
-  kidsAnswerWord: (wordId: string, correct: boolean, usedHint?: boolean) => { state: KidsWordState; justMastered: boolean }
-  kidsAwardSticker: (stickerId: string) => void
-  kidsUnlockOutfit: (outfitId: string) => void
-  kidsEquipOutfit: (outfitId: string) => void
-  kidsAddPlaySeconds: (seconds: number) => void
-  kidsSetStoryChapter: (chapter: number) => void
-  /** Gọi 1 lần cuối mỗi lượt chơi: kỷ lục + đếm lượt + tem tuần */
-  kidsRecordBestScore: (gameId: string, score: number) => void
 
   /** Gửi ngay lên máy chủ (VD khi bấm Esc thoát bài) */
   flushSave: () => Promise<void>
@@ -213,9 +199,8 @@ export function ProgressProvider({ children }: { children: ReactNode }) {
       return
     }
     userIdRef.current = user.id
-    const ageGroup = normalizeAgeGroup(user.ageGroup)
-    /** Chuẩn bị bản vừa tải: đồng bộ nhóm tuổi + chốt sổ chuỗi tới hôm nay */
-    const prepare = (loaded: LearningProgress) => update.settleOnLoad(update.syncAgeGroup(loaded, ageGroup))
+    /** Chuẩn bị bản vừa tải: chốt sổ chuỗi tới hôm nay */
+    const prepare = (loaded: LearningProgress) => update.settleOnLoad(loaded)
     let cancelled = false
 
     // hiện ngay bản trong máy (nếu có) cho nhanh
@@ -293,10 +278,13 @@ export function ProgressProvider({ children }: { children: ReactNode }) {
       recordMistake: (mistake) => run((p) => update.recordMistake(p, mistake)),
       setMistakeResolved: (mistakeId, resolved) => run((p) => update.setMistakeResolved(p, mistakeId, resolved)),
       recordActivity: (metric, amount = 1) => run((p) => update.bumpActivity(p, metric, amount)),
-      markRewardClaimed: (rewardKey) => run((p) => update.markRewardClaimed(p, rewardKey)),
+      claimQuestReward: (rewardKey, xp) => {
+        if (progressRef.current.claimedRewards.includes(rewardKey)) return
+        if (xp > 0) api.addXp(Math.min(xp, 200)).catch(() => {}) // ghi cho bảng xếp hạng
+        run((p) => update.claimQuestReward(p, rewardKey, xp))
+      },
       unlockAchievements: (ids) => run((p) => update.unlockAchievements(p, ids)),
       setRewardedAccountLevel: (level) => run((p) => update.setRewardedAccountLevel(p, level)),
-      applyStreakFreeze: () => run((p) => update.applyStreakFreeze(p)),
       // ----- v3 -----
       setProfile: (patch) => run((p) => update.setProfile(p, patch)),
       setTrack: (track) => run((p) => update.setTrack(p, track)),
@@ -314,17 +302,6 @@ export function ProgressProvider({ children }: { children: ReactNode }) {
       updateBandEstimate: (skill, low, high, confidence) => run((p) => update.updateBandEstimate(p, skill, low, high, confidence)),
       reviewSrsCard: (key, rating) => run((p) => update.reviewSrsCard(p, key, rating)),
       completeReviewSession: (minutes = 0) => run((p) => update.completeReviewSession(p, minutes)),
-      kidsAnswerWord: (wordId, correct, usedHint = false) => {
-        const before = progressRef.current
-        const after = commit((p) => update.kidsAnswerWord(p, wordId, correct, usedHint))
-        return { state: after.kids!.words[wordId], justMastered: update.kidsWordJustMastered(before, after, wordId) }
-      },
-      kidsAwardSticker: (stickerId) => run((p) => update.kidsAwardSticker(p, stickerId)),
-      kidsUnlockOutfit: (outfitId) => run((p) => update.kidsUnlockOutfit(p, outfitId)),
-      kidsEquipOutfit: (outfitId) => run((p) => update.kidsEquipOutfit(p, outfitId)),
-      kidsAddPlaySeconds: (seconds) => run((p) => update.kidsAddPlaySeconds(p, seconds)),
-      kidsSetStoryChapter: (chapter) => run((p) => update.kidsSetStoryChapter(p, chapter)),
-      kidsRecordBestScore: (gameId, score) => run((p) => update.kidsRecordBestScore(p, gameId, score)),
       flushSave: () => sendNow(),
     }
   }, [commit, sendNow])

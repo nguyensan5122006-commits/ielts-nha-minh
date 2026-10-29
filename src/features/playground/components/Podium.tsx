@@ -1,15 +1,15 @@
 /**
- * Podium.tsx — BỤC NHẬN GIẢI TOP 3 (kết thúc trận đấu, giải tuần trước)
+ * Podium.tsx — BỤC NHẬN GIẢI TOP 3 (bảng xếp hạng XP tuần)
  * ----------------------------------------------------------------------------
  *   <Podium
- *     entries={[{ id: 1, name: 'Bố', score: 820, avatarItemId, frameItemId, extra: <BananaPill … /> }, …]}
+ *     entries={[{ id: 1, name: 'Bố', score: 820, avatarItemId }, …]}
  *     meId={user.id}
  *   />
  * Xếp kiểu bục thật: hạng 2 bên trái, hạng 1 ở giữa (cao nhất), hạng 3 bên phải.
  * Bục mọc lên lần lượt (3 → 2 → 1) cho có không khí trao giải; giảm chuyển động thì đứng yên.
  * ----------------------------------------------------------------------------
  */
-import type { CSSProperties, ReactNode } from 'react'
+import type { CSSProperties } from 'react'
 import { PlayerAvatar } from '../../../components/PlayerIdentity'
 import { usePlayText } from '../playground-text'
 import { GameArt } from './GameArt'
@@ -19,9 +19,6 @@ export interface PodiumEntry {
   name: string
   score: number
   avatarItemId?: string | null
-  frameItemId?: string | null
-  /** dòng nhỏ dưới điểm (VD số chuối thắng/thua) */
-  extra?: ReactNode
 }
 
 const MEDALS = ['1st-place-medal', '2nd-place-medal', '3rd-place-medal']
@@ -44,7 +41,7 @@ export function Podium({ entries, meId, unit }: { entries: PodiumEntry[]; meId?:
             style={{ '--rise-delay': `${(3 - rank) * 160}ms` } as CSSProperties}
           >
             <div className="pg-podium__player">
-              <PlayerAvatar avatarItemId={entry.avatarItemId} frameItemId={entry.frameItemId} size={rank === 1 ? 72 : 56} />
+              <PlayerAvatar avatarItemId={entry.avatarItemId} size={rank === 1 ? 72 : 56} />
               <strong className="pg-podium__name">
                 {entry.name}
                 {entry.id === meId && <span className="pg-rank__me">{playText('you')}</span>}
@@ -53,7 +50,6 @@ export function Podium({ entries, meId, unit }: { entries: PodiumEntry[]; meId?:
                 {entry.score}
                 {unit && <small> {unit}</small>}
               </span>
-              {entry.extra}
             </div>
             <div className="pg-podium__block">
               <GameArt slug={MEDALS[rank - 1]} size={rank === 1 ? 44 : 36} />

@@ -6,7 +6,7 @@
  *      cho biết còn bao nhiêu XP để vượt người phía trên + nút đi học (bước tiếp theo).
  */
 import { useEffect, useState } from 'react'
-import { accountLevelFromXp } from '../game-economy/account-level'
+import { accountLevelFromXp } from '../gamification/account-level'
 import { PlayerAvatar, PlayerName } from '../components/PlayerIdentity'
 import { Button, EmptyState, SegmentedControl, Skeleton } from '../design-system'
 import { GameArt } from '../features/playground/components/GameArt'
@@ -48,7 +48,7 @@ export function LeaderboardPage() {
       {/* vị trí của bạn + bước tiếp theo */}
       {me && (
         <section className="board-me">
-          <PlayerAvatar avatarItemId={me.avatar} frameItemId={me.frame} size={56} online />
+          <PlayerAvatar avatarItemId={me.avatar} size={56} online />
           <div className="board-me__text">
             <strong>{playText('boardYourRank', { rank: myIndex + 1, total: sorted.length })}</strong>
             <span>
@@ -102,7 +102,6 @@ export function LeaderboardPage() {
                 name: member.displayName,
                 score: xpOf(member),
                 avatarItemId: member.avatar,
-                frameItemId: member.frame,
               }))}
               meId={user?.id}
               unit="XP"
@@ -114,8 +113,8 @@ export function LeaderboardPage() {
                   <RankRow
                     key={member.id}
                     rank={index + 4}
-                    name={<PlayerName name={member.displayName} nameColorItemId={member.nameColor} titleItemId={member.title} />}
-                    avatar={{ avatarItemId: member.avatar, frameItemId: member.frame, online: online.includes(member.id) }}
+                    name={<PlayerName name={member.displayName} />}
+                    avatar={{ avatarItemId: member.avatar, online: online.includes(member.id) }}
                     meta={`Lv.${level.level} · ${pick(level.title)}`}
                     value={xpOf(member)}
                     unit="XP"

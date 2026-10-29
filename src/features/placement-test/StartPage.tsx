@@ -74,7 +74,7 @@ export function StartPage() {
         via: 'beginner',
         minutesSpent: 0,
         finishedAt: new Date().toISOString(),
-        plan: { dailyGoalMinutes: defaultDailyMinutes('level-1', setup.ageGroup) },
+        plan: { dailyGoalMinutes: defaultDailyMinutes('level-1') },
       })
       navigate('/start/result')
     },
@@ -86,7 +86,6 @@ export function StartPage() {
       const current = loadDraft() ?? draft
       if (!current) return
       const minutesSpent = Math.min(30, Math.max(1, Math.round((Date.now() - new Date(current.startedAt).getTime()) / 60_000)))
-      const level = current.setup.ageGroup === 'kid' ? 'level-1' : estimate.recommendedLevel
       saveResult({
         version: 1,
         setup: current.setup,
@@ -95,7 +94,7 @@ export function StartPage() {
         via,
         minutesSpent,
         finishedAt: new Date().toISOString(),
-        plan: { dailyGoalMinutes: defaultDailyMinutes(level, current.setup.ageGroup) },
+        plan: { dailyGoalMinutes: defaultDailyMinutes(estimate.recommendedLevel) },
       })
       clearDraft()
       setFinishing(true)

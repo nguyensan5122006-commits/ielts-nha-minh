@@ -17,7 +17,7 @@ export const onRequestGet: ApiHandler = async ({ request, env, data }) => {
   if (!canAccessChannel(channel, user.id)) return errorResponse('Không có quyền xem kênh này', 403)
 
   const { results } = await env.DB.prepare(
-    `SELECT id, channel, sender_id AS senderId, kind, body, effect, created_at AS createdAt
+    `SELECT id, channel, sender_id AS senderId, kind, body, created_at AS createdAt
        FROM chat_messages WHERE channel = ? AND id < ? ORDER BY id DESC LIMIT ?`,
   )
     .bind(channel, beforeId, PAGE_SIZE)

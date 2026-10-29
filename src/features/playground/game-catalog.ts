@@ -1,17 +1,21 @@
 /**
- * game-catalog.ts — DANH SÁCH TRÒ CHƠI & SỰ KIỆN CỦA SÂN CHƠI (1 chỗ duy nhất)
+ * game-catalog.ts — DANH SÁCH TRÒ CHƠI CỦA SÂN CHƠI (1 chỗ duy nhất)
  * ----------------------------------------------------------------------------
- * Trang /play, trang Đấu trường và phòng đấu đều đọc từ đây để tên, ảnh 3D, màu
+ * Trang /play, trang hồ sơ (kỷ lục) và trang chơi đều đọc từ đây để tên, ảnh 3D, màu
  * và đường dẫn luôn khớp nhau. Chữ (tên, mô tả) vẫn lấy từ ui-text.ts cũ:
  *   t(`game_${id}`) / t(`gameDesc_${id}`)
+ * Trò chơi chữ hiện có: Spelling Bee, Nối từ (2 trò dưới đây, có kỷ lục cả nhà)
+ * + Thử thách từ mỗi ngày (/daily-word, kiểu Wordle — thẻ riêng trên trang /play).
+ * Thêm trò mới: thêm 1 dòng vào MINI_GAMES + tên vào GAMES của functions/api/games/records.ts.
  * ----------------------------------------------------------------------------
  */
-import type { LiveGameType } from '../../game-questions/realtime-protocol'
 import type { ArtPlate } from './components/GameArt'
 
+export type MiniGameId = 'spelling' | 'word-chain'
+
 export interface MiniGameInfo {
-  id: LiveGameType
-  /** trang chơi một mình */
+  id: MiniGameId
+  /** trang chơi */
   soloPath: string
   /** ảnh 3D (public/word-images/<art>.webp) */
   art: string
@@ -21,9 +25,7 @@ export interface MiniGameInfo {
 }
 
 export const MINI_GAMES: MiniGameInfo[] = [
-  { id: 'quiz', soloPath: '/games/quiz', art: 'red-question-mark', plate: 'navy', accent: 'var(--c-navy)' },
   { id: 'spelling', soloPath: '/games/spelling', art: 'honeybee', plate: 'gold', accent: 'var(--c-gold)' },
-  { id: 'sentence', soloPath: '/games/sentence', art: 'puzzle-piece', plate: 'success', accent: 'var(--c-success)' },
   { id: 'word-chain', soloPath: '/games/word-chain', art: 'link', plate: 'primary', accent: 'var(--c-primary)' },
 ]
 
@@ -31,19 +33,12 @@ export function miniGameInfo(id: string): MiniGameInfo | undefined {
   return MINI_GAMES.find((game) => game.id === id)
 }
 
-/** Ảnh 3D của 3 sự kiện + đấu trường + các khu khác trong sân chơi */
+/** Ảnh 3D của các khu trong sân chơi */
 export const PLAY_ART = {
-  arena: 'crossed-swords',
   dailyWord: 'input-latin-letters',
-  tournament: 'trophy',
-  boss: 'dragon',
-  shop: 'shopping-bags',
   quests: 'bullseye',
   badges: 'sports-medal',
   leaderboard: 'crown',
   fun: 'rainbow',
-  chat: 'speech-balloon',
-  powers: 'high-voltage',
   gift: 'wrapped-gift',
-  exams: 'memo',
 } as const

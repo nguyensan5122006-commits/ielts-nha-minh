@@ -260,7 +260,7 @@ function ButtonsSection() {
           <Button variant="navy">Vào phòng thi</Button>
           <Button variant="danger">Xoá</Button>
         </Demo>
-        <Demo label="Kích thước sm · md · lg · xl (trẻ em)">
+        <Demo label="Kích thước sm · md · lg · xl">
           <Button size="sm">Nhỏ</Button>
           <Button size="md">Vừa</Button>
           <Button size="lg" iconRight="arrow-right">
@@ -802,7 +802,7 @@ function CompareSection() {
 /** Class CSS của trang cũ (KHÔNG đổi markup) sau khi nối biến mới */
 function LegacySection() {
   return (
-    <Section id="legacy" title="Trang cũ (đã đổi áo)" intro="Các class cũ trong global.css / gamification.css — đấu trường, cửa hàng, chat, thi… tự nhận giao diện mới qua biến CSS.">
+    <Section id="legacy" title="Trang cũ (đã đổi áo)" intro="Các class cũ trong global.css / gamification.css — chat, trò chơi chữ, thi… tự nhận giao diện mới qua biến CSS.">
       <div className="sg-grid">
         <Demo label=".button">
           <button type="button" className="button button--primary">

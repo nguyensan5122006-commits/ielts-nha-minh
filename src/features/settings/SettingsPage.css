@@ -331,14 +331,6 @@
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-.st-age {
-  display: inline-block;
-  padding: 0 10px;
-  border-radius: var(--r-pill);
-  background: var(--c-olive-soft);
-  color: var(--c-olive-ink);
-  font-size: var(--fs-sm);
-}
 .st-account__actions {
   display: flex;
   flex-wrap: wrap;

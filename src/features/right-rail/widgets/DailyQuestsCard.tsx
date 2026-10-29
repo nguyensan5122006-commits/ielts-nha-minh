@@ -2,20 +2,17 @@
  * DailyQuestsCard.tsx — (f) NHIỆM VỤ HÔM NAY (dùng lại logic nhiệm vụ cũ)
  * ----------------------------------------------------------------------------
  * 3 nhiệm vụ ngày bốc theo (ngày + người dùng) — pickDailyQuests trong
- * game-economy/quests-and-achievements.ts, đếm bằng progress.questCounters (giống trang /quests).
- * Đủ chỉ tiêu -> nút "Nhận 🍌" (máy chủ cộng chuối, mỗi nhiệm vụ nhận 1 lần).
+ * gamification/quests-and-achievements.ts, đếm bằng progress.questCounters (giống trang /quests).
+ * Đủ chỉ tiêu -> nút "Nhận +XP" (claimQuestReward: cộng XP, mỗi nhiệm vụ nhận 1 lần).
  * Link "Tất cả" -> /quests (nhiệm vụ tuần, nhiệm vụ cả nhà, huy hiệu).
  * ----------------------------------------------------------------------------
  */
-import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { vietnamDay } from '../../../../backend-helpers/vietnam-time'
-import { useToast } from '../../../components/ToastCenter'
 import { Card } from '../../../design-system/components/Card'
 import { Icon } from '../../../design-system/components/Icon'
-import { pickDailyQuests } from '../../../game-economy/quests-and-achievements'
+import { pickDailyQuests } from '../../../gamification/quests-and-achievements'
 import { useProgress } from '../../../learning-progress/progress-store'
-import { useWallet } from '../../../player-wallet/wallet-store'
 import { useAuth } from '../../../services/auth-context'
 import { useLanguage } from '../../../translations/language-context'
 import { useRightRailText } from '../right-rail-text'
@@ -24,27 +21,12 @@ export function DailyQuestsCard() {
   const text = useRightRailText()
   const { pick } = useLanguage()
   const { user } = useAuth()
-  const { progress, markRewardClaimed } = useProgress()
-  const { claimReward } = useWallet()
-  const { showToast } = useToast()
-  const [claiming, setClaiming] = useState<string | null>(null)
+  const { progress, claimQuestReward } = useProgress()
   if (!user) return null
 
   const day = vietnamDay()
   const counts = progress.questCounters.day === day ? progress.questCounters.daily : {}
   const quests = pickDailyQuests(day, user.id)
-
-  async function claim(questId: string, rewardKey: string) {
-    setClaiming(rewardKey)
-    try {
-      await claimReward('daily-quest', questId)
-      markRewardClaimed(rewardKey)
-    } catch (error) {
-      showToast({ icon: '⚠️', text: (error as Error).message })
-    } finally {
-      setClaiming(null)
-    }
-  }
 
   return (
     <Card padding="sm" className="rr-card rr-quests" as="section" aria-labelledby="rr-quests-title">
@@ -79,8 +61,8 @@ export function DailyQuestsCard() {
                     <Icon name="check" size={14} strokeWidth={3} /> {text.questClaimed}
                   </span>
                 ) : (
-                  <button type="button" className="rr-quest__claim" disabled={!done || claiming === rewardKey} onClick={() => claim(quest.id, rewardKey)}>
-                    🍌 {done ? text.questClaim(quest.bananas) : quest.bananas}
+                  <button type="button" className="rr-quest__claim" disabled={!done} onClick={() => claimQuestReward(rewardKey, quest.xp)}>
+                    {done ? text.questClaim(quest.xp) : `+${quest.xp} XP`}
                   </button>
                 )}
               </div>

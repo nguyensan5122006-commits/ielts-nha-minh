@@ -1,11 +1,11 @@
 /**
  * playground-routes.tsx — ĐƯỜNG DẪN CỦA KHU "SÂN CHƠI GIA ĐÌNH"
  * ----------------------------------------------------------------------------
- * App.tsx gọi {playgroundRoutes()} bên trong khung có menu (LayoutWithNavigation).
+ * App.tsx gọi {playgroundRoutes()} bên trong khung có menu (AppShellRoute).
  * Khai báo ở đây:
  *   /play     trang sảnh Sân chơi (mới)
  *   /profile  (không có id, mục "Hồ sơ" trên menu) -> chuyển sang /profile/<id của mình>
- * Các trang cũ (/arena, /shop, /daily-word…) vẫn khai báo trong App.tsx như trước.
+ * Các trang trò chơi chữ (/daily-word, /games/spelling, /games/word-chain) khai báo trong App.tsx.
  * Trang được tải lười (lazy) -> chỉ tải code khi người dùng mở tới.
  * ----------------------------------------------------------------------------
  */

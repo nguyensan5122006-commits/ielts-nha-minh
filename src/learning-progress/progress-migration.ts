@@ -16,13 +16,14 @@
  *   - Mục tiêu ngày bằng XP -> mục tiêu bằng phút (30 XP ≈ 10 phút)
  *   - Tặng sẵn freeze cho chuỗi đang có: 1 cái / 7 ngày, tối đa 2 (luật mới tính lùi)
  *   - Ngày có XP (60 ngày gần nhất) -> danh sách ngày học (studyDates)
+ * Bỏ đi lặng lẽ (không báo lỗi) các trường đã ngừng dùng của bản v2 cũ:
+ *   - kids (khu trẻ em đã xoá), profile.ageGroup (không còn chia nhóm tuổi)
  * ----------------------------------------------------------------------------
  */
 import type { LevelId, TrackId } from '../content/content-types'
 import { levelIdFromLegacyOrder, parseBandRange, unlockedLevelsFromLegacyOrder } from '../content/legacy-levels'
 import { srsCardFromLeitnerBox } from './fsrs-scheduler'
 import {
-  createEmptyKidsProgress,
   createEmptyProgress,
   createEmptySkillStats,
   type LearningProgressV1,
@@ -148,8 +149,16 @@ function migrateV1(old: Partial<LearningProgressV1>): LearningProgressV2 {
  * v2 thiếu trường (bản lưu từ phiên bản code cũ hơn) -> điền mặc định
  * ========================================================================== */
 
-function normalizeV2(raw: Partial<LearningProgressV2>): LearningProgressV2 {
+/** Trường cũ không còn trong LearningProgressV2 nhưng có thể nằm trong bản lưu cũ. */
+type StoredV2 = Partial<LearningProgressV2> & { kids?: unknown }
+
+function normalizeV2(stored: StoredV2): LearningProgressV2 {
   const empty = createEmptyProgress()
+  // bỏ khối khu trẻ em (đã xoá) và nhóm tuổi trong hồ sơ — giữ mọi trường khác
+  const { kids: _droppedKids, ...raw } = stored
+  void _droppedKids
+  const { ageGroup: _droppedAgeGroup, ...profile } = asRecord<unknown>(raw.profile)
+  void _droppedAgeGroup
   const currentLevel = { ...empty.currentLevel, ...asRecord<LevelId>(raw.currentLevel) }
   const unlockedLevels = { ...empty.unlockedLevels }
   for (const track of TRACKS) {
@@ -162,7 +171,7 @@ function normalizeV2(raw: Partial<LearningProgressV2>): LearningProgressV2 {
     ...raw,
     version: 2,
     savedAt: typeof raw.savedAt === 'string' ? raw.savedAt : '',
-    profile: { ...empty.profile, ...asRecord(raw.profile) },
+    profile: { ...empty.profile, ...profile },
     currentLevel,
     unlockedLevels,
     lessons: asRecord(raw.lessons),
@@ -181,7 +190,6 @@ function normalizeV2(raw: Partial<LearningProgressV2>): LearningProgressV2 {
     xpByDay: asRecord(raw.xpByDay),
     placement: isObject(raw.placement) ? raw.placement : null,
     writingLog: asArray(raw.writingLog),
-    kids: isObject(raw.kids) ? { ...createEmptyKidsProgress(), ...raw.kids } : null,
     lifetimeStats: asRecord(raw.lifetimeStats),
     questCounters: { ...empty.questCounters, ...asRecord(raw.questCounters) },
     claimedRewards: asArray(raw.claimedRewards),

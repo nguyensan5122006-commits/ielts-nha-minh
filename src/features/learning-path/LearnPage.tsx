@@ -1,5 +1,5 @@
 /**
- * LearnPage.tsx — TRANG LỘ TRÌNH "TUYẾN TUẦN TRA" (/learn, cũng là trang chủ của teen/adult)
+ * LearnPage.tsx — TRANG LỘ TRÌNH "TUYẾN TUẦN TRA" (/learn, cũng là trang chủ khi đã đăng nhập)
  * ----------------------------------------------------------------------------
  * Bố cục cột giữa (tối đa 720px):
  *   1. Tiêu đề + tab track (Tiếng Anh tổng quát | Luyện thi IELTS)

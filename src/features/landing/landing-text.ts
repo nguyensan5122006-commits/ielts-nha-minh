@@ -20,7 +20,7 @@ const VI = {
   heroEyebrow: 'Web học tiếng Anh của gia đình',
   heroTitleLine1: 'Cả nhà học tiếng Anh,',
   heroTitleLine2: 'mỗi ngày một chút',
-  heroLead: 'Mỗi bài chỉ 5 phút, cún {mascot} dẫn đường từ con số 0 tới IELTS 6.5. Bé có khu trò chơi riêng.',
+  heroLead: 'Mỗi bài chỉ 5 phút, cún {mascot} dẫn đường từ con số 0 tới IELTS 6.5 — hoặc học tiếng Anh tổng quát.',
   ctaStart: 'Bắt đầu học',
   ctaResume: (n: number) => `Làm tiếp bài xếp lớp (câu ${n + 1})`,
   ctaResult: 'Xem lại kết quả xếp lớp',
@@ -57,12 +57,6 @@ const VI = {
     vocabulary: { name: 'Từ vựng', line: 'Ôn đúng lúc sắp quên' },
   },
 
-  /* ---------- khu trẻ em ---------- */
-  kidsEyebrow: 'Cho bé 9–11 tuổi',
-  kidsTitle: 'Khu trò chơi của bé',
-  kidsBody: 'Nghe và chạm, lật thẻ, xếp chữ, bóng bay chữ… Mọi từ đều có giọng đọc. Thuộc từ nào, nhận sticker từ đó.',
-  kidsPoints: ['Từ vựng Cambridge Starters–Flyers', 'Nhắc nghỉ mắt sau 30 phút', 'Không cược, không mua bán'],
-
   /* ---------- bảng xếp hạng gia đình ---------- */
   familyEyebrow: 'Cả nhà cùng học',
   familyTitle: 'Bảng xếp hạng nhà mình',
@@ -86,7 +80,7 @@ const EN: LandingText = {
   heroEyebrow: "Our family's English learning site",
   heroTitleLine1: 'English for the whole family,',
   heroTitleLine2: 'a little every day',
-  heroLead: 'Short 5-minute lessons with {mascot} the corgi as your guide — from zero to IELTS 6.5. Kids get their own games zone.',
+  heroLead: 'Short 5-minute lessons with {mascot} the corgi as your guide — from zero to IELTS 6.5, or general English.',
   ctaStart: 'Start learning',
   ctaResume: (n: number) => `Continue placement test (question ${n + 1})`,
   ctaResult: 'See my placement result',
@@ -120,10 +114,6 @@ const EN: LandingText = {
     vocabulary: { name: 'Vocabulary', line: 'Review right before you forget' },
   },
 
-  kidsEyebrow: 'For kids aged 9–11',
-  kidsTitle: 'The kids games zone',
-  kidsBody: 'Listen & tap, memory cards, spelling, word balloons… Every word is read aloud. Learn a word, earn its sticker.',
-  kidsPoints: ['Cambridge Starters–Flyers words', 'Eye-break reminder after 30 min', 'No betting, no shopping'],
 
   familyEyebrow: 'Learning together',
   familyTitle: 'Our family leaderboard',

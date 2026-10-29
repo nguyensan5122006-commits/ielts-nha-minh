@@ -32,8 +32,6 @@ export interface LevelStaircaseProps {
   currentNote?: string
   /** pose của cún "Bạn ở đây" (mặc định salute) */
   pose?: MascotPose
-  /** ẩn số band trên khối + thước (bé không dùng band — psych-adult D1 cột Y) */
-  hideBands?: boolean
   className?: string
 }
 
@@ -47,7 +45,7 @@ export function bandToRulerPosition(band: number): number {
 
 const LEVEL_TONE: Record<LevelId, string> = { 'level-1': 'olive', 'level-2': 'navy', 'level-3': 'gold' }
 
-export function LevelStaircase({ currentLevel, band, youAreHereLabel, goalLabel, currentNote, pose = 'salute', hideBands = false, className }: LevelStaircaseProps) {
+export function LevelStaircase({ currentLevel, band, youAreHereLabel, goalLabel, currentNote, pose = 'salute', className }: LevelStaircaseProps) {
   const { pick } = useLanguage()
   const currentIndex = currentLevel ? ALL_LEVELS_V3.findIndex((level) => level.id === currentLevel) : -1
   const rulerStyle = band
@@ -95,12 +93,8 @@ export function LevelStaircase({ currentLevel, band, youAreHereLabel, goalLabel,
                 </div>
                 <div className="rm-step__text">
                   <strong className="rm-step__title">{pick(level.title)}</strong>
-                  {!hideBands && (
-                    <>
-                      <span className="rm-step__band">Band {level.bandRange}</span>
-                      <span className="rm-step__band">{level.cefr}</span>
-                    </>
-                  )}
+                  <span className="rm-step__band">Band {level.bandRange}</span>
+                  <span className="rm-step__band">{level.cefr}</span>
                   {state === 'current' && currentNote && <span className="rm-step__note">{currentNote}</span>}
                 </div>
                 {/* người học đã ở Level 3: cờ mục tiêu nằm TRONG khối (phía trên đã có cún) */}
@@ -116,21 +110,19 @@ export function LevelStaircase({ currentLevel, band, youAreHereLabel, goalLabel,
         })}
       </ol>
 
-      {!hideBands && (
-        <div className={['rm-ruler', band && 'has-range'].filter(Boolean).join(' ')} style={rulerStyle} aria-hidden>
-          <div className="rm-ruler__track">
-            {band && <div className="rm-ruler__range" />}
-            {band && <div className="rm-ruler__dash" />}
-          </div>
-          <div className="rm-ruler__ticks">
-            {[0, 2, 4, GOAL_BAND].map((tick) => (
-              <span key={tick} className="rm-ruler__tick" style={{ left: `${bandToRulerPosition(tick) * 100}%` }}>
-                {tick.toFixed(1)}
-              </span>
-            ))}
-          </div>
+      <div className={['rm-ruler', band && 'has-range'].filter(Boolean).join(' ')} style={rulerStyle} aria-hidden>
+        <div className="rm-ruler__track">
+          {band && <div className="rm-ruler__range" />}
+          {band && <div className="rm-ruler__dash" />}
         </div>
-      )}
+        <div className="rm-ruler__ticks">
+          {[0, 2, 4, GOAL_BAND].map((tick) => (
+            <span key={tick} className="rm-ruler__tick" style={{ left: `${bandToRulerPosition(tick) * 100}%` }}>
+              {tick.toFixed(1)}
+            </span>
+          ))}
+        </div>
+      </div>
     </div>
   )
 }
