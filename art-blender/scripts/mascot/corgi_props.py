@@ -170,8 +170,8 @@ def heart(ctx, verbose):
 
 def book(ctx, verbose):
     """Sách mở cầm 2 tay: gáy sách quay ra trước, 2 bìa tím mở hình chữ V, ruột giấy kem, sao vàng trên bìa."""
-    S = ctx["chest_front"] + np.array([0.0, -0.40, 0.06])
-    W, H = 0.20, 0.30
+    S = ctx["chest_front"] + np.array([0.0, -0.47, 0.06])
+    W, H = 0.26, 0.36
     covers, pages, stars = Model("covers"), Model("pages"), Model("book_stars")
     th = math.radians(56.0)
     for s in (-1, 1):
@@ -208,10 +208,10 @@ def notepad(ctx, verbose):
     R = a["paw_R"]
     palm = -R[:, 1]
     pr = ctx["P"]["paw_r"]
-    c = a["paw"] + palm * (pr[1] + 0.018) + R[:, 2] * 0.03
+    c = a["paw"] + palm * (pr[1] + 0.018) + R[:, 2] * 0.04
     Rn = np.stack([R[:, 0], -palm, R[:, 2]], axis=1)
-    cover = RoundBox(c, (0.12, 0.012, 0.15), 0.008, rot=Rn)
-    page = RoundBox(c + palm * 0.016, (0.108, 0.008, 0.138), 0.005, rot=Rn)
+    cover = RoundBox(c, (0.15, 0.013, 0.19), 0.009, rot=Rn)
+    page = RoundBox(c + palm * 0.017, (0.136, 0.008, 0.176), 0.005, rot=Rn)
     return {
         "notepad_cover": _mesh(ctx, "Notepad_Cover", cover, 0.002, _vinyl(ctx, "Writing", COLORS["writing"]), verbose),
         "notepad_page": _mesh(ctx, "Notepad_Page", page, 0.002, _vinyl(ctx, "Paper", COLORS["paper"], 0.6, 0.1), verbose),
@@ -230,9 +230,9 @@ def pencil(ctx, verbose):
     except KeyError:
         pass
     c = a["paw"]
-    r = 0.030
-    body_a, body_b = c - axis * 0.13, c + axis * 0.17
-    body = _round_cylinder((body_a + body_b) / 2, axis, r, 0.15, 0.006)
+    r = 0.036
+    body_a, body_b = c - axis * 0.14, c + axis * 0.22
+    body = _round_cylinder((body_a + body_b) / 2, axis, r, 0.18, 0.007)
     wood = RoundCone(body_b, body_b + axis * 0.085, r * 0.95, 0.007)
     tip = Sphere(body_b + axis * 0.085, 0.010)
     ferrule = _round_cylinder(body_a - axis * 0.018, axis, r * 1.05, 0.022, 0.004)
@@ -253,9 +253,9 @@ def mic(ctx, verbose):
     mouth = hf.point(hi["mouth_p"])
     axis = _norm(mouth - a["paw"])
     c = a["paw"]
-    handle = RoundCone(c - axis * 0.11, c + axis * 0.10, 0.030, 0.040)
-    ring = _round_cylinder(c + axis * 0.115, axis, 0.050, 0.018, 0.008)
-    ball = Sphere(c + axis * 0.19, 0.078)
+    handle = RoundCone(c - axis * 0.17, c + axis * 0.10, 0.030, 0.042)
+    ring = _round_cylinder(c + axis * 0.12, axis, 0.054, 0.018, 0.008)
+    ball = Sphere(c + axis * 0.20, 0.088)
     gray = _mat(ctx, "MicMesh", lambda: M.make_glossy("M_Prop_MicMesh", COLORS["mic_mesh"], roughness=0.45, coat=0.2,
                                                       bump_scale=220.0, bump_strength=0.35))
     return {
@@ -266,13 +266,16 @@ def mic(ctx, verbose):
 
 
 def confetti(ctx, verbose):
-    """Hoa giấy ăn mừng: sao vàng + dải giấy cong + hạt tròn nhiều màu, rải quanh nửa trên (cố định, không ngẫu nhiên)."""
+    """
+    Hoa giấy ăn mừng: sao vàng + dải giấy cong + hạt tròn nhiều màu, rải quanh nửa trên (cố định, không ngẫu nhiên).
+    Mỗi mảnh dựng thành lưới RIÊNG trên lưới mẫu nhỏ của nó: gộp chung 1 model thì hộp bao phủ cả người
+    → lưới mẫu 2 mm có >100 triệu điểm → hết RAM (đã gặp).
+    """
     hc_w = ctx["head_frame"].point(ctx["head_info"]["hc"])
     rng = np.random.default_rng(7)
-    groups = {i: Model(f"confetti_{i}") for i in range(len(COLORS["confetti"]))}
-    stars = Model("confetti_stars")
     spots = [(-0.92, 0.05), (-0.80, 0.50), (-0.60, 0.78), (0.62, 0.80), (0.85, 0.46), (0.93, 0.02),
              (-0.95, -0.42), (0.95, -0.40), (-0.34, 0.92), (0.30, 0.95), (-0.78, -0.80), (0.80, -0.78)]
+    objs = {}
     for i, (dx, dz) in enumerate(spots):
         c = hc_w + np.array([dx, -0.25 + rng.uniform(-0.1, 0.1), dz * 0.85])
         kind = i % 3
@@ -282,22 +285,19 @@ def confetti(ctx, verbose):
             def sfn(Q, c=c, R=R):
                 q = (Q - c) @ R
                 return smax(sd2_star5(q[:, 0], q[:, 1], 0.065, 0.48), np.abs(q[:, 2]) - 0.012, 0.008)
-            stars.union(Lambda(sfn, c - 0.1, c + 0.1))
+            piece, mat = Lambda(sfn, c - 0.09, c + 0.09), ctx["mats"]["gold"]
         elif kind == 1:  # dải giấy cong (nửa vòng xuyến)
             R = rotation_matrix(rng.uniform(0, 180), rng.uniform(0, 180), rng.uniform(0, 180))
-            tor = Torus(c, 0.045, 0.012, rot=R, scale_xy=(1.0, 0.6))
-            half = Lambda(lambda Q, c=c, R=R: ((Q - c) @ R)[:, 0], c - 0.1, c + 0.1)
-            m = Model("rib")
-            m.union(tor)
-            m.intersect(half, k=0.0)
-            groups[i % len(groups)].union(m)
+            piece = Model(f"ribbon_{i}")
+            piece.union(Torus(c, 0.045, 0.012, rot=R, scale_xy=(1.0, 0.6)))
+            piece.intersect(Lambda(lambda Q, c=c, R=R: ((Q - c) @ R)[:, 0], c - 0.1, c + 0.1), k=0.0)
+            color = COLORS["confetti"][i % len(COLORS["confetti"])]
+            mat = _vinyl(ctx, f"Confetti{i % len(COLORS['confetti'])}", color)
         else:            # hạt tròn
-            groups[i % len(groups)].union(Sphere(c, 0.028))
-    objs = {"confetti_stars": _mesh(ctx, "Confetti_Stars", stars, 0.002, ctx["mats"]["gold"], verbose)}
-    for i, g in groups.items():
-        if g.ops:
-            objs[f"confetti_{i}"] = _mesh(ctx, f"Confetti_{i}", g, 0.002,
-                                          _vinyl(ctx, f"Confetti{i}", COLORS["confetti"][i]), verbose)
+            piece = Sphere(c, 0.028)
+            color = COLORS["confetti"][i % len(COLORS["confetti"])]
+            mat = _vinyl(ctx, f"Confetti{i % len(COLORS['confetti'])}", color)
+        objs[f"confetti_{i}"] = _mesh(ctx, f"Confetti_{i:02d}", piece, 0.002, mat, verbose)
     return objs
 
 

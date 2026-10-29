@@ -1,7 +1,8 @@
 /**
  * POST /api/auth/register — ĐĂNG KÝ TÀI KHOẢN
  * Body: { username, displayName, password, inviteCode, ageGroup? }
- * Chỉ người có mã mời gia đình (INVITE_CODE) mới đăng ký được.
+ * Có đặt bí mật INVITE_CODE -> chỉ người có mã mời gia đình mới đăng ký được.
+ * KHÔNG đặt INVITE_CODE -> ai cũng đăng ký được (form tự ẩn ô mã, xem signup-options.ts).
  * ageGroup (v3): 'kid' | 'teen' | 'adult' — không gửi thì là 'adult'; gửi giá trị lạ thì báo lỗi.
  */
 import { errorResponse, jsonResponse, type ApiHandler } from '../../../backend-helpers/server-environment'
@@ -20,9 +21,9 @@ export const onRequestPost: ApiHandler = async ({ request, env }) => {
   const displayName = (body.displayName ?? '').trim() || username
   const password = body.password ?? ''
 
-  // 1. Kiểm tra mã mời
-  if (!env.INVITE_CODE) return errorResponse('Máy chủ chưa cấu hình INVITE_CODE', 500)
-  if ((body.inviteCode ?? '').trim() !== env.INVITE_CODE.trim()) {
+  // 1. Kiểm tra mã mời (chỉ khi chủ nhà có đặt mã)
+  const inviteCode = env.INVITE_CODE?.trim()
+  if (inviteCode && (body.inviteCode ?? '').trim() !== inviteCode) {
     return errorResponse('Mã mời không đúng / Wrong invite code', 403)
   }
 

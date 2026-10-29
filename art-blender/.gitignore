@@ -5,3 +5,7 @@
 __pycache__/
 # Thư viện Node của tools/ (cài lại bằng: cd tools && npm install)
 tools/node_modules/
+# File .blend của mascot rất nặng (100+ MB mỗi file) và dựng lại được 100% bằng script
+# (build_and_render_concept.py, render_poses.py --save-blend) → không đưa vào git
+blend-files/mascot_concept_*.blend
+blend-files/poses/

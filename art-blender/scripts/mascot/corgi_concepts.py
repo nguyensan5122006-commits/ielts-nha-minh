@@ -31,7 +31,7 @@ PALETTE_BASE = {
     "red": (0.48, 0.006, 0.014),           # ~ #B8101E đỏ (băng mũ, ve áo) — đậm để AgX không thành hồng san hô
     "gold": (1.0, 0.70, 0.26),             # vàng kim loại
     "gold_paint": (0.95, 0.62, 0.10),      # ~ #F9D05A vàng sơn (cầu vai)
-    "visor": (0.010, 0.010, 0.013),        # đen satin
+    "visor": (0.008, 0.009, 0.020),        # đen ánh xanh navy, satin mờ (bóng quá → trông như tấm bạc)
     "belt": (0.11, 0.045, 0.018),          # ~ #5C3B24 nâu da
     "eye_iris": (0.045, 0.016, 0.006),     # quầng nâu RẤT tối ở đáy mắt đen (A, C) — B có màu riêng
 }
@@ -233,7 +233,7 @@ CONCEPT_C = {
     "cap_off": (0.0, -0.04, 0.26), "cap_pitch": -6.0, "cap_roll": -4.0, "cap_scale": 1.15,
     "band_r": (0.425, 0.385), "band_h": 0.12,
     "crown_r": (0.49, 0.47, 0.095),
-    "emblem_r": 0.100,
+    "emblem_r": 0.100, "emblem_lift": 0.0,
     "buckle_star": True,
 }
 

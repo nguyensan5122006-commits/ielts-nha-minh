@@ -395,6 +395,9 @@ function BalloonQuestion({ item, session, onReact, correctBubbles, calmLineSaid 
               solved && isTarget && 'is-popped',
               solved && !isTarget && 'is-away',
               revealed && isTarget && 'is-revealed',
+              // QA: bóng đúng lúc "hiện đáp án" có thể đang nằm sau thanh nghe / đã bay quá mép trên màn hình
+              // -> "đỗ" bóng ở giữa trời (giữ cả lúc nổ, không nhảy về chỗ cũ) để bé thấy và bấm được.
+              hint.step === 'reveal' && isTarget && 'is-parked',
             ]
             return (
               <button

@@ -68,7 +68,8 @@ export function StudyHeatmap({ progress, weeks = 18 }: { progress: LearningProgr
 
   // nhãn tháng: đặt ở cột (tuần) chứa ngày mùng 1 — mỗi tháng đúng 1 nhãn; cột đầu tiên luôn có nhãn
   const monthLabels = columns.map((column, week) => {
-    const firstOfMonth = column.find((cell) => cell.day.endsWith('-01'))
+    // (QA) bỏ qua mùng 1 còn ở tương lai: hôm nay 29/10 mà cột tuần này (có 1/11) lại ghi "Th11" thì rối
+    const firstOfMonth = column.find((cell) => cell.day.endsWith('-01') && cell.day <= today)
     if (firstOfMonth) return text.monthShort(Number(firstOfMonth.day.slice(5, 7)))
     return week === 0 ? text.monthShort(Number(column[0].day.slice(5, 7))) : ''
   })

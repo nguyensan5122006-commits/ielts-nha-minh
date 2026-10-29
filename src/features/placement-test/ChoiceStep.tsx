@@ -81,7 +81,10 @@ export function ChoiceStep({ onStartTest, onStartFromZero }: ChoiceStepProps) {
     const onKey = (event: globalThis.KeyboardEvent) => {
       if (event.key !== 'Enter' || !setup) return
       const target = event.target as HTMLElement
-      if (target.closest('button, a, input, select, textarea')) return
+      // (QA) bấm chuột chọn thẻ xong thì con trỏ vẫn nằm trên thẻ (role="radio") -> Enter vẫn phải
+      // bắt đầu bài, không "bấm lại" thẻ đó. Các nút / ô nhập khác thì để Enter làm việc của chúng.
+      if (target.closest('button:not([role="radio"]), a, input, select, textarea')) return
+      event.preventDefault()
       onStartTest(setup)
     }
     window.addEventListener('keydown', onKey)

@@ -9,6 +9,7 @@
  *     node render_mascot_all.mjs --poses salute,happy,head        # chỉ vài tư thế
  *     node render_mascot_all.mjs --jobs 2 --no-publish            # 2 tiến trình, chưa chép lên web
  *     node render_mascot_all.mjs --draft --no-publish             # bản nháp nhanh để xem thử
+ *     node render_mascot_all.mjs --save-blend                     # lưu thêm .blend từng tư thế (blend-files/poses/)
  *
  * VÌ SAO CHẠY SONG SONG? Bước dựng hình (SDF → lưới) chạy bằng CPU và chỉ dùng 1 lõi; máy có 8 lõi
  * nên 3 tiến trình nhanh hơn ~2.5 lần. Mỗi tiến trình chỉ dùng ~1–1.5 GB VRAM khi render (card 8 GB).
@@ -42,7 +43,10 @@ poses.forEach((p, i) => buckets[i % buckets.length].push(p));
 
 function run(cmd, cmdArgs, label) {
   return new Promise((resolve, reject) => {
-    const child = spawn(cmd, cmdArgs, { stdio: ["ignore", "pipe", "pipe"] });
+    // Giới hạn numpy (thư viện BLAS) dùng 1 luồng / tiến trình. Mặc định mỗi tiến trình mở ~16 luồng
+    // → 3 tiến trình giành nhau 8 lõi, chậm hơn cả chạy 1 tiến trình (đã gặp: render 512 px mất 5 phút).
+    const env = { ...process.env, OMP_NUM_THREADS: "1", OPENBLAS_NUM_THREADS: "1", MKL_NUM_THREADS: "1" };
+    const child = spawn(cmd, cmdArgs, { stdio: ["ignore", "pipe", "pipe"], env });
     const onData = (buf) => {
       for (const line of buf.toString().split(/\r?\n/)) {
         if (/\[poses\]|Traceback|Error/.test(line)) console.log(`[${label}] ${line.trim()}`);
@@ -60,6 +64,7 @@ await Promise.all(buckets.map((list, i) => {
   const a = ["--background", "--factory-startup", "--python", SCRIPT, "--",
     "--concept", CONCEPT, "--uniform", UNIFORM, "--poses", list.join(","), "--samples", SAMPLES, "--size", SIZE];
   if (has("--draft")) a.push("--draft");
+  if (has("--save-blend")) a.push("--save-blend");   // lưu .blend từng tư thế → đổi ánh sáng sau này khỏi dựng lại
   return run(BLENDER, a, `blender-${i + 1}`);
 }));
 console.log(`Render xong sau ${((Date.now() - t0) / 60000).toFixed(1)} phút`);

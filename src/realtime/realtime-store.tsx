@@ -256,7 +256,8 @@ export function RealtimeProvider({ children }: { children: ReactNode }) {
     // số tin chưa đọc lúc mới vào
     api
       .getChatUnread()
-      .then((data) => setUnread(data.unread))
+      // kênh đang mở (VD vào thẳng /chat) thì giữ 0 — kết quả tải về muộn không được ghi đè lại số cũ
+      .then((data) => setUnread(openChannelRef.current ? { ...data.unread, [openChannelRef.current]: 0 } : data.unread))
       .catch(() => {})
 
     return () => {

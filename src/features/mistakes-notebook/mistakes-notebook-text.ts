@@ -144,11 +144,12 @@ const EN: MistakesText = {
   title: 'Turn mistakes into right answers',
   intro: 'Every question you missed is kept here. Get it right once and it counts as a mistake fixed.',
 
-  heroOpen: (n) => `${n} questions to fix`,
+  // (QA) tiếng Anh: 1 thì số ít (1 card / 1 mistake), từ 2 trở lên mới thêm -s
+  heroOpen: (n) => `${n} ${n === 1 ? 'question' : 'questions'} to fix`,
   heroMinutes: (m) => `about ${m} min`,
   heroRoundNote: (n) => `Up to ${n} per round, oldest mistakes first.`,
   practiceCta: 'Retry mistakes',
-  fixedCount: (n) => `${n} mistakes fixed`,
+  fixedCount: (n) => `${n} ${n === 1 ? 'mistake' : 'mistakes'} fixed`,
   fixedRingLabel: (fixed, total) => `Fixed ${fixed} of ${total} mistakes`,
   allFixedTitle: 'Every mistake is fixed',
   allFixedText: 'Nothing left to fix. Keep learning to meet new challenges.',
@@ -178,7 +179,7 @@ const EN: MistakesText = {
   sourceMiniTest: 'Quick check',
   sourceExam: 'Test',
   sourceReview: 'Review',
-  questionsCount: (n) => `${n} questions`,
+  questionsCount: (n) => `${n} ${n === 1 ? 'question' : 'questions'}`,
   showMore: (n) => `Show ${n} more`,
   showLess: 'Show less',
   listenAudio: 'Play the audio',
@@ -239,7 +240,7 @@ const EN: MistakesText = {
   practiceDoneTitle: (fixed, total) => (fixed === total ? `All ${total} mistakes fixed!` : `You fixed ${fixed}/${total} mistakes`),
   practiceDoneText: (left) =>
     left === 0 ? "They're scheduled for a later review so they stick." : `${left} still need work and stay in the book — next round will be easier.`,
-  fixedTotal: (n) => `${n} mistakes fixed in total`,
+  fixedTotal: (n) => `${n} ${n === 1 ? 'mistake' : 'mistakes'} fixed in total`,
   stepRetryLeft: (n) => `Retry the ${n} left`,
   stepRetryLeftMeta: 'Right now, while it is fresh',
   stepMoreMistakes: (n) => `Fix ${n} more`,

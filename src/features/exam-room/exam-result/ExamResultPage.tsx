@@ -17,7 +17,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { findLevelInfo, LEVEL_ORDER } from '../../../content/all-levels'
 import { levelIdFromLegacyOrder } from '../../../content/legacy-levels'
 import { Badge, Button, Card, EmptyState, Icon, ProgressRing, SkillIcon, Skeleton } from '../../../design-system'
-import { api } from '../../../services/api-client'
+import { api, ApiError } from '../../../services/api-client'
 import { useLanguage } from '../../../translations/language-context'
 import { QUESTION_TYPE_NAMES, useExamUiText } from '../../exam-ui/exam-ui-text'
 import { AiResultView } from '../../skill-writing/feedback/AiResultView'
@@ -28,29 +28,31 @@ import { bandName, skillTextKey, useExamRoomText } from '../exam-room-text'
 import '../exam-room.css'
 import './exam-result.css'
 
-type LoadState = { status: 'loading' } | { status: 'error' } | { status: 'ready'; result: StoredExamResult; createdAt: string | null; isLocal: boolean }
+// 'error' + notFound=false = lỗi tạm (mất mạng, máy chủ bận) -> cho "Thử lại" thay vì báo "không tìm thấy" (ngõ cụt)
+type LoadState = { status: 'loading' } | { status: 'error'; notFound: boolean } | { status: 'ready'; result: StoredExamResult; createdAt: string | null; isLocal: boolean }
 
 export function ExamResultPage() {
   const { resultId = '' } = useParams()
   const text = useExamRoomText()
   const [state, setState] = useState<LoadState>({ status: 'loading' })
+  const [attempt, setAttempt] = useState(0) // tăng lên = tải lại (nút "Thử lại")
 
   useEffect(() => {
     let alive = true
     if (resultId === 'local') {
       const local = readLocalResult()
-      setState(local ? { status: 'ready', result: local, createdAt: local.finishedAt, isLocal: true } : { status: 'error' })
+      setState(local ? { status: 'ready', result: local, createdAt: local.finishedAt, isLocal: true } : { status: 'error', notFound: true })
       return
     }
     setState({ status: 'loading' })
     api
       .getExamResult(Number(resultId))
       .then((data) => alive && setState({ status: 'ready', result: data.result as StoredExamResult, createdAt: data.createdAt, isLocal: false }))
-      .catch(() => alive && setState({ status: 'error' }))
+      .catch((error: unknown) => alive && setState({ status: 'error', notFound: error instanceof ApiError && (error.status === 404 || error.status === 400) }))
     return () => {
       alive = false
     }
-  }, [resultId])
+  }, [resultId, attempt])
 
   if (state.status === 'loading') {
     return (
@@ -64,7 +66,20 @@ export function ExamResultPage() {
   if (state.status === 'error') {
     return (
       <div className="xr-page">
-        <EmptyState pose="thinking" title={text('resultNotFound')} text={text('resultNotFoundText')} action={<Button to="/exams">{text('backToExams')}</Button>} />
+        {state.notFound ? (
+          <EmptyState pose="thinking" title={text('resultNotFound')} text={text('resultNotFoundText')} action={<Button to="/exams">{text('backToExams')}</Button>} />
+        ) : (
+          <EmptyState
+            pose="thinking"
+            title={text('resultLoadFailed')}
+            text={text('resultLoadFailedText')}
+            action={
+              <Button iconLeft="review" onClick={() => setAttempt((n) => n + 1)}>
+                {text('retry')}
+              </Button>
+            }
+          />
+        )}
       </div>
     )
   }
@@ -300,7 +315,8 @@ function SkillTile({ section, reviewTo, speakingSkipped }: { section: ResultSect
         <SkillIcon skill={section.skill} size={36} />
         <span className="xr-skill-tile__name">
           <strong>{text(skillTextKey(section.skill))}</strong>
-          <span>{section.title}</span>
+          {/* tên phần tiếng Anh của đề — bỏ khi trùng tên kỹ năng (giao diện EN: "Listening / Listening") */}
+          {section.title.toLowerCase() !== text(skillTextKey(section.skill)).toLowerCase() && <span>{section.title}</span>}
         </span>
       </div>
       {typeof section.band === 'number' ? (

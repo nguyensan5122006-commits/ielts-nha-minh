@@ -465,14 +465,17 @@ export function kidsEquipOutfit(progress: LearningProgress, outfitId: string): L
   return withKids(progress, (kids) => (outfitId === 'classic' || kids.outfits.includes(outfitId) ? { ...kids, equippedOutfit: outfitId } : kids))
 }
 
-/** Cộng thời gian chơi hôm nay (giây) + đóng tem tuần. */
+/**
+ * Cộng thời gian chơi hôm nay (giây). KHÔNG đóng tem tuần ở đây (QA 29/10): trước đây chỉ cần mở sảnh,
+ * rê chuột 20 giây là có tem -> tem mất ý nghĩa "ngày có chơi". Tem tuần do kidsRecordBestScore đóng
+ * khi bé chơi xong 1 lượt.
+ */
 export function kidsAddPlaySeconds(progress: LearningProgress, seconds: number, now = new Date()): LearningProgress {
   if (!(seconds > 0)) return progress
   const today = todayString(now)
   return withKids(progress, (kids) => ({
     ...kids,
     playSecondsByDay: keepRecentDays({ ...kids.playSecondsByDay, [today]: (kids.playSecondsByDay[today] ?? 0) + Math.round(seconds) }, KIDS_DAYS_KEPT),
-    weeklyStamps: stampToday(kids, now),
   }))
 }
 

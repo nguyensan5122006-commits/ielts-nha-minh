@@ -150,6 +150,9 @@ def main():
         else:
             fixed_camera(cam, z0, z1, az, ELEVATION)
             catcher.hide_render = False
+        blob = bpy.data.objects.get(catcher.get("blob", ""))
+        if blob:
+            blob.hide_render = catcher.hide_render      # bóng giả dưới chân đi cùng mặt bắt bóng
         sec = render_still(label=f"{P['key']}-{name}")
         base = os.path.join(args["out_dir"], name)
         save_render_outputs(base, webp=False)

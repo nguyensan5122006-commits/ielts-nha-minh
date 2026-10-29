@@ -20,7 +20,7 @@ import { Button } from '../../../design-system/components/Button'
 import { EmptyState } from '../../../design-system/components/EmptyState'
 import { IconButton } from '../../../design-system/components/IconButton'
 import { SegmentedControl } from '../../../design-system/components/SegmentedControl'
-import { api } from '../../../services/api-client'
+import { api, ApiError } from '../../../services/api-client'
 import { useLanguage } from '../../../translations/language-context'
 import { useExamDisplay, type ExamDisplay } from '../../exam-ui/ExamDisplaySettings'
 import { EvidenceStrip } from '../../exam-ui/EvidenceReview'
@@ -34,7 +34,7 @@ import { SplitPane } from '../../exam-ui/SplitPane'
 import { scrollBlockIntoView } from '../../exam-ui/text-selection'
 import { ReadingPassageView } from '../../skill-reading/ReadingPassageView'
 import '../../skill-reading/ReadingTaskPlayer.css'
-import { formatAudioTime, useExamAudio } from '../exam-audio'
+import { formatAudioTime, scriptDuration, useExamAudio } from '../exam-audio'
 import { readLocalResult, type StoredExamResult } from '../exam-grading'
 import { partBlocks, passageForView, transcriptLines } from '../exam-part-content'
 import { buildResultView, type ResultPartView, type ResultSectionView } from '../exam-result-model'
@@ -47,28 +47,49 @@ import './exam-result.css'
 export function ExamReviewPage() {
   const { resultId = '' } = useParams()
   const text = useExamRoomText()
-  const [result, setResult] = useState<StoredExamResult | null | 'error'>(null)
+  // 'not-found' = thật sự không có (404) · 'error' = lỗi tạm (mạng / máy chủ bận) -> có nút "Thử lại"
+  const [result, setResult] = useState<StoredExamResult | null | 'error' | 'not-found'>(null)
+  const [attempt, setAttempt] = useState(0)
 
   useEffect(() => {
     let alive = true
     if (resultId === 'local') {
-      setResult(readLocalResult() ?? 'error')
+      setResult(readLocalResult() ?? 'not-found')
       return
     }
+    setResult(null)
     api
       .getExamResult(Number(resultId))
       .then((data) => alive && setResult(data.result as StoredExamResult))
-      .catch(() => alive && setResult('error'))
+      .catch((error: unknown) => alive && setResult(error instanceof ApiError && (error.status === 404 || error.status === 400) ? 'not-found' : 'error'))
     return () => {
       alive = false
     }
-  }, [resultId])
+  }, [resultId, attempt])
 
   if (result === null) return <div className="xr-fullscreen-empty" aria-busy="true" />
-  if (result === 'error') {
+  if (result === 'not-found' || result === 'error') {
     return (
       <div className="xr-fullscreen-empty">
-        <EmptyState pose="thinking" title={text('resultNotFound')} text={text('resultNotFoundText')} action={<Button to="/exams">{text('backToExams')}</Button>} />
+        {result === 'not-found' ? (
+          <EmptyState pose="thinking" title={text('resultNotFound')} text={text('resultNotFoundText')} action={<Button to="/exams">{text('backToExams')}</Button>} />
+        ) : (
+          <EmptyState
+            pose="thinking"
+            title={text('resultLoadFailed')}
+            text={text('resultLoadFailedText')}
+            action={
+              <div className="xr-hero__actions">
+                <Button variant="secondary" to="/exams">
+                  {text('backToExams')}
+                </Button>
+                <Button iconLeft="review" onClick={() => setAttempt((n) => n + 1)}>
+                  {text('retry')}
+                </Button>
+              </div>
+            }
+          />
+        )}
       </div>
     )
   }
@@ -217,6 +238,17 @@ function ReviewPartScreen({ title, display, section, sections, part, answers, cu
   /* ---------- nghe lại Part (lời thoại đã mở) ---------- */
   const audio = useExamAudio()
   const playing = audio.view.status === 'playing' || audio.view.status === 'loading'
+  // thời lượng file mp3 của Part — để hiện "0:00 / 0:38" ngay cả khi chưa bấm phát (trước đây hiện "0:00 / 0:00")
+  const [clipSeconds, setClipSeconds] = useState<number | null>(null)
+  const audioScript = part.part.audioScript
+  useEffect(() => {
+    let alive = true
+    setClipSeconds(null)
+    if (audioScript) void scriptDuration(audioScript).then((seconds) => alive && setClipSeconds(seconds))
+    return () => {
+      alive = false
+    }
+  }, [audioScript])
 
   const questionsPane = (
     <div className="xr-qpane">
@@ -286,7 +318,7 @@ function ReviewPartScreen({ title, display, section, sections, part, answers, cu
         <span className="xr-transcript__player-text">
           <strong>{text('listenAgain')}</strong>
           <span className="ds-num">
-            {formatAudioTime(audio.view.key === part.key ? audio.view.currentTime : 0)} / {formatAudioTime(audio.view.key === part.key ? audio.view.duration : 0)}
+            {formatAudioTime(audio.view.key === part.key ? audio.view.currentTime : 0)} / {formatAudioTime(audio.view.key === part.key ? audio.view.duration : (clipSeconds ?? 0))}
           </span>
         </span>
         <div className="xr-listen__bar is-seekable" onClick={(event) => {

@@ -609,6 +609,19 @@
   }
 }
 
+/* ≤ 1023px có thanh tab dưới (AppShell.css: cao 68px, cách đáy 12px) -> đưa bong bóng chat lên TRÊN thanh tab,
+   nếu không bong bóng che mất tab "Hồ sơ" ở màn tablet / điện thoại */
+@media (max-width: 1023px) {
+  .chat-fab {
+    right: 16px;
+    bottom: calc(96px + env(safe-area-inset-bottom, 0px));
+  }
+  .chat-fab__window {
+    width: min(360px, calc(100vw - 32px));
+    height: min(540px, calc(100vh - 220px));
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .chat-msgs__loading {
     animation-duration: 2s;

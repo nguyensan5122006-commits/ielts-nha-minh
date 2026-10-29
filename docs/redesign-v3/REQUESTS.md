@@ -469,3 +469,32 @@ Tài khoản test: `qa_exam_1` (tên đăng nhập không nhận dấu `-`).
   "AI lỗi → Thử chấm lại / Xem kết quả luôn" (phần đó hiện "Chưa có band", không mất bài làm).
 - Trình duyệt test riêng có thêm `viewport`, `media` (sáng/tối) và micro giả (`--use-fake-device-for-media-stream`) để thử ghi âm Speaking:
   scratchpad `exam-room/exam-room-browser.mjs`. Vite riêng: `node_modules/.cache/vite.exam-room.config.ts` (cacheDir `.vite-exam-room`).
+
+---
+
+## Nhóm Blender mascot (`art-blender/`, `public/mascot/`) → gửi nhóm hệ thiết kế / nền móng
+
+Đã giao ảnh mascot Corgi "Ki" (concept C, đồng phục xanh ô-liu) đúng hợp đồng `01-ARCHITECTURE.md` mục 6:
+
+- `public/mascot/poses/<pose>-256.webp | -512.webp | -1024.webp` cho cả 13 pose: `salute`, `happy`, `wave`,
+  `comfort`, `thinking`, `celebrate`, `sleepy`, `listening`, `thumbs-up`, `surprised`, `reading`, `writing`, `speaking`.
+- `public/mascot/head/head-32.png | -64 | -128 | -192 | -512`.
+
+`<Mascot>` và `<KidsMascot>` đã tự dùng các file này (đúng tên), **không cần sửa code**. Một số điều cần biết:
+
+1. **Khung ảnh cố định cho mọi pose** (cùng camera, cùng tỉ lệ). Đổi pose không làm mascot to/nhỏ đột ngột.
+   - Nhân vật chiếm ~80% chiều cao ảnh, chân ở ~7% từ đáy.
+   - Cằm nằm ở ~55% tính từ mép trên, nên `placement="peek-top"` (lộ 62%) thấy trọn đầu + mũ và một chút vai.
+   - Có bóng tròn mềm, bán trong suốt dưới chân, không chạm mép ảnh, đặt trên nền sáng hay tối đều ổn.
+   - Một số pose có đồ vật bay quanh trong khung (dấu ?, chữ Z, nốt nhạc, hoa giấy).
+2. **Favicon (đề nghị, không gấp):** `index.html` đang dùng `/favicon.svg`. Nếu muốn dùng đầu Ki:
+   ```html
+   <link rel="icon" type="image/png" sizes="32x32" href="/mascot/head/head-32.png" />
+   <link rel="apple-touch-icon" href="/mascot/head/head-192.png" />
+   ```
+   Giữ `favicon.svg` làm dự phòng. Nếu có `manifest.webmanifest` thì thêm icon `head-192.png` và `head-512.png`.
+   Chủ nhà chưa quyết (`_research/OPEN-QUESTIONS.md` dòng 19).
+3. **Dung lượng:** ảnh 512 px mỗi pose < 80 KB (WebP), 256 px < 28 KB. `Mascot.tsx` đã chọn file theo `srcSet`, rất hợp.
+4. **Chưa có** (để sau): `mascot.glb` + hoạt cảnh, `turnaround/`, `outfits/`, `stickers/`, `anim/*.webm`.
+   `MascotModel` vẫn hiện ảnh `salute` làm poster như đang thiết kế.
+5. Nếu chủ nhà chọn concept khác (A/B) hoặc đồng phục CSGT, nhóm Blender chỉ render lại. **Tên file giữ nguyên**, web không phải sửa gì.

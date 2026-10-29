@@ -106,6 +106,11 @@ export const EXAM_UI_TEXT = {
   reviewAllDone: { vi: 'Bạn đã làm hết các câu. Bấm vào số câu để xem lại.', en: 'Every question is answered. Click a number to check it.' },
   reviewNoPenalty: { vi: 'IELTS không trừ điểm câu sai — câu nào còn trống, cứ đoán.', en: 'IELTS has no penalty for wrong answers — guess any blanks.' },
   reviewFinal: { vi: 'Sau khi nộp sẽ không sửa được đáp án.', en: "You can't change answers after submitting." },
+  // bản dành cho bài viết (Writing): đếm "bài", không khuyên "cứ đoán"
+  reviewBlankTasks: { vi: '{n} bài chưa viết', en: '{n} not written' },
+  reviewBlankListTasks: { vi: 'Chưa viết: Task {list}', en: 'Not written yet: Task {list}' },
+  reviewNoPenaltyTasks: { vi: 'Bài để trống không được chấm — viết vài câu vẫn hơn bỏ trống.', en: 'A blank task gets no score — a few sentences beat nothing.' },
+  reviewAllDoneTasks: { vi: 'Bạn đã viết đủ các bài. Bấm vào số bài để đọc lại.', en: 'Every task has an answer. Click a number to reread it.' },
   keepWorking: { vi: 'Làm tiếp', en: 'Keep working' },
   submit: { vi: 'Nộp bài', en: 'Submit' },
   checkAndSubmit: { vi: 'Kiểm tra & nộp', en: 'Review & submit' },

@@ -62,7 +62,16 @@ export function WordsPage() {
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE)
   const [openKey, setOpenKey] = useState<string | null>(null)
 
-  const entries = useMemo(() => collectWordEntries(progress, progress.profile.track, now), [progress, now])
+  // từ đến hạn THEO hàng ôn hôm nay (đã áp giới hạn từ mới / ngày của tầng dữ liệu)
+  const dueWordKeys = useMemo(() => dueCards(progress, now).filter((item) => item.key.startsWith('word:')).map((item) => item.key), [progress, now])
+  const entries = useMemo(() => {
+    // (QA) Từ MỚI đã tới ngày nhưng hôm nay hết lượt từ mới -> chưa phải "Đến hạn" (khớp dòng
+    // "Không có từ nào đến hạn" ở đầu trang); nó sẽ vào hàng ôn của ngày mai.
+    const dueSet = new Set(dueWordKeys)
+    return collectWordEntries(progress, progress.profile.track, now).map((entry) =>
+      entry.isNew && entry.isDue && !dueSet.has(entry.key) ? { ...entry, isDue: false } : entry,
+    )
+  }, [progress, now, dueWordKeys])
   const filtered = useMemo(() => sortWordEntries(filterWordEntries(entries, { level, skill, unitId, search }), sort), [entries, level, skill, unitId, search, sort])
   useEffect(() => setVisibleCount(PAGE_SIZE), [level, skill, unitId, search, sort])
 
@@ -78,8 +87,6 @@ export function WordsPage() {
     return [...seen.values()].sort((a, b) => a.levelId.localeCompare(b.levelId) || a.order - b.order)
   }, [entries])
 
-  // từ đến hạn THEO hàng ôn hôm nay (đã áp giới hạn từ mới / ngày của tầng dữ liệu)
-  const dueWordKeys = useMemo(() => dueCards(progress, now).filter((item) => item.key.startsWith('word:')).map((item) => item.key), [progress, now])
   const openEntry = entries.find((entry) => entry.key === openKey) ?? null
 
   const setLevel = (next: MemoryLevel | null) => {

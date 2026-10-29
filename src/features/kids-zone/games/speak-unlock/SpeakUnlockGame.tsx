@@ -52,6 +52,9 @@ const TIMING = {
   replayAfterMiss: 650, // máy chưa nghe rõ -> đọc mẫu lại
   minUnlockHold: 1700, // rương mở hiện ít nhất chừng này
   afterSpeechPause: 450,
+  // QA: bé nhấn Enter 2 lần liền để sang câu -> lần 2 rơi vào câu mới và bật micro ngay, cắt mất
+  // giọng mẫu (bé chưa nghe từ đã bị "nghe"). Trong chừng này ms đầu câu, Enter không bật micro.
+  enterGuard: 700,
 }
 
 /** Số lần máy không nhận ra thì chuyển sang tự nghe và so sánh (luật 33). */
@@ -355,7 +358,8 @@ function SpeakQuestion({ item, session, hideText, instructionSaid, onReact }: Qu
   }
 
   useGameKeys({
-    onEnter: () => (phase === 'unlocked' ? goNext() : selfCheck ? undefined : tapMic()),
+    onEnter: () =>
+      phase === 'unlocked' ? goNext() : selfCheck || performance.now() - shownAt.current < TIMING.enterGuard ? undefined : tapMic(),
     onReplay: () => replayModel('model'),
     onChoice: (index) => {
       if (!selfCheck) return
@@ -387,7 +391,8 @@ function SpeakQuestion({ item, session, hideText, instructionSaid, onReact }: Qu
             </span>
             <div className="su-word__body">
               {showWord ? (
-                <p className="su-word__text" key="word">
+                // bấm vào chữ = nghe mẫu (giống nút loa)
+                <p className="su-word__text kz-say-text" key="word" onClick={() => replayModel('model')} title={text.listenModel}>
                   {word.word}
                 </p>
               ) : (

@@ -141,6 +141,7 @@ export const PLAY_TEXT = {
   roomLive: { vi: 'Bảng điểm', en: 'Scoreboard' },
   roomYourPlace: { vi: 'Bạn về thứ {n}', en: 'You finished #{n}' },
   roomWinnerIs: { vi: '{name} thắng!', en: '{name} wins!' },
+  roomDraw: { vi: 'Hoà! Đồng hạng nhất', en: "It's a draw — joint first!" },
   roomFinal: { vi: 'Kết quả chung cuộc', en: 'Final results' },
   roomCorrectCount: { vi: '{n} câu đúng', en: '{n} correct' },
   roomNotInRoom: { vi: 'Bạn chưa ở phòng đấu nào', en: "You're not in a battle room" },

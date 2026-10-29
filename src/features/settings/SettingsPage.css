@@ -200,6 +200,8 @@
   font-size: var(--fs-xs);
   color: var(--c-ink-2);
   line-height: 1.4;
+  /* (QA) thẻ mục tiêu hẹp: chữ dài như "recommended" tràn ra ngoài viền -> cho xuống dòng */
+  overflow-wrap: break-word;
 }
 .st-choice__tick {
   position: absolute;

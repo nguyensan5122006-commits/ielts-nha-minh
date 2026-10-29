@@ -12,6 +12,7 @@ import { Icon } from '../../../design-system/components/Icon'
 import { Mascot } from '../../../design-system/components/Mascot'
 import { ProgressBar } from '../../../design-system/components/ProgressBar'
 import { useWritingText } from '../skill-writing-text'
+import { useLanguage } from '../../../translations/language-context'
 import type { AiErrorKind, AiStatus } from './use-ai-grading'
 import './feedback.css'
 
@@ -33,8 +34,15 @@ interface AiStatusCardProps {
   loadingHint?: string
 }
 
+/** "Câu tiếng Việt / English sentence" -> lấy nửa theo ngôn ngữ; chuỗi không có " / " thì giữ nguyên. */
+function pickServerLanguage(message: string, language: string): string {
+  const parts = message.split(' / ')
+  return parts.length === 2 ? (language === 'vi' ? parts[0] : parts[1]) : message
+}
+
 export function AiStatusCard({ status, error, startedAt, expectedSeconds, onGrade, onCancel, privacyNote, intro, secondary, loadingTitle, loadingHint }: AiStatusCardProps) {
   const text = useWritingText()
+  const { language } = useLanguage()
   const elapsed = useElapsedSeconds(status === 'loading' ? startedAt : null)
 
   if (status === 'loading') {
@@ -79,7 +87,8 @@ export function AiStatusCard({ status, error, startedAt, expectedSeconds, onGrad
           <strong className="ai-status__title">{text.aiErrorTitle}</strong>
           <p className="ai-status__reason">{reason}</p>
           {/* lời máy chủ (VD 'khoá Gemini không hợp lệ') — chữ nhỏ, giúp người lớn sửa cấu hình */}
-          {error.message && <p className="ai-status__detail">{error.message}</p>}
+          {/* (QA) máy chủ gửi "Tiếng Việt / English" -> chỉ hiện nửa đúng ngôn ngữ đang chọn */}
+          {error.message && <p className="ai-status__detail">{pickServerLanguage(error.message, language)}</p>}
           <p className="ai-status__keep">
             <Icon name="check" size={16} /> {text.aiSelfStillStands}
           </p>

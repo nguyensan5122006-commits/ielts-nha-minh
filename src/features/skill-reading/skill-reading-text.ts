@@ -49,8 +49,8 @@ const READING_TEXT = {
   wentWellAll: { vi: 'Bạn tìm đúng cả {n} bằng chứng trong bài.', en: 'You found the evidence for all {n} questions.' },
   wentWellType: { vi: 'Dạng "{type}" làm rất chắc ({c}/{t}).', en: 'Solid on "{type}" ({c}/{t}).' },
   wentWellSome: { vi: 'Bạn đã tìm đúng {c} câu — cách dò từ khoá đang có hiệu quả.', en: 'You got {c} right — your keyword scanning is working.' },
-  improveBlank: { vi: 'Còn {n} câu bỏ trống — cứ đoán, IELTS không trừ điểm câu sai.', en: '{n} blanks — always guess, there is no penalty.' },
-  improveSpelling: { vi: '{n} câu gần đúng: chép đúng chính tả từ trong bài.', en: '{n} near misses: copy the spelling exactly from the text.' },
+  improveBlank: { vi: 'Còn {n} câu bỏ trống — cứ đoán, IELTS không trừ điểm câu sai.', en: 'Blank answers: {n} — always guess, there is no penalty.' }, // (QA) tránh "1 blanks"
+  improveSpelling: { vi: '{n} câu gần đúng: chép đúng chính tả từ trong bài.', en: 'Near misses: {n} — copy the spelling exactly from the text.' },
   improveTfng: { vi: 'TFNG: FALSE = bài nói NGƯỢC lại; NOT GIVEN = bài KHÔNG nhắc tới.', en: 'TFNG: FALSE = the text says the opposite; NOT GIVEN = it is not mentioned.' },
   improveLocate: { vi: 'Bấm "Tìm trong bài" ở câu sai để xem cách bài diễn đạt lại ý của câu hỏi.', en: 'Use "Find in text" on wrong answers to see how the passage paraphrases the question.' },
   summaryLine: { vi: 'Bạn trả lời đúng {c}/{t} câu đọc hiểu', en: 'You answered {c}/{t} reading questions correctly' },

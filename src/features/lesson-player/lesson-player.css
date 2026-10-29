@@ -8,7 +8,10 @@
 
 /* ---------- nội dung mỗi bước trượt vào nhẹ ---------- */
 .lp-content {
-  animation: lp-step-in 260ms var(--ease-out) both;
+  /* (QA) "backwards" chứ không "both": nếu giữ lại transform sau khi chạy xong, phần tử này thành
+     "khung chứa" cho mọi con position: fixed -> thanh đáy cố định của trình Writing/Speaking
+     trôi theo trang (ở 1440×900 nút Nộp bài nằm dưới mép màn hình). */
+  animation: lp-step-in 260ms var(--ease-out) backwards;
 }
 .lp-content.has-sheet {
   /* chừa chỗ cho khung phản hồi cao hơn thanh Kiểm tra */
@@ -231,7 +234,7 @@
   position: relative;
 }
 .lp-stage__main {
-  animation: lp-step-in 260ms var(--ease-out) both;
+  animation: lp-step-in 260ms var(--ease-out) backwards; /* (QA) như .lp-content ở trên */
 }
 .lp-stage--split {
   display: grid;

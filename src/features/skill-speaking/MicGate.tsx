@@ -41,7 +41,8 @@ export function MicGate({ mic, children }: { mic: MicrophoneHandle; children: Re
               {blocked ? text.micRetry : text.micAllow}
             </Button>
           )}
-          {(blocked || missing) && (
+          {/* (QA) cả lúc đang chờ hộp xin quyền: nếu hộp bị ẩn / bỏ qua thì vẫn có lối đi tiếp, không kẹt */}
+          {(blocked || missing || mic.state === 'requesting') && (
             <Button variant="ghost" onClick={mic.continueWithoutMic}>
               {text.micContinueWithout}
             </Button>

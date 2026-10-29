@@ -24,13 +24,16 @@ export interface ReviewBeforeSubmitProps {
   parts: NavigatorPart[]
   /** thi thật: nhắc "nộp rồi không sửa được" */
   examMode?: boolean
+  /** 'tasks' = bài viết (Writing): ghi "bài chưa viết", bỏ lời khuyên "cứ đoán" (chỉ hợp với câu trắc nghiệm / điền từ) */
+  itemKind?: 'questions' | 'tasks'
 }
 
-export function ReviewBeforeSubmit({ open, onClose, onSubmit, onJump, parts, examMode = false }: ReviewBeforeSubmitProps) {
+export function ReviewBeforeSubmit({ open, onClose, onSubmit, onJump, parts, examMode = false, itemKind = 'questions' }: ReviewBeforeSubmitProps) {
   const text = useExamUiText()
   const all = parts.flatMap((part) => part.questions)
   const blank = all.filter((q) => !q.answered)
   const flagged = all.filter((q) => q.flagged)
+  const tasks = itemKind === 'tasks'
 
   return (
     <Modal
@@ -54,7 +57,7 @@ export function ReviewBeforeSubmit({ open, onClose, onSubmit, onJump, parts, exa
           <Badge tone="success" icon="check">
             {text('reviewAnswered', { done: all.length - blank.length, total: all.length })}
           </Badge>
-          {blank.length > 0 && <Badge tone="oops">{text('reviewBlank', { n: blank.length })}</Badge>}
+          {blank.length > 0 && <Badge tone="oops">{text(tasks ? 'reviewBlankTasks' : 'reviewBlank', { n: blank.length })}</Badge>}
           {flagged.length > 0 && (
             <Badge tone="red" icon="flag">
               {text('reviewFlagged', { n: flagged.length })}
@@ -85,11 +88,11 @@ export function ReviewBeforeSubmit({ open, onClose, onSubmit, onJump, parts, exa
         <ul className="xreview__notes">
           {blank.length > 0 ? (
             <>
-              <li>{text('reviewBlankList', { list: blank.map((q) => q.number).join(', ') })}</li>
-              <li>{text('reviewNoPenalty')}</li>
+              <li>{text(tasks ? 'reviewBlankListTasks' : 'reviewBlankList', { list: blank.map((q) => q.number).join(', ') })}</li>
+              <li>{text(tasks ? 'reviewNoPenaltyTasks' : 'reviewNoPenalty')}</li>
             </>
           ) : (
-            <li>{text('reviewAllDone')}</li>
+            <li>{text(tasks ? 'reviewAllDoneTasks' : 'reviewAllDone')}</li>
           )}
           {flagged.length > 0 && <li>{text('reviewFlaggedList', { list: flagged.map((q) => q.number).join(', ') })}</li>}
           {examMode && <li>{text('reviewFinal')}</li>}

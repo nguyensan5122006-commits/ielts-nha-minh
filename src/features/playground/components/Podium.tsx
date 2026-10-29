@@ -35,7 +35,8 @@ export function Podium({ entries, meId, unit }: { entries: PodiumEntry[]; meId?:
     <ol className={`pg-podium pg-podium--${top.length}`}>
       {VISUAL_ORDER.filter((index) => top[index]).map((index) => {
         const entry = top[index]
-        const rank = index + 1
+        // hạng theo ĐIỂM, không theo vị trí: bằng điểm = đồng hạng (hoà 0–0 thì cả 2 cùng hạng 1)
+        const rank = 1 + top.filter((other) => other.score > entry.score).length
         return (
           <li
             key={entry.id}
@@ -55,7 +56,7 @@ export function Podium({ entries, meId, unit }: { entries: PodiumEntry[]; meId?:
               {entry.extra}
             </div>
             <div className="pg-podium__block">
-              <GameArt slug={MEDALS[index]} size={rank === 1 ? 44 : 36} />
+              <GameArt slug={MEDALS[rank - 1]} size={rank === 1 ? 44 : 36} />
               <span className="pg-podium__rank ds-num" aria-label={`#${rank}`}>
                 {rank}
               </span>

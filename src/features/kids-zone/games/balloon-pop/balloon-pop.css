@@ -267,7 +267,12 @@
 /* xem đáp án (bậc 3): bóng đúng đứng yên, phát sáng thở chậm + bàn tay chỉ */
 .bp-balloon.is-revealed {
   z-index: 2;
-  animation-play-state: paused;
+}
+/* QA: không dừng bóng tại chỗ (có thể đang khuất sau thanh nghe hoặc ở ngoài mép trên) mà "đỗ" bóng
+   ở độ cao nghỉ giữa trời (giống chế độ giảm chuyển động), hiện ra nhẹ nhàng. */
+.bp-balloon.is-parked {
+  top: var(--rest-top);
+  animation: bp-park-in 420ms var(--ease-out) both;
 }
 .bp-balloon.is-revealed .bp-balloon__sway {
   animation: none;
@@ -373,6 +378,16 @@
   }
   to {
     transform: translateY(calc(-1 * var(--travel)));
+  }
+}
+@keyframes bp-park-in {
+  from {
+    opacity: 0;
+    scale: 0.85;
+  }
+  to {
+    opacity: 1;
+    scale: 1;
   }
 }
 @keyframes bp-sway {
@@ -509,6 +524,7 @@
     animation: none;
   }
   .bp-balloon__sway,
+  .bp-balloon.is-parked,
   .bp-balloon.is-wrong .bp-balloon__svg,
   .bp-balloon.is-revealed .bp-balloon__svg,
   .bp-balloon__pointer,

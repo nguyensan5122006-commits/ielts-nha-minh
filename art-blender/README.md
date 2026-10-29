@@ -34,6 +34,7 @@ art-blender/
 │       ├── sdf_toolkit.py         "đất nặn kỹ thuật số": SDF → lưới (giải thích chi tiết ở đầu file)
 │       ├── mascot_stage.py        sân khấu chung: đèn, camera, căn khung
 │       ├── build_and_render_concept.py  render bảng so sánh concept (chính diện, 3/4, nghiêng, chào, đầu)
+│       ├── rerender_concept_from_blend.py  render lại ảnh concept từ .blend đã lưu (chỉ đổi đèn/camera)
 │       └── render_poses.py        render ảnh cho WEBSITE (các tư thế + ảnh đầu)
 ├── blend-files/           ← file nguồn .blend (mở bằng Blender để xem/chỉnh)
 ├── renders/               ← ảnh render THÔ và file xuất thử — KHÔNG đưa thẳng lên web
@@ -43,6 +44,7 @@ art-blender/
     ├── render_mascot_all.mjs  MỘT LỆNH: render mọi tư thế mascot (song song) + chép lên public/mascot
     ├── publish_mascot.mjs     tối ưu ảnh mascot (WebP 256/512/1024, PNG đầu 32..512) → public/mascot
     ├── make_concept_sheets.mjs  ghép bảng so sánh 3 concept + kiểm tra cỡ 64/32 px
+    ├── shadow_clean.mjs       dọn bóng đổ mềm cho khỏi bị cắt ở mép ảnh (dùng chung)
     └── montage.mjs            ghép nhanh nhiều ảnh thành lưới để xem
 ```
 
@@ -52,7 +54,7 @@ art-blender/
 |---|---|---|
 | `scripts/_common/` | Hàm Python dùng lại nhiều lần | Dấu `_` ở đầu tên = "đồ nghề chung", không phải sản phẩm. Mỗi file có phần giải thích ở đầu. |
 | `scripts/mascot/` | Script dựng từng mascot | Đầu mỗi script phải có đoạn thêm `scripts/` vào `sys.path` (xem `_common/__init__.py`). |
-| `blend-files/` | File `.blend` nguồn | Đặt tên rõ ràng, ví dụ `mascot_cu-meo_v01.blend`. Tên bắt đầu bằng `_` = file thử nghiệm. File `.blend1` (backup tự động) đã được bỏ qua trong git. |
+| `blend-files/` | File `.blend` nguồn | Đặt tên rõ ràng, ví dụ `mascot_cu-meo_v01.blend`. Tên bắt đầu bằng `_` = file thử nghiệm. File `.blend1` (backup tự động) đã được bỏ qua trong git. File `.blend` của mascot (`mascot_concept_*.blend`, thư mục `poses/`) rất nặng (100+ MB) và dựng lại được bằng script → cũng bỏ qua trong git. |
 | `renders/` | Ảnh render gốc, file `.glb` xuất thử, báo cáo JSON | Đây là "bản nháp". Chỉ ảnh/model **đã tối ưu** mới được copy sang thư mục `public/` của website. |
 | `tools/` | Công cụ Node riêng cho phần đồ hoạ | Có `package.json` riêng, không lẫn với website. Cài bằng `cd tools && npm install`. |
 
@@ -128,6 +130,8 @@ Lệnh này chạy 3 tiến trình Blender song song (~25–35 phút cho 13 tư 
 | `public/mascot/poses/<pose>-256.webp`, `-512.webp`, `-1024.webp` | 13 tư thế, nền trong suốt, có bóng mềm dưới chân |
 | `public/mascot/head/head-32.png` … `head-512.png` | chỉ cái đầu (logo, avatar, favicon) |
 
+Xem nhanh cả bộ: `renders/poses/poses-sheet_c_olive.png`. Ảnh gốc 1024 px: `renders/poses/c_olive/`.
+
 Tư thế: `salute` (chào — CHÍNH), `happy`, `wave`, `comfort`, `thinking`, `celebrate`, `sleepy`, `listening`,
 `thumbs-up`, `surprised`, `reading`, `writing`, `speaking`. Component `<Mascot>` và `<KidsMascot>` của web
 tự dùng ảnh khi file có đúng tên (không cần sửa code web).
@@ -139,6 +143,7 @@ Tuỳ chọn hay dùng:
 - `--poses salute,happy,head`: chỉ làm lại vài tư thế.
 - `--draft --no-publish`: bản nháp nhanh để xem thử, không đụng tới web.
 - `--jobs 2`: số tiến trình Blender chạy song song.
+- `--save-blend`: lưu thêm `.blend` từng tư thế vào `blend-files/poses/` để mở xem/chỉnh tay.
 
 ### Đổi màu đồng phục
 
@@ -159,7 +164,13 @@ cd "E:/IELTS_ThienThao/art-blender/tools" && node publish_mascot.mjs --concept C
 "E:/Tools/Blender/5.2.3/blender.exe" --background --factory-startup   --python "E:/IELTS_ThienThao/art-blender/scripts/mascot/build_and_render_concept.py" -- --concept A
 #   (lặp lại với B, C) rồi:
 cd "E:/IELTS_ThienThao/art-blender/tools" && node make_concept_sheets.mjs
+
+# Chỉ đổi ĐÈN / BÓNG / CAMERA của ảnh concept (không dựng lại hình, ~2 phút thay vì ~15 phút):
+"E:/Tools/Blender/5.2.3/blender.exe" --background "E:/IELTS_ThienThao/art-blender/blend-files/mascot_concept_c.blend"   --python "E:/IELTS_ThienThao/art-blender/scripts/mascot/rerender_concept_from_blend.py" -- --concept C
 ```
+
+> Khi tự chạy nhiều tiến trình Blender cùng lúc, nhớ `export OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1`
+> trước (xem PIPELINE-NOTES mục 41). `render_mascot_all.mjs` đã tự làm việc này.
 
 ### Thêm một tư thế mới
 

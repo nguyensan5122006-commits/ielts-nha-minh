@@ -406,7 +406,9 @@ export class FamilyHub extends DurableObject<WorkerEnvironment> {
 
     const winners = ranking.filter((r) => winnerIds.includes(r.id)).map((r) => r.name).join(', ')
     const topic = room.settings.gameType === 'word-chain' ? '' : ` — ${findGameTopic(room.settings.topicId)?.title.vi ?? ''}`
-    const prize = room.pot > 0 && !room.potRefunded ? `, ẵm ${room.pot} 🍌` : ''
+    // hoà (nhiều người thắng) thì hũ chia đều -> ghi "chia nhau", không ghi "ẵm" cả hũ cho từng người
+    const adultWinnerCount = ranking.filter((r) => winnerIds.includes(r.id) && !r.isKid).length
+    const prize = room.pot > 0 && !room.potRefunded ? (adultWinnerCount > 1 ? `, chia nhau hũ ${room.pot} 🍌` : `, ẵm ${room.pot} 🍌`) : ''
     await this.postSystemMessage(winnerIds[0] ?? room.hostId, `🏆 ${winners} thắng trận ${GAME_NAMES[room.settings.gameType]}${topic} (${ranking.length} người)${prize}!`)
 
     // dọn phòng sau 1 phút

@@ -285,6 +285,8 @@ const EXAM_ROOM_TEXT = {
   localResultNote: { vi: 'Kết quả này chỉ đang lưu trong máy (chưa gửi được lên máy chủ).', en: 'This result is only stored on this device (not yet saved to the server).' },
   resultNotFound: { vi: 'Không tìm thấy kết quả', en: 'Result not found' },
   resultNotFoundText: { vi: 'Kết quả có thể thuộc tài khoản khác hoặc đã bị xoá.', en: 'It may belong to another account or have been removed.' },
+  resultLoadFailed: { vi: 'Chưa tải được kết quả', en: "Couldn't load the result" },
+  resultLoadFailedText: { vi: 'Có thể mạng chập chờn. Kết quả vẫn được lưu — bấm thử lại nhé.', en: 'Your connection may be unstable. The result is still saved — try again.' },
   examGoneNote: { vi: 'Đề này không còn trong phòng thi — chỉ xem được điểm và từng câu.', en: 'This test is no longer in the exam room — only scores and answers are shown.' },
   timeSpent: { vi: 'Thời gian làm: {n} phút', en: 'Time spent: {n} min' },
   bandNote: { vi: 'Band ước tính, dạng khoảng ±0.5 cho Viết / Nói.', en: 'Estimated band; Writing / Speaking shown as a ±0.5 range.' },

@@ -281,7 +281,8 @@ function ListenTapQuestion({ item, plan, session, hideText, onReact }: QuestionP
 
         <div className={['lt-word', phase === 'correct' && 'is-solved'].filter(Boolean).join(' ')} aria-live="polite">
           {showWord ? (
-            <span className="lt-word__text" key={phase}>
+            // bấm vào chữ = nghe lại (giống nút loa)
+            <span className="lt-word__text kz-say-text" key={phase} onClick={() => replay('normal')} title={text.listenAgain}>
               {target.word}
             </span>
           ) : (

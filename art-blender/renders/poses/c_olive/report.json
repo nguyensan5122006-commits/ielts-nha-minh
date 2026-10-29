@@ -1,0 +1,43 @@
+{
+  "concept": "C",
+  "uniform": "olive",
+  "size": 1024,
+  "samples": 192,
+  "frame_box": [
+    -0.16,
+    2.265
+  ],
+  "poses": {
+    "salute": {
+      "build_s": 457.6,
+      "render_s": 16.0,
+      "view": -18.0,
+      "clipped_edges": []
+    },
+    "comfort": {
+      "build_s": 585.2,
+      "render_s": 17.2,
+      "view": 15.0,
+      "clipped_edges": []
+    },
+    "sleepy": {
+      "build_s": 870.2,
+      "render_s": 12.2,
+      "view": 14.0,
+      "clipped_edges": []
+    },
+    "surprised": {
+      "build_s": 266.9,
+      "render_s": 8.3,
+      "view": 10.0,
+      "clipped_edges": []
+    },
+    "speaking": {
+      "build_s": 200.9,
+      "render_s": 7.2,
+      "view": 12.0,
+      "clipped_edges": []
+    }
+  },
+  "total_s": 2453.3
+}

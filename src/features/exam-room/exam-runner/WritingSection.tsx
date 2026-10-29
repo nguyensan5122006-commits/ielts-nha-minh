@@ -211,6 +211,7 @@ export function WritingSection({ exam, sectionIndex, position, handle, rules, di
         }}
         parts={navigatorParts}
         examMode={rules.timed || session.mode === 'exam'}
+        itemKind="tasks"
       />
       <ExitDialog open={exitOpen} onStay={() => setExitOpen(false)} onLeave={leave} timed={rules.timed} />
     </ExamFrame>

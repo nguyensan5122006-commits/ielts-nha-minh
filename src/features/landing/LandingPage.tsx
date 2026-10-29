@@ -57,7 +57,7 @@ export function LandingPage() {
   const primary =
     draft && draft.answers.length > 0
       ? { to: '/start', label: text.ctaResume(draft.answers.length) }
-      : result
+      : result && result.appliedToUserId == null // (QA) kết quả đã lưu vào 1 tài khoản rồi -> khách mới làm bài mới
         ? { to: '/start/result', label: text.ctaResult }
         : { to: '/start', label: text.ctaStart }
 

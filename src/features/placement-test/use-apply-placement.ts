@@ -81,7 +81,9 @@ export function useApplyPlacement(): ApplyPlacement {
     const isKid = user.ageGroup === 'kid'
     isKidRef.current = isKid
     skipWelcomeModalToday(user.id)
-    if (!result || result.appliedToUserId === user.id) {
+    // (QA) Kết quả đã áp cho BẤT KỲ tài khoản nào (kể cả người khác trong nhà dùng chung máy) thì
+    // không áp nữa — tránh chép trình độ của người trước vào tài khoản mới tạo trên cùng trình duyệt.
+    if (!result || result.appliedToUserId != null) {
       // không có gì để áp (hoặc đã áp rồi): đi thẳng vào học
       setDestination(isKid ? '/kids' : '/learn')
       setStatus('done')

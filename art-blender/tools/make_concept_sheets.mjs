@@ -19,6 +19,7 @@
 import path from "node:path";
 import fs from "node:fs";
 import sharp from "sharp";
+import { cleanShadow } from "./shadow_clean.mjs";
 
 const args = process.argv.slice(2);
 const opt = (name, def) => {
@@ -37,7 +38,7 @@ const ROWS = [
   { view: "front", label: "Chính diện" },
   { view: "threequarter", label: "Góc 3/4" },
   { view: "side", label: "Nghiêng" },
-  { view: "salute34", label: "Chào (tư thế chính)" },
+  { view: "salute34", label: "Chào ★" },
   { view: "head", label: "Đầu (logo)" },
 ];
 const BG = { r: 246, g: 243, b: 236, alpha: 1 };
@@ -84,7 +85,8 @@ for (const [ri, row] of ROWS.entries()) {
   for (const [ci, c] of CONCEPTS.entries()) {
     const f = file(c.key, row.view);
     if (!fs.existsSync(f)) continue;
-    const buf = await sharp(f).resize(CELL, CELL, { kernel: "lanczos3", fit: "contain",
+    const src = row.view === "head" ? f : await cleanShadow(f);     // bóng mềm không bị cắt ở mép ô
+    const buf = await sharp(src).resize(CELL, CELL, { kernel: "lanczos3", fit: "contain",
       background: { r: 0, g: 0, b: 0, alpha: 0 } }).png().toBuffer();
     comps.push({ input: buf, left: LABEL_W + GAP + ci * (CELL + GAP), top });
   }
@@ -96,6 +98,7 @@ comps.push({ input: textSvg(LABEL_W, SMALL_H, [
   { text: "Cỡ nhỏ", y: SMALL_H / 2 - 30, size: 22 },
   { text: "128 · 64 · 32 px", y: SMALL_H / 2, size: 18, weight: 400, color: "#666" },
   { text: "+ 32 px phóng to", y: SMALL_H / 2 + 26, size: 18, weight: 400, color: "#666" },
+  { text: "★ = tư thế chính", y: SMALL_H - 10, size: 16, weight: 400, color: "#666" },
 ], "start"), left: 0, top: smallTop });
 for (const [ci, c] of CONCEPTS.entries()) {
   const f = file(c.key, "head");

@@ -123,7 +123,8 @@ const EN: LearningPathText = {
   goal: 'Goal',
 
   station: (n) => `Station ${n}`,
-  stationLessons: (n) => `${n} lessons`,
+  // (QA) tiếng Anh: 1 thì số ít (1 card / 1 mistake), từ 2 trở lên mới thêm -s
+  stationLessons: (n) => `${n} ${n === 1 ? 'lesson' : 'lessons'}`,
   stationProgress: (done, total) => `${done}/${total}`,
   stationDone: 'Station complete',
   stationExpand: 'Show lessons',
@@ -137,7 +138,7 @@ const EN: LearningPathText = {
   minutes: (n) => `${n} min`,
   aboutMinutes: (n) => `≈ ${n} min`,
   exercises: (n) => `${n} questions`,
-  words: (n) => `${n} new words`,
+  words: (n) => `${n} new ${n === 1 ? 'word' : 'words'}`,
   lessonN: (n) => `Lesson ${n}`,
   lessonOf: (n, total) => `Lesson ${n} of ${total}`,
   stateDone: (percent) => `Done · ${percent}% correct`,

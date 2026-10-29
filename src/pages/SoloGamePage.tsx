@@ -73,7 +73,8 @@ export function SoloGamePage() {
     let bananas = 0
     try {
       const saved = await api.submitGameScore(gameType, run.score)
-      isNewRecord = saved.isNewRecord
+      // 0 điểm không tính là "kỷ lục mới" (tránh pháo giấy khi sai hết)
+      isNewRecord = saved.isNewRecord && run.score > 0
       bananas = saved.bananas
       void refreshWallet()
     } catch {

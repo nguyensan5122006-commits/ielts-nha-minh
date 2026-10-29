@@ -82,8 +82,10 @@ export function ChatPanel({ channel, compact = false }: ChatPanelProps) {
   /* ---------- đánh dấu đã đọc tin mới nhất ---------- */
   const lastMessage = messages[messages.length - 1]
   useEffect(() => {
-    if (lastMessage && lastMessage.senderId !== user?.id && document.visibilityState === 'visible') markChannelRead(channel, lastMessage.id)
-  }, [lastMessage, channel, user, markChannelRead])
+    // Đánh dấu cả khi tin cuối là của mình: tin hệ thống ("X thắng trận", "X mở huy hiệu") mang id của chính
+    // người đó, nếu bỏ qua thì các tin của người khác phía trên không bao giờ được tính là đã đọc (số đỏ đứng mãi).
+    if (lastMessage && document.visibilityState === 'visible') markChannelRead(channel, lastMessage.id)
+  }, [lastMessage, channel, markChannelRead])
 
   /* ---------- nghe tin realtime ---------- */
   useRealtimeEvent((message) => {

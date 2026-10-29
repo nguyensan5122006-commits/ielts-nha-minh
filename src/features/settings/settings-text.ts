@@ -39,7 +39,8 @@ export const SETTINGS_TEXT = {
   goalMinutes: { vi: '{n} phút', en: '{n} min' },
   minutesUnit: { vi: 'phút', en: 'min' },
   goalNote5: { vi: 'Nhẹ nhàng — hợp ngày bận', en: 'Light — good for busy days' },
-  goalNote10: { vi: 'Đều đặn — khuyên dùng', en: 'Steady — recommended' },
+  // (QA) bản EN rút gọn: thẻ hẹp ~70px, chữ "recommended" bị bẻ đôi giữa từ
+  goalNote10: { vi: 'Đều đặn — khuyên dùng', en: 'Steady — best start' },
   goalNote15: { vi: 'Nghiêm túc', en: 'Serious' },
   goalNote20: { vi: 'Tăng tốc', en: 'Intense' },
   goalNote30: { vi: 'Luyện thi', en: 'Exam prep' },

@@ -47,8 +47,17 @@ export function pickContinueChoice(kids: KidsProgress, today: string, readyGames
   return { gameId: readyGames[dayNumber(today) % readyGames.length], topic: null, dueCount, hasNewWords: true }
 }
 
-/** 3 lựa chọn hôm nay. */
-export function pickTodayChoices(kids: KidsProgress, today: string, readyGames: KidsGameId[]): GameChoice[] {
+/**
+ * 3 lựa chọn hôm nay.
+ * @param fits trò này có từ nào hợp với chủ đề không (VD trò Tô màu chỉ tô được đồ vật / con vật,
+ *             chủ đề "Gia đình" không có từ nào) — bỏ trống = mọi trò hợp mọi chủ đề.
+ */
+export function pickTodayChoices(
+  kids: KidsProgress,
+  today: string,
+  readyGames: KidsGameId[],
+  fits: (gameId: KidsGameId, topic: KidsTopic) => boolean = () => true,
+): GameChoice[] {
   if (!readyGames.length) return []
   const due = dueByTopic(kids, today)
   const active = pickActiveTopic(kids)
@@ -61,10 +70,19 @@ export function pickTodayChoices(kids: KidsProgress, today: string, readyGames: 
   KIDS_TOPICS.slice(KIDS_TOPICS.indexOf(active) + 1).forEach((topic) => topicHasNewWords(kids, topic) && add(topic))
 
   const start = dayNumber(today)
-  return ordered.slice(0, 3).map((topic, index) => ({
-    gameId: readyGames[(start + index) % readyGames.length],
-    topic,
-    dueCount: due.get(topic.id) ?? 0,
-    hasNewWords: topicHasNewWords(kids, topic),
-  }))
+  const used = new Set<KidsGameId>()
+  return ordered.slice(0, 3).map((topic, index) => {
+    // Trò xoay theo ngày; nhưng nếu trò đó không có từ hợp với chủ đề thì lấy trò kế tiếp hợp và chưa dùng.
+    // (QA: trước đây thẻ ghi "Nghe lệnh tô màu · Gia đình" với ảnh người, bấm vào lại ra lượt con vật.)
+    let gameId = readyGames[(start + index) % readyGames.length]
+    for (let step = 0; step < readyGames.length; step++) {
+      const candidate = readyGames[(start + index + step) % readyGames.length]
+      if (!used.has(candidate) && fits(candidate, topic)) {
+        gameId = candidate
+        break
+      }
+    }
+    used.add(gameId)
+    return { gameId, topic, dueCount: due.get(topic.id) ?? 0, hasNewWords: topicHasNewWords(kids, topic) }
+  })
 }

@@ -20,6 +20,7 @@
 import path from "node:path";
 import fs from "node:fs";
 import sharp from "sharp";
+import { cleanShadow } from "./shadow_clean.mjs";
 
 const args = process.argv.slice(2);
 const opt = (name, def) => {
@@ -32,18 +33,18 @@ const DRY = args.includes("--dry-run");
 
 const ART = path.resolve(import.meta.dirname, "..");
 const SRC = path.resolve(opt("--src", path.join(ART, "renders", "poses", `${CONCEPT}_${UNIFORM}`)));
-const PUBLIC = path.resolve(ART, "..", "public", "mascot");
+const PUBLIC = path.resolve(opt("--out", path.resolve(ART, "..", "public", "mascot")));   // --out: thư mục khác (thử nghiệm)
 
 const POSE_SIZES = [256, 512, 1024];
 const BUDGET_KB = { 256: 28, 512: 80, 1024: 230 };       // tối đa cho mỗi cỡ
 const HEAD_SIZES = [32, 64, 128, 192, 512];
 
-/** WebP nhỏ nhất ≤ ngân sách: thử quality 86 → 60. Alpha giữ chất lượng cao để viền mượt. */
+/** WebP nhỏ nhất ≤ ngân sách: thử quality 92 → 60. Alpha giữ chất lượng cao để viền mượt. */
 async function encodeWebp(buf, size) {
   const resized = await sharp(buf).resize(size, size, { kernel: "lanczos3", fit: "contain",
     background: { r: 0, g: 0, b: 0, alpha: 0 } }).toBuffer();
   let out = null;
-  for (let q = 86; q >= 60; q -= 4) {
+  for (let q = 92; q >= 60; q -= 4) {
     out = await sharp(resized).webp({ quality: q, alphaQuality: 90, effort: 6, smartSubsample: true }).toBuffer();
     if (out.length / 1024 <= BUDGET_KB[size]) return { out, q };
   }
@@ -80,8 +81,9 @@ for (const f of fs.readdirSync(SRC).filter((n) => n.endsWith(".png")).sort()) {
     }
     continue;
   }
+  const clean = await cleanShadow(buf);
   for (const size of POSE_SIZES) {
-    const { out, q } = await encodeWebp(buf, size);
+    const { out, q } = await encodeWebp(clean, size);
     const file = path.join(PUBLIC, "poses", `${name}-${size}.webp`);
     write(file, out);
     rows.push({ file: path.relative(PUBLIC, file), kb: +(out.length / 1024).toFixed(1), quality: q });

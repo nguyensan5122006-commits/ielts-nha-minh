@@ -39,6 +39,9 @@ import { useStoryNarration } from './use-story-narration'
 const TIMING = {
   narrationStart: 450, // khung truyện bay vào xong mới đọc
   replayAfterWrong: 420,
+  // QA: Enter 2 lần liền ở "Đi tiếp" -> lần 2 rơi vào cảnh mới và bỏ qua luôn lời kể.
+  // Trong chừng này ms đầu cảnh, Enter không bỏ qua lời kể.
+  enterGuard: 700,
 }
 
 const voiceLine = (id: string) => fillMascotName(getKidsVoiceLine(id)?.vi ?? '')
@@ -105,6 +108,8 @@ export function StoryScene({
   const [isLast, setIsLast] = useState(false)
 
   const shownAt = useRef(performance.now())
+  /** lúc cảnh hiện ra (khác shownAt: shownAt đặt lại khi sang câu hỏi) — dùng chặn Enter đúp */
+  const mountedAt = useRef(performance.now())
   const usedReplay = useRef(false)
   const advanced = useRef(false)
   const timers = useRef<number[]>([])
@@ -226,13 +231,21 @@ export function StoryScene({
   useGameKeys({
     onChoice: (index) => options[index] && choose(options[index]),
     onReplay: () => (phase === 'story' ? replayStory() : readPrompt()),
-    onEnter: () => (phase === 'story' ? skipNarration() : phase === 'correct' ? goNext() : undefined),
+    onEnter: () =>
+      phase === 'story' ? (performance.now() - mountedAt.current >= TIMING.enterGuard ? skipNarration() : undefined) : phase === 'correct' ? goNext() : undefined,
   })
 
   const revealed = hint.step === 'reveal'
   const narrationWords = narrationEn.split(/\s+/)
   const viWords = narrationVi.split(/\s+/)
   const playingLang = narration.playing?.lang ?? null
+  // QA: "mọi chữ tiếng Anh bấm vào nghe được" — hết lời kể (đang hỏi / đã đúng) thì bấm 1 từ trong truyện
+  // là nghe từ đó. Trong lúc đang kể thì không (bấm sẽ cắt ngang lời kể).
+  const canTapWords = phase !== 'story' && !narration.playing
+  const sayTappedWord = (raw: string) => {
+    const clean = raw.replace(/^[^A-Za-z]+|[^A-Za-z]+$/g, '')
+    if (clean) void speakSequence([{ kind: 'word', word: clean }])
+  }
 
   return (
     <main className="pa-stage">
@@ -260,7 +273,11 @@ export function StoryScene({
           <div className={['pa-caption', hint.step === 'replay' && phase === 'question' && 'is-hinted'].filter(Boolean).join(' ')}>
             <p className="pa-caption__en" lang="en">
               {narrationWords.map((word, index) => (
-                <span key={index} className={playingLang !== 'en' || index < narration.spokenWords ? 'is-spoken' : undefined}>
+                <span
+                  key={index}
+                  className={[(playingLang !== 'en' || index < narration.spokenWords) && 'is-spoken', canTapWords && 'kz-say-text'].filter(Boolean).join(' ') || undefined}
+                  onClick={canTapWords ? () => sayTappedWord(word) : undefined}
+                >
                   {word}{' '}
                 </span>
               ))}

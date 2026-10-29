@@ -52,9 +52,76 @@ def setup_stage(size, samples):
     bob.visible_glossy = False
     bpy.context.scene.collection.objects.link(bob)
     bob.parent = rig
-    catcher = add_shadow_catcher(z=0.0)
+    catcher = add_shadow_catcher(z=0.0, size=6.0)
+    blob = contact_shadow(catcher, [lights["key"], lights["fill"], lights["rim"], bob])
+    catcher["blob"] = blob.name        # để script ẩn/hiện bóng giả cùng mặt bắt bóng
+    for obj in bpy.data.objects:
+        if obj.type == "LIGHT":
+            obj.visible_camera = False      # đèn không bao giờ hiện trực tiếp trong ảnh
     cam = add_studio_camera(location=(0, -7, 1.0), target=(0, 0, 1.0), lens_mm=85.0)
     return rig, cam, catcher
+
+
+def contact_shadow(catcher, main_lights):
+    """
+    Bóng đổ GỌN dưới chân (thay cho bóng dài của đèn chính). Gồm 2 lớp:
+
+    1) "Light linking" của Cycles: 4 đèn chiếu nhân vật KHÔNG chiếu xuống mặt bắt bóng (EXCLUDE), nên không có
+       bóng dài kéo tới mép ảnh (trên web ảnh bị cắt ở mép thành mảng xám vuông). Mặt bắt bóng chỉ còn nhận ánh
+       sáng trời (world) → một quầng bóng rất mềm, tự nhiên.
+       (Đã thử thêm đèn tròn trên đỉnh đầu chỉ chiếu mặt bắt bóng: cái đầu to che đèn → vũng bóng đen rộng, xấu.)
+    2) Một "bóng giả" (blob shadow): đĩa elip màu đen trong suốt dần ra mép, nằm sát sàn dưới chân, chỉ camera
+       nhìn thấy. Giúp nhân vật "đứng" chắc trên sàn, điều chỉnh độ đậm/độ rộng dễ dàng.
+    Nhân vật vẫn tự đổ bóng lên chính nó (dưới vành mũ, dưới cằm...) như bình thường.
+    """
+    excl = bpy.data.collections.new("LL_NotCatcher")
+    excl.use_fake_user = True          # giữ collection khi lưu .blend (không có người dùng → bị xoá khi lưu)
+    excl.objects.link(catcher)
+    for item in excl.collection_objects:
+        item.light_linking.link_state = "EXCLUDE"
+    for light in main_lights:
+        light.light_linking.receiver_collection = excl
+    return add_blob_shadow()
+
+
+def add_blob_shadow(radius=(0.66, 0.50), center=(0.0, -0.03), opacity=0.55, name="BlobShadow"):
+    """Đĩa bóng giả: tâm đậm `opacity`, mờ dần về 0 ở mép elip bán kính `radius` (m)."""
+    mesh = bpy.data.meshes.new(name)
+    n = 64
+    verts = [(0.0, 0.0, 0.0)] + [(math.cos(2 * math.pi * i / n), math.sin(2 * math.pi * i / n), 0.0) for i in range(n)]
+    faces = [(0, 1 + i, 1 + (i + 1) % n) for i in range(n)]
+    mesh.from_pydata(verts, [], faces)
+    obj = bpy.data.objects.new(name, mesh)
+    obj.location = (center[0], center[1], 0.003)
+    obj.scale = (radius[0], radius[1], 1.0)
+    for attr in ("visible_shadow", "visible_diffuse", "visible_glossy", "visible_transmission", "visible_volume_scatter"):
+        setattr(obj, attr, False)       # chỉ camera nhìn thấy; không đổ bóng, không phản chiếu
+    mat = bpy.data.materials.new("M_BlobShadow")
+    if mat.node_tree is None:
+        mat.use_nodes = True
+    nt = mat.node_tree
+    nt.nodes.clear()
+    tc = nt.nodes.new("ShaderNodeTexCoord")
+    length = nt.nodes.new("ShaderNodeVectorMath")
+    length.operation = "LENGTH"
+    nt.links.new(tc.outputs["Object"], length.inputs[0])          # 0 ở tâm → 1 ở mép (toạ độ trước khi scale)
+    fade = nt.nodes.new("ShaderNodeMapRange")
+    fade.interpolation_type = "SMOOTHERSTEP"
+    fade.inputs["From Min"].default_value, fade.inputs["From Max"].default_value = 0.0, 1.0
+    fade.inputs["To Min"].default_value, fade.inputs["To Max"].default_value = opacity, 0.0
+    nt.links.new(length.outputs["Value"], fade.inputs["Value"])
+    # Principled màu đen tuyệt đối, không phản xạ; độ trong suốt (Alpha) = độ mờ dần ở trên.
+    # (Đã thử Transparent + Emission cường độ 0: Cycles bỏ qua closure phát sáng 0 → đĩa trong suốt hoàn toàn.)
+    bsdf = nt.nodes.new("ShaderNodeBsdfPrincipled")
+    bsdf.inputs["Base Color"].default_value = (0, 0, 0, 1)
+    bsdf.inputs["Roughness"].default_value = 1.0
+    bsdf.inputs["Specular IOR Level"].default_value = 0.0
+    nt.links.new(fade.outputs["Result"], bsdf.inputs["Alpha"])
+    out = nt.nodes.new("ShaderNodeOutputMaterial")
+    nt.links.new(bsdf.outputs[0], out.inputs["Surface"])
+    obj.data.materials.append(mat)
+    bpy.context.scene.collection.objects.link(obj)
+    return obj
 
 
 def collect_points(objects, min_z=None, step=7):

@@ -101,7 +101,7 @@ const EN: RightRailText = {
   streakDaysLabel: (n) => (n === 0 ? 'no streak yet' : n === 1 ? 'day in a row' : 'days in a row'),
   goalOf: (goal) => `/${goal} min`,
   thisWeek: (n) => `This week ${n}/7`,
-  totalDays: (n) => `${n} study days in total`,
+  totalDays: (n) => `${n} study ${n === 1 ? 'day' : 'days'} in total`, // (QA) số ít/số nhiều
   freezes: (n) => `${n} streak ${n === 1 ? 'shield' : 'shields'}`,
   freezesHint: 'Used automatically if you miss a day. Earn 1 every 7 days in a row (max 2).',
   weekdays: ['M', 'T', 'W', 'T', 'F', 'S', 'S'],

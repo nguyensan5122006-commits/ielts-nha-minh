@@ -67,10 +67,11 @@ export function ExamOverview({ exam, session, display, resuming, onStart, onResu
           eyebrow={eyebrow}
           title={pick(exam.title)}
           description={pick(exam.description)}
+          // chỉ chọn Viết/Nói (hoặc bỏ chọn hết) -> không hiện thẻ "0 câu" / thẻ kỹ năng trống
           facts={[
             { icon: 'clock', text: rules.timed ? formatDuration(facts.totalMinutes, language) : text('noTimer') },
-            { icon: 'exam', text: text('questions', { n: facts.objectiveQuestions }) },
-            { icon: 'learn', text: facts.skills.map((skill) => text(skillTextKey(skill))).join(' · ') },
+            ...(facts.objectiveQuestions > 0 ? [{ icon: 'exam' as const, text: text('questions', { n: facts.objectiveQuestions }) }] : []),
+            ...(facts.skills.length > 0 ? [{ icon: 'learn' as const, text: facts.skills.map((skill) => text(skillTextKey(skill))).join(' · ') }] : []),
           ]}
           modeGroupLabel={text('modeGroup')}
           modes={

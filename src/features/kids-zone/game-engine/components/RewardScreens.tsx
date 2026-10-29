@@ -9,7 +9,7 @@
  * màn nhắc nghỉ không khoá, không trách, 2 nút ngang hàng.
  * ----------------------------------------------------------------------------
  */
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import type { KidsWord } from '../../../../content/content-types'
 import { getKidsVoiceLine, type KidsOutfit } from '../../../../content/kids'
 import { Button } from '../../../../design-system/components/Button'
@@ -44,7 +44,16 @@ export function StickerAward({ word, onDone }: { word: KidsWord; onDone: () => v
     return () => window.clearTimeout(timer)
   }, [word])
 
-  useGameKeys({ onEnter: onDone, onReplay: () => void sayWord(word) })
+  // QA: bé nhấn Enter 2 lần liền ở câu cuối -> lần 2 rơi vào màn này và bỏ qua luôn sticker
+  // (phần thưởng quý nhất). Chặn Enter trong 0,8 giây đầu + chỉ gọi onDone đúng 1 lần.
+  const shownAt = useRef(performance.now())
+  const doneRef = useRef(false)
+  const finish = () => {
+    if (doneRef.current) return
+    doneRef.current = true
+    onDone()
+  }
+  useGameKeys({ onEnter: () => performance.now() - shownAt.current >= 800 && finish(), onReplay: () => void sayWord(word) })
 
   return (
     <div className="kz-overlay" role="dialog" aria-modal="true" aria-labelledby="kz-sticker-title">
@@ -63,7 +72,7 @@ export function StickerAward({ word, onDone }: { word: KidsWord; onDone: () => v
         </p>
         {/* Lời khen "mốc thật": nhớ từ sau cả tuần */}
         <MascotSays pose="celebrate" text={voice('kids-vl-praise-m01')} lineId="kids-vl-praise-m01" mascotSize={110} className="kz-award__says" />
-        <Button size="xl" onClick={onDone} iconRight={<Kbd onColor>Enter</Kbd>}>
+        <Button size="xl" onClick={finish} iconRight={<Kbd onColor>Enter</Kbd>}>
           {text.stickerToAlbum}
         </Button>
       </div>

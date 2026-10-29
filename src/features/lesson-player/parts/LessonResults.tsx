@@ -218,9 +218,14 @@ export function LessonResults({ lesson, unit, levelId, targetBand, completion }:
                   </li>
                 ))}
               </ul>
-              {toReview.length > 0 && (
+              {toReview.length > 0 ? (
                 <Button variant="navy" iconLeft={<LessonGlyph name="replay" size={18} />} onClick={() => setReplaying(true)}>
                   {text.reviewButton}
+                </Button>
+              ) : (
+                // (QA) chỉ có lỗi ở task kỹ năng: không ôn tại chỗ được -> mở Sổ câu sai (lỗi đã được lưu ở đó)
+                <Button variant="secondary" iconLeft={<LessonGlyph name="replay" size={18} />} to="/mistakes">
+                  {text.reviewInNotebook}
                 </Button>
               )}
             </>

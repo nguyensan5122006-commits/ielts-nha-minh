@@ -11,7 +11,7 @@
  */
 import { useMemo, useState, type CSSProperties } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import type { KidsWord } from '../../../content/content-types'
+import type { KidsTopic, KidsWord } from '../../../content/content-types'
 import { KIDS_OUTFITS } from '../../../content/kids'
 import { kidsWordsDueToday } from '../../../learning-progress/kids-word-boxes'
 import { Avatar } from '../../../design-system/components/Avatar'
@@ -29,13 +29,23 @@ import { DAILY_SOFT_LIMIT_SECONDS, usePlayTime } from '../game-engine/play-time'
 import { KIDS_GAME_CARDS, READY_GAME_IDS } from '../games/game-registry'
 import { useKidsData } from '../kids-data/kids-data-context'
 import { albumTotals, equippedOutfitId, isOutfitOwned, topicStickerProgress } from '../kids-data/kids-rewards'
-import { findKidsWord, pickActiveTopic } from '../kids-data/kids-word-bank'
+import { findKidsWord, hasPicture, pickActiveTopic } from '../kids-data/kids-word-bank'
 import { useKidsText } from '../kids-text'
+import type { KidsGameId } from '../game-engine/engine-types'
 import { pickContinueChoice, pickTodayChoices, type GameChoice } from './today-choices'
 import './kids-hub.css'
 
 const STAMP_GOAL = 4
 const FAMILY_WEEK_GOAL = 15
+
+/** Trò có từ nào dùng được trong chủ đề không (đúng luật chọn từ của round-builder: cần ảnh? + bộ lọc của trò). */
+function gameFitsTopic(gameId: KidsGameId, topic: KidsTopic): boolean {
+  // Phiêu lưu cùng Ki chơi theo CHƯƠNG TRUYỆN, không theo chủ đề -> không ghép vào thẻ "trò × chủ đề"
+  if (gameId === 'patrol-adventure') return false
+  const definition = KIDS_GAME_CARDS.find((card) => card.id === gameId)?.definition
+  if (!definition) return true
+  return topic.words.some((word) => (!definition.needsPicture || hasPicture(word)) && (!definition.wordFilter || definition.wordFilter(word)))
+}
 
 export function KidsHubPage() {
   const text = useKidsText()
@@ -50,7 +60,7 @@ export function KidsHubPage() {
   const roundsToday = kids.roundsByDay[today] ?? 0
 
   const continueChoice = useMemo(() => pickContinueChoice(kids, today, READY_GAME_IDS), [kids, today])
-  const choices = useMemo(() => pickTodayChoices(kids, today, READY_GAME_IDS), [kids, today])
+  const choices = useMemo(() => pickTodayChoices(kids, today, READY_GAME_IDS, gameFitsTopic), [kids, today])
   const activeTopic = pickActiveTopic(kids)
   // Ảnh trên nút "Chơi tiếp": từ đến hạn ôn trước, thiếu thì lấy từ mới của chủ đề đang học
   const continueArt = useMemo(() => {
@@ -112,7 +122,9 @@ export function KidsHubPage() {
             <button type="button" className="kz-round-btn" onClick={sound.toggleMuted} aria-pressed={sound.muted} aria-label={sound.muted ? text.soundOn : text.soundOff} title={sound.muted ? text.soundOn : text.soundOff}>
               <Icon name={sound.muted ? 'volume-off' : 'volume'} size={24} />
             </button>
-            <Link to="/" className="kz-hub__main-link">
+            {/* QA: "/" với tài khoản bé tự quay về /kids -> nút không làm gì. Trang chính của web lớn = /learn
+                (có thanh menu trái, mục "Khu vui chơi" để quay lại đây). */}
+            <Link to="/learn" className="kz-hub__main-link">
               {text.mainSite}
             </Link>
           </div>

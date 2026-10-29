@@ -9,7 +9,7 @@
  *       language, toggleLanguage
  * ----------------------------------------------------------------------------
  */
-import { createContext, useCallback, useContext, useMemo, useState, type ReactNode } from 'react'
+import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react'
 import type { BilingualText } from '../content/content-types'
 import { UI_TEXT, type UiTextKey } from './ui-text'
 
@@ -35,6 +35,12 @@ function readSavedLanguage(): Language {
 
 export function LanguageProvider({ children }: { children: ReactNode }) {
   const [language, setLanguage] = useState<Language>(readSavedLanguage)
+
+  // Báo cho trình duyệt / trình đọc màn hình biết trang đang ở ngôn ngữ nào (<html lang="vi|en">)
+  // -> giọng đọc màn hình, gạch lỗi chính tả, tách âm tiết đúng ngôn ngữ.
+  useEffect(() => {
+    document.documentElement.lang = language
+  }, [language])
 
   const toggleLanguage = useCallback(() => {
     setLanguage((current) => {

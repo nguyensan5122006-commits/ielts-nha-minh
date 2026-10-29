@@ -265,3 +265,56 @@ render đầu lại mất ~30 s.
 30. Lần render GPU **đầu tiên trên máy** mất ~29 s để dựng cache OptiX. Các lần sau ~5 s. Mỗi lần render tốn ~3 s chi phí cố định.
     Khi render hàng loạt (nhiều góc, nhiều biểu cảm) trong **một** lần chạy Blender, dùng `setup_cycles_render(persistent_data=True)`: từ lần 2 chỉ còn ~1.7 s/ảnh.
 31. Thời gian render trên laptop dao động ±50% giữa các lần chạy (GPU đổi mức điện năng, nhiệt độ). Khi so sánh nên chạy 2–3 lần.
+
+---
+
+## 7. Mascot Corgi — ghi chú kỹ thuật (2026-10-29)
+
+Lệnh chạy và cấu trúc script: xem `README.md`, mục "Mascot Corgi". Dưới đây là những điều đo được / bẫy đã gặp.
+
+### Thời gian (RTX 4060 Laptop, Ryzen 7 7435HS)
+
+| Việc | Thời gian |
+|---|---|
+| Dựng 1 tư thế toàn thân (SDF → lưới, CPU, 1 lõi), chất lượng thật | ~2.5–4 phút (chạy 1 mình); ~5–6 phút khi 6 tiến trình chạy cùng lúc |
+| Dựng 1 tư thế, `--draft` (lưới thưa 1.5 lần) | ~1.5–2 phút |
+| Dựng ảnh đầu (pose `head`) | ~30–70 s |
+| Render 1024 px, 192 samples, sau khi dựng xong | ~5–20 s |
+| 13 tư thế + ảnh đầu, 3 tiến trình song song (`render_mascot_all.mjs`) | ~25–35 phút |
+
+### Bẫy đã gặp
+
+32. **Modifier Subdivision Surface làm bước "Synchronizing data" của Cycles chậm khủng khiếp**: 40–90 s mỗi khi
+    đổi cảnh, với ~400k quad. Tắt Subdivision thì chỉ còn 0.3–3.5 s. Đã so A/B ở ảnh 1024 px: lưới Surface Nets
+    (voxel 6.5 mm, đã chiếu đúng lên bề mặt) gần như giống hệt bản có Subdivision. → `sdf_toolkit.USE_SUBDIVISION = False`.
+    Cách tìm ra: chạy Blender với `--debug-cycles`, đọc dòng "Total time spent synchronizing data".
+33. Thử nghi ngờ "mắt phát sáng (emission) biến mọi tam giác thành đèn" → **không phải** nguyên nhân chậm.
+    Vẫn đặt `material.emission_sampling = 'NONE'` cho mắt để chắc chắn mắt không bị tính là nguồn sáng.
+34. **Shadow catcher 20 m** bắt cả những vệt mờ ở tận chân trời → "bóng ma" mờ trong ảnh nền trong suốt.
+    Còn **shadow catcher 4 m** thì cắt bóng dài thành cạnh thẳng. Cách giải quyết: **light linking**
+    (`light.light_linking.receiver_collection` + `collection_objects[i].light_linking.link_state = 'EXCLUDE'/'INCLUDE'`).
+    - Đèn chính KHÔNG chiếu lên mặt bắt bóng → mặt bắt bóng chỉ còn nhận ánh sáng trời → quầng bóng rất mềm.
+    - Đã thử thêm 1 đèn tròn trên đỉnh đầu CHỈ chiếu mặt bắt bóng: cái đầu chibi to che đèn → vũng bóng đen
+      rộng, xấu. Bỏ đèn đó.
+    - Thay bằng **bóng giả (blob shadow)**: đĩa elip Principled màu đen, Alpha mờ dần ra mép, chỉ camera nhìn thấy.
+      (Lưu ý: Transparent + Emission cường độ 0 KHÔNG được — Cycles bỏ qua closure phát sáng 0, đĩa trong suốt hẳn.)
+    - Khi xuất web, `tools/shadow_clean.mjs` làm bóng mờ dần theo elip quanh chân và về 0 trong 12 px sát mép ảnh.
+    - Xem `mascot_stage.contact_shadow()` / `add_blob_shadow()`.
+    - Camera thấp (6°) làm đĩa sàn bị dẹt: đĩa bán kính 0.5 m chỉ cao ~20 px trên ảnh 512 px, phần lớn nằm sau bàn chân.
+35. Đèn AREA mặc định **hiện trong phản chiếu**. Đèn hắt dưới hình vuông thành đốm VUÔNG trong mắt bóng
+    → `obj.visible_glossy = False` + `light.shape = 'DISK'`. Tất cả đèn đặt `visible_camera = False`.
+36. **Rãnh hẹp hơn ~2 ô lưới** (vd rãnh nhân trung 7.5 mm trên lưới 6.5 mm) bị lỗ chỗ như vết khâu → vẽ bằng màu (mask) thay vì khoét.
+37. **Hốc lòng tai** phải đặt theo độ dày thật của tai (`ear_r_base * ear_thick`). Đặt sâu quá thì hốc thành "bọt khí"
+    ẩn trong tai, chỉ làm lõm lấm tấm ở ngọn tai. Mask màu lòng tai chỉ tô ở MẶT TRƯỚC (ngọn tai mỏng, mặt sau dễ dính màu).
+38. Tay chibi quá ngắn để chạm mũ khi chào → IK 2 khớp cho phép tay **dài ra** khi mục tiêu xa hơn 93% chiều dài tay
+    (`arm_chain` trong `corgi_builder.py`). Ảnh hoạt hình nên không ai thấy tay dài hơn.
+39. Dựng hình SDF chỉ dùng 1 lõi CPU (numpy) → chạy **nhiều tiến trình Blender song song** (mỗi tiến trình vài tư thế).
+    Mỗi tiến trình chỉ chiếm ~1 GB VRAM khi render. 6 tiến trình cùng lúc vẫn ổn trên card 8 GB / RAM 24 GB.
+40. Python của Blender buffer stdout khi chuyển hướng ra file → log chỉ hiện khi tiến trình kết thúc.
+    Muốn theo dõi tiến độ thì xem file ảnh xuất hiện trong thư mục output.
+41. **Chạy song song phải giới hạn luồng của numpy** (`OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1`).
+    Nếu không, mỗi tiến trình Blender mở ~16 luồng BLAS. 3–4 tiến trình giành nhau 8 lõi + hết RAM (mỗi tiến trình ~5 GB):
+    - render 1 ảnh 512 px mất 5 phút (bình thường vài giây);
+    - 43 phút chưa xong tư thế đầu tiên.
+
+    `render_mascot_all.mjs` đã tự đặt các biến này. Chạy tay nhiều tiến trình thì tự `export` trước.

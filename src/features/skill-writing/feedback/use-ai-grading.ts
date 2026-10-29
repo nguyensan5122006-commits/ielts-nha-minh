@@ -32,6 +32,9 @@ export function classifyAiError(error: unknown): { kind: AiErrorKind; message: s
     if (error.status === 0) return { kind: 'offline', message: error.message }
     if (error.status === 429) return { kind: 'limit', message: error.message }
     if (error.status === 413) return { kind: 'too-long', message: error.message }
+    // (QA) lỗi cấu hình khoá AI (máy chủ cũng trả 5xx) không phải "AI quá tải" -> báo lỗi chung,
+    // dòng chi tiết bên dưới sẽ nói rõ là khoá sai; tránh vừa "quá tải" vừa "khoá không hợp lệ".
+    if (error.status >= 500 && /api[_ ]key/i.test(error.message)) return { kind: 'generic', message: error.message }
     if (error.status >= 500) return { kind: 'busy', message: error.message }
     return { kind: 'generic', message: error.message }
   }

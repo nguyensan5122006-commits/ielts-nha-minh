@@ -192,6 +192,8 @@ const VI = {
   reviewTitle: 'Câu cần ôn',
   reviewNone: 'Không có câu nào cần ôn. Bạn làm chắc tay cả bài!',
   reviewButton: 'Ôn lại câu sai',
+  // (QA) bài chỉ có lỗi ở task kỹ năng (nghe/đọc…) -> không ôn tại chỗ được, đưa sang Sổ câu sai
+  reviewInNotebook: 'Ôn trong Sổ câu sai',
   miniTestButton: (n: number) => `Thử thách mini-test · ${n} câu · 5 tim`,
   reviewAbout: (n: number) => `${n} câu · khoảng 1 phút`,
   reviewDone: (n: number) => `Đã ôn lại ${n} câu`,
@@ -388,6 +390,7 @@ const EN: LessonText = {
   reviewTitle: 'To review',
   reviewNone: 'Nothing to review — you were steady all the way!',
   reviewButton: 'Review mistakes',
+  reviewInNotebook: 'Review in the mistakes notebook',
   miniTestButton: (n) => `Mini-test challenge · ${n} questions · 5 hearts`,
   reviewAbout: (n) => `${n} item${n > 1 ? 's' : ''} · about 1 minute`,
   reviewDone: (n) => `Reviewed ${n} item${n > 1 ? 's' : ''}`,

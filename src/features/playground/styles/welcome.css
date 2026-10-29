@@ -87,7 +87,8 @@
   border: 1px solid var(--c-line);
   font-size: var(--fs-sm);
 }
-.welcome__news li > span {
+/* chỉ dòng chữ được giãn — ảnh 3D (.pg-art cũng là <span>) giữ đúng cỡ, nếu không ảnh phình to đè lên "Bài tiếp theo" */
+.welcome__news li > span:not(.pg-art) {
   flex: 1 1 auto;
   min-width: 0;
 }

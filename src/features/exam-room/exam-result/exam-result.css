@@ -141,7 +141,8 @@
   margin: 0;
   padding: 0;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  /* auto-fit (không phải auto-fill): đề 3 phần (test level) giãn đủ hàng, không chừa 1 cột trống bên phải ở 1440px */
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: var(--s-4);
 }
 .xr-skill-tile {

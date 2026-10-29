@@ -106,7 +106,8 @@ export function MemoryMatchGame({ session, onExit }: KidsGameProps) {
       const input = outcomes.current.get(index)!
       const feedback = session.completeItem(input)
       // động cơ nối câu "phải xem đáp án" vào cuối hàng -> nối y hệt vào bản sao
-      if (input.revealed) {
+      // (theo đúng feedback.comesBack của động cơ: câu đã quay lại 1 lần thì không nối nữa)
+      if (feedback.comesBack) {
         const item = queue.current[index]
         queue.current.push({ ...item, key: `${item.key}-again`, kind: item.kind === 'practice' ? 'practice' : 'repeat', showIntro: false })
       }
@@ -121,7 +122,8 @@ export function MemoryMatchGame({ session, onExit }: KidsGameProps) {
       }
     }
     // cặp vừa ghép có thể chưa được nộp (đang chờ câu trước) -> vẫn báo "quay lại cuối lượt" đúng cho cặp này
-    return firstFeedback ?? { praise: null, firstTryStreak: session.firstTryStreak, comesBack: outcome.revealed }
+    // (câu đã là lần quay lại thì không quay lại nữa — giống luật của động cơ)
+    return firstFeedback ?? { praise: null, firstTryStreak: session.firstTryStreak, comesBack: outcome.revealed && !queue.current[pair.queueIndex].key.endsWith('-again') }
   }
 
   const onBoardDone = () => {

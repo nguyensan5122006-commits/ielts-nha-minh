@@ -150,8 +150,11 @@ export function useRoundSession(plan: RoundPlan): RoundSession {
       setFirstTryStreak(s.streak)
       recentWordIds.current = [...recentWordIds.current.filter((id) => id !== word.id), word.id]
 
-      // 3. Phải xem đáp án -> câu quay lại cuối lượt
-      if (input.revealed) {
+      // 3. Phải xem đáp án -> câu quay lại cuối lượt — CHỈ 1 LẦN.
+      //    (QA: câu quay lại mà bé vẫn phải xem đáp án thì không nối thêm nữa, nếu không
+      //    bé bấm bừa sẽ làm lượt dài mãi: 12 -> 13 -> 14 … câu)
+      const comesBack = input.revealed && !item.key.endsWith('-again')
+      if (comesBack) {
         queue.current.push({ ...item, key: `${item.key}-again`, kind: item.kind === 'practice' ? 'practice' : 'repeat', showIntro: false })
         setQueueLength(queue.current.length)
       }
@@ -178,7 +181,7 @@ export function useRoundSession(plan: RoundPlan): RoundSession {
             })
           : null
 
-      return { praise, firstTryStreak: s.streak, comesBack: input.revealed }
+      return { praise, firstTryStreak: s.streak, comesBack }
     },
     // [] = tạo hàm 1 lần: mọi thứ hàm cần đều nằm trong ref hoặc cố định suốt lượt (start, plan)
     [],

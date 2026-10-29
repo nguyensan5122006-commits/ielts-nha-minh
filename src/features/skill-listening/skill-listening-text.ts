@@ -66,8 +66,8 @@ const LISTENING_TEXT = {
   wentWellAll: { vi: 'Bạn nghe ra đủ {n}/{n} thông tin.', en: 'You caught all {n} details.' },
   wentWellType: { vi: 'Dạng "{type}" làm rất chắc ({c}/{t}).', en: 'Solid on "{type}" ({c}/{t}).' },
   wentWellSome: { vi: 'Bạn đã nghe ra {c} chi tiết — giữ cách tập trung đó cho các đoạn sau.', en: 'You caught {c} details — keep that focus for the next parts.' },
-  improveBlank: { vi: 'Còn {n} câu bỏ trống — cứ đoán, IELTS không trừ điểm câu sai.', en: '{n} blanks — always guess, there is no penalty.' },
-  improveSpelling: { vi: '{n} câu gần đúng: chú ý chính tả, số ít/số nhiều.', en: '{n} near misses: check spelling and plurals.' },
+  improveBlank: { vi: 'Còn {n} câu bỏ trống — cứ đoán, IELTS không trừ điểm câu sai.', en: 'Blank answers: {n} — always guess, there is no penalty.' }, // (QA) tránh "1 blanks"
+  improveSpelling: { vi: '{n} câu gần đúng: chú ý chính tả, số ít/số nhiều.', en: 'Near misses: {n} — check spelling and plurals.' },
   improveListenAgain: { vi: 'Bấm "Nghe từ đoạn này" ở câu sai, nghe lại 2 lần trong khi nhìn lời thoại.', en: 'Use "Listen from here" on wrong answers and replay twice while reading.' },
   summaryLine: { vi: 'Bạn nghe ra {c}/{t} thông tin', en: 'You caught {c}/{t} details' },
 } satisfies Record<string, { vi: string; en: string }>

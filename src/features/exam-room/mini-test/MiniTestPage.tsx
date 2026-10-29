@@ -101,6 +101,8 @@ function MiniTestRun({ lesson }: { lesson: Lesson }) {
   const [reward, setReward] = useState<{ stars: number; xp: number } | null>(null)
   const correctCount = useRef(0)
   const checkedAt = useRef(0)
+  // đã dùng "Hồi tim" trong lượt này -> vẫn qua nhưng tối đa 1 sao (trước đây hồi đầy 5 tim = 3 sao dù sai 5/6 câu)
+  const refillUsed = useRef(false)
   const exercise: Exercise | undefined = exercises[index]
   const previous = progress.miniTests[lesson.id]
   const lessonDone = !!progress.lessons[lesson.id]
@@ -108,6 +110,7 @@ function MiniTestRun({ lesson }: { lesson: Lesson }) {
   const restart = () => {
     stopSpeaking()
     correctCount.current = 0
+    refillUsed.current = false
     setIndex(0)
     setAnswer(null)
     setOutcome(null)
@@ -155,7 +158,7 @@ function MiniTestRun({ lesson }: { lesson: Lesson }) {
         setPhase('failed')
         return
       }
-      const stars = starsFromHearts(heartsLeft)
+      const stars = refillUsed.current ? 1 : starsFromHearts(heartsLeft)
       const xp = (previous ? 5 : 15) + stars * 5
       recordMiniTestAttempt(lesson.id, true, stars)
       addXp(xp)
@@ -389,6 +392,7 @@ function MiniTestRun({ lesson }: { lesson: Lesson }) {
                 void spendItem(HEART_REFILL_ITEM).then((used) => {
                   setRefillOpen(false)
                   if (!used) return finish(false, 0)
+                  refillUsed.current = true
                   setHearts(MINI_TEST_HEARTS)
                   if (index + 1 >= exercises.length) finish(true, MINI_TEST_HEARTS)
                   else {

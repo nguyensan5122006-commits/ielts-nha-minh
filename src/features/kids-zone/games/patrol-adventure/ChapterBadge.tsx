@@ -7,7 +7,7 @@
  * Huy hiệu là mốc THẬT (xong cả chương) nên được ăn mừng to (luật 18).
  * ----------------------------------------------------------------------------
  */
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import type { KidsStoryChapter } from '../../../../content/content-types'
 import { getKidsVoiceLine } from '../../../../content/kids'
 import { Button } from '../../../../design-system/components/Button'
@@ -33,7 +33,16 @@ export function ChapterBadge({ chapter, outfitId, onDone }: { chapter: KidsStory
     fireConfetti({ origin: { x: 0.5, y: 0.35 }, particleCount: 90 })
   }, [])
 
-  useGameKeys({ onEnter: onDone })
+  // QA: Enter 2 lần liền ở "Đi tiếp" của cảnh cuối -> lần 2 rơi vào màn này và bỏ qua luôn
+  // màn ăn mừng huy hiệu. Chặn Enter trong 0,8 giây đầu + chỉ gọi onDone đúng 1 lần (không ghi 2 lượt).
+  const shownAt = useRef(performance.now())
+  const doneRef = useRef(false)
+  const finish = () => {
+    if (doneRef.current) return
+    doneRef.current = true
+    onDone()
+  }
+  useGameKeys({ onEnter: () => performance.now() - shownAt.current >= 800 && finish() })
 
   return (
     <main className="pa-badge-screen">
@@ -52,7 +61,7 @@ export function ChapterBadge({ chapter, outfitId, onDone }: { chapter: KidsStory
       {line && (
         <MascotSays pose="celebrate" text={fillMascotName(line.vi)} lineId={line.id} mascotSize={120} outfitId={outfitId} className="pa-badge-screen__ki" />
       )}
-      <Button size="xl" className="pa-badge-next" onClick={onDone} iconRight={<Kbd onColor>Enter</Kbd>}>
+      <Button size="xl" className="pa-badge-next" onClick={finish} iconRight={<Kbd onColor>Enter</Kbd>}>
         {text.badgeCollect}
       </Button>
     </main>

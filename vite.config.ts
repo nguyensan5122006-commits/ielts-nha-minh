@@ -34,7 +34,8 @@ export default defineConfig({
   },
   server: {
     proxy: {
-      '/api': 'http://127.0.0.1:8788',
+      // ws: true -> chuyển cả kết nối WebSocket (/api/realtime: chat, online, đấu trường) sang API local
+      '/api': { target: 'http://127.0.0.1:8788', ws: true },
     },
     // Không theo dõi các thư mục làm việc phụ (ảnh research, hồ sơ Chrome, file Blender, bản build):
     // chúng thay đổi liên tục và làm dev server rất chậm.

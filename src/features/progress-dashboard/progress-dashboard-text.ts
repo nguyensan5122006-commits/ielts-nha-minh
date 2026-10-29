@@ -145,7 +145,7 @@ const EN: DashboardText = {
   streakTile: 'Study streak',
   streakDays: (n) => `${n} day${n === 1 ? '' : 's'}`,
   thisWeek: (n) => `This week ${n}/7`,
-  totalDays: (n) => `${n} study days in total`,
+  totalDays: (n) => `${n} study ${n === 1 ? 'day' : 'days'} in total`, // (QA) số ít/số nhiều
   freezesLeft: (n) => `${n} streak freeze${n === 1 ? '' : 's'}`,
   studiedToday: 'Studied today',
   notYetToday: 'Not yet today',

@@ -70,12 +70,16 @@ export function HeroStage() {
         chip.style.opacity = (0.5 + 0.5 * ((depth + 1) / 2)).toFixed(2)
         chip.style.zIndex = depth > 0 ? '3' : '1'
         chip.dataset.side = depth > 0 ? 'front' : 'back'
+        // (QA) đứng yên (giảm chuyển động): thẻ nằm ngay SAU đầu cún bị che mất chữ -> ẩn hẳn thẻ đó
+        chip.style.visibility = reduceMotion && depth < -0.8 ? 'hidden' : ''
       })
     }
 
     if (reduceMotion) {
-      place(0.35)
-      const onResize = () => place(0.35)
+      // góc π/8: 6 thẻ còn lại rải đều 2 bên cún, chỉ 2 thẻ rơi đúng sau đầu (bị ẩn ở trên)
+      const STILL_ANGLE = Math.PI / 8
+      place(STILL_ANGLE)
+      const onResize = () => place(STILL_ANGLE)
       window.addEventListener('resize', onResize)
       return () => window.removeEventListener('resize', onResize)
     }

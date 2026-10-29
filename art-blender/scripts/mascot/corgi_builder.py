@@ -156,8 +156,10 @@ def build_head(P, X):
         outer = FlatRoundCone(base, tip, P["ear_r_base"], P["ear_r_tip"], facing, P["ear_thick"])
         f_orth = facing - np.dot(facing, axis) * axis
         f_orth /= np.linalg.norm(f_orth)
-        inner_base = base + axis * (P["ear_len"] * 0.20) + f_orth * 0.045 * hs
-        inner_tip = tip - axis * (P["ear_len"] * 0.15) + f_orth * 0.03 * hs
+        # Lòng tai đặt SÁT mặt trước của lá tai (theo đúng độ dày tai) → luôn khoét thủng mặt trước thành
+        # hốc rõ ràng. (Nếu đặt sâu quá, hốc thành "bọt khí" ẩn trong tai, chỉ làm lõm lấm tấm ở ngọn tai.)
+        inner_base = base + axis * (P["ear_len"] * 0.20) + f_orth * (P["ear_r_base"] * P["ear_thick"] * 0.80)
+        inner_tip = tip - axis * (P["ear_len"] * 0.15) + f_orth * (P["ear_r_tip"] * P["ear_thick"] * 0.80)
         inner = FlatRoundCone(inner_base, inner_tip, P["ear_r_base"] * P["ear_inner"], P["ear_r_tip"] * 0.45,
                               facing, P["ear_thick"] * 0.72)
         m.union(outer, k=0.07 * hs)
@@ -465,7 +467,7 @@ def build_arm(P, a):
             # ngón cái: búp tròn chỉ thẳng lên trời
             up = np.array([0.0, 0.0, 1.0])
             base = a["paw"] + up * fist_r[2] * 0.25 - R[:, 1] * fist_r[1] * 0.1
-            arm.union(RoundCone(base, base + up * 0.14 + R[:, 2] * 0.01, 0.040, 0.034), k=0.03)
+            arm.union(RoundCone(base, base + up * 0.17 + R[:, 2] * 0.01, 0.050, 0.042), k=0.03)
     return arm
 
 
@@ -1021,8 +1023,8 @@ def make_materials(P, X):
         "gold_rope": M.make_gold(f"M_{k}_GoldRope", pal["gold"], roughness=0.3, rope=True),
         "gold_paint": M.make_satin(f"M_{k}_GoldPaint", pal["gold_paint"], roughness=0.32, coat=0.4),
         # lưỡi trai: đen satin MỜ — bóng quá thì phản chiếu cả bầu trời studio → trông như tấm bạc
-        "visor": M.make_glossy(f"M_{k}_Visor", pal["visor"], roughness=0.6, coat=0.12, coat_rough=0.35,
-                               specular=0.16),
+        "visor": M.make_glossy(f"M_{k}_Visor", pal["visor"], roughness=0.72, coat=0.0, coat_rough=0.35,
+                               specular=0.10),
         "belt": M.make_glossy(f"M_{k}_Belt", pal["belt"], roughness=0.42, coat=0.25, coat_rough=0.3,
                               bump_scale=90.0, bump_strength=0.12),
         "nose": M.make_glossy(f"M_{k}_Nose", pal["nose"], roughness=0.3, coat=0.6, coat_rough=0.12,

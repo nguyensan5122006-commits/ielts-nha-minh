@@ -340,6 +340,16 @@ html[data-theme='dark']:has(.kz-world) {
   background: var(--c-navy);
   color: var(--c-on-navy);
 }
+/* Chữ tiếng Anh to (từ cần nghe, lệnh tô màu, lời kể…) bấm vào là nghe (QA: luật "mọi chữ tiếng Anh
+   bấm vào nghe được"). Nút loa bên cạnh vẫn là cách chính cho bàn phím / trình đọc màn hình. */
+.kz-say-text {
+  cursor: pointer;
+  border-radius: 10px;
+  transition: background-color 120ms ease;
+}
+.kz-say-text:hover {
+  background: color-mix(in srgb, var(--kz-listen) 14%, transparent);
+}
 
 /* ---------- 4. BONG BÓNG THOẠI CỦA MASCOT ---------- */
 .kz-bubble {

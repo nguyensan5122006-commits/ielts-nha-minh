@@ -146,8 +146,8 @@ POSES = {
         "head": {"roll": 6.0},
         "arms": {
             "R": REST,
-            "L": {"mode": "reach", "anchor": "chest", "at": (0.26, -0.22, 0.10), "fingers": (-0.9, -0.3, 0.0),
-                  "palm": (-0.2, 0.2, -1.0), "pole": (1.0, 0.3, -0.7), "grip": "thumb"},
+            "L": {"mode": "reach", "anchor": "chest", "at": (0.38, -0.20, 0.16), "fingers": (-0.9, -0.35, 0.0),
+                  "palm": (-0.2, 0.25, -1.0), "pole": (1.0, 0.3, -0.7), "grip": "thumb"},
         },
         "eyes": "wink", "mouth": "tongue", "brows": "soft",
         "view": -12.0,
@@ -156,10 +156,10 @@ POSES = {
     "surprised": {
         "head": {"roll": 0.0, "pitch": -4.0},
         "arms": {
-            "R": {"mode": "reach", "anchor": "head", "at": (0.40, -0.26, -0.22), "fingers": (-0.25, -0.1, 1.0),
-                  "palm": (-1.0, -0.15, 0.0), "pole": (1.0, 0.0, -1.0), "grip": "open"},
-            "L": {"mode": "reach", "anchor": "head", "at": (0.40, -0.26, -0.22), "fingers": (-0.25, -0.1, 1.0),
-                  "palm": (-1.0, -0.15, 0.0), "pole": (1.0, 0.0, -1.0), "grip": "open"},
+            "R": {"mode": "reach", "anchor": "head", "at": (0.37, -0.42, -0.20), "fingers": (-0.3, -0.15, 1.0),
+                  "palm": (-1.0, 0.25, 0.0), "pole": (1.0, -0.2, -1.0), "grip": "open"},
+            "L": {"mode": "reach", "anchor": "head", "at": (0.37, -0.42, -0.20), "fingers": (-0.3, -0.15, 1.0),
+                  "palm": (-1.0, 0.25, 0.0), "pole": (1.0, -0.2, -1.0), "grip": "open"},
         },
         "eyes": "wide", "mouth": "o", "brows": "raised", "ears": {"out": -8.0},
         "view": 10.0,
@@ -168,9 +168,9 @@ POSES = {
     "reading": {
         "head": {"roll": 6.0, "pitch": 8.0},
         "arms": {
-            "R": {"mode": "reach", "anchor": "chest", "at": (0.16, -0.30, 0.06), "fingers": (-0.2, -0.4, 1.0),
+            "R": {"mode": "reach", "anchor": "chest", "at": (0.235, -0.33, 0.04), "fingers": (-0.2, -0.4, 1.0),
                   "palm": (-0.9, -0.1, 0.2), "pole": (1.0, 0.2, -0.6), "grip": "fist"},
-            "L": {"mode": "reach", "anchor": "chest", "at": (0.16, -0.30, 0.06), "fingers": (-0.2, -0.4, 1.0),
+            "L": {"mode": "reach", "anchor": "chest", "at": (0.235, -0.33, 0.04), "fingers": (-0.2, -0.4, 1.0),
                   "palm": (-0.9, -0.1, 0.2), "pole": (1.0, 0.2, -0.6), "grip": "fist"},
         },
         "eyes": "open", "mouth": "smile", "brows": "soft", "look": (0.0, -0.02),
@@ -181,10 +181,10 @@ POSES = {
     "writing": {
         "head": {"roll": -7.0, "pitch": 7.0},
         "arms": {
-            "R": {"mode": "reach", "anchor": "chest", "at": (0.08, -0.30, 0.10), "fingers": (0.6, -0.3, 0.7),
-                  "palm": (0.7, 0.0, -0.4), "pole": (1.0, 0.1, -0.7), "grip": "fist"},
-            "L": {"mode": "reach", "anchor": "chest", "at": (0.14, -0.26, -0.04), "fingers": (-0.6, -0.4, 0.6),
-                  "palm": (-0.3, -0.2, 1.0), "pole": (1.0, 0.1, -0.6), "grip": "open"},
+            "R": {"mode": "reach", "anchor": "chest", "at": (0.02, -0.44, 0.13), "fingers": (0.5, -0.4, 0.7),
+                  "palm": (0.7, 0.2, -0.4), "pole": (1.0, 0.1, -0.7), "grip": "fist"},
+            "L": {"mode": "reach", "anchor": "chest", "at": (0.22, -0.32, -0.04), "fingers": (-0.6, -0.55, 0.55),
+                  "palm": (0.15, -0.85, 0.5), "pole": (1.0, 0.1, -0.6), "grip": "open"},
         },
         "eyes": "open", "mouth": "tongue_side", "brows": "soft", "look": (-0.01, -0.02),
         "props": ["pencil", "notepad"],

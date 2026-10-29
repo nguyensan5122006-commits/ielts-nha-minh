@@ -50,6 +50,8 @@ export function BattleRoomPage() {
   const [now, setNow] = useState(Date.now())
   const [freezeTargetMode, setFreezeTargetMode] = useState(false)
   const [chainInput, setChainInput] = useState('')
+  // lúc bấm "Bắt đầu trận": máy chủ còn phải thu chuối cược (vài giây) -> nút quay "đang tải", không bấm lặp
+  const [startClickedAt, setStartClickedAt] = useState(0)
 
   // đồng hồ cho đếm ngược / đóng băng
   useEffect(() => {
@@ -203,7 +205,8 @@ export function BattleRoomPage() {
             <Mascot pose={iWon ? 'celebrate' : 'thumbs-up'} size={iWon ? 180 : 140} placement="hero" />
             <div className="bt-over__headline">
               <span className="ds-eyebrow">{playText('roomFinal')}</span>
-              <h1>{iWon ? t('youWin') : winners.length > 0 ? playText('roomWinnerIs', { name: winners.map((w) => w.name).join(', ') }) : t('gameOver')}</h1>
+              {/* nhiều người cùng điểm cao nhất = hoà (hũ chia đều) — không ghi "Bạn thắng!" cho cả 2 */}
+              <h1>{iWon && winners.length > 1 ? playText('roomDraw') : iWon ? t('youWin') : winners.length > 0 ? playText('roomWinnerIs', { name: winners.map((w) => w.name).join(', ') }) : t('gameOver')}</h1>
               {myPlace > 0 && !iWon && <p className="bt-over__place">{playText('roomYourPlace', { n: myPlace })}</p>}
               {game.over.pot > 0 && (
                 <p className="bt-over__pot">
@@ -330,7 +333,17 @@ export function BattleRoomPage() {
           <div className="bt-lobby__footer">
             {isHost ? (
               <>
-                <Button size="lg" fullWidth disabled={players.length < 2} onClick={() => send({ t: 'room:start' })} iconLeft={players.length >= 2 ? 'play-fill' : undefined}>
+                <Button
+                  size="lg"
+                  fullWidth
+                  disabled={players.length < 2}
+                  loading={now - startClickedAt < 8000} // tối đa 8 giây; máy chủ báo lỗi (VD thiếu chuối) thì nút sáng lại
+                  onClick={() => {
+                    setStartClickedAt(Date.now())
+                    send({ t: 'room:start' })
+                  }}
+                  iconLeft={players.length >= 2 ? 'play-fill' : undefined}
+                >
                   {players.length < 2 ? t('waitingForPlayers') : t('startBattle')}
                 </Button>
                 {players.length < 2 && <p className="bt-lobby__hint">{playText('roomNeedTwo')}</p>}

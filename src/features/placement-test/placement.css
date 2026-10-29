@@ -674,7 +674,9 @@
   box-shadow: var(--focus-ring);
 }
 .pt-select--time {
-  width: 128px;
+  /* (QA) để rộng tự nhiên: máy dùng giờ 12h (có SA/CH, AM/PM) thì 128px cắt mất chữ */
+  width: auto;
+  min-width: 10em;
 }
 
 /* 4. xem lại câu đã làm */

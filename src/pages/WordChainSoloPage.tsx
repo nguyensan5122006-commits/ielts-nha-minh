@@ -86,7 +86,8 @@ export function WordChainSoloPage() {
       let bananas = 0
       try {
         const saved = await api.submitGameScore('word-chain', finalScore)
-        isNewRecord = saved.isNewRecord
+        // 0 điểm (lượt đầu, hết giờ chưa gõ chữ nào) không phải "kỷ lục mới" dù máy chủ coi lượt đầu là kỷ lục
+        isNewRecord = saved.isNewRecord && finalScore > 0
         bananas = saved.bananas
         void refreshWallet()
       } catch {

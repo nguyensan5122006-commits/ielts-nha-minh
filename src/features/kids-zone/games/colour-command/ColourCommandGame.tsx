@@ -388,7 +388,10 @@ function ColourQuestionView({ item, session, hideText, usedCommands, instruction
         </button>
         <div className="cc-command__text" aria-live="polite">
           {showCommand ? (
-            <p className={['cc-command__en', phase === 'correct' && 'is-solved'].filter(Boolean).join(' ')}>{question.commandEn}</p>
+            // bấm vào câu lệnh = nghe lại (giống nút loa)
+            <p className={['cc-command__en', 'kz-say-text', phase === 'correct' && 'is-solved'].filter(Boolean).join(' ')} onClick={() => replay('normal')} title={text.listenAgain}>
+              {question.commandEn}
+            </p>
           ) : (
             <p className="cc-command__hidden">
               <span className="cc-command__dots" aria-hidden>

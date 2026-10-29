@@ -130,6 +130,9 @@ def main():
         else:
             scene.render.resolution_x = scene.render.resolution_y = size
         catcher.hide_render = head_only
+        blob = bpy.data.objects.get(catcher.get("blob", ""))
+        if blob:
+            blob.hide_render = head_only
         sec = render_still(label=f"{key}-{view}")
         base = os.path.join(args["out_dir"], f"concept_{key}_{view}{args['suffix']}")
         save_render_outputs(base, webp=False)

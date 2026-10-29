@@ -57,6 +57,8 @@ const VI = {
   inviteCode: 'Mã gia đình',
   inviteCodeHint: 'Hỏi người lập web trong nhà',
   inviteCodeMissing: 'Cần mã gia đình để tạo tài khoản.',
+  // (QA) máy chủ báo "Mã mời không đúng" — đổi sang đúng tên ô "Mã gia đình" cho khỏi rối
+  inviteCodeWrong: 'Mã gia đình chưa đúng — hỏi lại người lập web trong nhà.',
   ageGroup: 'Nhóm tuổi',
   ageKid: 'Tiểu học',
   ageTeen: '12–18',
@@ -107,6 +109,7 @@ const EN: AuthText = {
   inviteCode: 'Family code',
   inviteCodeHint: 'Ask whoever set up the site',
   inviteCodeMissing: 'You need the family code to create an account.',
+  inviteCodeWrong: 'That family code is not right — ask whoever set up the site.',
   ageGroup: 'Age group',
   ageKid: 'Primary',
   ageTeen: '12–18',

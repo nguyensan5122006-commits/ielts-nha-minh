@@ -10,13 +10,14 @@
  *   />
  *
  * 1 form, 5 ô: tên gọi trong nhà · tên đăng nhập (tự gợi ý từ tên gọi) · mật khẩu (có nút hiện/ẩn)
- * · mã gia đình · nhóm tuổi. Gửi đúng API cũ `register()` + trường mới `ageGroup` (03-DATA-LAYER mục 11).
+ * · mã gia đình (chỉ hiện khi máy chủ có đặt INVITE_CODE) · nhóm tuổi. Gửi đúng API cũ `register()` + trường mới `ageGroup` (03-DATA-LAYER mục 11).
  * Kiểm tra tại chỗ trước khi gửi (đúng luật của functions/api/auth/register.ts) để báo lỗi ngay cạnh ô.
  * ----------------------------------------------------------------------------
  */
-import { useId, useState, type FormEvent, type ReactNode } from 'react'
+import { useEffect, useId, useState, type FormEvent, type ReactNode } from 'react'
 import type { AgeGroup } from '../../../backend-helpers/age-groups'
 import { Button, Icon, SegmentedControl } from '../../design-system'
+import { callApi } from '../../services/api-client'
 import { useAuth } from '../../services/auth-context'
 import { useAuthText } from './auth-text'
 import './auth.css'
@@ -73,6 +74,25 @@ export function SignupForm({ defaultAgeGroup = 'adult', submitLabel, beforeSubmi
   const [fieldErrors, setFieldErrors] = useState<Partial<Record<FieldName, string>>>({})
   const [formError, setFormError] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
+  /**
+   * Máy chủ có đòi mã gia đình không? (GET /api/auth/signup-options)
+   * Mặc định true = hiện ô mã cho tới khi máy chủ trả lời "không cần" -> chủ nhà bỏ bí mật INVITE_CODE
+   * là form tự ẩn ô này, không phải sửa code.
+   */
+  const [inviteRequired, setInviteRequired] = useState(true)
+  useEffect(() => {
+    let cancelled = false
+    callApi<{ inviteRequired: boolean }>('/api/auth/signup-options')
+      .then((options) => {
+        if (!cancelled) setInviteRequired(options.inviteRequired)
+      })
+      .catch(() => {
+        /* lỗi mạng -> giữ ô mã cho chắc */
+      })
+    return () => {
+      cancelled = true
+    }
+  }, [])
 
   const fieldId = (name: string) => `${idPrefix}-${name}`
 
@@ -96,14 +116,14 @@ export function SignupForm({ defaultAgeGroup = 'adult', submitLabel, beforeSubmi
     const errors: Partial<Record<FieldName, string>> = {}
     if (!USERNAME_PATTERN.test(form.username.trim())) errors.username = text.usernameInvalid
     if (form.password.length < 6) errors.password = text.passwordTooShort
-    if (!form.inviteCode.trim()) errors.inviteCode = text.inviteCodeMissing
+    if (inviteRequired && !form.inviteCode.trim()) errors.inviteCode = text.inviteCodeMissing
     return errors
   }
 
   /** Lỗi máy chủ -> gắn vào đúng ô nếu nhận ra (mã mời / tên đăng nhập / mật khẩu) */
   function showServerError(message: string) {
     const friendly = text.serverError(message)
-    if (/mã mời|invite/i.test(message)) setFieldErrors({ inviteCode: friendly })
+    if (/mã mời|invite/i.test(message)) setFieldErrors({ inviteCode: text.inviteCodeWrong })
     else if (/tên đăng nhập|username/i.test(message)) setFieldErrors({ username: friendly })
     else if (/mật khẩu|password/i.test(message)) setFieldErrors({ password: friendly })
     else setFormError(friendly)
@@ -184,7 +204,8 @@ export function SignupForm({ defaultAgeGroup = 'adult', submitLabel, beforeSubmi
         )}
       </div>
 
-      <div className="au-field-row">
+      {/* có ô mã gia đình -> mật khẩu + mã đứng chung 1 hàng; không có -> mật khẩu chiếm cả hàng */}
+      <div className={inviteRequired ? 'au-field-row' : undefined}>
         <div className="au-field">
           <label className="au-label" htmlFor={fieldId('password')}>
             {text.password}
@@ -221,6 +242,7 @@ export function SignupForm({ defaultAgeGroup = 'adult', submitLabel, beforeSubmi
           )}
         </div>
 
+        {inviteRequired && (
         <div className="au-field">
           <label className="au-label" htmlFor={fieldId('inviteCode')}>
             {text.inviteCode}
@@ -245,6 +267,7 @@ export function SignupForm({ defaultAgeGroup = 'adult', submitLabel, beforeSubmi
             </span>
           )}
         </div>
+        )}
       </div>
 
       <div className="au-field">
