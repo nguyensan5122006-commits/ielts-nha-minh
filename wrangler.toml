@@ -14,7 +14,7 @@ pages_build_output_dir = "dist"
 [[d1_databases]]
 binding = "DB"
 database_name = "ielts-nha-minh-db"
-database_id = "DIEN-DATABASE-ID-MOI"  # thay bằng mã in ra khi chạy: npx wrangler d1 create ielts-nha-minh-db
+database_id = "4c618338-5710-43a6-88cc-bae9f176d3b4"  # ielts-nha-minh-db (tạo 29/10/2026)
 migrations_dir = "database/migrations"
 
 [vars]

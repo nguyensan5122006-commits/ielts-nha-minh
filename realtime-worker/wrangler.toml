@@ -22,4 +22,4 @@ new_sqlite_classes = ["FamilyHub"]
 [[d1_databases]]
 binding = "DB"
 database_name = "ielts-nha-minh-db"
-database_id = "DIEN-DATABASE-ID-MOI"  # cùng mã với wrangler.toml ở thư mục gốc
+database_id = "4c618338-5710-43a6-88cc-bae9f176d3b4"  # cùng mã với wrangler.toml ở thư mục gốc
