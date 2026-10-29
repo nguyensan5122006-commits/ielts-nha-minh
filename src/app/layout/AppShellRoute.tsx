@@ -12,9 +12,10 @@
  * ----------------------------------------------------------------------------
  */
 import { Suspense } from 'react'
-import { Outlet } from 'react-router-dom'
+import { Outlet, useLocation } from 'react-router-dom'
 import { PlayerAvatar } from '../../components/PlayerIdentity'
 import { accountLevelFromXp } from '../../gamification/account-level'
+import { gamificationVisibleAt } from '../../gamification/gamification-scope'
 import { useFamily } from '../../family-members/family-store'
 import { useProgress } from '../../learning-progress/progress-store'
 import { useRealtime } from '../../realtime/realtime-store'
@@ -39,8 +40,13 @@ export function AppShellRoute() {
   const { memberById } = useFamily()
   const { unread, connected } = useRealtime()
 
+  const { pathname } = useLocation()
+
   const totalUnread = Object.values(unread).reduce((sum, count) => sum + count, 0)
-  const level = accountLevelFromXp(progress.xpTotal).level
+  // "Lv.N" (level tài khoản, tính từ XP) chỉ hiện ở track general / Sân chơi, không hiện trong phòng thi —
+  // track IELTS chỉ thấy chuỗi ngày (src/gamification/gamification-scope.ts)
+  const showLevel = gamificationVisibleAt(progress.profile.track, pathname)
+  const level = showLevel ? accountLevelFromXp(progress.xpTotal).level : undefined
 
   return (
     <AppShell

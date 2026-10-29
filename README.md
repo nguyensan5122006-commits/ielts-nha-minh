@@ -7,6 +7,8 @@ Thêm vài phần vui để cả nhà cùng học:
 - **Trò chơi chữ:** Thử thách từ mỗi ngày (kiểu Wordle), Spelling Bee, Nối từ (chơi với máy) — có kỷ lục cả nhà.
 - **Chat:** kênh gia đình và chat riêng (sticker, ảnh, "đang gõ…", "đã xem").
 - **Thành tích:** XP, chuỗi ngày học, bảng xếp hạng gia đình, nhiệm vụ (thưởng XP), huy hiệu, level tài khoản.
+  XP / bảng xếp hạng / nhiệm vụ / huy hiệu **chỉ có ở lộ trình Tiếng Anh tổng quát** (và trò chơi chữ); lộ trình IELTS,
+  phòng thi và đề thi thử không cộng XP, không hiện các thứ đó — chỉ giữ chuỗi ngày học (xem `src/gamification/gamification-scope.ts`).
 
 (29/10/2026 đã xoá hẳn: khu trẻ em, chuối 🍌 + cửa hàng, đấu trường / giải tuần / boss và các mini game khác.)
 
@@ -192,6 +194,7 @@ Câu nào chưa có mp3 thì web tự dùng giọng đọc của trình duyệt.
 |---|---|
 | Nhiệm vụ (số XP thưởng), huy hiệu | `src/gamification/quests-and-achievements.ts` |
 | XP lên level, danh hiệu | `src/gamification/account-level.ts` |
+| Chỗ nào được cộng / hiện XP (chỉ track general + trò chơi chữ) | `src/gamification/gamification-scope.ts` — luật chi tiết: `docs/redesign-v3/03-DATA-LAYER.md` mục 15 |
 | Danh sách trò chơi chữ trên /play | `src/features/playground/game-catalog.ts` (+ tên trò trong `functions/api/games/records.ts`) |
 
 Sửa xong chạy `npm run deploy`.

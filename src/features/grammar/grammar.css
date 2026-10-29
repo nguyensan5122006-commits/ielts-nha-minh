@@ -1,0 +1,451 @@
+/* =============================================================================
+ * grammar.css — khu "Ngữ pháp": /grammar (danh sách) và /grammar/:topicId (1 điểm)
+ * -----------------------------------------------------------------------------
+ * Chỉ dùng biến của hệ thiết kế (tokens.css) -> tự đổi theo chế độ sáng / tối.
+ * Tiền tố class "gr-" để không đụng class của nhóm khác.
+ * ========================================================================== */
+
+.gr-page {
+  width: 100%;
+  max-width: 1040px;
+  margin: 0 auto;
+  padding: var(--s-6) var(--page-gutter) var(--s-10);
+}
+.gr-page--topic {
+  max-width: 860px;
+}
+
+/* ---------- đầu trang ---------- */
+.gr-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-6);
+  margin-bottom: var(--s-6);
+}
+.gr-head__eyebrow {
+  display: block;
+  margin: 0 0 var(--s-1);
+  font-size: var(--fs-sm);
+  font-weight: 700;
+  color: var(--c-primary-ink);
+}
+.gr-head__title {
+  margin: 0;
+  font-size: var(--fs-2xl);
+  line-height: 1.25;
+}
+.gr-head__intro {
+  margin: var(--s-2) 0 0;
+  max-width: 62ch;
+  color: var(--c-ink-2);
+}
+.gr-head__ring {
+  flex: none;
+}
+.gr-head__ring-value {
+  font-family: var(--font-display);
+  font-size: var(--fs-xl);
+  line-height: 1;
+}
+.gr-head__ring-unit {
+  font-size: var(--fs-xs);
+  color: var(--c-ink-2);
+}
+
+.gr-tabs {
+  margin-bottom: var(--s-5);
+}
+
+/* ---------- đầu nhóm level ---------- */
+.gr-level__head {
+  display: flex;
+  align-items: center;
+  gap: var(--s-4);
+  margin-bottom: var(--s-5);
+}
+.gr-level__titles {
+  flex: 1;
+  min-width: 0;
+}
+.gr-level__title {
+  margin: 0;
+  font-size: var(--fs-lg);
+  line-height: 1.3;
+}
+.gr-level__meta {
+  margin: 2px 0 0;
+  font-size: var(--fs-sm);
+  color: var(--c-ink-2);
+}
+.gr-level__progress {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--s-1);
+  width: 200px;
+}
+.gr-level__progress .ds-progress {
+  width: 100%;
+}
+.gr-level__count {
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  color: var(--c-ink-2);
+}
+
+/* ---------- lưới thẻ điểm ngữ pháp ---------- */
+.gr-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+  gap: var(--s-4);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.gr-grid > li {
+  display: flex;
+}
+.gr-topic {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-2);
+  width: 100%;
+  color: inherit;
+  text-decoration: none !important;
+}
+.gr-topic--next {
+  border-color: var(--c-primary);
+  box-shadow: 0 0 0 2px var(--c-primary-soft), var(--shadow-card);
+}
+.gr-topic__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-2);
+  min-height: 32px;
+}
+.gr-topic__number {
+  display: inline-grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 999px;
+  background: var(--c-surface-2);
+  font-family: var(--font-display);
+  font-weight: 700;
+  color: var(--c-ink-2);
+}
+.gr-topic--done .gr-topic__number {
+  background: var(--c-success-soft);
+  color: var(--c-success-ink);
+}
+.gr-topic--next .gr-topic__number {
+  background: var(--c-primary);
+  color: var(--c-on-primary);
+}
+.gr-topic__badges {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: var(--s-1);
+}
+.gr-topic__title {
+  margin: 0;
+  font-size: var(--fs-md);
+  line-height: 1.35;
+}
+.gr-topic__summary {
+  margin: 0;
+  font-size: var(--fs-sm);
+  color: var(--c-ink-2);
+  line-height: 1.5;
+}
+.gr-topic__pattern,
+.gr-rail__pattern {
+  margin: 0;
+  padding: var(--s-2) var(--s-3);
+  border-radius: var(--r-sm);
+  background: var(--c-surface-2);
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  line-height: 1.5;
+  color: var(--c-ink);
+}
+.gr-topic__foot {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  margin-top: auto;
+  padding-top: var(--s-2);
+}
+.gr-topic__foot .ds-progress {
+  flex: 1;
+}
+.gr-topic__count {
+  flex: none;
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  color: var(--c-ink-2);
+}
+
+/* ---------- cột phải ---------- */
+.gr-rail__title {
+  margin: 0 0 var(--s-2);
+  font-size: var(--fs-md);
+  line-height: 1.35;
+}
+.gr-rail__text {
+  margin: 0 0 var(--s-2);
+  font-size: var(--fs-sm);
+  color: var(--c-ink-2);
+}
+.gr-rail__topic {
+  margin: 0 0 var(--s-2);
+  font-weight: 700;
+}
+.gr-rail-next .gr-rail__pattern {
+  margin-bottom: var(--s-4);
+}
+.gr-rail__ring {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  margin-bottom: var(--s-4);
+}
+.gr-rail__ring .gr-rail__text {
+  margin: 0;
+}
+.gr-rail__steps {
+  margin: 0;
+  padding-left: 1.25em;
+  font-size: var(--fs-sm);
+  color: var(--c-ink-2);
+}
+.gr-rail__steps li + li {
+  margin-top: var(--s-2);
+}
+
+/* ---------- trang 1 điểm ---------- */
+.gr-back {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-1);
+  margin-bottom: var(--s-4);
+  font-weight: 600;
+  color: var(--c-ink-2);
+  text-decoration: none;
+}
+.gr-back:hover {
+  color: var(--c-ink);
+}
+.gr-back__icon {
+  transform: rotate(180deg);
+}
+.gr-topic-head {
+  display: flex;
+  align-items: center;
+  gap: var(--s-5);
+  margin-bottom: var(--s-5);
+}
+
+.gr-formula {
+  display: grid;
+  gap: var(--s-3);
+  margin-bottom: var(--s-7);
+  border-left: 4px solid var(--c-primary);
+}
+.gr-formula__row {
+  display: grid;
+  grid-template-columns: 96px 1fr;
+  align-items: baseline;
+  gap: var(--s-3);
+}
+.gr-formula__label {
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--c-ink-2);
+}
+.gr-formula__pattern {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--fs-lg);
+  font-weight: 700;
+  line-height: 1.35;
+}
+.gr-formula__row--example {
+  align-items: center;
+}
+.gr-formula__example {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+}
+.gr-formula__example p {
+  margin: 0;
+  font-family: var(--font-reading);
+  font-size: var(--fs-md);
+}
+
+.gr-section {
+  margin-bottom: var(--s-7);
+}
+.gr-section__title {
+  margin: 0;
+  font-size: var(--fs-lg);
+}
+.gr-section__intro {
+  margin: var(--s-1) 0 var(--s-4);
+  font-size: var(--fs-sm);
+  color: var(--c-ink-2);
+}
+
+.gr-lessons {
+  display: grid;
+  gap: var(--s-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.gr-lesson {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+}
+.gr-lesson__number {
+  display: inline-grid;
+  flex: none;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  background: var(--c-surface-2);
+  font-weight: 700;
+  font-size: var(--fs-sm);
+  color: var(--c-ink-2);
+}
+.gr-lesson--done .gr-lesson__number {
+  background: var(--c-success-soft);
+  color: var(--c-success-ink);
+}
+.gr-lesson__body {
+  flex: 1;
+  min-width: 0;
+}
+.gr-lesson__title {
+  margin: 0;
+  font-weight: 700;
+  line-height: 1.35;
+}
+.gr-lesson__meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s-1) var(--s-2);
+  margin: var(--s-1) 0 0;
+  font-size: var(--fs-xs);
+  color: var(--c-ink-2);
+}
+.gr-lesson__best {
+  font-weight: 700;
+  color: var(--c-success-ink);
+}
+
+.gr-cheat {
+  display: grid;
+  gap: var(--s-3);
+}
+.gr-cheat__title {
+  margin: 0 0 var(--s-2);
+  font-size: var(--fs-md);
+}
+.gr-cheat__body {
+  margin: 0;
+  line-height: 1.65;
+}
+.gr-cheat__line {
+  display: block;
+}
+.gr-cheat__examples {
+  display: grid;
+  gap: var(--s-2);
+  margin: var(--s-3) 0 0;
+  padding: var(--s-3) 0 0;
+  border-top: 1px solid var(--c-line);
+  list-style: none;
+}
+.gr-cheat__example {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--s-3);
+}
+.gr-cheat__en {
+  display: block;
+  font-family: var(--font-reading);
+}
+.gr-cheat__vi {
+  display: block;
+  font-size: var(--fs-sm);
+  color: var(--c-ink-2);
+}
+.gr-cheat-error {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-3);
+}
+
+.gr-pager {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--s-4);
+  padding-top: var(--s-5);
+  border-top: 1px solid var(--c-line);
+}
+.gr-pager__link {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  max-width: 48%;
+  color: inherit;
+  text-decoration: none;
+}
+.gr-pager__link--next {
+  margin-left: auto;
+  text-align: right;
+}
+.gr-pager__hint {
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  color: var(--c-ink-2);
+}
+.gr-pager__name {
+  font-weight: 700;
+  color: var(--c-navy);
+}
+.gr-pager__link:hover .gr-pager__name {
+  text-decoration: underline;
+}
+
+/* ---------- màn hẹp ---------- */
+@media (max-width: 760px) {
+  .gr-head {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .gr-level__head {
+    flex-wrap: wrap;
+  }
+  .gr-level__progress {
+    align-items: flex-start;
+    width: 100%;
+  }
+  .gr-formula__row {
+    grid-template-columns: 1fr;
+    gap: var(--s-1);
+  }
+  .gr-lesson {
+    flex-wrap: wrap;
+  }
+}

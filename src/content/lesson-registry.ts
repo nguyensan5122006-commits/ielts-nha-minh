@@ -13,6 +13,8 @@
  *   - (v3) levels/level-2-bridge/{general,ielts} : Level 2 phần 3.0 – 4.0
  *   - (v3) levels/level-3-ielts/{listening-reading,writing-speaking} : Level 3 track IELTS
  *   - (v3) levels/level-3-general : Level 3 track tổng quát (B1–B2)
+ *   - (v3) grammar/ : khu "Ngữ pháp" (/grammar) — bài category 'grammar', không nằm trong chặng nào
+ *   - (v3) chủ đề từ vựng còn thiếu + cụm động từ / thành ngữ (topic-vocabulary, phrasal-verb, idiom)
  * Thêm thư mục bài mới: import mảng bài ở đây + import chặng (units) ở all-levels.ts.
  * ----------------------------------------------------------------------------
  */
@@ -56,6 +58,17 @@ import { level3GeneralListeningLessons } from './levels/level-3-general/listenin
 import { level3GeneralReadingLessons } from './levels/level-3-general/reading-lessons'
 import { level3GeneralSpeakingLessons } from './levels/level-3-general/speaking-lessons'
 import { level3GeneralWritingLessons } from './levels/level-3-general/writing-lessons'
+// (v3) Chủ đề từ vựng IELTS còn thiếu + cụm động từ / thành ngữ (track general)
+import { level2BridgeGeneralTopicVocabularyLessons } from './levels/level-2-bridge/general/topic-vocabulary-lessons'
+import { level2BridgeGeneralPhrasalVerbLessons } from './levels/level-2-bridge/general/phrasal-verb-lessons'
+import { level3GeneralTopicVocabularyLessons } from './levels/level-3-general/topic-vocabulary-lessons'
+import { level3GeneralIdiomLessons } from './levels/level-3-general/idiom-lessons'
+// (v3) Khu "Ngữ pháp" (/grammar) — xem src/content/grammar/grammar-topics.ts
+import { level1GrammarLessons } from './grammar/level-1-grammar-lessons'
+import { level2GrammarLessons } from './grammar/level-2-grammar-lessons'
+import { level2GrammarLessonsPart2 } from './grammar/level-2-grammar-lessons-part2'
+import { level3GrammarLessons } from './grammar/level-3-grammar-lessons'
+import { level3GrammarLessonsPart2 } from './grammar/level-3-grammar-lessons-part2'
 
 /** Bài cũ của Level 1 + Level 2 (100 bài). */
 export const LEGACY_LESSONS: Lesson[] = [
@@ -96,10 +109,23 @@ export const NEW_CONTENT_LESSONS: Lesson[] = [
   ...level3GeneralReadingLessons,
   ...level3GeneralSpeakingLessons,
   ...level3GeneralWritingLessons,
+  ...level2BridgeGeneralTopicVocabularyLessons,
+  ...level2BridgeGeneralPhrasalVerbLessons,
+  ...level3GeneralTopicVocabularyLessons,
+  ...level3GeneralIdiomLessons,
+]
+
+/** (v3) Bài của khu "Ngữ pháp" (/grammar). Mỗi bài có category: 'grammar', track: 'general'. */
+export const GRAMMAR_LESSONS: Lesson[] = [
+  ...level1GrammarLessons,
+  ...level2GrammarLessons,
+  ...level2GrammarLessonsPart2,
+  ...level3GrammarLessons,
+  ...level3GrammarLessonsPart2,
 ]
 
 /** Toàn bộ bài học của web. */
-export const ALL_LESSONS: Lesson[] = [...LEGACY_LESSONS, ...NEW_CONTENT_LESSONS]
+export const ALL_LESSONS: Lesson[] = [...LEGACY_LESSONS, ...NEW_CONTENT_LESSONS, ...GRAMMAR_LESSONS]
 
 /* ------------------------- bảng tra (tạo 1 lần) ------------------------- */
 

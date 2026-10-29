@@ -20,7 +20,8 @@ const VI = {
   heroEyebrow: 'Web học tiếng Anh của gia đình',
   heroTitleLine1: 'Cả nhà học tiếng Anh,',
   heroTitleLine2: 'mỗi ngày một chút',
-  heroLead: 'Mỗi bài chỉ 5 phút, cún {mascot} dẫn đường từ con số 0 tới IELTS 6.5 — hoặc học tiếng Anh tổng quát.',
+  // Lời hứa phải ĐÚNG (29/10/2026): bài học thường 5–10 phút; bài luyện đề IELTS (task Nghe/Đọc/Viết/Nói) dài hơn
+  heroLead: 'Bài học ngắn 5–10 phút (bài luyện đề IELTS dài hơn), cún {mascot} dẫn đường từ con số 0 tới IELTS 6.5 — hoặc học tiếng Anh tổng quát.',
   ctaStart: 'Bắt đầu học',
   ctaResume: (n: number) => `Làm tiếp bài xếp lớp (câu ${n + 1})`,
   ctaResult: 'Xem lại kết quả xếp lớp',
@@ -80,7 +81,7 @@ const EN: LandingText = {
   heroEyebrow: "Our family's English learning site",
   heroTitleLine1: 'English for the whole family,',
   heroTitleLine2: 'a little every day',
-  heroLead: 'Short 5-minute lessons with {mascot} the corgi as your guide — from zero to IELTS 6.5, or general English.',
+  heroLead: 'Short 5–10 minute lessons (IELTS practice tasks take longer), with {mascot} the corgi as your guide — from zero to IELTS 6.5, or general English.',
   ctaStart: 'Start learning',
   ctaResume: (n: number) => `Continue placement test (question ${n + 1})`,
   ctaResult: 'See my placement result',

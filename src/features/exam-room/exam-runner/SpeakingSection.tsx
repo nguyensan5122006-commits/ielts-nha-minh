@@ -153,7 +153,7 @@ export function SpeakingSection({ exam, sectionIndex, position, handle, rules, d
       skill="speaking"
       badge={
         <>
-          <ModeBadge mode={practice ? 'practice' : 'exam'} />
+          <ModeBadge mode={exam.kind === 'level-test' ? 'test' : practice ? 'practice' : 'exam'} />
           <span className="xr-frame__position">{text('sectionOf', position)}</span>
         </>
       }

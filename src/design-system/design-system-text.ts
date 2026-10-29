@@ -19,6 +19,7 @@ export const DS_TEXT = {
   navLearn: { vi: 'Học', en: 'Learn' },
   navReview: { vi: 'Ôn tập', en: 'Review' },
   navExams: { vi: 'Luyện thi', en: 'Practice tests' },
+  navGrammar: { vi: 'Ngữ pháp', en: 'Grammar' },
   navPlay: { vi: 'Sân chơi', en: 'Playground' },
   navChat: { vi: 'Chat', en: 'Chat' },
   navProfile: { vi: 'Hồ sơ', en: 'Profile' },

@@ -113,8 +113,12 @@ export function FrameTool({ icon, label, onClick, pressed, count }: { icon: Icon
   )
 }
 
-/** Nhãn chế độ: Luyện tập (kem) / Thi thật (navy). */
-export function ModeBadge({ mode }: { mode: 'practice' | 'exam' }) {
+/**
+ * Nhãn chế độ: Luyện tập (kem) / Thi thật (navy) / Kiểm tra (navy — bài test cuối level:
+ * nghiêm túc nhưng KHÔNG phải "thi thật" IELTS, chữ "Thi thật" chỉ dành cho đề thi thử bấm giờ).
+ */
+export function ModeBadge({ mode }: { mode: 'practice' | 'exam' | 'test' }) {
   const text = useExamUiText()
-  return <span className={`xf-mode xf-mode--${mode}`}>{text(mode === 'exam' ? 'examMode' : 'practiceMode')}</span>
+  const label = mode === 'exam' ? 'examMode' : mode === 'test' ? 'testMode' : 'practiceMode'
+  return <span className={`xf-mode xf-mode--${mode === 'practice' ? 'practice' : 'exam'}`}>{text(label)}</span>
 }

@@ -67,6 +67,19 @@ export const LESSON_SOURCES = {
   'level-3-general/reading-lessons': () => import('./levels/level-3-general/reading-lessons').then((m) => m.level3GeneralReadingLessons),
   'level-3-general/speaking-lessons': () => import('./levels/level-3-general/speaking-lessons').then((m) => m.level3GeneralSpeakingLessons),
   'level-3-general/writing-lessons': () => import('./levels/level-3-general/writing-lessons').then((m) => m.level3GeneralWritingLessons),
+
+  // (v3) Chủ đề từ vựng còn thiếu + cụm động từ / thành ngữ (track general)
+  'level-2-bridge/general/topic-vocabulary-lessons': () => import('./levels/level-2-bridge/general/topic-vocabulary-lessons').then((m) => m.level2BridgeGeneralTopicVocabularyLessons),
+  'level-2-bridge/general/phrasal-verb-lessons': () => import('./levels/level-2-bridge/general/phrasal-verb-lessons').then((m) => m.level2BridgeGeneralPhrasalVerbLessons),
+  'level-3-general/topic-vocabulary-lessons': () => import('./levels/level-3-general/topic-vocabulary-lessons').then((m) => m.level3GeneralTopicVocabularyLessons),
+  'level-3-general/idiom-lessons': () => import('./levels/level-3-general/idiom-lessons').then((m) => m.level3GeneralIdiomLessons),
+
+  // (v3) Khu "Ngữ pháp" (/grammar) — file nằm ở src/content/grammar/ (key bắt đầu bằng "../grammar/")
+  '../grammar/level-1-grammar-lessons': () => import('./grammar/level-1-grammar-lessons').then((m) => m.level1GrammarLessons),
+  '../grammar/level-2-grammar-lessons': () => import('./grammar/level-2-grammar-lessons').then((m) => m.level2GrammarLessons),
+  '../grammar/level-2-grammar-lessons-part2': () => import('./grammar/level-2-grammar-lessons-part2').then((m) => m.level2GrammarLessonsPart2),
+  '../grammar/level-3-grammar-lessons': () => import('./grammar/level-3-grammar-lessons').then((m) => m.level3GrammarLessons),
+  '../grammar/level-3-grammar-lessons-part2': () => import('./grammar/level-3-grammar-lessons-part2').then((m) => m.level3GrammarLessonsPart2),
 } satisfies Record<string, () => Promise<Lesson[]>>
 
 /** Tên 1 nguồn (VD 'level-1-beginner/vocabulary-lessons'). */

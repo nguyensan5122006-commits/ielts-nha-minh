@@ -13,7 +13,7 @@
  * Dạng bài vẽ bằng ExerciseView + chấm bằng checkExerciseAnswer của nhóm lesson-player (giống
  * parts/MistakeReplay.tsx) -> mini-test trông và chạy y như bài học.
  * Ghi tiến độ: recordAnswer từng câu (câu sai -> sổ lỗi + thẻ ôn "item:"), cuối lượt
- * recordMiniTestAttempt + addXp + markStudyDay (mini-test tính là có học hôm nay).
+ * recordMiniTestAttempt + addXp (chỉ track general — lessonEarnsXp) + markStudyDay (mini-test tính là có học hôm nay).
  * Mini-test ngắn (6 câu) nên không lưu giữa chừng — thoát là làm lại từ đầu (hộp thoại nói rõ).
  * ----------------------------------------------------------------------------
  */
@@ -25,6 +25,7 @@ import { findNextLesson, findUnitOfLesson } from '../../../content/path-selector
 import { useLesson } from '../../../content/use-lesson'
 import { Button, EmptyState, Icon, Kbd, Mascot, Modal, ProgressBar, Skeleton } from '../../../design-system'
 import { playSound } from '../../../design-system/sound-kit'
+import { lessonEarnsXp } from '../../../gamification/gamification-scope'
 import { useProgress } from '../../../learning-progress/progress-store'
 import { stopSpeaking } from '../../../services/text-to-speech'
 import { useLanguage } from '../../../translations/language-context'
@@ -92,7 +93,7 @@ function MiniTestRun({ lesson }: { lesson: Lesson }) {
   const [hearts, setHearts] = useState(MINI_TEST_HEARTS)
   const [heartBump, setHeartBump] = useState(0)
   const [exitOpen, setExitOpen] = useState(false)
-  const [reward, setReward] = useState<{ stars: number; xp: number } | null>(null)
+  const [reward, setReward] = useState<{ stars: number; xp: number | null } | null>(null)
   const correctCount = useRef(0)
   const checkedAt = useRef(0)
   const exercise: Exercise | undefined = exercises[index]
@@ -150,14 +151,15 @@ function MiniTestRun({ lesson }: { lesson: Lesson }) {
         return
       }
       const stars = starsFromHearts(heartsLeft)
-      const xp = (previous ? 5 : 15) + stars * 5
+      // XP theo luật của bài học (gamification-scope.ts): chỉ track general -> track IELTS: null, không hiện "+XP"
+      const xp = lessonEarnsXp(lesson.id, progress.profile.track, lesson.track) ? (previous ? 5 : 15) + stars * 5 : null
       recordMiniTestAttempt(lesson.id, true, stars)
-      addXp(xp)
+      if (xp !== null) addXp(xp)
       setReward({ stars, xp })
       playSound('complete')
       setPhase('passed')
     },
-    [lesson.id, previous, recordMiniTestAttempt, addXp, markStudyDay],
+    [lesson.id, previous, progress.profile.track, recordMiniTestAttempt, addXp, markStudyDay],
   )
 
   const next = useCallback(() => {
@@ -272,7 +274,13 @@ function MiniTestRun({ lesson }: { lesson: Lesson }) {
                 ))}
               </p>
               <p className="xr-mini-screen__text">
-                {text('miniPassedText', { h: hearts, c: correctCount.current, t: exercises.length })} · <strong className="xr-mini-xp">{text('miniXp', { n: reward.xp })}</strong>
+                {text('miniPassedText', { h: hearts, c: correctCount.current, t: exercises.length })}
+                {reward.xp !== null && (
+                  <>
+                    {' · '}
+                    <strong className="xr-mini-xp">{text('miniXp', { n: reward.xp })}</strong>
+                  </>
+                )}
               </p>
               <div className="xr-mini-screen__actions">
                 <Button variant="secondary" size="lg" to="/learn">

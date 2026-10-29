@@ -22,6 +22,10 @@
  *   - setProfile({ dailyGoalMinutes, studyCue, studyTime }) -> kế hoạch chọn trên màn kết quả
  *   - nếu đã làm bài thật: markStudyDay() + addStudyMinutes() -> ngày học đầu tiên được tính
  *     ("tiến độ tặng sẵn có lý do thật" — psych-adult A9: bạn ĐÃ học 5 phút rồi)
+ *
+ * Áp xong thì XOÁ kết quả + bài dở khỏi máy (clearResult + clearDraft): máy tính dùng chung cả nhà ->
+ * người tiếp theo mở /start thấy bài mới tinh, không thấy kết quả của người trước (quyết định 29/10/2026).
+ * Kết quả đã nằm trong tài khoản (progress.placement), không mất gì.
  * ----------------------------------------------------------------------------
  */
 import { useCallback, useEffect, useRef, useState } from 'react'
@@ -29,7 +33,7 @@ import { findNextLesson } from '../../content/path-selectors'
 import { useProgress } from '../../learning-progress/progress-store'
 import { todayString } from '../../learning-progress/study-calendar'
 import { useAuth } from '../../services/auth-context'
-import { clearDraft, clearPendingApply, hasPendingApply, loadResult, markPendingApply, updateResult } from './placement-storage'
+import { clearDraft, clearPendingApply, clearResult, hasPendingApply, loadResult, markPendingApply } from './placement-storage'
 
 export type ApplyStatus = 'idle' | 'applying' | 'done'
 
@@ -79,7 +83,9 @@ export function useApplyPlacement(): ApplyPlacement {
     // (QA) Kết quả đã áp cho BẤT KỲ tài khoản nào (kể cả người khác trong nhà dùng chung máy) thì
     // không áp nữa — tránh chép trình độ của người trước vào tài khoản mới tạo trên cùng trình duyệt.
     if (!result || result.appliedToUserId != null) {
-      // không có gì để áp (hoặc đã áp rồi): đi thẳng vào học
+      // không có gì để áp (hoặc đã áp rồi): đi thẳng vào học.
+      // Bản lưu cũ (trước 29/10) đã áp nhưng chưa xoá -> xoá luôn bây giờ.
+      if (result) clearResult()
       setDestination('/learn')
       setStatus('done')
       return
@@ -96,7 +102,8 @@ export function useApplyPlacement(): ApplyPlacement {
       markStudyDay()
       addStudyMinutes(Math.max(1, result.minutesSpent))
     }
-    updateResult({ appliedToUserId: user.id })
+    // đã chép vào tài khoản -> xoá khỏi máy (ResultPage giữ bản trong state nên màn hình không nháy)
+    clearResult()
     clearDraft()
     setStatus('applying')
   }, [isRequested, status, user, isLoaded, setPlacementV3, setProfile, markStudyDay, addStudyMinutes])

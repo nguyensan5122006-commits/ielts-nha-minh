@@ -23,6 +23,7 @@ import { SplitPane } from '../../exam-ui/SplitPane'
 import { TaskChart } from '../../skill-writing/TaskChart'
 import { WritingEditor } from '../../skill-writing/WritingEditor'
 import '../../skill-writing/WritingTaskPlayer.css'
+import { examBadgeMode } from '../exam-catalog'
 import { writingDraftKey } from '../exam-grading'
 import { useExamRoomText } from '../exam-room-text'
 import type { SectionRunnerProps } from './ObjectiveSection'
@@ -141,7 +142,7 @@ export function WritingSection({ exam, sectionIndex, position, handle, rules, di
       skill="writing"
       badge={
         <>
-          <ModeBadge mode={session.mode === 'exam' || rules.timed ? 'exam' : 'practice'} />
+          <ModeBadge mode={examBadgeMode(exam, session.mode, rules)} />
           <span className="xr-frame__position">{text('sectionOf', position)}</span>
         </>
       }

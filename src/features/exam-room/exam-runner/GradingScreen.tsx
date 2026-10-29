@@ -7,7 +7,8 @@
  *   … Lưu kết quả + cập nhật tiến độ
  * AI lỗi -> "Thử chấm lại" hoặc "Xem kết quả luôn" (phần đó chưa có band) — không mất bài làm.
  * Lưu lên máy chủ lỗi -> giữ kết quả trong máy (/exam-result/local) + nút "Thử lưu lại".
- * Tiến độ học (XP, chuỗi ngày, sổ lỗi, band, mở level) chỉ ghi ĐÚNG 1 LẦN (applyProgressEffects).
+ * Không trả lời gì cả (VD bấm "Bỏ qua phần Nói" ngay) -> KHÔNG lưu kết quả rỗng: xoá phiên, báo nhẹ, về /exams.
+ * Tiến độ học (chuỗi ngày, sổ lỗi, band, mở level — phòng thi KHÔNG cộng XP) chỉ ghi ĐÚNG 1 LẦN (applyProgressEffects).
  * ----------------------------------------------------------------------------
  */
 import { useCallback, useEffect, useMemo, useRef, useState, type MutableRefObject } from 'react'
@@ -15,6 +16,7 @@ import { useNavigate } from 'react-router-dom'
 import type { Exam } from '../../../content/content-types'
 import { Button } from '../../../design-system/components/Button'
 import { Icon } from '../../../design-system/components/Icon'
+import { useToast } from '../../../design-system/components/Toast'
 import { useProgress } from '../../../learning-progress/progress-store'
 import { api } from '../../../services/api-client'
 import { stopSpeaking } from '../../../services/text-to-speech'
@@ -28,6 +30,7 @@ import {
   forgetLocalResult,
   gradeSpeakingJob,
   gradeWritingJob,
+  hasAnyAnswer,
   isEmptyWriting,
   keepResultLocally,
   speakingJobs,
@@ -53,6 +56,7 @@ export function GradingScreen({ exam, handle, takesRef, display }: GradingScreen
   const { pick } = useLanguage()
   const navigate = useNavigate()
   const progress = useProgress()
+  const { showToast } = useToast()
   const session = handle.latest.current
   const sectionIndexes = session.sectionOrder
 
@@ -133,8 +137,16 @@ export function GradingScreen({ exam, handle, takesRef, display }: GradingScreen
     if (started.current) return
     started.current = true
     stopSpeaking()
+    // chưa trả lời câu nào -> không lưu kết quả rỗng (không chuỗi ngày, không band), quay về danh sách đề
+    const current = handle.latest.current
+    if (!hasAnyAnswer(exam, current.sectionOrder, current.answers, takesRef.current)) {
+      handle.discard()
+      showToast({ icon: '📝', text: text('nothingAnsweredToast') })
+      navigate('/exams', { replace: true })
+      return
+    }
     void runJobs()
-  }, [runJobs])
+  }, [runJobs, exam, handle, takesRef, showToast, text, navigate])
 
   const stepState = (key: string, empty: boolean): StepState => {
     if (empty) return 'skipped'

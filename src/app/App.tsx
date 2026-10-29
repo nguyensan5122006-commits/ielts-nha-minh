@@ -39,6 +39,8 @@ import { progressDashboardRoutes } from '../features/progress-dashboard/progress
 import { playgroundRoutes } from '../features/playground/playground-routes'
 import { settingsRoutes } from '../features/settings/settings-routes'
 import { learningPathRoutes } from '../features/learning-path/learning-path-routes'
+// (redesign v3) Khu Ngữ pháp: /grammar, /grammar/:topicId
+import { grammarRoutes } from '../features/grammar/grammar-routes'
 import { AppShellRoute } from './layout/AppShellRoute'
 import { skillTaskRoutes } from '../features/skill-writing/skill-writing-routes'
 import { lessonPlayerRoutes } from '../features/lesson-player/lesson-player-routes'
@@ -121,6 +123,7 @@ export function App() {
                       <Route element={<AppShellRoute />}>
                         {learningPathRoutes()}
                         {vocabularyReviewRoutes()}
+                        {grammarRoutes()}
                         {mistakesNotebookRoutes()}
                         {progressDashboardRoutes()}
                         {examRoomShellRoutes()}

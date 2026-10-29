@@ -84,6 +84,20 @@ export function writingJobs(exam: Exam, sectionIndexes: number[], answers: ExamA
 
 export const isEmptyWriting = (job: WritingJob) => countWords(job.text) < MIN_WORDS_TO_GRADE
 
+/**
+ * Người học có trả lời GÌ không (trong các phần đã làm)? — 1 câu Nghe/Đọc có đáp án, 1 chữ Writing,
+ * hoặc 1 bản ghi Speaking. Không có gì (VD vào đề rồi bấm "Bỏ qua phần Nói" ngay) -> phòng thi
+ * KHÔNG lưu kết quả rỗng, quay về /exams (GradingScreen.tsx).
+ */
+export function hasAnyAnswer(exam: Exam, sectionIndexes: number[], answers: ExamAnswers, takes: Record<number, SpeakingAnswer[]>): boolean {
+  const objective = sectionIndexes.some((index) =>
+    (exam.sections[index]?.parts ?? []).some((part) => part.questions.some((question) => (answers[question.id] ?? '').trim() !== '')),
+  )
+  const wrote = writingJobs(exam, sectionIndexes, answers).some((job) => job.text.trim() !== '')
+  const spoke = speakingJobs(exam, sectionIndexes, takes).some((job) => job.answers.length > 0)
+  return objective || wrote || spoke
+}
+
 export async function gradeWritingJob(exam: Exam, job: WritingJob): Promise<AiResultEntry> {
   const label = `Task ${job.task.taskNumber}`
   const base = { label, prompt: job.task.prompt, userText: job.text }
@@ -176,7 +190,6 @@ export function assembleResult({ exam, mode, sectionIndexes, answers, aiResults,
 
 /** Các hành động của useProgress() mà phòng thi cần (truyền vào để file này không phụ thuộc React). */
 export interface ProgressEffects {
-  addXp: (amount: number) => void
   recordActivity: (metric: 'examsTaken') => void
   markStudyDay: () => void
   recordAnswer: (skill: ExamSection['skill'], correct: boolean, itemKey?: string, mistake?: NewMistake) => void
@@ -188,8 +201,6 @@ export interface ProgressEffects {
   flushSave: () => void
 }
 
-/** XP thưởng khi nộp xong (luyện vài phần thì ít hơn đề đủ). */
-const EXAM_XP: Record<Exam['kind'], number> = { placement: 20, 'level-test': 40, 'mock-ielts': 60 }
 /** Tối đa số câu sai đưa vào sổ lỗi mỗi lần thi (sổ không quá dài). */
 const MAX_MISTAKES_PER_EXAM = 40
 
@@ -198,9 +209,10 @@ export const writingDraftKey = (examId: string, taskId: string) => `exam:${examI
 
 export function applyProgressEffects(exam: Exam, result: StoredExamResult, effects: ProgressEffects): void {
   const sectionIndexes = result.sectionsTaken ?? exam.sections.map((_, index) => index)
-  const fullTest = sectionIndexes.length === exam.sections.length
 
-  effects.addXp(fullTest ? EXAM_XP[exam.kind] : Math.round(EXAM_XP[exam.kind] / 3))
+  // Phòng thi = IELTS -> KHÔNG cộng XP (quyết định 29/10/2026, xem src/gamification/gamification-scope.ts).
+  // Vẫn đếm "đã làm N bài thi" (số liệu trọn đời; huy hiệu chỉ báo khi người học ở track general,
+  // và không bao giờ báo ngay trong phòng thi — GameWatchers.tsx).
   effects.recordActivity('examsTaken')
   effects.markStudyDay() // làm xong bài thi = hôm nay có học (giữ chuỗi ngày)
 

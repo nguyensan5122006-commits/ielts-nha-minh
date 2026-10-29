@@ -5,7 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="color-scheme" content="light dark" />
     <title>IELTS Nhà Mình</title>
-    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <!--
+      Icon = đầu cún Ki (nhóm Blender render, public/mascot/head/). Không khai báo favicon.svg nữa
+      vì trình duyệt ưu tiên SVG hơn PNG (file vẫn giữ trong public/ làm dự phòng).
+      apple-touch-icon + icon-maskable-512 có nền kem: tạo bằng `node scripts/generate-app-icons.mjs`.
+    -->
+    <link rel="icon" type="image/png" sizes="32x32" href="/mascot/head/head-32.png" />
+    <link rel="icon" type="image/png" sizes="64x64" href="/mascot/head/head-64.png" />
+    <link rel="icon" type="image/png" sizes="192x192" href="/mascot/head/head-192.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <!-- màu thanh trình duyệt trên điện thoại = màu nền trang (--c-bg sáng / tối trong tokens.css) -->
+    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#fff8ee" />
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0e1330" />
     <!--
       Chống "nháy trắng" khi dùng chế độ tối: đặt data-theme lên <html> NGAY khi
       trang bắt đầu tải (trước khi React chạy). Khoá 'ielts-theme' phải khớp với

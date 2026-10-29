@@ -189,7 +189,17 @@ export interface Lesson {
   readingTask?: ReadingTask
   writingTask?: WritingTaskV3
   speakingTask?: SpeakingTask
+
+  /* ---------- (v3) phân loại thêm (tuỳ chọn) ----------
+   * category 'grammar' = bài của khu "Ngữ pháp" (/grammar, nội dung ở src/content/grammar/).
+   *   Bài này KHÔNG nằm trong chặng nào trên lộ trình — người học mở từ trang Ngữ pháp.
+   * track = bài này tính cho track nào (VD khi cộng XP theo track). Không ghi = theo chặng chứa bài. */
+  category?: LessonCategory
+  track?: TrackId
 }
+
+/** Nhóm nội dung đặc biệt của 1 bài (hiện chỉ có 'grammar'). */
+export type LessonCategory = 'grammar'
 
 /* ============================================================================
  * 4. LEVEL

@@ -502,3 +502,34 @@ Tài khoản test: `qa_exam_1` (tên đăng nhập không nhận dấu `-`).
 4. **Chưa có** (để sau): `mascot.glb` + hoạt cảnh, `turnaround/`, `outfits/`, `stickers/`, `anim/*.webm`.
    `MascotModel` vẫn hiện ảnh `salute` làm poster như đang thiết kế.
 5. Nếu chủ nhà chọn concept khác (A/B) hoặc đồng phục CSGT, nhóm Blender chỉ render lại. **Tên file giữ nguyên**, web không phải sửa gì.
+
+---
+
+## Nhóm grammar + gap-fill (29/10) → gửi nhóm learning-flow / XP theo track / lesson-player
+
+Khu **Ngữ pháp** mới: `/grammar`, `/grammar/:topicId` (`src/features/grammar/`), mục menu "Ngữ pháp" (`nav-items.ts`, icon `grammar`, chữ `navGrammar`).
+Bài ngữ pháp chạy bằng trình học chung `/lesson/:id`. Đối chiếu nội dung: `docs/redesign-v3/11-CONTENT-GAPS.md`.
+
+1. **XP theo track:** 19 bài `gr-…` có `category: 'grammar'` và `track: 'general'` (trường mới, tuỳ chọn, trong `Lesson` — `content-types.ts`).
+   Các bài này **không nằm trong chặng nào**, nên `lessonEarnsXp()` hiện tại: tab general → có XP, tab ielts → không. Nếu chủ nhà muốn
+   "bài ngữ pháp luôn tính là tổng quát" kể cả khi đang ở tab IELTS, đọc `lesson.track === 'general'` (cần bài đã tải) hoặc dựa vào tiền tố id `gr-`
+   (`isGrammarOnlyLesson(id)` trong `src/content/grammar/grammar-topics.ts` — file nhẹ, import được ở trang chính).
+2. **Màn kết quả của bài ngữ pháp** (lesson-player): "Bài tiếp" đang lấy bài kế trên lộ trình. Đề nghị: bài `category === 'grammar'` thì nút phụ / "Dừng ở đây"
+   quay về `/grammar/<topicId>` (tra topic chứa bài: `GRAMMAR_TOPICS.find(t => t.lessonIds.includes(id))`), và nút Thoát (Esc) cũng về đó.
+3. **Chặng mới / bài gắn thêm (track general):** `u2-g05-people-places` (Level 2, order 24, 4 bài) và `u3-g06-our-world` (Level 3, order 11, 5 bài);
+   gắn thêm vào cuối `u3-g03-news` (+l3-g-u3-crime), `u3-g04-media` (+l3-g-u4-culture), `u3-g05-daily-life` (+l3-g-u5-tech).
+   Người đã xong 3 chặng đó sẽ thấy chặng "chưa xong" lại (thêm 1 bài) — cố ý gắn ở CUỐI để không làm lùi "bài tiếp theo".
+4. `vite.config.ts`: nhóm cắt file bài học nay nhận cả `src/content/grammar/*-lessons*.ts`. `lesson-sources.ts`: key bài ngữ pháp bắt đầu bằng `../grammar/`.
+5. `scripts/validate-content.ts`: không cảnh báo "chưa nằm trong chặng" cho bài `category: 'grammar'`; báo lỗi nếu `grammar-topics.ts` trỏ tới bài không có.
+
+---
+
+## Nhóm "Trò chơi chữ" (29/10/2026) → chủ nhà + nhóm nền móng
+
+- **Migration mới `database/migrations/0004_word_game_scores.sql`** (chỉ THÊM bảng `game_weekly_best` — kỷ lục tuần của từng người, từng trò). Không sửa / xoá dữ liệu cũ.
+  Local đã chạy `npm run db:migrate`. **Khi deploy, chủ nhà cần chạy `npm run db:migrate:remote`.** Chưa chạy thì trang vẫn chạy, chỉ phần "tuần này" trống (API bắt lỗi).
+- API mới `GET /api/games/board` (functions/api/games/board.ts): kỷ lục mọi lúc + tuần này của cả 5 trò. `POST /api/games/records` nhận thêm `picture-word`, `missing-letters` và ghi kỷ lục tuần.
+  Danh sách trò tính điểm: `backend-helpers/word-game-names.ts`. Server local 8788 cần **khởi động lại** để nhận route mới `/api/games/board`.
+- 2 trò mới: `/games/picture-word`, `/games/missing-letters` (src/features/word-games/). Hết ván gọi `recordActivity('miniGames')` như trò cũ — nhóm XP quyết định luật track.
+- Từ đoán sai mà đang có thẻ ôn `word:<id>` → `reviewSrsCard(key, 'again')` (không tạo thẻ mới cho từ chưa học).
+- Gợi ý cho nhóm menu: mục "Sân chơi" có thể đổi tên thành "Trò chơi chữ" cho khớp tiêu đề trang /play.

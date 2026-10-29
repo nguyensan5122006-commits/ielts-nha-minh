@@ -87,6 +87,7 @@ const roundHalfUp = (value: number) => Math.ceil(value * 2) / 2
  * Band ước tính của 1 kỹ năng:
  *   1. Có band đo được (bài thi / AI chấm — progress.bandEstimates) -> dùng luôn.
  *      Writing cần ≥ 2 bài viết trong nhật ký mới tin (luật 23).
+ *      Nghe / Đọc cần ≥ 20 câu đã làm (luật D6.23 — kể cả khi đã có band từ 1 đề thi thử làm dở).
  *   2. Không có, nhưng đã làm ≥ 20 câu -> ƯỚC từ bài luyện: vị trí trong khoảng band của level
  *      hiện tại, theo % chặng đã xong + độ chính xác gần đây. Độ tin cậy tối đa "vừa", khoảng rộng ±0.5.
  *   3. Chưa đủ -> báo còn thiếu bao nhiêu câu.
@@ -95,11 +96,13 @@ export function skillBand(progress: LearningProgress, skill: SkillName): SkillBa
   const stat = progress.skillStats[skill]
   const measured = progress.bandEstimates[skill]
   const essays = progress.writingLog.length
-  if (measured && (skill !== 'writing' || essays >= MIN_ESSAYS_FOR_BAND)) {
+  const answered = stat?.answered ?? 0
+  const enoughData =
+    skill === 'writing' ? essays >= MIN_ESSAYS_FOR_BAND : skill === 'listening' || skill === 'reading' ? answered >= MIN_ITEMS_FOR_BAND : true
+  if (measured && enoughData) {
     return { kind: 'range', low: measured.low, high: measured.high, confidence: measured.confidence, source: 'measured' }
   }
 
-  const answered = stat?.answered ?? 0
   if (answered < MIN_ITEMS_FOR_BAND) return { kind: 'insufficient', needed: MIN_ITEMS_FOR_BAND - answered, unit: 'items' }
 
   const track = progress.profile.track

@@ -10,7 +10,8 @@
  *                   phải = câu hỏi chia theo đoạn ("Đoạn 2 · Câu 4–7 · Nghe lại đoạn này").
  *                   Thanh câu hỏi dưới đáy, gắn cờ, "Kiểm tra & nộp" -> màn kiểm tra trước khi nộp.
  *                   Thi thật: mỗi đoạn 1 lần, phát liền, không dừng/tua/đổi tốc độ.
- *   3. review     — chấm + ghi tiến độ (recordAnswer từng câu, band ước tính).
+ *   3. review     — chấm + ghi tiến độ (recordAnswer từng câu). Màn kết quả hiện % câu đúng theo dạng câu
+ *                   hỏi, KHÔNG hiện band (1 task quá ít câu — band chỉ ở /progress khi đủ 20 câu, luật D6.23).
  *                   Trái = lời thoại có tô bằng chứng "Q3"; phải = kết quả + từng câu với
  *                   "Nghe từ đoạn này" / "Xem lời thoại" / "Giải thích". "Tiếp tục" -> onComplete.
  *                   "Làm lại câu sai" -> quay lại pha 2 chỉ với các câu sai (không ghi tiến độ lần 2).
@@ -31,7 +32,7 @@ import { useExamUiText, QUESTION_TYPE_NAMES } from '../exam-ui/exam-ui-text'
 import { useExamDisplay } from '../exam-ui/ExamDisplaySettings'
 import { ExamFrame, ModeBadge } from '../exam-ui/ExamFrame'
 import { ExamQuestionList } from '../exam-ui/ExamQuestionList'
-import { useLessonTaskRecorder, taskBandEstimate } from '../exam-ui/lesson-task-recording'
+import { isIeltsTaskLesson, useLessonTaskRecorder } from '../exam-ui/lesson-task-recording'
 import { scrollMarkIntoView, type TextMark } from '../exam-ui/MarkedText'
 import { buildQuestionGroups, choicesOf, answerValueFor, type QuestionGroup } from '../exam-ui/question-grouping'
 import { QuestionNavigator, type NavigatorPart } from '../exam-ui/QuestionNavigator'
@@ -169,7 +170,8 @@ function ListeningTaskView({ lesson, resumeData, onSaveResume, onComplete }: Ski
 
   /* ---------- chấm ---------- */
   const summary = useMemo(() => gradeAll(grouped.groups, state.answers), [grouped, state.answers])
-  const band = state.firstScore ? taskBandEstimate(lesson.id, 'listening', state.firstScore.correct, state.firstScore.total) : null
+  // bài IELTS: nhắc "band sẽ hiện ở trang Tiến độ khi đủ 20 câu" (không hiện band sau 1 task)
+  const bandLater = isIeltsTaskLesson(lesson.id)
 
   /* ---------- bằng chứng trong lời thoại ---------- */
   const blocks = useMemo<TextBlock[]>(() => segments.flatMap((segment) => segment.lines.map((line, index) => ({ id: lineBlockId(segment.id, index), text: line.text, group: segment.id }))), [segments])
@@ -300,11 +302,10 @@ function ListeningTaskView({ lesson, resumeData, onSaveResume, onComplete }: Ski
       correct: first.correct,
       total: first.total,
       mistakes,
-      band: band ? { low: band.low, high: band.high } : undefined,
       summary: listeningSummary(first.correct, first.total),
       minutes: Math.max(1, Math.round(session.state.activeSeconds / 60)),
     })
-  }, [audio, session, summary, allGroups, onComplete, band])
+  }, [audio, session, summary, allGroups, onComplete])
 
   const retryWrong = useCallback(() => {
     audio.stop()
@@ -492,7 +493,7 @@ function ListeningTaskView({ lesson, resumeData, onSaveResume, onComplete }: Ski
       {reviewing && (
         <TaskResultSummary
           summary={summary}
-          band={band}
+          bandLater={bandLater}
           typeName={typeName}
           wentWell={wentWell}
           improve={improve.slice(0, 2)}

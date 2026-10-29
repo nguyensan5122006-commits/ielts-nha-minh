@@ -1,0 +1,538 @@
+/* =============================================================================
+ * word-games-hub.css — TRANG /play "TRÒ CHƠI CHỮ"
+ * -----------------------------------------------------------------------------
+ * Tiền tố: wgh- (word games hub). Bố cục theo bề rộng vùng nội dung (container "pg-page", play-kit.css):
+ *   ≥ 900px : thẻ "Thử thách từ hôm nay" cao 2 hàng bên trái + 4 thẻ trò chơi 2×2 bên phải
+ *   < 900px : thẻ Thử thách từ trải ngang trên cùng, 4 thẻ trò chơi 2 cột
+ *   < 560px : mọi thẻ 1 cột; bảng kỷ lục cuộn ngang trong khung
+ *   1. Đầu trang (wgh-hero)    2. Lưới thẻ (wgh-grid, wgh-daily, wgh-card)    3. Bảng kỷ lục (wgh-table)
+ * ========================================================================== */
+
+.wgh {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-7);
+}
+.wgh-section {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+/* ---------- 1. ĐẦU TRANG ---------- */
+.wgh-hero {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--s-5);
+}
+.wgh-hero__text {
+  min-width: 0;
+  padding-bottom: var(--s-2);
+}
+.wgh-hero__title {
+  margin: 0;
+  font-size: clamp(2rem, 3.4cqi, 2.75rem);
+  line-height: 1.15;
+}
+.wgh-hero__intro {
+  margin: var(--s-2) 0 0;
+  color: var(--c-ink-2);
+  max-width: 58ch;
+}
+.wgh-hero__mascot {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--s-2);
+  flex: none;
+  margin-bottom: calc(var(--s-3) * -1);
+}
+/* bong bóng lời thoại của Ki */
+.wgh-hero__bubble {
+  position: relative;
+  max-width: 220px;
+  margin: 0 0 56px;
+  padding: 10px 14px;
+  border-radius: var(--r-md) var(--r-md) 4px var(--r-md);
+  background: var(--c-surface);
+  border: 1px solid var(--c-line);
+  box-shadow: var(--gloss-top), var(--shadow-card);
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+/* ---------- 2. LƯỚI THẺ ---------- */
+.wgh-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) repeat(2, minmax(0, 1fr));
+  grid-template-rows: auto auto;
+  gap: var(--s-5);
+}
+.wgh-grid > .wgh-daily {
+  grid-row: span 2;
+}
+
+/* thẻ lớn: Thử thách từ hôm nay */
+.wgh-daily {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-4);
+  min-width: 0;
+  padding: var(--s-6);
+  border-radius: var(--r-xl);
+  border: 1px solid color-mix(in srgb, var(--c-gold) 45%, var(--c-line));
+  background:
+    radial-gradient(120% 60% at 0% 0%, color-mix(in srgb, var(--c-gold) 26%, transparent) 0, transparent 70%),
+    linear-gradient(180deg, color-mix(in srgb, var(--c-gold) 10%, var(--c-surface)) 0, var(--c-surface) 60%);
+  box-shadow: var(--gloss-top), var(--shadow-card);
+}
+.wgh-daily__top {
+  display: flex;
+  align-items: center;
+  gap: var(--s-4);
+}
+.wgh-daily__heading {
+  min-width: 0;
+}
+.wgh-daily__state {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: var(--r-pill);
+  background: var(--c-primary-soft);
+  color: var(--c-primary-ink);
+  font-size: var(--fs-xs);
+  font-weight: 800;
+}
+.wgh-daily__state.is-done {
+  background: var(--c-success-soft);
+  color: var(--c-success-ink);
+}
+.wgh-daily__title {
+  margin: 4px 0 0;
+  font-size: var(--fs-xl);
+  line-height: 1.15;
+}
+.wgh-daily__desc {
+  margin: 0;
+  color: var(--c-ink-2);
+  font-size: var(--fs-sm);
+}
+.wgh-daily__status {
+  display: flex;
+  align-items: center;
+  gap: var(--s-5);
+  padding: var(--s-4) var(--s-5);
+  border-radius: var(--r-lg);
+  background: color-mix(in srgb, var(--c-surface) 75%, transparent);
+  border: 1px dashed color-mix(in srgb, var(--c-gold) 50%, var(--c-line));
+}
+.wgh-daily__line {
+  margin: 0;
+  font-weight: 700;
+}
+.wgh-daily__blank {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: none;
+}
+.wgh-daily__blank > span {
+  display: flex;
+  gap: 4px;
+}
+.wgh-daily__blank i {
+  width: 22px;
+  height: 22px;
+  border-radius: 5px;
+  border: 2px solid var(--c-line-strong);
+  background: var(--c-surface);
+}
+.wgh-daily__blank > .is-used i {
+  border-color: transparent;
+  background: color-mix(in srgb, var(--c-ink-2) 30%, var(--c-surface));
+}
+.wgh-daily__blank > .is-current i {
+  border-color: color-mix(in srgb, var(--c-primary) 60%, var(--c-line-strong));
+}
+.wgh-daily__facts {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: var(--fs-sm);
+  color: var(--c-ink-2);
+  flex: 1 1 auto;
+}
+.wgh-daily__facts li::before {
+  content: '•';
+  margin-right: 8px;
+  color: var(--c-gold);
+}
+.wgh-daily__action {
+  margin-top: auto;
+}
+.wgh-daily .pg-wordle-mini {
+  gap: 4px;
+}
+.wgh-daily .pg-wordle-mini__row {
+  gap: 4px;
+}
+.wgh-daily .pg-wordle-mini i {
+  width: 18px;
+  height: 18px;
+  border-radius: 5px;
+}
+
+/* thẻ trò chơi */
+.wgh-card {
+  --game-accent: var(--c-primary);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+  padding: var(--s-5);
+  border-radius: var(--r-lg);
+  border: 1px solid var(--c-line);
+  background:
+    radial-gradient(90% 55% at 100% 0%, color-mix(in srgb, var(--game-accent) 16%, transparent) 0, transparent 70%),
+    var(--c-surface);
+  box-shadow: var(--gloss-top), var(--shadow-card);
+  color: var(--c-ink);
+  transition: transform var(--dur-micro) var(--ease-out), box-shadow var(--dur-micro) var(--ease-out), border-color var(--dur-micro) var(--ease-out);
+}
+.wgh-card:hover {
+  text-decoration: none;
+  transform: translateY(-3px);
+  border-color: color-mix(in srgb, var(--game-accent) 45%, var(--c-line));
+  box-shadow: var(--gloss-top), var(--shadow-raised);
+}
+.wgh-card:active {
+  transform: scale(0.985);
+}
+.wgh-card:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring), var(--shadow-card);
+}
+.wgh-card__top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 4px;
+}
+.wgh-card__art {
+  transition: transform var(--dur-panel) var(--ease-spring);
+}
+.wgh-card:hover .wgh-card__art {
+  transform: rotate(-4deg) scale(1.06);
+}
+.wgh-card__new {
+  display: inline-block;
+  margin-left: 8px;
+  vertical-align: 3px;
+  padding: 1px 9px;
+  border-radius: var(--r-pill);
+  background: var(--c-red);
+  color: var(--c-on-red);
+  font-family: var(--font-display);
+  font-size: var(--fs-xs);
+  font-weight: 800;
+  box-shadow: var(--gloss-top);
+}
+.wgh-card__name {
+  font-family: var(--font-display);
+  font-size: var(--fs-lg);
+  font-weight: 800;
+  line-height: 1.15;
+}
+.wgh-card__desc {
+  font-size: var(--fs-sm);
+  color: var(--c-ink-2);
+  line-height: 1.45;
+}
+.wgh-card__trains {
+  align-self: flex-start;
+  margin-top: 2px;
+  padding: 2px 10px;
+  border-radius: var(--r-pill);
+  background: color-mix(in srgb, var(--game-accent) 16%, var(--c-surface));
+  color: var(--c-ink);
+  font-size: var(--fs-xs);
+  font-weight: 700;
+}
+.wgh-card__stats {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: var(--s-3);
+  margin-top: auto;
+  padding-top: var(--s-3);
+  border-top: 1px solid var(--c-line);
+}
+.wgh-card__stat {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  gap: 2px;
+}
+.wgh-card__label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--c-ink-2);
+}
+.wgh-card__stat strong {
+  font-family: var(--font-display);
+  font-size: var(--fs-lg);
+  line-height: 1.1;
+}
+.wgh-card__stat small {
+  font-size: var(--fs-xs);
+  color: var(--c-ink-2);
+  font-weight: 600;
+}
+.wgh-card__muted {
+  font-size: var(--fs-sm);
+  color: var(--c-ink-2);
+}
+.wgh-card__leader {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+.wgh-card__leader-name {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: var(--fs-sm);
+  font-weight: 600;
+}
+.wgh-card__leader strong {
+  margin-left: auto;
+  font-size: var(--fs-md);
+}
+.wgh-card__cta {
+  position: absolute;
+  top: var(--s-5);
+  right: var(--s-5);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 12px;
+  border-radius: var(--r-pill);
+  background: var(--c-surface-2);
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: var(--fs-sm);
+  transition: background-color var(--dur-micro) var(--ease-out), color var(--dur-micro) var(--ease-out);
+}
+.wgh-card:hover .wgh-card__cta {
+  background: var(--grad-primary);
+  color: var(--c-on-primary);
+}
+
+/* ---------- 3. BẢNG KỶ LỤC GIA ĐÌNH ---------- */
+.wgh-section.pg-panel {
+  gap: var(--s-4);
+}
+.wgh-section__head .pg-section-title {
+  margin-bottom: 4px;
+}
+.wgh-week {
+  margin-left: var(--s-2);
+  padding: 1px 8px;
+  border-radius: var(--r-pill);
+  background: var(--c-surface-2);
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  color: var(--c-ink);
+  white-space: nowrap;
+}
+.wgh-board__scroll {
+  overflow-x: auto;
+  margin-inline: calc(var(--s-2) * -1);
+  padding-inline: var(--s-2);
+}
+.wgh-board__note {
+  margin: var(--s-2) 0 0;
+  color: var(--c-ink-2);
+  font-size: var(--fs-sm);
+}
+.wgh-table {
+  width: 100%;
+  min-width: 720px;
+  border-collapse: separate;
+  border-spacing: 0 6px;
+}
+.wgh-table th,
+.wgh-table td {
+  padding: 8px 10px;
+  text-align: center;
+  vertical-align: middle;
+}
+.wgh-table thead th {
+  padding-bottom: 4px;
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  color: var(--c-ink-2);
+  vertical-align: bottom;
+}
+.wgh-table .wgh-table__member {
+  text-align: left;
+  width: 26%;
+}
+.wgh-table__game {
+  min-width: 84px;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  color: var(--c-ink);
+  font-size: var(--fs-sm);
+  font-weight: 700;
+  line-height: 1.2;
+  max-width: 130px;
+}
+.wgh-table__game:hover {
+  text-decoration: none;
+  color: var(--c-primary-ink);
+}
+.wgh-table__game small {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--c-ink-2);
+}
+.wgh-table tbody th,
+.wgh-table tbody td {
+  background: var(--c-surface-2);
+}
+.wgh-table tbody th {
+  border-radius: var(--r-md) 0 0 var(--r-md);
+}
+.wgh-table tbody td:last-child {
+  border-radius: 0 var(--r-md) var(--r-md) 0;
+}
+.wgh-table tbody td {
+  font-family: var(--font-display);
+  font-size: var(--fs-lg);
+  font-weight: 800;
+  white-space: nowrap;
+}
+.wgh-table tbody td.is-empty {
+  color: color-mix(in srgb, var(--c-ink-2) 60%, transparent);
+  font-weight: 600;
+}
+.wgh-table tbody td.is-top {
+  background: var(--c-gold-soft);
+  color: var(--c-gold-ink);
+}
+.wgh-table__crown {
+  vertical-align: -3px;
+  margin-right: 4px;
+}
+.wgh-table tbody tr.is-me th,
+.wgh-table tbody tr.is-me td:not(.is-top) {
+  background: var(--c-primary-soft);
+}
+.wgh-table__who {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+  min-width: 0;
+  color: var(--c-ink);
+  font-weight: 700;
+}
+.wgh-table__who:hover {
+  text-decoration: none;
+}
+.wgh-table__name {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.wgh-table tfoot th,
+.wgh-table tfoot td {
+  border-top: 1px solid var(--c-line);
+  padding-top: var(--s-3);
+}
+.wgh-table__alltime {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--fs-sm);
+  font-weight: 700;
+}
+.wgh-table__record {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  line-height: 1.15;
+}
+.wgh-table__record strong {
+  font-family: var(--font-display);
+  font-size: var(--fs-md);
+}
+.wgh-table__record small {
+  font-size: 0.75rem;
+  color: var(--c-ink-2);
+  max-width: 110px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ---------- xếp lại theo bề rộng ---------- */
+@container pg-page (max-width: 900px) {
+  .wgh-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .wgh-grid > .wgh-daily {
+    grid-row: auto;
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    column-gap: var(--s-5);
+  }
+  .wgh-daily > * {
+    grid-column: 1;
+  }
+  .wgh-daily > .wgh-daily__status,
+  .wgh-daily > .wgh-daily__facts,
+  .wgh-daily > .wgh-daily__action {
+    grid-column: 2;
+  }
+  .wgh-daily > .wgh-daily__status {
+    grid-row: 1 / span 2;
+  }
+  .wgh-hero__bubble {
+    display: none;
+  }
+}
+@container pg-page (max-width: 560px) {
+  .wgh-grid,
+  .wgh-grid > .wgh-daily {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .wgh-daily > * {
+    grid-column: 1 !important;
+    grid-row: auto !important;
+  }
+  .wgh-hero__mascot {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wgh-card,
+  .wgh-card__art {
+    transition: none;
+  }
+  .wgh-card:hover,
+  .wgh-card:hover .wgh-card__art {
+    transform: none;
+  }
+}

@@ -73,7 +73,7 @@ Trang học cũ nằm trong `src/_legacy-v2/` (không build, chỉ để tham kh
 | `streak` | `{ current, longest, lastStudyDate, freezes, repairUntil?, repairStreak?, repairLessonsDone? }` |
 | `studyDates` | Các ngày có học "YYYY-MM-DD" (giữ ~400 ngày) |
 | `minutesByDay`, `xpByDay`, `xpTotal` | Phút học (90 ngày), XP (60 ngày), tổng XP |
-| `placement` | `{ level, track, bandLow, bandHigh, takenAt }` hoặc `null` |
+| `placement` | `{ level, track, bandLow, bandHigh, takenAt }` hoặc `null` — bài xếp lớp v3: khoảng luôn ±0.5 quanh điểm ước lượng, trần 6.5 |
 | `writingLog` | Nhật ký bài viết (200 bài gần nhất) |
 | `lifetimeStats`, `questCounters`, `claimedRewards`, `unlockedAchievements`, `rewardedAccountLevel` | Trò chơi hoá — giữ nguyên như cũ |
 | `savedAt` | Thời điểm thay đổi cuối (ISO) — kho tự điền, dùng chọn bản mới hơn |
@@ -103,7 +103,7 @@ Trang học cũ nằm trong `src/_legacy-v2/` (không build, chỉ để tham kh
 
 | Hành động | Ghi chú |
 |---|---|
-| `addXp(amount)` | Cộng XP + ghi XP bảng xếp hạng. **Không còn tự tăng chuỗi** (chuỗi chỉ tính bài học / phiên ôn / bài thi) |
+| `addXp(amount)` | Cộng XP + ghi XP bảng xếp hạng. **Không còn tự tăng chuỗi** (chuỗi chỉ tính bài học / phiên ôn / bài thi). Chỉ gọi ở ngữ cảnh track general — mục 15 |
 | `recordActivity(metric, amount?)` | Đếm nhiệm vụ / huy hiệu |
 | `claimQuestReward(rewardKey, xp)` | Nhận thưởng nhiệm vụ: +XP (ghi cả bảng xếp hạng) + ghi `claimedRewards`; nhận rồi thì bỏ qua |
 | `unlockAchievements(ids)`, `setRewardedAccountLevel(level)` | GameWatchers gọi khi mở huy hiệu / báo lên level |
@@ -141,7 +141,7 @@ Trang học cũ nằm trong `src/_legacy-v2/` (không build, chỉ để tham kh
 
 1. Mở bài: nếu `progress.resume?.lessonId === lessonId` → khôi phục `stepIndex`, `queue`, `answers`; nếu không → `startLesson(lessonId, queue)`.
 2. Mỗi câu: `recordAnswer(lesson.skill, correct, exercise.id, correct ? undefined : { source: 'lesson', itemId: exercise.id, parentId: lesson.id, question, userAnswer, correctAnswer, explanation })` rồi `saveResume({...})`.
-3. Hết bài: `completeLessonV3(lesson.id, đúng / tổng, lesson.words?.map(w => w.id) ?? [], phút)` → `addXp(n)`.
+3. Hết bài: `completeLessonV3(lesson.id, đúng / tổng, lesson.words?.map(w => w.id) ?? [], phút)` → `addXp(n)` **chỉ khi** `lessonEarnsXp(lesson.id, track)` (mục 15).
 4. Nút "Học tiếp" trên màn kết quả: `findNextLesson(progress)` — tính khi **vẽ** màn kết quả (lần render sau completeLessonV3),
    không tính ngay trong cùng hàm xử lý click (biến `progress` trong hàm đó vẫn là bản trước khi cập nhật).
    Mọi hành động đều đọc bản mới nhất bên trong kho, nên gọi nhiều hành động liên tiếp trong 1 hàm vẫn đúng.
@@ -230,7 +230,7 @@ Máy chủ còn v1 → nâng cấp rồi tự gửi bản v2 lên. `/api/progres
 
 ## 12. Kiểm thử
 
-- `npm run test:progress` — 36 kiểm thử: chuyển đổi v1 → v2, chuỗi, FSRS, hàng đợi ôn, bỏ dữ liệu cũ (kids / ageGroup), thưởng nhiệm vụ, lộ trình, chọn bản mới hơn.
+- `npm run test:progress` — 39 kiểm thử: chuyển đổi v1 → v2, chuỗi, FSRS, hàng đợi ôn, bỏ dữ liệu cũ (kids / ageGroup), thưởng nhiệm vụ, lộ trình, chọn bản mới hơn, luật XP theo track (mục 15), khoảng band bài xếp lớp.
 - `npm run validate` — kiểm tra nội dung v3 (chặng trỏ đúng bài, id không trùng, `segmentId` / `paragraphLabel` hợp lệ, task Writing/Speaking có bài mẫu…).
 
 ## 13. Còn mở / gợi ý
@@ -283,3 +283,40 @@ rồi `npm run content:index` (tạo lại `src/content/generated/lesson-index-d
 
 Kích thước build (vite build, chưa nén): trước — `index` 361 KB + chunk chung 2.377 KB (≈ 2,74 MB tải lúc mở web);
 sau — `index` ~417 KB + `language-context` 39 KB + `all-levels` 27 KB + nhỏ (≈ 0,49 MB). Mỗi lần mở bài tải thêm 30–160 KB.
+
+---
+
+## 15. XP chỉ ở track "Tiếng Anh tổng quát" — 29/10/2026 (quyết định chủ nhà)
+
+XP, bảng xếp hạng, nhiệm vụ, huy hiệu, level tài khoản (Lv.N) là của track **general**. Track **IELTS** chỉ giữ **chuỗi ngày học**
+(streak tính cho CẢ 2 track như cũ). Code: `src/gamification/gamification-scope.ts` (mọi luật nằm ở 1 file này).
+
+**App biết đang ở track nào:** `progress.profile.track` = tab người học đang chọn ở `/learn` (hoặc Cài đặt); bài học xét thêm
+track của chặng chứa bài (`all-levels.ts`); phòng thi luôn = IELTS.
+
+| Hoạt động | Cộng XP? | Hàm |
+|---|---|---|
+| Bài học / mini-test, tab **general**, bài thuộc chặng có `'general'` (chặng riêng general **hoặc chặng dùng chung**) | Có | `lessonEarnsXp(lessonId, track)` |
+| Bài tự khai `lesson.track` (bài Ngữ pháp `gr-…`: `track: 'general'`) | Theo `lesson.track`, **bỏ qua tab** → bài Ngữ pháp luôn có XP | `lessonEarnsXp(id, tab, lesson.track)` |
+| Bài học / mini-test, tab **IELTS** (kể cả bài của chặng dùng chung) | Không | — |
+| Bài chỉ nằm trong chặng IELTS nhưng mở khi đang ở tab general (VD link thẳng) | Không | — |
+| Bài không thuộc chặng nào (bài cũ / chưa gắn lộ trình), tab general | Có | — |
+| Phiên ôn thẻ `/review` | Chỉ khi tab general | `isGamifiedTrack(track)` |
+| Phòng thi: bài test level, đề thi thử, bài xếp lớp cũ | **Không bao giờ** (vẫn tính chuỗi ngày, sổ lỗi, band, mở level) | `exam-grading.ts` |
+| Trò chơi chữ `/play`, `/games/*`, nhiệm vụ đã đủ chỉ tiêu | Có, ở mọi track | (không qua file này) |
+
+**Luật cho bài dùng chung:** cùng 1 bài, mở từ tab general thì có XP, mở từ tab IELTS thì không. Người học đổi tab là đổi "ngữ cảnh".
+
+**Giao diện:**
+- Màn kết quả bài học: `CompletionInfo.xp = null` → ẩn hẳn ô XP (còn 2 ô) và dòng "học lại chỉ 30% XP". Mini-test: ẩn "+N XP".
+- Cột phải `/learn`: tab IELTS ẩn "Cả nhà tuần này" + "Nhiệm vụ hôm nay"; dải tóm tắt màn hẹp bỏ ô bảng xếp hạng. Ô "Hôm nay" (chuỗi + phút) giữ nguyên.
+- Thanh điều hướng: "Lv.N" chỉ hiện khi `gamificationVisibleAt(track, pathname)` — tab general hoặc đang ở Sân chơi, **không** trong phòng thi.
+- `GameWatchers` (toast lên level / huy hiệu) dùng cùng hàm: tab IELTS và phòng thi không báo; điều kiện vẫn được giữ, đổi sang tab general
+  (hoặc vào Sân chơi) mới báo.
+- Hook cho giao diện mới: `useGamificationVisible()`.
+- Bài Ngữ pháp (`category: 'grammar'`): màn kết quả có nút chính "Về điểm ngữ pháp" → `/grammar/<topicId>` (không có thì `/grammar`);
+  "Dừng ở đây" và thoát giữa bài cũng về đó (`lesson-player/session/grammar-return.ts`).
+
+**Dữ liệu cũ không bị đụng:** `xpTotal`, `xpByDay`, `claimedRewards`, `unlockedAchievements` giữ nguyên — luật này chỉ quyết định có
+CỘNG THÊM / có HIỆN hay không. Bộ đếm nhiệm vụ / huy hiệu (`questCounters`, `lifetimeStats`, gồm `lessons`, `examsTaken`) vẫn đếm ở cả
+2 track (bài IELTS vẫn tính vào nhiệm vụ "Hoàn thành 2 bài học" — nhận thưởng được khi quay lại tab general).

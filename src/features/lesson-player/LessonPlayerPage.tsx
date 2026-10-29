@@ -13,7 +13,7 @@
  * Tiến độ (03-DATA-LAYER mục 5):
  *   - mở bài: có progress.resume của bài này -> quay về ĐÚNG câu; không -> startLesson()
  *   - mỗi câu: recordAnswer(kỹ năng, đúng?, id câu, lỗi sai) rồi saveResume({...})
- *   - hết bài: completeLessonV3(...) -> addXp -> màn kết quả
+ *   - hết bài: completeLessonV3(...) -> addXp (CHỈ khi lessonEarnsXp — track general) -> màn kết quả
  *
  * Các phần giao diện nằm trong parts/ (thẻ dạy, khung phản hồi, kết quả…),
  * các dạng bài trong exercises/. Mỗi file có giải thích ở đầu.
@@ -34,6 +34,7 @@ import { Skeleton } from '../../design-system/components/Skeleton'
 import { useToast } from '../../design-system/components/Toast'
 import { playSound } from '../../design-system/sound-kit'
 import '../../design-system/theme' // áp sáng/tối ngay cả khi mở thẳng link bài học
+import { lessonEarnsXp } from '../../gamification/gamification-scope'
 import { useProgress } from '../../learning-progress/progress-store'
 import { stopSpeaking } from '../../services/text-to-speech'
 import {
@@ -57,6 +58,7 @@ import { QuitDialog } from './parts/QuitDialog'
 import { SkillTaskStage } from './parts/SkillTaskStage'
 import { NewWordsView, pickCardImages, TeachingCardView } from './parts/TeachingCardView'
 import { applyDevJump, isDevJump, readDevFlags } from './session/dev-flags'
+import { grammarReturnPath } from './session/grammar-return'
 import { passageOf, skillOfExercise } from './session/exercise-skill'
 import {
   advance,
@@ -319,7 +321,7 @@ function LessonRun({ lesson }: { lesson: Lesson }) {
     stopSpeaking()
     commit(touch(sessionRef.current))
     await store.flushSave().catch(() => {})
-    navigate('/learn')
+    navigate(grammarReturnPath(lesson) ?? '/learn') // bài Ngữ pháp -> về điểm ngữ pháp
   }
 
   /* ---------- 2.7 phím tắt chung ---------- */
@@ -381,9 +383,13 @@ function LessonRun({ lesson }: { lesson: Lesson }) {
     }
     const minutes = Math.max(1, Math.round(state.taskResult?.minutes ?? summary.activeMinutes))
     const isRepeat = !!progress.lessons[lesson.id]
-    const xp = calculateLessonXp({ summary, taskMode, taskResult: state.taskResult, isRepeat, minutesTodayBefore: store.todayMinutes })
+    // XP chỉ có ở track "Tiếng Anh tổng quát" (gamification-scope.ts): bài IELTS / mở từ tab IELTS -> xp = null
+    // (null = màn kết quả ẩn hẳn ô XP; khác với 0 = "có tính XP nhưng lần này được 0").
+    const xp = lessonEarnsXp(lesson.id, track, lesson.track)
+      ? calculateLessonXp({ summary, taskMode, taskResult: state.taskResult, isRepeat, minutesTodayBefore: store.todayMinutes })
+      : null
     store.completeLessonV3(lesson.id, summary.accuracy, lesson.words?.map((word) => word.id) ?? [], minutes)
-    store.addXp(xp)
+    if (xp !== null) store.addXp(xp)
     setCompletion({ summary, xp, minutes, isRepeat, taskResult: state.taskResult })
   }, [finished, lesson, unit, level, track, progress, store, taskMode])
 

@@ -10,6 +10,7 @@
  * Từ bí ẩn chọn từ các từ trong bài học & Học vui, theo ngày (giống nhau cho cả nhà).
  * (v3) Giao diện làm lại: ô chữ lật màu lần lượt, bàn phím ảo bo tròn, kết quả có mascot
  *      (đúng = ăn mừng, chưa ra = an ủi) + nghĩa + nút nghe; cột phải là kết quả cả nhà.
+ * (Trò chơi chữ) Cột phải thêm bảng kỷ lục chung (GameRecordsPanel): số ngày đoán ra tuần này của cả nhà.
  * ----------------------------------------------------------------------------
  */
 import { useCallback, useEffect, useMemo, useState, type CSSProperties } from 'react'
@@ -22,6 +23,9 @@ import { GameArt } from '../features/playground/components/GameArt'
 import { PlayPageHeader } from '../features/playground/components/PlayPageHeader'
 import { PLAY_ART } from '../features/playground/game-catalog'
 import { usePlayText } from '../features/playground/playground-text'
+import { GameRecordsPanel } from '../features/word-games/components/GameRecordsPanel'
+import { useGameBoard } from '../features/word-games/use-game-board'
+import { useWordGamesText } from '../features/word-games/word-games-text'
 import { useProgress } from '../learning-progress/progress-store'
 import { api, type DailyWordState } from '../services/api-client'
 import { speak } from '../services/text-to-speech'
@@ -29,6 +33,7 @@ import { useLanguage } from '../translations/language-context'
 import { loadDictionary } from './WordChainSoloPage'
 import '../features/playground/styles/play-kit.css'
 import '../features/playground/styles/daily-word.css'
+import '../features/word-games/styles/word-games-kit.css'
 
 const WORD_LENGTH = 5
 const MAX_GUESSES = 6
@@ -77,6 +82,7 @@ const KEYBOARD_ROWS = ['qwertyuiop', 'asdfghjkl', '↵zxcvbnm⌫']
 export function DailyWordPage() {
   const { t } = useLanguage()
   const playText = usePlayText()
+  const wordGamesText = useWordGamesText()
   const { recordActivity } = useProgress()
   const day = vietnamDay()
   const candidates = useMemo(answerCandidates, [])
@@ -96,6 +102,9 @@ export function DailyWordPage() {
   const [server, setServer] = useState<DailyWordState | null>(null)
   /** đã gửi kết quả hôm nay lên máy chủ (chỉ gửi 1 lần) */
   const [submitted, setSubmitted] = useState(false)
+  /** đổi số này -> tải lại bảng kỷ lục (sau khi gửi kết quả hôm nay) */
+  const [boardKey, setBoardKey] = useState(0)
+  const board = useGameBoard(boardKey)
 
   const solved = guesses.includes(target.word)
   const finished = solved || guesses.length >= MAX_GUESSES || !!server?.mine
@@ -122,6 +131,7 @@ export function DailyWordPage() {
       .submitDailyWord({ guesses: guesses.length, solved, pattern })
       .then(() => {
         if (solved) recordActivity('dailyWords')
+        setBoardKey((key) => key + 1)
         return api.getDailyWord().then(setServer)
       })
       .catch(() => {})
@@ -173,7 +183,7 @@ export function DailyWordPage() {
 
   return (
     <main className="page pg-page wordle">
-      <PlayPageHeader back art={PLAY_ART.dailyWord} artPlate="gold" title={t('dailyWordTitle')} intro={t('dailyWordShort')} />
+      <PlayPageHeader back={{ to: '/play', label: wordGamesText('backToHub') }} art={PLAY_ART.dailyWord} artPlate="gold" title={t('dailyWordTitle')} intro={t('dailyWordShort')} />
 
       <div className="wordle__layout">
         <section className="pg-panel wordle__board" aria-label={t('dailyWordTitle')}>
@@ -273,6 +283,7 @@ export function DailyWordPage() {
               ))}
             </ul>
           </section>
+          <GameRecordsPanel game="daily-word" board={board} />
           <section className="pg-panel pg-panel--tight wordle-legend">
             <span className="wordle-legend__cells" aria-hidden>
               <i className="is-correct">A</i>

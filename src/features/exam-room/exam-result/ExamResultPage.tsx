@@ -163,7 +163,12 @@ function ResultContent({ result, createdAt, isLocal, resultId }: { result: Store
           <h1 className="xr-hero__title">{exam ? pick(exam.title) : result.examId}</h1>
           <p className="xr-hero__meta">
             {createdAt && <span>{text('takenOn', { date: formatResultDate(createdAt, language) })}</span>}
-            {result.mode && <Badge tone={result.mode === 'exam' ? 'navy' : 'neutral'} size="sm">{text(result.mode === 'exam' ? 'modeExamTag' : 'modePracticeTag')}</Badge>}
+            {/* bài test cuối level: "Kiểm tra" (chữ "Thi thật" chỉ cho đề thi thử IELTS) */}
+            {result.mode && (
+              <Badge tone={result.mode === 'exam' ? 'navy' : 'neutral'} size="sm">
+                {text(exam?.kind === 'level-test' ? 'modeTestTag' : result.mode === 'exam' ? 'modeExamTag' : 'modePracticeTag')}
+              </Badge>
+            )}
             {minutes && <span>{text('timeSpent', { n: minutes })}</span>}
           </p>
 

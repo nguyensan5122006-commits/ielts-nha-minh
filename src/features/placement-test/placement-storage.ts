@@ -13,7 +13,8 @@
  *   1. DRAFT   — bài đang làm dở: lựa chọn ở bước 1 + các câu đã trả lời.
  *                Ghi sau MỖI câu -> tải lại trang là làm tiếp đúng câu.
  *   2. RESULT  — kết quả đã chấm + lựa chọn kế hoạch (phút/ngày, giờ học).
- *                Hiện ngay ở /start/result, KHÔNG khoá sau đăng nhập.
+ *                Hiện ngay ở /start/result. Áp vào tài khoản xong thì XOÁ (use-apply-placement.ts)
+ *                -> máy dùng chung: người tiếp theo thấy /start mới tinh.
  *   3. PENDING — cờ "người này vừa bấm Lưu / Đăng nhập từ màn kết quả":
  *                đăng nhập xong thì áp kết quả vào tài khoản (1 lần rồi xoá cờ).
  * ----------------------------------------------------------------------------
@@ -66,7 +67,7 @@ export interface SavedPlacementResult {
   minutesSpent: number
   finishedAt: string
   plan: StudyPlanChoices
-  /** Đã áp vào tài khoản nào (để không áp lại 2 lần) */
+  /** (Bản lưu cũ) Đã áp vào tài khoản nào. Từ 29/10/2026 áp xong là xoá kết quả nên trường này chỉ còn ở bản cũ. */
   appliedToUserId?: number
 }
 

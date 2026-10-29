@@ -36,7 +36,7 @@ import { scrollBlockIntoView } from '../../exam-ui/text-selection'
 import { ReadingPassageView } from '../../skill-reading/ReadingPassageView'
 import '../../skill-reading/ReadingTaskPlayer.css'
 import { formatAudioTime, scriptDuration, useExamAudio } from '../exam-audio'
-import { LISTENING_CHECK_SECONDS, partKey, type ExamRules } from '../exam-catalog'
+import { examBadgeMode, LISTENING_CHECK_SECONDS, partKey, type ExamRules } from '../exam-catalog'
 import { cleanInstructions, passageBlocks, passageForView } from '../exam-part-content'
 import { useExamRoomText } from '../exam-room-text'
 import type { ExamSessionHandle } from '../exam-session'
@@ -278,7 +278,7 @@ export function ObjectiveSection({ exam, sectionIndex, position, handle, rules, 
         positionLabel={text('sectionOf', position)}
         skill={section.skill}
         display={display}
-        badge={<ModeBadge mode={session.mode === 'exam' || rules.timed ? 'exam' : 'practice'} />}
+        badge={<ModeBadge mode={examBadgeMode(exam, session.mode, rules)} />}
         timer={timer}
         tone={headerTone}
         status={<SaveStatus state={saveState} />}

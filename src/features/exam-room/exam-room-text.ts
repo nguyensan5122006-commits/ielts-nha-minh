@@ -244,6 +244,8 @@ const EXAM_ROOM_TEXT = {
   resultEyebrow: { vi: 'Kết quả', en: 'Result' },
   takenOn: { vi: 'Làm lúc {date}', en: 'Taken {date}' },
   modeExamTag: { vi: 'Thi thật', en: 'Exam' },
+  modeTestTag: { vi: 'Kiểm tra', en: 'Test' },
+  nothingAnsweredToast: { vi: 'Bạn chưa trả lời câu nào nên chưa lưu kết quả. Lúc nào sẵn sàng thì làm lại nhé!', en: "You didn't answer anything, so no result was saved. Try again whenever you're ready!" },
   modePracticeTag: { vi: 'Luyện tập', en: 'Practice' },
   overallBand: { vi: 'Band tổng', en: 'Overall band' },
   bandValue: { vi: 'Band {b}', en: 'Band {b}' },

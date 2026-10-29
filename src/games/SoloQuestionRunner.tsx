@@ -22,6 +22,8 @@ export interface SoloRunResult {
   correct: number
   total: number
   bestCombo: number
+  /** id các câu trả lời sai / hết giờ (màn kết quả liệt kê "từ cần ôn") */
+  wrongIds: string[]
 }
 
 interface SoloQuestionRunnerProps {
@@ -42,6 +44,7 @@ export function SoloQuestionRunner({ questions, secondsPerQuestion, onFinish }: 
   const [combo, setCombo] = useState(0)
   const [bestCombo, setBestCombo] = useState(0)
   const [lastPoints, setLastPoints] = useState<number | null>(null)
+  const [wrongIds, setWrongIds] = useState<string[]>([])
   const finished = useRef(false)
 
   const question = questions[index]
@@ -58,6 +61,7 @@ export function SoloQuestionRunner({ questions, secondsPerQuestion, onFinish }: 
       setLastPoints(points)
       setScore((s) => s + points)
       if (isCorrect) setCorrect((c) => c + 1)
+      else setWrongIds((ids) => [...ids, question.id])
       setCombo(newCombo)
       setBestCombo((b) => Math.max(b, newCombo))
       playSound(isCorrect ? 'correct' : 'oops')
@@ -79,7 +83,7 @@ export function SoloQuestionRunner({ questions, secondsPerQuestion, onFinish }: 
       if (index + 1 >= questions.length) {
         if (!finished.current) {
           finished.current = true
-          onFinish({ score, correct, total: questions.length, bestCombo })
+          onFinish({ score, correct, total: questions.length, bestCombo, wrongIds })
         }
         return
       }
@@ -90,7 +94,7 @@ export function SoloQuestionRunner({ questions, secondsPerQuestion, onFinish }: 
       setStartedAt(Date.now())
     }, REVEAL_MS)
     return () => window.clearTimeout(timer)
-  }, [revealed, index, questions.length, onFinish, score, correct, bestCombo])
+  }, [revealed, index, questions.length, onFinish, score, correct, bestCombo, wrongIds])
 
   if (!question) return null
   const wasCorrect = revealed && (lastPoints ?? 0) > 0

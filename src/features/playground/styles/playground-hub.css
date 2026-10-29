@@ -1,5 +1,8 @@
 /* =============================================================================
- * playground-hub.css — GIAO DIỆN TRANG /play "SÂN CHƠI GIA ĐÌNH"
+ * playground-hub.css — GIAO DIỆN CŨ CỦA TRANG /play "SÂN CHƠI GIA ĐÌNH"
+ * (29/10/2026) Trang /play giờ là "Trò chơi chữ" — bố cục mới ở word-games-hub.css.
+ * File này còn giữ kiểu của các thẻ cũ (SideCards: nhiệm vụ / huy hiệu / xếp hạng, FunTopicsStrip,
+ * ô Wordle mini) để dùng lại được nếu cần; trang /play hiện không hiện các thẻ đó.
  * -----------------------------------------------------------------------------
  * Bố cục theo bề rộng vùng nội dung (container query "pg-page", khai báo ở play-kit.css):
  *   ≥ 940px : trò chơi chữ (Thử thách từ + các ô trò chơi) · 3 thẻ nhỏ · 6 chủ đề Học vui

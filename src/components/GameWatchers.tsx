@@ -4,9 +4,17 @@
  *  1. Lên level tài khoản  -> thông báo, khoe vào kênh gia đình (mốc có danh hiệu mới)
  *  2. Đủ điều kiện huy hiệu -> mở khoá, thông báo, khoe
  * (Freeze giữ chuỗi ngày học do kho tiến độ tự lo — xem streak-rules.ts.)
+ *
+ * Trò chơi hoá chỉ ở track "Tiếng Anh tổng quát" (src/gamification/gamification-scope.ts):
+ *   - người học đang ở track IELTS -> KHÔNG báo gì (để dành; đổi sang tab general mới báo)
+ *   - đang trong phòng thi (/exams, /exam/…, /exam-result/…) -> KHÔNG báo (phòng thi = IELTS)
+ *   - đang ở Sân chơi (/play, /games/…) -> luôn báo (trò chơi chữ cộng XP ở mọi track)
  * ----------------------------------------------------------------------------
  */
+
 import { useEffect, useRef } from 'react'
+import { useLocation } from 'react-router-dom'
+import { gamificationVisibleAt } from '../gamification/gamification-scope'
 import { accountLevelFromXp, titleForLevel } from '../gamification/account-level'
 import { newlyEarnedAchievements } from '../learning-progress/activity-stats'
 import { useProgress } from '../learning-progress/progress-store'
@@ -24,9 +32,11 @@ export function GameWatchers() {
   // nhớ những gì đã báo trong phiên này -> không báo trùng khi effect chạy lại trước khi tiến độ kịp cập nhật
   const announcedLevel = useRef(0)
   const announcedBadges = useRef(new Set<string>())
+  const { pathname } = useLocation()
+  const gamified = gamificationVisibleAt(progress.profile.track, pathname)
 
   useEffect(() => {
-    if (!isLoaded || !user) return
+    if (!isLoaded || !user || !gamified) return
     const level = accountLevelFromXp(progress.xpTotal).level
     const newAchievements = newlyEarnedAchievements(progress).filter((achievement) => !announcedBadges.current.has(achievement.id))
 
@@ -51,7 +61,7 @@ export function GameWatchers() {
         send({ t: 'chat:share', text: `${achievement.icon} ${user.displayName} vừa mở huy hiệu "${achievement.title.vi}"` })
       }
     }
-  }, [isLoaded, user, progress, showToast, t, pick, send, setRewardedAccountLevel, unlockAchievements])
+  }, [isLoaded, user, gamified, progress, showToast, t, pick, send, setRewardedAccountLevel, unlockAchievements])
 
   return null
 }

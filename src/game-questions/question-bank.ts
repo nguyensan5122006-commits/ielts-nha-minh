@@ -1,7 +1,7 @@
 /**
  * question-bank.ts
  * ----------------------------------------------------------------------------
- * NGÂN HÀNG CÂU HỎI CHO TRÒ CHƠI CHỮ (hiện có: Spelling Bee).
+ * NGÂN HÀNG CÂU HỎI CHO TRÒ CHƠI CHỮ (Spelling Bee; levelWordEntries() cho Nhìn ảnh / Điền chữ).
  * Không dùng thứ gì của trình duyệt (window, document...) -> script kiểm tra
  * nội dung (scripts/validate-content.ts) cũng gọi được.
  *
@@ -34,6 +34,8 @@ export interface GameQuestion {
   audioText: string
   /** đáp án đúng (chữ thường) */
   answer: string
+  /** nghĩa tiếng Việt (màn kết quả liệt kê từ sai) */
+  meaningVi?: string
 }
 
 /** Một "mục từ" chung cho mọi nguồn (thẻ Học vui hoặc từ vựng bài học). */
@@ -97,6 +99,11 @@ function levelWords(levelId: string): WordEntry[] {
   return lessonsOfLevel(levelId).flatMap((lesson) => (lesson.words ?? []).map((w) => ({ id: w.id, word: w.word, meaningVi: w.meaningVi })))
 }
 
+/** Từ vựng mọi bài học của 1 level (id, từ, nghĩa) — trò "Nhìn ảnh đoán từ" / "Điền chữ còn thiếu" dùng. */
+export function levelWordEntries(levelId: string): { id: string; word: string; meaningVi: string }[] {
+  return levelWords(levelId)
+}
+
 /** Danh sách từ của 1 chủ đề ("fun:animals", "level-words:level-1", "mix:all"). */
 function topicWords(topicId: string): WordEntry[] {
   const [source, key] = topicId.split(':')
@@ -127,6 +134,7 @@ export function generateSpellingQuestions(topicId: string, count: number, seed: 
     audioText: entry.word,
     image: entry.image,
     answer: entry.word.toLowerCase(),
+    meaningVi: entry.meaningVi,
   }))
 }
 

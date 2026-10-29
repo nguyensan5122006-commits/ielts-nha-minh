@@ -1,12 +1,16 @@
 /**
  * TaskResultSummary.tsx — THẺ KẾT QUẢ ĐẦU MÀN XEM LẠI (Listening / Reading / phòng thi)
  * ----------------------------------------------------------------------------
- *   <TaskResultSummary summary={grade} band={{ value: 6, low: 5.5, high: 6.5 }}
+ *   <TaskResultSummary summary={grade} bandLater
  *     typeName={(id) => …} wentWell="…" improve={['…']}
  *     primary={{ label: 'Tiếp tục', onClick }} secondary={{ label: 'Làm lại câu sai', onClick }} />
  *
- * Thứ tự (psych-adult D5 + research ui-vn-b ý 8): điểm -> band ước tính DẠNG KHOẢNG
+ * Thứ tự (psych-adult D5 + research ui-vn-b ý 8): điểm + % câu đúng
  * -> % đúng theo DẠNG câu hỏi -> 1 điều làm tốt + 1–2 việc sửa được -> 2 nút (chính + phụ).
+ *
+ * KHÔNG hiện band sau 1 task (quyết định 29/10/2026, luật D6.23 trong _research/notes/psych-adult.md):
+ * 1 task chỉ 5–13 câu — quá ít để nói band (sai số lớn, dễ làm nản hoặc ảo tưởng). Band chỉ hiện ở
+ * /progress khi kỹ năng đã có ≥ 20 câu. `bandLater` = thêm dòng nhắc điều đó (bài track IELTS).
  * Không chữ chê bai; sai = "Chưa đúng" + bước tiếp theo.
  * ----------------------------------------------------------------------------
  */
@@ -20,7 +24,8 @@ import './TaskResultSummary.css'
 
 export interface TaskResultSummaryProps {
   summary: GradeSummary
-  band?: { value: number; low: number; high: number } | null
+  /** Bài IELTS: hiện dòng "Band ước tính sẽ có ở trang Tiến độ khi đủ 20 câu" */
+  bandLater?: boolean
   typeName: (typeId: QuestionTypeId) => string
   wentWell?: string | null
   improve?: string[]
@@ -28,11 +33,10 @@ export interface TaskResultSummaryProps {
   secondary?: { label: string; onClick: () => void; icon?: IconName } | null
 }
 
-const formatBand = (band: number) => band.toFixed(1)
-
-export function TaskResultSummary({ summary, band, typeName, wentWell, improve = [], primary, secondary }: TaskResultSummaryProps) {
+export function TaskResultSummary({ summary, bandLater = false, typeName, wentWell, improve = [], primary, secondary }: TaskResultSummaryProps) {
   const text = useExamUiText()
   const ratio = summary.total ? summary.correct / summary.total : 0
+  const percent = Math.round(ratio * 100)
   const ringColor = ratio >= 0.7 ? 'var(--c-success)' : ratio >= 0.4 ? 'var(--c-gold)' : 'var(--c-oops)'
 
   return (
@@ -44,14 +48,10 @@ export function TaskResultSummary({ summary, band, typeName, wentWell, improve =
         </ProgressRing>
         <div className="xresult__headline">
           <h2 className="xresult__title">{text('correctCount', { correct: summary.correct, total: summary.total })}</h2>
-          {band && (
-            <p className="xresult__band">
-              <span className="xresult__band-chip">
-                {text('bandEstimate')} {formatBand(band.low)}–{formatBand(band.high)}
-              </span>
-              <span className="xresult__band-note">{text('bandRangeNote', { n: summary.total })}</span>
-            </p>
-          )}
+          <p className="xresult__band">
+            <span className="xresult__band-chip">{text('percentCorrect', { p: percent })}</span>
+            {bandLater && <span className="xresult__band-note">{text('bandLaterNote')}</span>}
+          </p>
         </div>
         <div className="xresult__actions">
           {secondary && (

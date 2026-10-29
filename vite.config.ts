@@ -21,9 +21,10 @@ export default defineConfig({
               // Không có nhóm này, trình build gộp mọi bài vào 1 file ~2 MB (vì lesson-registry.ts
               // import tất cả) -> mở 1 bài cũng phải tải hết.
               debugName: 'lesson-files',
-              test: /src[\\/]content[\\/]levels[\\/].*-lessons[^\\/]*\.ts$/,
+              // (+ src/content/grammar/**: bài của khu Ngữ pháp, cắt file theo cùng cách)
+              test: /src[\\/]content[\\/](levels|grammar)[\\/].*-lessons[^\\/]*\.ts$/,
               name: (moduleId: string) => {
-                const match = moduleId.match(/src[\\/]content[\\/]levels[\\/](.+)\.ts$/)
+                const match = moduleId.match(/src[\\/]content[\\/](?:levels[\\/])?(.+)\.ts$/)
                 return match ? `lessons-${match[1].replace(/[\\/]/g, '-')}` : null
               },
             },

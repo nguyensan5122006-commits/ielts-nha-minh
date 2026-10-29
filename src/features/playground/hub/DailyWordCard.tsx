@@ -1,38 +1,22 @@
 /**
- * DailyWordCard.tsx — THẺ "THỬ THÁCH TỪ HÔM NAY" TRÊN TRANG /play
+ * DailyWordCard.tsx — THẺ LỚN "THỬ THÁCH TỪ HÔM NAY" TRÊN TRANG /play (thẻ nổi bật nhất)
  * ----------------------------------------------------------------------------
- * Mình đã đoán chưa (ô màu kiểu Wordle + số lượt), cả nhà ai đã chơi.
+ * Cho biết: hôm nay mình đã đoán chưa (ô màu kiểu Wordle + số lượt, hoặc "đang chờ bạn" kèm
+ * số lượt đang đoán dở), cả nhà mấy người đã chơi, tuần này mình đoán ra mấy ngày.
  * Có đúng 1 nút hành động ở đáy (bước tiếp theo rõ ràng).
  * Đang tải -> khung xương; lỗi mạng -> 1 dòng nhắc + nút vẫn bấm được (trang con tự tải lại).
  * ----------------------------------------------------------------------------
  */
-import type { ReactNode } from 'react'
 import { vietnamDay } from '../../../../backend-helpers/vietnam-time'
 import { Button, Skeleton } from '../../../design-system'
 import { useAuth } from '../../../services/auth-context'
 import type { DailyWordState } from '../../../services/api-client'
 import { useLanguage } from '../../../translations/language-context'
-import { GameArt, type ArtPlate } from '../components/GameArt'
-import { PLAY_ART } from '../game-catalog'
+import { useWordGamesText } from '../../word-games/word-games-text'
+import { GameArt } from '../components/GameArt'
+import { wordGameInfo } from '../game-catalog'
 import { usePlayText } from '../playground-text'
 import { isReady, type Loadable } from '../use-playground-data'
-
-/** Khung chung của 1 thẻ sự kiện: ảnh 3D + nhãn nhỏ + tiêu đề + nội dung + nút ở đáy */
-function EventShell({ art, plate, eyebrow, title, tone, children, action }: { art: string; plate: ArtPlate; eyebrow: ReactNode; title: ReactNode; tone: string; children: ReactNode; action: ReactNode }) {
-  return (
-    <article className={`pg-event pg-event--${tone}`}>
-      <div className="pg-event__top">
-        <GameArt slug={art} size={56} plate={plate} tilt={-6} />
-        <div className="pg-event__heading">
-          <span className="pg-event__eyebrow">{eyebrow}</span>
-          <h3 className="pg-event__title">{title}</h3>
-        </div>
-      </div>
-      <div className="pg-event__body">{children}</div>
-      <div className="pg-event__action">{action}</div>
-    </article>
-  )
-}
 
 /** Đọc số lượt đang đoán dở hôm nay (trang Thử thách từ lưu trong máy) */
 function localGuessCount(): number {
@@ -45,7 +29,7 @@ function localGuessCount(): number {
 }
 
 /** Ô màu nhỏ của 1 kết quả Wordle ("🟩🟨⬜…" mỗi dòng 1 lượt) */
-function PatternMini({ pattern }: { pattern: string }) {
+export function PatternMini({ pattern }: { pattern: string }) {
   const rows = pattern.split('\n').filter(Boolean)
   return (
     <span className="pg-wordle-mini" aria-hidden>
@@ -60,53 +44,76 @@ function PatternMini({ pattern }: { pattern: string }) {
   )
 }
 
-export function DailyWordCard({ data }: { data: Loadable<DailyWordState> }) {
+/** Bảng 6 lượt × 5 ô còn trống (chưa chơi xong) — hàng đã đoán dở tô nhạt */
+function BlankBoard({ guessed }: { guessed: number }) {
+  return (
+    <span className="wgh-daily__blank" aria-hidden>
+      {Array.from({ length: 6 }, (_, row) => (
+        <span key={row} className={row < guessed ? 'is-used' : row === guessed ? 'is-current' : undefined}>
+          {Array.from({ length: 5 }, (_, i) => (
+            <i key={i} />
+          ))}
+        </span>
+      ))}
+    </span>
+  )
+}
+
+export function DailyWordCard({ data, weekSolved }: { data: Loadable<DailyWordState>; /** số ngày mình đoán ra tuần này */ weekSolved?: number | null }) {
   const playText = usePlayText()
-  const { t } = useLanguage()
+  const text = useWordGamesText()
+  const { pick } = useLanguage()
   const { user } = useAuth()
+  const info = wordGameInfo('daily-word')!
   const ready = isReady(data)
   const mine = ready ? data.mine : null
   const othersPlayed = ready ? data.results.filter((result) => result.userId !== user?.id).length : 0
   const inProgress = !mine ? localGuessCount() : 0
 
-  let status: ReactNode
-  if (data === 'loading') status = <Skeleton lines={2} />
-  else if (mine) {
-    status = (
-      <div className="pg-event__split">
-        <PatternMini pattern={mine.pattern} />
-        <p className="pg-event__status">{mine.solved ? playText('dailySolved', { n: mine.guesses }) : playText('dailyFailed')}</p>
-      </div>
-    )
-  } else
-    status = (
-      <p className="pg-event__status">
-        {inProgress > 0 ? `${playText('dailyNotPlayed')} · ${inProgress}/6` : playText('dailyNotPlayed')}
-      </p>
-    )
-
   return (
-    <EventShell
-      art={PLAY_ART.dailyWord}
-      plate="gold"
-      tone="gold"
-      eyebrow={playText('eventToday')}
-      title={t('dailyWordTitle')}
-      action={
-        mine ? (
+    <article className={`wgh-daily ${mine ? 'is-done' : ''}`}>
+      <div className="wgh-daily__top">
+        <GameArt slug={info.art} size={64} plate="gold" tilt={-6} />
+        <div className="wgh-daily__heading">
+          <span className={`wgh-daily__state ${mine ? 'is-done' : ''}`}>{mine ? text('dailyDone') : text('dailyWaiting')}</span>
+          <h3 className="wgh-daily__title">{pick(info.title)}</h3>
+        </div>
+      </div>
+      <p className="wgh-daily__desc">{pick(info.description)}</p>
+
+      <div className="wgh-daily__status">
+        {data === 'loading' ? (
+          <Skeleton lines={2} />
+        ) : mine ? (
+          <>
+            <PatternMini pattern={mine.pattern} />
+            <p className="wgh-daily__line">{mine.solved ? playText('dailySolved', { n: mine.guesses }) : playText('dailyFailed')}</p>
+          </>
+        ) : (
+          <>
+            <BlankBoard guessed={inProgress} />
+            <p className="wgh-daily__line">{inProgress > 0 ? `${playText('dailyNotPlayed')} · ${inProgress}/6` : playText('dailyNotPlayed')}</p>
+          </>
+        )}
+      </div>
+
+      <ul className="wgh-daily__facts">
+        {ready && <li>{othersPlayed > 0 ? playText('dailyFamily', { n: othersPlayed }) : playText('dailyNobody')}</li>}
+        {weekSolved != null && weekSolved > 0 && <li>{text('dailyWeekSolved', { n: weekSolved })}</li>}
+        {data === 'error' && <li>{playText('couldNotLoad')}</li>}
+      </ul>
+
+      <div className="wgh-daily__action">
+        {mine ? (
           <Button to="/daily-word" variant="secondary" fullWidth>
             {playText('dailySeeFamily')}
           </Button>
         ) : (
-          <Button to="/daily-word" fullWidth iconRight="arrow-right">
+          <Button to="/daily-word" size="lg" fullWidth iconRight="arrow-right">
             {playText('dailyPlay')}
           </Button>
-        )
-      }
-    >
-      {status}
-      {ready && <p className="pg-event__meta">{othersPlayed > 0 ? playText('dailyFamily', { n: othersPlayed }) : playText('dailyNobody')}</p>}
-      {data === 'error' && <p className="pg-event__meta">{playText('couldNotLoad')}</p>}
-    </EventShell>
+        )}
+      </div>
+    </article>
   )
 }

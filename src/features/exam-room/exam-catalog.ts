@@ -58,6 +58,16 @@ export function examRulesFor(exam: Exam, mode: ExamRunMode): ExamRules {
   return { timed: false, listeningPlays: 2, audioControls: true, autoPlayListening: false, practiceHints: true, canPickSections: false }
 }
 
+/**
+ * Nhãn chế độ trên đầu khung làm bài (ModeBadge):
+ *   bài test cuối level -> "Kiểm tra" (không gọi là "Thi thật" — đó là chữ của đề thi thử IELTS)
+ *   đề thi thử chế độ thi / có bấm giờ -> "Thi thật" · còn lại -> "Luyện tập"
+ */
+export function examBadgeMode(exam: Exam, mode: ExamRunMode, rules: ExamRules): 'exam' | 'practice' | 'test' {
+  if (exam.kind === 'level-test') return 'test'
+  return mode === 'exam' || rules.timed ? 'exam' : 'practice'
+}
+
 /** Đề này có cho chọn "Thi thật / Luyện tập" ở màn mở đầu không (chỉ đề thi thử IELTS). */
 export const offersModeChoice = (exam: Exam) => exam.kind === 'mock-ielts'
 

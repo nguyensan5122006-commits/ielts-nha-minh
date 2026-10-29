@@ -1,0 +1,390 @@
+/* =============================================================================
+ * word-games-kit.css — KHỐI DÙNG CHUNG CỦA 5 TRÒ CHƠI CHỮ
+ * -----------------------------------------------------------------------------
+ * Tiền tố: wk- (word-games kit). Chỉ dùng biến trong design-system/tokens.css -> chế độ tối tự chạy.
+ *   1. Chip nhỏ (wk-chip)
+ *   2. Màn chọn ván (wk-setup, wk-preview)
+ *   3. Màn kết quả (wk-result, wk-missed)
+ *   4. Cột kỷ lục (wk-records, wk-stat)
+ * Khung câu đố / bàn chữ của 2 trò mới: word-guess.css.
+ * ========================================================================== */
+
+/* đang chơi: bỏ cột phải, khung chơi rộng vừa phải ở giữa */
+.wg-solo-layout.is-playing {
+  grid-template-columns: minmax(0, 1fr);
+  max-width: 880px;
+  width: 100%;
+  margin-inline: auto;
+}
+.wk-main {
+  min-width: 0;
+}
+
+/* ---------- 1. CHIP ---------- */
+.wk-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px 4px 8px;
+  border-radius: var(--r-pill);
+  font-size: var(--fs-sm);
+  font-weight: 700;
+  background: var(--c-surface-2);
+  color: var(--c-ink);
+  white-space: nowrap;
+}
+.wk-chip--gold {
+  background: var(--c-gold-soft);
+  color: var(--c-gold-ink);
+}
+.wk-chip--navy {
+  background: var(--c-navy-soft);
+  color: var(--c-navy);
+}
+
+/* ---------- 2. MÀN CHỌN VÁN ---------- */
+.wk-setup {
+  display: grid;
+  grid-template-columns: 260px minmax(0, 1fr);
+  gap: var(--s-6);
+  align-items: stretch;
+}
+.wk-setup__preview {
+  display: grid;
+  place-items: center;
+  border-radius: var(--r-lg);
+  padding: var(--s-5);
+  background:
+    radial-gradient(circle at 30% 18%, rgba(255, 255, 255, var(--gloss-strength)) 0 14%, transparent 46%),
+    linear-gradient(160deg, color-mix(in srgb, var(--c-primary) 12%, var(--c-surface)), color-mix(in srgb, var(--c-gold) 22%, var(--c-surface)));
+}
+.wk-setup__body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-5);
+  min-width: 0;
+}
+.wk-setup__body .pg-panel__title {
+  margin-bottom: 0;
+}
+.wk-setup__source {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  margin: 0;
+  padding: 10px 14px;
+  border-radius: var(--r-md);
+  background: var(--c-surface-2);
+  font-size: var(--fs-sm);
+  color: var(--c-ink-2);
+}
+.wk-setup__source.is-met {
+  background: var(--c-success-soft);
+  color: var(--c-success-ink);
+  font-weight: 600;
+}
+.wk-setup__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-4);
+  flex-wrap: wrap;
+  padding-top: var(--s-4);
+  border-top: 1px solid var(--c-line);
+}
+.wk-setup__keys {
+  font-size: var(--fs-xs);
+  color: var(--c-ink-2);
+}
+
+/* hình minh hoạ cách chơi: ảnh -> ô chữ */
+.wk-preview {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--s-3);
+}
+.wk-preview__img {
+  width: 96px;
+  height: 96px;
+  filter: drop-shadow(0 10px 12px rgba(var(--shadow-rgb), 0.2));
+  animation: wk-float 3.2s ease-in-out infinite;
+}
+.wk-preview__arrow {
+  color: var(--c-ink-2);
+  font-weight: 800;
+  transform: rotate(90deg);
+}
+.wk-preview__slots {
+  display: flex;
+  gap: 6px;
+}
+.wk-preview__slots i {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 40px;
+  border-radius: 10px;
+  border: 2px dashed var(--c-line-strong);
+  background: var(--c-surface);
+  font-family: var(--font-display);
+  font-style: normal;
+  font-weight: 800;
+  font-size: var(--fs-lg);
+  color: transparent;
+  text-transform: uppercase;
+}
+.wk-preview__slots i.is-filled {
+  border-style: solid;
+  border-color: color-mix(in srgb, var(--c-primary) 60%, transparent);
+  background: var(--c-primary-soft);
+  color: var(--c-primary-ink);
+}
+.wk-preview__slots i.is-given {
+  border-style: solid;
+  border-color: var(--c-line);
+  background: var(--c-surface-2);
+  color: var(--c-ink);
+}
+@keyframes wk-float {
+  0%,
+  100% {
+    transform: translateY(0) rotate(-4deg);
+  }
+  50% {
+    transform: translateY(-6px) rotate(3deg);
+  }
+}
+
+/* ---------- 3. MÀN KẾT QUẢ ---------- */
+.wk-result {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--s-5);
+}
+.wk-result__hero {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s-5);
+  flex-wrap: wrap;
+}
+.wk-result__headline {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--s-2);
+}
+.wk-result__headline h2 {
+  margin: 0;
+  font-size: var(--fs-2xl);
+  line-height: var(--lh-tight);
+}
+.wk-result__subtitle {
+  margin: 0;
+  color: var(--c-ink-2);
+}
+.wk-result__score {
+  display: flex;
+  align-items: baseline;
+  gap: var(--s-2);
+  color: var(--c-ink-2);
+  font-weight: 600;
+}
+.wk-result__score strong {
+  font-family: var(--font-display);
+  font-size: var(--fs-4xl);
+  line-height: 1;
+  color: var(--c-primary-ink);
+  animation: ds-pop 420ms var(--ease-spring) both;
+}
+.wk-result__badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-2);
+}
+.wk-result__badges:empty {
+  display: none;
+}
+.wk-result__stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: var(--s-3);
+  width: 100%;
+  max-width: 560px;
+  margin: 0;
+}
+.wk-result__stats > div {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: var(--s-3);
+  border-radius: var(--r-md);
+  background: var(--c-surface-2);
+}
+.wk-result__stats dt {
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  color: var(--c-ink-2);
+}
+.wk-result__stats dd {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--fs-xl);
+  font-weight: 800;
+  line-height: 1.1;
+}
+.wk-result__review {
+  width: 100%;
+  max-width: 560px;
+}
+.wk-result__review h3 {
+  margin: 0 0 var(--s-2);
+  font-size: var(--fs-md);
+}
+.wk-result__all-right {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+  margin: 0;
+  color: var(--c-success-ink);
+  font-weight: 600;
+}
+.wk-missed {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: var(--s-2);
+}
+.wk-missed li {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  padding: 8px 8px 8px 10px;
+  border-radius: var(--r-md);
+  border: 1px solid var(--c-line);
+  background: var(--c-surface);
+}
+.wk-missed__dot {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: var(--c-oops-soft);
+  flex: none;
+}
+.wk-missed__text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  flex: 1;
+}
+.wk-missed__text strong {
+  font-family: var(--font-display);
+  font-size: var(--fs-lg);
+  line-height: 1.1;
+}
+.wk-missed__text span {
+  font-size: var(--fs-sm);
+  color: var(--c-ink-2);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.wk-result__actions .ds-kbd {
+  margin-left: 4px;
+}
+
+/* ---------- 4. CỘT KỶ LỤC ---------- */
+.wk-records {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-3);
+}
+.wk-records .pg-panel__title {
+  margin-bottom: 0;
+}
+.wk-records__mine {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--s-2);
+}
+.wk-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  padding: 10px 12px;
+  border-radius: var(--r-md);
+  background: var(--c-surface-2);
+}
+.wk-stat--week {
+  background: var(--c-gold-soft);
+}
+.wk-stat__label {
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  color: var(--c-ink-2);
+}
+.wk-stat--week .wk-stat__label {
+  color: var(--c-gold-ink);
+}
+.wk-stat__value {
+  font-family: var(--font-display);
+  font-size: var(--fs-2xl);
+  font-weight: 800;
+  line-height: 1.05;
+}
+.wk-stat__unit {
+  font-size: var(--fs-xs);
+  color: var(--c-ink-2);
+}
+.wk-records__sub {
+  margin: var(--s-2) 0 0;
+  font-size: var(--fs-sm);
+  color: var(--c-ink-2);
+}
+.wk-records__empty {
+  margin: 0;
+  font-size: var(--fs-sm);
+  color: var(--c-ink-2);
+}
+.wk-records__family {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+  margin: 0;
+  padding-top: var(--s-3);
+  border-top: 1px solid var(--c-line);
+  font-size: var(--fs-sm);
+  font-weight: 600;
+}
+
+/* ---------- màn hẹp ---------- */
+@container pg-page (max-width: 720px) {
+  .wk-setup {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .wk-setup__preview {
+    padding: var(--s-4);
+  }
+  .wk-preview {
+    flex-direction: row;
+  }
+  .wk-preview__arrow {
+    transform: none;
+  }
+  .wk-result__headline {
+    align-items: center;
+    text-align: center;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wk-preview__img,
+  .wk-result__score strong {
+    animation: none;
+  }
+}

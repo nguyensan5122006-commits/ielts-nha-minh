@@ -1,0 +1,456 @@
+/* =============================================================================
+ * word-guess.css — KHUNG CÂU ĐỐ CỦA "NHÌN ẢNH ĐOÁN TỪ" + "ĐIỀN CHỮ CÒN THIẾU" (WordGuessRound)
+ * -----------------------------------------------------------------------------
+ * Tiền tố: wq- (word quiz). Thanh điểm / đồng hồ / thẻ trắng dùng lại game.css (gq-).
+ *   1. Manh mối (ảnh 3D, nghĩa, nút nghe)
+ *   2. Hàng ô chữ (wq-slot) — cỡ ô tự co theo số chữ (--letters) và bề rộng khung
+ *   3. Bàn viên chữ (wq-tile)
+ *   4. Gợi ý + nút hành động
+ *   5. Khung phản hồi sau khi trả lời
+ * Màu: đúng = --c-success, sai = --c-oops (cam san hô, không đỏ chói).
+ * ========================================================================== */
+
+.wq-round {
+  /* container riêng: ô chữ co theo bề rộng THẬT của thẻ */
+  container-type: inline-size;
+  container-name: wq-round;
+  gap: var(--s-5);
+}
+
+/* ---------- 1. MANH MỐI ---------- */
+.wq-clue {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s-6);
+  min-height: 120px;
+}
+.wq-picture {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 196px;
+  height: 196px;
+  border-radius: 34%;
+  background:
+    radial-gradient(circle at 30% 22%, rgba(255, 255, 255, calc(var(--gloss-strength) * 1.1)) 0 12%, transparent 42%),
+    linear-gradient(160deg, color-mix(in srgb, var(--skill-reading) 14%, var(--c-surface)), color-mix(in srgb, var(--skill-reading) 30%, var(--c-surface)));
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, var(--gloss-strength)),
+    0 16px 30px -18px color-mix(in srgb, var(--skill-reading) 80%, transparent);
+  animation: wq-picture-in 380ms var(--ease-spring) both;
+}
+.wq-round--missing .wq-picture {
+  width: 132px;
+  height: 132px;
+  background:
+    radial-gradient(circle at 30% 22%, rgba(255, 255, 255, calc(var(--gloss-strength) * 1.1)) 0 12%, transparent 42%),
+    linear-gradient(160deg, color-mix(in srgb, var(--skill-speaking) 14%, var(--c-surface)), color-mix(in srgb, var(--skill-speaking) 30%, var(--c-surface)));
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, var(--gloss-strength)),
+    0 16px 30px -18px color-mix(in srgb, var(--skill-speaking) 80%, transparent);
+}
+.wq-picture img {
+  width: 76%;
+  height: 76%;
+  object-fit: contain;
+  filter: drop-shadow(0 10px 12px rgba(var(--shadow-rgb), 0.22));
+  user-select: none;
+}
+@keyframes wq-picture-in {
+  from {
+    opacity: 0;
+    transform: scale(0.85) rotate(-6deg);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.wq-clue__text {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--s-2);
+  min-width: 0;
+}
+.wq-clue:not(.has-picture) .wq-clue__text {
+  align-items: center;
+  text-align: center;
+}
+.wq-ask {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: var(--fs-xl);
+  line-height: var(--lh-tight);
+}
+.wq-meaning {
+  display: inline-flex;
+  align-items: baseline;
+  gap: var(--s-2);
+  margin: 0;
+  padding: 6px 14px;
+  border-radius: var(--r-pill);
+  background: var(--c-surface-2);
+  font-size: var(--fs-lg);
+  font-weight: 600;
+  max-width: 100%;
+}
+.wq-meaning__label {
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  color: var(--c-ink-2);
+}
+.wq-meaning.is-hidden .wq-meaning__text {
+  color: var(--c-ink-2);
+  letter-spacing: 0.2em;
+}
+.wq-clue__meta {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+}
+.wq-length {
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  color: var(--c-ink-2);
+}
+
+/* ---------- 2. HÀNG Ô CHỮ ---------- */
+.wq-slots {
+  --letters: 5;
+  --gap: 10px;
+  /* ô to nhất 64px; từ dài thì tự nhỏ lại cho vừa 1 hàng */
+  --slot: min(64px, calc((100cqi - (var(--letters) - 1) * var(--gap)) / var(--letters)));
+  display: flex;
+  justify-content: center;
+  gap: var(--gap);
+}
+.wq-slot {
+  display: grid;
+  place-items: center;
+  width: var(--slot);
+  height: calc(var(--slot) * 1.18);
+  padding: 0;
+  border-radius: calc(var(--slot) * 0.26);
+  border: 2.5px dashed var(--c-line-strong);
+  background: var(--c-surface);
+  color: var(--c-ink);
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: calc(var(--slot) * 0.56);
+  line-height: 1;
+  text-transform: lowercase;
+  cursor: default;
+  transition: border-color var(--dur-micro) var(--ease-out), background-color var(--dur-micro) var(--ease-out), transform var(--dur-micro) var(--ease-out);
+}
+/* ô trống đầu tiên: viền cam nhấp nháy nhẹ = "chữ tiếp theo vào đây" */
+.wq-slot:not(.is-given):not(.is-filled):not(.is-hint):not(.is-answer):first-of-type,
+.wq-slot.is-given + .wq-slot:not(.is-given):not(.is-filled):not(.is-hint):not(.is-answer) {
+  border-color: color-mix(in srgb, var(--c-primary) 55%, var(--c-line-strong));
+}
+.wq-slot.is-filled {
+  border-style: solid;
+  border-color: color-mix(in srgb, var(--c-primary) 60%, transparent);
+  background: var(--c-primary-soft);
+  color: var(--c-primary-ink);
+  cursor: pointer;
+  box-shadow: var(--gloss-top);
+  animation: ds-pop 200ms var(--ease-spring);
+}
+.wq-slot.is-filled:hover {
+  transform: translateY(-2px);
+}
+/* chữ cho sẵn: không viền đứt, nền trong suốt, chữ mực — khác hẳn ô người chơi điền (cam) */
+.wq-slot.is-given {
+  border: 0;
+  border-bottom: 3px solid var(--c-line-strong);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--c-ink);
+}
+.wq-slot.is-hint {
+  border-style: solid;
+  border-color: color-mix(in srgb, var(--c-navy) 45%, transparent);
+  background: var(--c-navy-soft);
+  color: var(--c-navy);
+}
+.wq-slots.is-correct .wq-slot:not(.is-given) {
+  border-style: solid;
+  border-color: var(--c-success);
+  background: var(--c-success-soft);
+  color: var(--c-success-ink);
+  animation: wq-bounce 420ms var(--ease-spring) both;
+}
+.wq-slots.is-correct .wq-slot:nth-child(2) { animation-delay: 40ms; }
+.wq-slots.is-correct .wq-slot:nth-child(3) { animation-delay: 80ms; }
+.wq-slots.is-correct .wq-slot:nth-child(4) { animation-delay: 120ms; }
+.wq-slots.is-correct .wq-slot:nth-child(5) { animation-delay: 160ms; }
+.wq-slots.is-correct .wq-slot:nth-child(6) { animation-delay: 200ms; }
+.wq-slots.is-correct .wq-slot:nth-child(n + 7) { animation-delay: 240ms; }
+.wq-slot.is-answer {
+  border-style: solid;
+  border-color: var(--c-oops);
+  background: var(--c-oops-soft);
+  color: var(--c-oops-ink);
+}
+.wq-slots.is-shaking {
+  animation: wq-shake 360ms var(--ease-out);
+}
+@keyframes wq-shake {
+  0%,
+  100% {
+    transform: none;
+  }
+  20% {
+    transform: translateX(-8px);
+  }
+  40% {
+    transform: translateX(7px);
+  }
+  60% {
+    transform: translateX(-5px);
+  }
+  80% {
+    transform: translateX(3px);
+  }
+}
+@keyframes wq-bounce {
+  0% {
+    transform: none;
+  }
+  40% {
+    transform: translateY(-10px);
+  }
+  100% {
+    transform: none;
+  }
+}
+.wq-retry {
+  min-height: 1.6em;
+  margin: calc(var(--s-3) * -1) 0;
+  text-align: center;
+  font-weight: 700;
+  color: var(--c-oops-ink);
+  opacity: 0;
+  transition: opacity var(--dur-micro) var(--ease-out);
+}
+.wq-retry.is-visible {
+  opacity: 1;
+}
+
+/* ---------- 3. BÀN VIÊN CHỮ ---------- */
+.wq-tiles {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  max-width: 640px;
+  margin-inline: auto;
+}
+.wq-tile {
+  display: grid;
+  place-items: center;
+  width: 54px;
+  height: 54px;
+  padding: 0 0 2px;
+  border: 0;
+  border-radius: 16px;
+  background: linear-gradient(180deg, var(--c-surface) 0%, var(--c-surface-2) 100%);
+  color: var(--c-ink);
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 1.75rem;
+  line-height: 1;
+  cursor: pointer;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, var(--gloss-strength)),
+    inset 0 0 0 1.5px var(--c-line-strong),
+    0 6px 12px -8px rgba(var(--shadow-rgb), 0.5);
+  transition: transform 80ms var(--ease-out), box-shadow var(--dur-micro) var(--ease-out), opacity var(--dur-micro) var(--ease-out);
+}
+.wq-tile:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, var(--gloss-strength)),
+    inset 0 0 0 2px color-mix(in srgb, var(--c-primary) 60%, transparent),
+    0 10px 16px -10px rgba(var(--shadow-rgb), 0.55);
+}
+.wq-tile:active:not(:disabled) {
+  transform: scale(0.94);
+}
+.wq-tile:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring), inset 0 0 0 1.5px var(--c-line-strong);
+}
+.wq-tile.is-used {
+  opacity: 0.22;
+  cursor: default;
+  transform: scale(0.9);
+}
+
+/* ---------- 4. GỢI Ý + HÀNH ĐỘNG ---------- */
+.wq-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-4);
+  flex-wrap: wrap;
+  padding-top: var(--s-4);
+  border-top: 1px solid var(--c-line);
+}
+.wq-hints {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-2);
+}
+.wq-hint {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 6px 10px 6px 12px;
+  border-radius: var(--r-md);
+  border: 1.5px solid var(--c-line);
+  background: var(--c-surface);
+  color: var(--c-ink);
+  cursor: pointer;
+  text-align: left;
+  transition: background-color var(--dur-micro) var(--ease-out), border-color var(--dur-micro) var(--ease-out);
+}
+.wq-hint:hover:not(:disabled) {
+  background: var(--c-surface-2);
+  border-color: var(--c-line-strong);
+}
+.wq-hint:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+.wq-hint:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+.wq-hint > .ds-icon {
+  color: var(--c-navy);
+}
+.wq-hint__text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+}
+.wq-hint__label {
+  font-size: var(--fs-sm);
+  font-weight: 700;
+}
+.wq-hint__cost {
+  font-size: 0.75rem;
+  color: var(--c-ink-2);
+}
+.wq-actions__main {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+  margin-left: auto;
+}
+.wq-actions__main .ds-kbd,
+.wq-feedback .ds-kbd {
+  margin-left: 4px;
+}
+
+/* ---------- 5. KHUNG PHẢN HỒI ---------- */
+.wq-feedback {
+  display: flex;
+  align-items: center;
+  gap: var(--s-4);
+  padding: var(--s-4) var(--s-5);
+  border-radius: var(--r-lg);
+  animation: gq-feedback-in 220ms var(--ease-out);
+}
+.wq-feedback.is-good {
+  background: var(--c-success-soft);
+  color: var(--c-success-ink);
+}
+.wq-feedback.is-oops {
+  background: var(--c-oops-soft);
+  color: var(--c-oops-ink);
+}
+.wq-feedback__text {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  min-width: 0;
+  flex: 1;
+}
+.wq-feedback__title {
+  font-family: var(--font-display);
+  font-size: var(--fs-lg);
+}
+.wq-feedback__word {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-2);
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: var(--fs-2xl);
+  line-height: 1.1;
+  color: var(--c-ink);
+}
+.wq-feedback__meaning {
+  color: var(--c-ink);
+  font-weight: 500;
+}
+.wq-feedback .wk-chip {
+  margin-top: 4px;
+}
+.wq-feedback__points {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: var(--fs-2xl);
+  animation: ds-pop 360ms var(--ease-spring) 80ms both;
+}
+
+/* ---------- khung hẹp ---------- */
+@container wq-round (max-width: 640px) {
+  .wq-clue {
+    flex-direction: column;
+    gap: var(--s-3);
+  }
+  .wq-clue__text {
+    align-items: center;
+    text-align: center;
+  }
+  .wq-picture {
+    width: 150px;
+    height: 150px;
+  }
+  .wq-tile {
+    width: 46px;
+    height: 46px;
+    font-size: 1.5rem;
+  }
+  .wq-actions__main {
+    margin-left: 0;
+    width: 100%;
+    justify-content: flex-end;
+  }
+  .wq-feedback {
+    flex-wrap: wrap;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wq-picture,
+  .wq-slot.is-filled,
+  .wq-slots.is-correct .wq-slot,
+  .wq-slots.is-shaking,
+  .wq-feedback,
+  .wq-feedback__points {
+    animation: none;
+  }
+  .wq-tile,
+  .wq-slot {
+    transition: none;
+  }
+}

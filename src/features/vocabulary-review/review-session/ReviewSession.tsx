@@ -9,7 +9,7 @@
  *   câu sai:  làm lại như bài tập -> máy tự chấm (autoRating: sai = Quên, đúng chậm = Khó, đúng = Nhớ).
  * Mỗi lần chấm gọi reviewSrsCard() -> LƯU NGAY (thoát giữa chừng không mất gì).
  * Thẻ "Quên" được đưa lại CUỐI phiên (học lại trong phiên, tối đa 2 lần/thẻ — Mochi).
- * Hết hàng -> completeReviewSession(phút) (giữ chuỗi ngày) + XP nhỏ -> màn kết thúc.
+ * Hết hàng -> completeReviewSession(phút) (giữ chuỗi ngày) + XP nhỏ (chỉ track general) -> màn kết thúc.
  * ----------------------------------------------------------------------------
  */
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
@@ -17,6 +17,7 @@ import { Button } from '../../../design-system/components/Button'
 import { Kbd } from '../../../design-system/components/Kbd'
 import { playSound } from '../../../design-system/sound-kit'
 import { autoRating, ratingsForButtonMode, srsButtonModeFor, type SrsRating } from '../../../learning-progress/fsrs-scheduler'
+import { isGamifiedTrack } from '../../../gamification/gamification-scope'
 import { useProgress } from '../../../learning-progress/progress-store'
 import { retryQuestionFromExercise } from '../../mistakes-notebook/exercise-retry/retry-question'
 import { RetryQuestionView, type RetryResult } from '../../mistakes-notebook/exercise-retry/RetryQuestionView'
@@ -86,7 +87,8 @@ export function ReviewSession({ items, onClose }: ReviewSessionProps) {
     const minutes = elapsedMinutes()
     if (reviewedKeys.length > 0) {
       completeReviewSession(minutes)
-      addXp(Math.min(MAX_SESSION_XP, reviewedKeys.length * XP_PER_CARD))
+      // XP chỉ ở track general (src/gamification/gamification-scope.ts); chuỗi ngày thì cả 2 track
+      if (isGamifiedTrack(progress.profile.track)) addXp(Math.min(MAX_SESSION_XP, reviewedKeys.length * XP_PER_CARD))
       playSound('complete')
     }
     setSummary({
@@ -94,7 +96,7 @@ export function ReviewSession({ items, onClose }: ReviewSessionProps) {
       rememberedFirstTry: [...firstResults.current.values()].filter(Boolean).length,
       minutes,
     })
-  }, [completeReviewSession, addXp])
+  }, [completeReviewSession, addXp, progress.profile.track])
 
   /** Sang thẻ kế (hoặc kết thúc). `requeue` = đưa thẻ hiện tại xuống cuối hàng. */
   const advance = useCallback(

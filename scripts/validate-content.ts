@@ -21,6 +21,7 @@ import { ALL_LESSONS, LEGACY_LESSONS } from '../src/content/lesson-registry'
 import { buildLessonIndex, renderLessonIndexFile } from '../src/content/lesson-index-builder'
 import { LESSON_SOURCE_IDS, LESSON_SOURCES, type LessonSourceId } from '../src/content/lesson-sources'
 import { generateSpellingQuestions, listGameTopics } from '../src/game-questions/question-bank'
+import { GRAMMAR_TOPICS } from '../src/content/grammar/grammar-topics'
 
 const problems: string[] = []
 const warnings: string[] = []
@@ -208,7 +209,22 @@ for (const level of ALL_LEVELS_V3) {
 
 // 100 bài cũ phải nằm trong lộ trình (tiến độ cũ của người học tính theo id các bài này)
 for (const lesson of LEGACY_LESSONS) if (!lessonsInUnits.has(lesson.id)) problems.push(`Bài cũ ${lesson.id} chưa được gắn vào chặng nào`)
-for (const lesson of ALL_LESSONS) if (!lessonsInUnits.has(lesson.id) && !LEGACY_LESSONS.includes(lesson)) warnings.push(`Bài ${lesson.id} chưa nằm trong chặng nào`)
+// bài khu Ngữ pháp (category 'grammar') cố ý KHÔNG nằm trong chặng nào — mở từ trang /grammar
+for (const lesson of ALL_LESSONS) if (!lessonsInUnits.has(lesson.id) && !LEGACY_LESSONS.includes(lesson) && lesson.category !== 'grammar') warnings.push(`Bài ${lesson.id} chưa nằm trong chặng nào`)
+
+/* ---- 3b. KHU NGỮ PHÁP (src/content/grammar/grammar-topics.ts) ---- */
+const grammarLessonsInTopics = new Set<string>()
+for (const topic of GRAMMAR_TOPICS) {
+  checkId(`grammar:${topic.id}`, 'grammar-topics')
+  if (topic.lessonIds.length === 0) problems.push(`Điểm ngữ pháp ${topic.id}: chưa có bài nào`)
+  for (const id of topic.lessonIds) {
+    if (!lessonIds.has(id)) problems.push(`Điểm ngữ pháp ${topic.id}: bài "${id}" không có trong lesson-registry`)
+    grammarLessonsInTopics.add(id)
+  }
+}
+for (const lesson of ALL_LESSONS) {
+  if (lesson.category === 'grammar' && !grammarLessonsInTopics.has(lesson.id)) warnings.push(`Bài ngữ pháp ${lesson.id} chưa gắn vào điểm nào trong grammar-topics.ts (sẽ không hiện ở /grammar)`)
+}
 
 /* ============================================================================
  * 4. ĐỀ THI

@@ -21,6 +21,7 @@ export const EXAM_UI_TEXT = {
   saveAndExit: { vi: 'Lưu & thoát', en: 'Save & exit' },
   practiceMode: { vi: 'Luyện tập', en: 'Practice' },
   examMode: { vi: 'Thi thật', en: 'Exam mode' },
+  testMode: { vi: 'Kiểm tra', en: 'Test' },
   notes: { vi: 'Ghi chú', en: 'Notes' },
   notesCount: { vi: 'Ghi chú ({n})', en: 'Notes ({n})' },
   display: { vi: 'Hiển thị', en: 'Display' },
@@ -131,8 +132,12 @@ export const EXAM_UI_TEXT = {
   /* ---------- kết quả ---------- */
   resultTitle: { vi: 'Kết quả', en: 'Results' },
   correctCount: { vi: '{correct}/{total} câu đúng', en: '{correct}/{total} correct' },
-  bandEstimate: { vi: 'Band ước tính', en: 'Estimated band' },
-  bandRangeNote: { vi: 'Ước tính từ {n} câu — làm thêm bài để chính xác hơn.', en: 'Based on {n} questions — more practice makes it more accurate.' },
+  percentCorrect: { vi: '{p}% câu đúng', en: '{p}% correct' },
+  // band không hiện sau 1 task (luật D6.23) — chỉ ở trang Tiến độ khi đủ 20 câu
+  bandLaterNote: {
+    vi: 'Band ước tính sẽ hiện ở trang Tiến độ khi kỹ năng này có đủ 20 câu.',
+    en: 'Your estimated band appears on the Progress page once this skill has 20 answered questions.',
+  },
   byQuestionType: { vi: 'Theo dạng câu hỏi', en: 'By question type' },
   wentWell: { vi: 'Làm tốt', en: 'Went well' },
   toImprove: { vi: 'Để làm tốt hơn', en: 'To improve' },

@@ -23,6 +23,8 @@ export interface NavItem {
 export const NAV_ITEMS: NavItem[] = [
   { id: 'learn', to: '/learn', labelKey: 'navLearn', icon: 'learn', matchPrefixes: ['/learn', '/lesson', '/level', '/roadmap', '/progress'] },
   { id: 'review', to: '/review', labelKey: 'navReview', icon: 'review', matchPrefixes: ['/review', '/words', '/mistakes', '/fun'] },
+  // khu Ngữ pháp (src/features/grammar): danh sách điểm ngữ pháp theo 3 level + bài luyện riêng
+  { id: 'grammar', to: '/grammar', labelKey: 'navGrammar', icon: 'grammar', matchPrefixes: ['/grammar'] },
   { id: 'exams', to: '/exams', labelKey: 'navExams', icon: 'exam', matchPrefixes: ['/exams', '/exam-result'] },
   {
     id: 'play',

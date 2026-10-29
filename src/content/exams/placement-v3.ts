@@ -83,9 +83,13 @@
  *        chỉ để kết quả không chạy lung tung khi người học đúng hết hoặc sai hết.
  *    Từ điểm ước lượng θ̂ và độ lệch chuẩn sd:
  *      - bandPoint = θ̂ làm tròn 0.1, giới hạn 0 … 7.0 (KHÔNG hiện số này cho người học).
- *      - Khoảng band: w = sd kẹp trong [0.25, 1.0];
- *          bandLow = làm tròn 0.5 của (θ̂ − w), bandHigh = làm tròn 0.5 của (θ̂ + w);
- *          giới hạn 0 … 7.0; khoảng tối thiểu rộng 0.5.
+ *      - Khoảng band (quyết định chủ nhà 29/10/2026): LUÔN là ±0.5 quanh điểm ước lượng, trần 6.5.
+ *          tâm = θ̂ làm tròn 0.5, kẹp 0 … 6.5;  bandLow = tâm − 0.5 (≥ 0),  bandHigh = tâm + 0.5 (≤ 6.5).
+ *          VD θ̂ 3.7 → tâm 3.5 → "3.0–4.0";  θ̂ 7.0 → tâm 6.5 → "6.0–6.5";  θ̂ 0.2 → tâm 0 → "0–0.5".
+ *          Lý do: khoảng cố định dễ hiểu, không phình ra khi làm ít câu; trần 6.5 = đỉnh của bài
+ *          (câu khó nhất là band 6.5 — bài không đo được trên mức đó). Độ không chắc chắn (sd)
+ *          vẫn dùng cho độ tin cậy (confidence) bên dưới — 'low' thì UI ghi "ước lượng sơ bộ".
+ *          (Trước đây: w = sd kẹp [0.25, 1.0], khoảng rộng 0.5–2.0 band, trần 7.0.)
  *      - CEFR (theo bảng IDP trong psych-adult A18, dùng θ̂ làm tròn 0.5):
  *          ≤ 1.5 Pre-A1 · 2.0–2.5 A1 · 3.0–3.5 A2 · 4.0–5.0 B1 · ≥ 5.5 B2
  *        cefrRange = CEFR(bandLow) "–" CEFR(bandHigh) nếu khác nhau, VD "A2–B1".
@@ -114,14 +118,16 @@
  *    C. Người A2: 1.5V✓ 2.5G✓ 4.5L✗ 3.5R✗ 2.5V✓ 3.5G✓ 4.5L✗ (4.5 bị khoá) 3.5R✓ 3.5V✗ 2.5G✓ 3.5L✓ 3.5V✓
  *       → 'converged' sau 12 câu → { bandPoint 3.5, band 3.0–4.0, A2 (khoảng A2–B1), level-2, stretch level-3, 'medium' }
  *    D. Người B1+: 1.5V✓ 2.5G✓ 4.5L✓ 6.5R✗ 5.5V✗ 4.5G✓ 5.5L✓ 6.5R✗ (6.5 khoá) 5.5V✗ (5.5 khoá) 4.5G✓ 4.5L✓ 4.5R✓
- *       → 'max-items' sau 12 câu → { bandPoint 5.1, band 4.5–6.0, B1 (khoảng B1–B2), level-3, 'medium' }
+ *       → 'max-items' sau 12 câu → { bandPoint 5.1, band 4.5–5.5, B1 (khoảng B1–B2), level-3, 'medium' }
  *    E. Người giỏi: đúng hết 1.5V 2.5G 4.5L rồi 7 câu 6.5 → 'top-reached' sau 10 câu
- *       → { bandPoint 7.0, band 6.5–7.0, B2, level-3, 'high' }
- *    F. Thoát sau 4 câu: 1.5V✓ 2.5G✓ 4.5L✗ 3.5R✓ → (chưa dừng) { bandPoint 3.7, band 2.5–4.5, A2 (A1–B1), level-2, stretch level-3, 'low' }
+ *       → { bandPoint 7.0, band 6.0–6.5 (trần 6.5), B2, level-3, 'high' }
+ *    F. Thoát sau 4 câu: 1.5V✓ 2.5G✓ 4.5L✗ 3.5R✓ → (chưa dừng) { bandPoint 3.7, band 3.0–4.0, A2 (A2–B1), level-2, stretch level-3, 'low' }
  *    G. Bấm "Tôi mới bắt đầu từ 0" (hoặc 0 câu): completeBeginnerResult() → { band 0–1.0, Pre-A1, level-1, 'low', 'self-reported' }
  *
  * 8) KIỂM THỬ MÔ PHỎNG (đã chạy 1.500 người ảo cho mỗi band thật 0 … 7, trả lời theo đúng mô hình mục 5):
  *    trung bình 7–11 câu (người mới ~7, giữa ~11, giỏi ~10); sai số trung bình 0.5–0.6 band;
+ *    (số liệu mô phỏng này chạy với khoảng band CŨ theo sd; khoảng ±0.5 mới hẹp hơn khi làm ít câu
+ *    nên tỉ lệ "band thật nằm trong khoảng" sẽ thấp hơn — chưa chạy lại mô phỏng)
  *    band thật nằm trong khoảng hiển thị ~83–91% (riêng band thật 0: ~58% vì bài không phân biệt được 0 với 0.5);
  *    level gợi ý đúng 86–100% khi band thật cách ngưỡng level ≥ 1 (ngay sát ngưỡng thì ~50/50 — vì thế có stretchLevel).
  *    Khi câu hỏi thật kém phân loại hơn mô hình (độ dốc 1.0): sai số ~0.7, độ phủ ~75% — vẫn dùng được.
@@ -1207,15 +1213,11 @@ export function estimatePlacement(answers: PlacementAnswer[]): PlacementEstimate
   if (history.length === 0) return completeBeginnerResult()
   const { mean, sd } = placementPosterior(answers)
 
-  // khoảng band hiển thị
+  // khoảng band hiển thị: ±0.5 quanh tâm (θ̂ làm tròn 0.5), trần 6.5 — xem mục 5 đầu file
   const point = clamp(mean, 0, 7)
-  const halfWidth = clamp(sd, 0.25, 1)
-  let bandLow = clamp(roundToHalf(point - halfWidth), 0, 7)
-  let bandHigh = clamp(roundToHalf(point + halfWidth), 0, 7)
-  if (bandHigh - bandLow < 0.5) {
-    if (bandHigh < 7) bandHigh = bandLow + 0.5
-    else bandLow = bandHigh - 0.5
-  }
+  const center = clamp(roundToHalf(point), 0, PLACEMENT_RULES.maxBand)
+  const bandLow = Math.max(0, center - 0.5)
+  const bandHigh = Math.min(PLACEMENT_RULES.maxBand, center + 0.5)
 
   // 4) CEFR, level, độ tin cậy
   const bandPoint = Math.round(point * 10) / 10

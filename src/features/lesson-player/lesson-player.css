@@ -785,6 +785,10 @@
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: var(--s-3);
 }
+/* bài track IELTS: không có ô XP -> 2 ô */
+.lp-stats--two {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
 .lp-stat {
   display: flex;
   align-items: center;

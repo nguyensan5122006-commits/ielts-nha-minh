@@ -14,7 +14,9 @@
  *   9. Chọn bản mới hơn giữa localStorage và máy chủ
  */
 import assert from 'node:assert/strict'
-import { findLevelInfo } from '../src/content/all-levels'
+import { ALL_LEVELS_V3, findLevelInfo } from '../src/content/all-levels'
+import { estimatePlacement, nextPlacementItem } from '../src/content/exams/placement-v3'
+import { gamificationVisibleAt, lessonEarnsXp } from '../src/gamification/gamification-scope'
 import { LEGACY_LESSONS } from '../src/content/lesson-registry'
 import { findNextLesson, levelProgress, pathLessonIds, unitProgress, unitsFor } from '../src/content/path-selectors'
 import { BACKLOG_PAUSE_THRESHOLD, createSrsCard, dueCards, newCardsPerDayLimit, reviewCard, srsQueueInfo } from '../src/learning-progress/fsrs-scheduler'
@@ -424,6 +426,49 @@ test('JSON tiến độ v2 của người học nhiều (1.500 thẻ + 300 lỗi
   p = { ...p, srs, mistakes: Array.from({ length: 300 }, (_, i) => ({ ...v1.mistakes[0], id: `m${i}`, itemId: `i${i}` })) }
   const bytes = JSON.stringify(p).length
   assert.ok(bytes < 1_500_000, `JSON ${bytes} byte`)
+})
+
+/* ---------- XP chỉ ở track general (gamification-scope.ts, 03-DATA-LAYER mục 15) ---------- */
+test('XP: bài dùng chung có XP ở tab general, không ở tab IELTS; bài chặng IELTS không bao giờ có XP', () => {
+  const units = ALL_LEVELS_V3.flatMap((level) => level.units)
+  const shared = units.find((unit) => unit.tracks.includes('general') && unit.tracks.includes('ielts'))!.lessonIds[0]
+  const generalOnly = units.find((unit) => unit.tracks.length === 1 && unit.tracks[0] === 'general')!.lessonIds[0]
+  const ieltsOnly = units.find((unit) => unit.tracks.length === 1 && unit.tracks[0] === 'ielts')!.lessonIds[0]
+  assert.equal(lessonEarnsXp(shared, 'general'), true)
+  assert.equal(lessonEarnsXp(shared, 'ielts'), false)
+  assert.equal(lessonEarnsXp(generalOnly, 'general'), true)
+  assert.equal(lessonEarnsXp(ieltsOnly, 'general'), false)
+  assert.equal(lessonEarnsXp(ieltsOnly, 'ielts'), false)
+  assert.equal(lessonEarnsXp('bai-khong-co-trong-lo-trinh', 'general'), true)
+  // bài Ngữ pháp tự khai track 'general' -> luôn có XP, kể cả khi đang ở tab IELTS
+  assert.equal(lessonEarnsXp('gr-present-simple-1', 'ielts', 'general'), true)
+})
+test('Lv.N / toast: tab general có, tab IELTS không, phòng thi không bao giờ, Sân chơi luôn có', () => {
+  assert.equal(gamificationVisibleAt('general', '/learn'), true)
+  assert.equal(gamificationVisibleAt('ielts', '/learn'), false)
+  assert.equal(gamificationVisibleAt('general', '/exams'), false)
+  assert.equal(gamificationVisibleAt('general', '/exam-result/12'), false)
+  assert.equal(gamificationVisibleAt('ielts', '/play'), true)
+  assert.equal(gamificationVisibleAt('ielts', '/games/spelling-bee'), true)
+  assert.equal(gamificationVisibleAt('ielts', '/playground-x'), false)
+})
+
+/* ---------- bài xếp lớp: khoảng band ±0.5, trần 6.5 ---------- */
+test('xếp lớp: khoảng band luôn ±0.5 quanh điểm ước lượng, trần 6.5 (ví dụ A, C, E, F đầu placement-v3.ts)', () => {
+  const run = (seq: boolean[]) => {
+    const answers: { itemId: string; correct: boolean }[] = []
+    for (const correct of seq) {
+      const item = nextPlacementItem(answers)
+      if (!item) break
+      answers.push({ itemId: item.id, correct })
+    }
+    const estimate = estimatePlacement(answers)
+    return [estimate.bandLow, estimate.bandHigh]
+  }
+  assert.deepEqual(run([false, false, false]), [0, 1])
+  assert.deepEqual(run([true, true, false, false, true, true, false, true, false, true, true, true]), [3, 4])
+  assert.deepEqual(run(Array(10).fill(true)), [6, 6.5])
+  assert.deepEqual(run([true, true, false, true]), [3, 4])
 })
 
 console.log(`\nTất cả ${passed} kiểm thử đều qua ✓`)

@@ -140,7 +140,7 @@ export function ProfilePage() {
                 return (
                   <li key={record.game}>
                     {game && <GameArt slug={game.art} size={32} />}
-                    <span>{game ? t(`game_${game.id}`) : record.game}</span>
+                    <span>{game ? pick(game.title) : record.game}</span>
                     <strong className="ds-num">{record.bestScore}</strong>
                   </li>
                 )

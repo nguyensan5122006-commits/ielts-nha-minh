@@ -34,7 +34,7 @@ import { useExamDisplay } from '../exam-ui/ExamDisplaySettings'
 import { ExamFrame, FrameTool, ModeBadge, NoteIcon } from '../exam-ui/ExamFrame'
 import { ExamQuestionList } from '../exam-ui/ExamQuestionList'
 import { NotesPanel, SelectionToolbar, useHighlightNotes, type UserMark } from '../exam-ui/HighlightNotesLayer'
-import { taskBandEstimate, useLessonTaskRecorder } from '../exam-ui/lesson-task-recording'
+import { isIeltsTaskLesson, useLessonTaskRecorder } from '../exam-ui/lesson-task-recording'
 import { scrollMarkIntoView, type TextMark } from '../exam-ui/MarkedText'
 import { answerValueFor, buildQuestionGroups, choicesOf } from '../exam-ui/question-grouping'
 import { QuestionNavigator, type NavigatorPart } from '../exam-ui/QuestionNavigator'
@@ -107,7 +107,8 @@ function ReadingTaskView({ lesson, resumeData, onSaveResume, onComplete }: Skill
 
   /* ---------- chấm + bằng chứng ---------- */
   const summary = useMemo(() => gradeAll(grouped.groups, state.answers), [grouped, state.answers])
-  const band = state.firstScore ? taskBandEstimate(lesson.id, 'reading', state.firstScore.correct, state.firstScore.total) : null
+  // KHÔNG hiện band sau 1 task (luật D6.23) — bài IELTS chỉ nhắc "band ở trang Tiến độ khi đủ 20 câu"
+  const bandLater = isIeltsTaskLesson(lesson.id)
   const evidence = useMemo(() => {
     const map = new Map<string, EvidenceResult>()
     for (const question of task.questions) map.set(question.id, findEvidence({ question, blocks, preferredGroup: question.paragraphLabel }))
@@ -292,11 +293,10 @@ function ReadingTaskView({ lesson, resumeData, onSaveResume, onComplete }: Skill
       correct: first.correct,
       total: first.total,
       mistakes,
-      band: band ? { low: band.low, high: band.high } : undefined,
       summary: readingSummary(first.correct, first.total),
       minutes: Math.max(1, Math.round(session.state.activeSeconds / 60)),
     })
-  }, [session, summary, grouped, onComplete, band])
+  }, [session, summary, grouped, onComplete])
 
   const retryWrong = useCallback(() => {
     session.retryWrong(wrongIds)
@@ -458,7 +458,7 @@ function ReadingTaskView({ lesson, resumeData, onSaveResume, onComplete }: Skill
       {reviewing && (
         <TaskResultSummary
           summary={summary}
-          band={band}
+          bandLater={bandLater}
           typeName={typeName}
           wentWell={wentWell}
           improve={improve.slice(0, 2)}

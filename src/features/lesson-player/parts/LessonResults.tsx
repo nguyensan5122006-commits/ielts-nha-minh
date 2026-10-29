@@ -4,9 +4,12 @@
  * Thứ tự (04-DESIGN-SYSTEM mục 9 + psych-adult D5):
  *   1. Mascot "celebrate" + "Xong bài" + câu khen CỤ THỂ theo kết quả (can-do của bài)
  *   2. 3 ô chỉ số: độ chính xác (vòng) · thời gian · XP đếm lên
+ *      (bài track IELTS: completion.xp = null -> chỉ 2 ô, không nhắc XP — gamification-scope.ts)
  *   3. "Câu cần ôn" (1–3 câu) + nút "Ôn lại câu sai" -> làm lại ngay tại chỗ (~1 phút)
  *   4. Tiến độ hôm nay (vòng mục tiêu phút + chuỗi ngày)
  *   5. 2 nút: "Học tiếp" (chính, bài kế từ lộ trình) + "Dừng ở đây" (phụ, KHÔNG mờ)
+ *      Bài Ngữ pháp (category 'grammar'): nút chính "Về điểm ngữ pháp" -> /grammar/<topicId>,
+ *      "Dừng ở đây" cũng về đó (session/grammar-return.ts) — bài ngữ pháp không nằm trên lộ trình.
  *
  * Ăn mừng ≤ 1,5 giây (pháo giấy nhỏ + số đếm lên), Enter trong lúc đó = bỏ qua
  * hoạt cảnh; sau đó Enter = "Học tiếp". Ăn mừng LỚN chỉ ở mốc (MilestoneScreen).
@@ -33,6 +36,7 @@ import { questionTextOf } from '../exercises/exercise-contract'
 import { useLessonText } from '../lesson-player-text'
 import type { SessionSummary, ItemSummary } from '../session/lesson-session'
 import type { SkillTaskResult } from '../skill-task-registry'
+import { grammarReturnPath } from '../session/grammar-return'
 import { LessonGlyph } from './LessonGlyph'
 import { MistakeReplay } from './MistakeReplay'
 
@@ -41,7 +45,8 @@ const CELEBRATION_MS = 1500
 
 export interface CompletionInfo {
   summary: SessionSummary
-  xp: number
+  /** null = bài không tính XP (track IELTS) -> ẩn ô XP */
+  xp: number | null
   minutes: number
   isRepeat: boolean
   taskResult: SkillTaskResult | null
@@ -82,7 +87,8 @@ export function LessonResults({ lesson, unit, levelId, targetBand, completion }:
     return () => window.clearTimeout(timer)
   }, [reduceMotion])
 
-  const goNext = () => (next ? navigate(`/lesson/${next.lesson.id}`) : navigate('/learn'))
+  const grammarPath = grammarReturnPath(lesson)
+  const goNext = () => (grammarPath ? navigate(grammarPath) : next ? navigate(`/lesson/${next.lesson.id}`) : navigate('/learn'))
 
   // Enter: đang ăn mừng -> bỏ qua; sau đó -> Học tiếp
   useEffect(() => {
@@ -154,7 +160,7 @@ export function LessonResults({ lesson, unit, levelId, targetBand, completion }:
         </header>
 
         {/* 2. 3 ô chỉ số */}
-        <section className="lp-stats" aria-label={text.accuracy}>
+        <section className={`lp-stats${xp === null ? ' lp-stats--two' : ''}`} aria-label={text.accuracy}>
           <div className="lp-stat">
             <ProgressRing value={summary.accuracy} size={84} color={accuracyPercent >= 80 ? 'var(--c-success)' : undefined} label={text.accuracy}>
               <strong className="ds-num">{accuracyPercent}%</strong>
@@ -173,17 +179,19 @@ export function LessonResults({ lesson, unit, levelId, targetBand, completion }:
               <strong className="lp-stat__value ds-num">{text.minutesShort(minutes)}</strong>
             </div>
           </div>
-          <div className="lp-stat">
-            <span className="lp-stat__icon lp-stat__icon--xp" aria-hidden>
-              <Icon name="star" size={28} />
-            </span>
-            <div className="lp-stat__text">
-              <span className="lp-stat__label">{text.xp}</span>
-              <XpCounter value={xp} from={celebrating ? 0 : xp} durationMs={1100} delayMs={250} size="md" />
+          {xp !== null && (
+            <div className="lp-stat">
+              <span className="lp-stat__icon lp-stat__icon--xp" aria-hidden>
+                <Icon name="star" size={28} />
+              </span>
+              <div className="lp-stat__text">
+                <span className="lp-stat__label">{text.xp}</span>
+                <XpCounter value={xp} from={celebrating ? 0 : xp} durationMs={1100} delayMs={250} size="md" />
+              </div>
             </div>
-          </div>
+          )}
         </section>
-        {completion.isRepeat && <p className="lp-results__note">{text.xpRepeatNote}</p>}
+        {xp !== null && completion.isRepeat && <p className="lp-results__note">{text.xpRepeatNote}</p>}
 
         {/* 3. câu cần ôn */}
         <section className="lp-review">
@@ -266,13 +274,17 @@ export function LessonResults({ lesson, unit, levelId, targetBand, completion }:
 
         {/* 5. bước tiếp theo */}
         <footer className="lp-results__actions">
-          <Button variant="secondary" size="lg" to="/learn">
+          <Button variant="secondary" size="lg" to={grammarPath ?? '/learn'}>
             {text.stopHere}
           </Button>
           <div className="lp-results__next">
-            {next ? <span className="lp-results__next-title">{text.nextLessonIs(pick(next.lesson.title))}</span> : <span className="lp-results__next-title">{text.allDone}</span>}
+            {grammarPath ? null : next ? (
+              <span className="lp-results__next-title">{text.nextLessonIs(pick(next.lesson.title))}</span>
+            ) : (
+              <span className="lp-results__next-title">{text.allDone}</span>
+            )}
             <Button size="lg" onClick={goNext} iconRight={<Kbd onColor>Enter</Kbd>}>
-              {next ? text.nextLesson : text.backToPath}
+              {grammarPath ? text.backToGrammar : next ? text.nextLesson : text.backToPath}
             </Button>
           </div>
         </footer>

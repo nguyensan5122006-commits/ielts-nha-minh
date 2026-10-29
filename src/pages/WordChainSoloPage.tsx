@@ -7,23 +7,29 @@
  *   - Điểm mỗi từ: 10 + 2 × (số chữ - 3) -> từ dài nhiều điểm hơn.
  * Máy chỉ dùng từ trong bài học & Học vui (từ quen thuộc), nên học càng nhiều càng dễ thắng máy.
  * (v3) Giao diện làm lại: chữ cái bắt buộc to ở giữa, chuỗi từ dạng viên kẹo, mascot khi kết thúc.
+ * (Trò chơi chữ) Màn kết quả + cột kỷ lục dùng chung với 4 trò còn lại (src/features/word-games/).
  * ----------------------------------------------------------------------------
  */
 import { useCallback, useEffect, useMemo, useRef, useState, type FormEvent } from 'react'
 import { allFunCards } from '../content/all-fun-topics'
 import { allLessonWords } from '../content/lesson-registry'
 import { TimerBar, TimerBarIdle } from '../games/GameQuestionView'
-import { Button, Mascot, playSound } from '../design-system'
-import { GameArt } from '../features/playground/components/GameArt'
+import { Button, fireConfetti, Mascot, playSound } from '../design-system'
 import { PlayPageHeader } from '../features/playground/components/PlayPageHeader'
+import { wordGameInfo } from '../features/playground/game-catalog'
 import { usePlayText } from '../features/playground/playground-text'
+import { GameRecordsPanel } from '../features/word-games/components/GameRecordsPanel'
+import { RoundResult, type SavedScore } from '../features/word-games/components/RoundResult'
+import { saveRoundScore } from '../features/word-games/save-round-score'
+import { useGameBoard } from '../features/word-games/use-game-board'
+import { useWordGamesText } from '../features/word-games/word-games-text'
 import { useProgress } from '../learning-progress/progress-store'
-import { api } from '../services/api-client'
 import { speak } from '../services/text-to-speech'
 import { useLanguage } from '../translations/language-context'
 import '../features/playground/styles/play-kit.css'
 import '../features/playground/styles/game.css'
 import '../features/playground/styles/word-games.css'
+import '../features/word-games/styles/word-games-kit.css'
 
 const TURN_MS = 15_000
 const COMPUTER_THINK_MS = 1200
@@ -50,8 +56,10 @@ function computerVocabulary(): string[] {
 const wordPoints = (word: string) => 10 + Math.max(0, word.length - 3) * 2
 
 export function WordChainSoloPage() {
-  const { t } = useLanguage()
+  const { t, pick } = useLanguage()
   const playText = usePlayText()
+  const text = useWordGamesText()
+  const info = wordGameInfo('word-chain')!
   const { recordActivity } = useProgress()
   const vocabulary = useMemo(computerVocabulary, [])
   const [dictionary, setDictionary] = useState<Set<string> | null>(null)
@@ -62,7 +70,10 @@ export function WordChainSoloPage() {
   const [input, setInput] = useState('')
   const [message, setMessage] = useState('')
   const [score, setScore] = useState(0)
-  const [outcome, setOutcome] = useState<{ won: boolean; reason: string; isNewRecord: boolean } | null>(null)
+  const [outcome, setOutcome] = useState<{ won: boolean; reason: string } | null>(null)
+  const [saved, setSaved] = useState<SavedScore | null | undefined>(undefined)
+  const [boardKey, setBoardKey] = useState(0)
+  const board = useGameBoard(boardKey)
   const inputRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
@@ -76,17 +87,18 @@ export function WordChainSoloPage() {
   const endGame = useCallback(
     async (won: boolean, reason: string, finalScore: number) => {
       setPhase('over')
+      setOutcome({ won, reason })
+      setSaved(undefined)
       playSound(won ? 'complete' : 'oops')
       recordActivity('miniGames')
-      let isNewRecord = false
-      try {
-        const saved = await api.submitGameScore('word-chain', finalScore)
-        // 0 điểm (lượt đầu, hết giờ chưa gõ chữ nào) không phải "kỷ lục mới" dù máy chủ coi lượt đầu là kỷ lục
-        isNewRecord = saved.isNewRecord && finalScore > 0
-      } catch {
-        /* bỏ qua */
+      // 0 điểm (hết giờ chưa gõ chữ nào) không tính "kỷ lục mới" — saveRoundScore đã lo
+      const savedScore = await saveRoundScore('word-chain', finalScore)
+      setSaved(savedScore)
+      setBoardKey((key) => key + 1)
+      if (savedScore?.isNewRecord) {
+        playSound('levelUp')
+        fireConfetti()
       }
-      setOutcome({ won, reason, isNewRecord })
     },
     [recordActivity],
   )
@@ -147,43 +159,54 @@ export function WordChainSoloPage() {
     setTurn('computer')
   }
 
+  /** chuỗi từ dạng viên kẹo (dùng trong lúc chơi và ở màn kết quả) */
+  const chainWords = (
+    <div className="wg-chain__words" aria-live="polite">
+      {chain.map((item, index) => (
+        <span key={index} className={`wg-chain__word ${item.by === 'me' ? 'is-me' : item.by === 'start' ? 'is-start' : ''}`}>
+          {item.word}
+        </span>
+      ))}
+    </div>
+  )
+
   return (
-    <main className="page pg-page pg-page--narrow word-games">
-      <PlayPageHeader back art="link" artPlate="primary" title={t('game_word-chain')} intro={t('gameDesc_word-chain')} />
+    <main className="page pg-page word-games wk-page">
+      <PlayPageHeader back={{ to: '/play', label: text('backToHub') }} art={info.art} artPlate={info.plate} title={pick(info.title)} intro={pick(info.description)} />
 
-      {phase === 'ready' && (
-        <section className="pg-panel wg-result">
-          <Mascot pose="thinking" size={120} />
-          <p className="wg-chain-start" aria-label="apple, egg, green, night">
-            <span>apple</span>
-            <i>→</i>
-            <span>egg</span>
-            <i>→</i>
-            <span>green</span>
-            <i>→</i>
-            <span>night</span>
-            <i>→ …</i>
-          </p>
-          <Button size="lg" disabled={!dictionary} loading={!dictionary} onClick={start} iconLeft={dictionary ? 'play-fill' : undefined}>
-            {dictionary ? t('start') : t('loading')}
-          </Button>
-        </section>
-      )}
-
-      {phase !== 'ready' && (
-        <section className={`gq-card wg-chain ${phase === 'playing' && turn === 'me' ? 'is-my-turn' : ''}`}>
-          <div className="gq-stage__bar">
-            <span className="gq-chip">{t('wordsInChain', { n: chain.length - 1 })}</span>
-            <span className="gq-score">
-              <span className="gq-score__label">{playText('soloScore')}</span>
-              <strong className="ds-num" key={`score-${score}`}>
-                {score}
-              </strong>
-            </span>
-          </div>
+      <div className={`wg-solo-layout ${phase === 'playing' ? 'is-playing' : ''}`}>
+        <div className="wk-main">
+          {phase === 'ready' && (
+            <section className="pg-panel wg-result">
+              <Mascot pose="thinking" size={120} />
+              <p className="wg-chain-start" aria-label="apple, egg, green, night">
+                <span>apple</span>
+                <i>→</i>
+                <span>egg</span>
+                <i>→</i>
+                <span>green</span>
+                <i>→</i>
+                <span>night</span>
+                <i>→ …</i>
+              </p>
+              <Button size="lg" disabled={!dictionary} loading={!dictionary} onClick={start} iconLeft={dictionary ? 'play-fill' : undefined}>
+                {dictionary ? t('start') : t('loading')}
+              </Button>
+            </section>
+          )}
 
           {phase === 'playing' && (
-            <>
+            <section className={`gq-card wg-chain ${turn === 'me' ? 'is-my-turn' : ''}`}>
+              <div className="gq-stage__bar">
+                <span className="gq-chip">{t('wordsInChain', { n: chain.length - 1 })}</span>
+                <span className="gq-score">
+                  <span className="gq-score__label">{playText('soloScore')}</span>
+                  <strong className="ds-num" key={`score-${score}`}>
+                    {score}
+                  </strong>
+                </span>
+              </div>
+
               {turn === 'me' ? <TimerBar key={turnStartedAt} startedAt={turnStartedAt} durationMs={TURN_MS} /> : <TimerBarIdle />}
               <div className="wg-chain__turn">
                 {turn === 'me' ? (
@@ -204,19 +227,9 @@ export function WordChainSoloPage() {
                   </span>
                 )}
               </div>
-            </>
-          )}
 
-          <div className="wg-chain__words" aria-live="polite">
-            {chain.map((item, index) => (
-              <span key={index} className={`wg-chain__word ${item.by === 'me' ? 'is-me' : item.by === 'start' ? 'is-start' : ''}`}>
-                {item.word}
-              </span>
-            ))}
-          </div>
+              {chainWords}
 
-          {phase === 'playing' && (
-            <>
               <form onSubmit={submit} className="gq-type">
                 <input
                   ref={inputRef}
@@ -234,34 +247,24 @@ export function WordChainSoloPage() {
                 </Button>
               </form>
               {message && <p className="pg-note pg-note--oops">{message}</p>}
-            </>
+            </section>
           )}
 
           {phase === 'over' && outcome && (
-            <div className="wg-result">
-              <Mascot pose={outcome.won ? 'celebrate' : 'comfort'} size={120} />
-              <h2>{outcome.won ? t('youWin') : t('gameOver')}</h2>
-              <p className="wg-empty">{outcome.reason}</p>
-              <div className="wg-result__score">
-                <strong className="ds-num">{score}</strong>
-                {outcome.isNewRecord && (
-                  <span className="wg-record">
-                    <GameArt slug="trophy" size={24} /> {t('newRecord')}
-                  </span>
-                )}
-              </div>
-              <div className="pg-actions">
-                <Button variant="secondary" to="/play">
-                  {playText('soloBackToPlay')}
-                </Button>
-                <Button size="lg" onClick={start} iconLeft="review">
-                  {t('playAgain')}
-                </Button>
-              </div>
-            </div>
+            <RoundResult
+              title={outcome.won ? t('youWin') : t('gameOver')}
+              subtitle={`${outcome.reason} · ${t('wordsInChain', { n: chain.length - 1 })}`}
+              score={score}
+              saved={saved}
+              onPlayAgain={start}
+            >
+              {chainWords}
+            </RoundResult>
           )}
-        </section>
-      )}
+        </div>
+
+        {phase !== 'playing' && <GameRecordsPanel game="word-chain" board={board} />}
+      </div>
     </main>
   )
 }

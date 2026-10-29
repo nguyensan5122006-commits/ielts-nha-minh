@@ -5,7 +5,8 @@
  *
  *   const record = useLessonTaskRecorder()
  *   const outcome = record({ lesson, skill: 'reading', groups, summary, explanationOf, contextOf })
- *   -> outcome.band (khoảng band ước tính của task, hoặc null), outcome.mistakes (cho trình học)
+ *   -> outcome.band (khoảng band ước tính của task, hoặc null — CHỈ dùng nội bộ, không hiện cho người học),
+ *      outcome.mistakes (cho trình học)
  *
  * Làm 3 việc (hợp đồng skill-task-registry mục 3 + 03-DATA-LAYER):
  *   1. recordAnswer(skill, đúng/sai, -, lỗi) cho TỪNG câu -> thống kê kỹ năng + sổ câu sai.
@@ -15,6 +16,8 @@
  *   2. Band ước tính DẠNG KHOẢNG từ điểm thô (bảng quy đổi trong exam-scoring.ts), chỉ cho
  *      bài thuộc chặng IELTS, chặn trần theo level (bài level-3 không thể nói lên band 8–9).
  *   3. updateBandEstimate khi đã có >= 20 câu của kỹ năng (psych-adult D23), trộn với band cũ.
+ * Màn kết quả task KHÔNG hiện band (chỉ % câu đúng theo dạng câu hỏi); band chỉ hiện ở /progress
+ * khi kỹ năng đã ≥ 20 câu (quyết định 29/10/2026).
  * ----------------------------------------------------------------------------
  */
 import { useCallback } from 'react'
@@ -37,6 +40,12 @@ function upperBandOf(bandRange: string): number {
   return Math.max(...numbers)
 }
 
+/** Bài thuộc chặng CHỈ của track IELTS (không dùng chung với general)? */
+export function isIeltsTaskLesson(lessonId: string): boolean {
+  const located = findUnitOfLesson(lessonId, 'ielts')
+  return !!located && located.unit.tracks.includes('ielts') && !located.unit.tracks.includes('general')
+}
+
 /**
  * Band ước tính của 1 task. null nếu bài không thuộc chặng IELTS (track general không hiện band)
  * hoặc không tra được level.
@@ -45,7 +54,7 @@ export function taskBandEstimate(lessonId: string, skill: 'listening' | 'reading
   // quá ít câu đúng (hoặc bỏ trống gần hết) -> chưa đủ dữ liệu để nói band; không hiện "Band 0" làm nản
   if (total <= 0 || correct / total < 0.2) return null
   const located = findUnitOfLesson(lessonId, 'ielts')
-  if (!located || !located.unit.tracks.includes('ielts') || located.unit.tracks.includes('general')) return null
+  if (!located || !isIeltsTaskLesson(lessonId)) return null
   // trần = band trên của level + 0.5 (bài level-3 đúng hết ≈ 7.0, không phải 9.0)
   const cap = upperBandOf(located.level.bandRange) + 0.5
   const value = Math.min(rawScoreToBand(skill, correct, total), cap)
