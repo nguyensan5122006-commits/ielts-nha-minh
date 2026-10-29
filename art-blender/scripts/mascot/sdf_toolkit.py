@@ -318,6 +318,18 @@ def sd2_ellipse_approx(px, py, rx, ry):
     return k0 * (k0 - 1.0) / np.maximum(k1, 1e-9)
 
 
+def sd2_polyline(px, py, pts):
+    """Khoảng cách 2D (không dấu) tới đường gấp khúc qua các điểm pts = [(x, y), ...] (vd đường miệng chữ w)."""
+    v = np.asarray(pts, dtype=np.float64)
+    d = np.full(px.shape, 1e3)
+    for (ax, ay), (bx, by) in zip(v[:-1], v[1:]):
+        ex, ey = bx - ax, by - ay
+        wx, wy = px - ax, py - ay
+        t = np.clip((wx * ex + wy * ey) / (ex * ex + ey * ey), 0.0, 1.0)
+        d = np.minimum(d, np.hypot(wx - ex * t, wy - ey * t))
+    return d
+
+
 def sd2_vesica(px, py, half_length, half_width):
     """
     Hình "hạt hạnh nhân" (vesica) = giao của 2 hình tròn. Dùng cho mắt hạnh nhân (concept B).
@@ -600,6 +612,11 @@ def project_and_relax(verts, quads, sdf, h, project_iters=3, relax_iters=3, rela
 
 VOXEL_SCALE = 1.0   # >1 = lưới thưa hơn (bản nháp nhanh). Script chính đặt 1.5 khi chạy --draft.
 
+# Modifier Subdivision Surface: TẮT mặc định. Đã thử A/B ở ảnh 1024 px: lưới Surface Nets đã đủ dày + được
+# chiếu đúng lên bề mặt nên ảnh gần như giống hệt, trong khi Subdivision làm bước "đồng bộ dữ liệu" của
+# Cycles chậm thêm ~90 giây mỗi tư thế (3.5 s → 90 s). Bật lại (True) nếu cần render cận cảnh rất to.
+USE_SUBDIVISION = False
+
 
 def mesh_from_sdf(sdf, h, bbox=None, project_iters=3, relax_iters=3, verbose=True):
     """Toàn bộ quy trình: SDF → lưới mẫu → Surface Nets → chiếu + thả lỏng. Trả về (verts, quads)."""
@@ -641,7 +658,7 @@ def to_blender_object(name, verts, quads, collection=None, subdiv_levels=(1, 2),
         mesh.shade_smooth()
     obj = bpy.data.objects.new(name, mesh)
     (collection or bpy.context.scene.collection).objects.link(obj)
-    if subdiv_levels and subdiv_levels[1] > 0:
+    if USE_SUBDIVISION and subdiv_levels and subdiv_levels[1] > 0:
         mod = obj.modifiers.new("Subdivision", "SUBSURF")
         mod.levels, mod.render_levels = subdiv_levels
         mod.quality = 3

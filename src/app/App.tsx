@@ -33,8 +33,7 @@ import { landingRoutes } from '../features/landing/landing-routes'
 import { placementRoutes } from '../features/placement-test/placement-routes'
 import { authRoutes } from '../features/auth/auth-routes'
 // (redesign v3) Trang chủ, Lộ trình, Level, Bài học, Mini-test, Ôn tập, Sổ lỗi sai cũ đã chuyển vào
-// src/_legacy-v2/ — các route đó tạm trỏ tới ComingSoonPage cho tới khi trang mới xong.
-import { ComingSoonPage } from './ComingSoonPage'
+// src/_legacy-v2/ (chỉ để tham khảo) — mọi route đã có trang mới của từng nhóm.
 import { kidsPreviewRoutes, kidsRoutes } from '../features/kids-zone/kids-routes'
 import { vocabularyReviewRoutes } from '../features/vocabulary-review/vocabulary-review-routes'
 import { mistakesNotebookRoutes } from '../features/mistakes-notebook/mistakes-notebook-routes'
@@ -46,12 +45,11 @@ import { AppShellRoute } from './layout/AppShellRoute'
 import { skillTaskRoutes } from '../features/skill-writing/skill-writing-routes'
 import { lessonPlayerRoutes } from '../features/lesson-player/lesson-player-routes'
 import { listeningReadingRoutes } from '../features/skill-reading/skill-reading-routes'
+// (redesign v3) Phòng thi: /exams, /exam/:id, /exam-result/:id (+ /review) và mini-test /lesson/:id/mini-test
+import { examRoomFocusRoutes, examRoomShellRoutes } from '../features/exam-room/exam-room-routes'
 
 
 // Các trang ít dùng / nặng (đề thi, chủ đề Học vui, trò chơi) chỉ tải khi mở tới -> web mở nhanh hơn
-const ExamsPage = lazy(() => import('../pages/ExamsPage').then((m) => ({ default: m.ExamsPage })))
-const ExamRunnerPage = lazy(() => import('../pages/ExamRunnerPage').then((m) => ({ default: m.ExamRunnerPage })))
-const ExamResultPage = lazy(() => import('../pages/ExamResultPage').then((m) => ({ default: m.ExamResultPage })))
 const FunTopicsPage = lazy(() => import('../pages/FunTopicsPage').then((m) => ({ default: m.FunTopicsPage })))
 const FunFlashcardsPage = lazy(() => import('../pages/FunFlashcardsPage').then((m) => ({ default: m.FunFlashcardsPage })))
 const ShopPage = lazy(() => import('../pages/ShopPage').then((m) => ({ default: m.ShopPage })))
@@ -136,8 +134,7 @@ export function App() {
                           {vocabularyReviewRoutes()}
                           {mistakesNotebookRoutes()}
                           {progressDashboardRoutes()}
-                          <Route path="/exams" element={<ExamsPage />} />
-                          <Route path="/exam-result/:resultId" element={<ExamResultPage />} />
+                          {examRoomShellRoutes()}
                           <Route path="/leaderboard" element={<LeaderboardPage />} />
                           <Route path="/fun" element={<FunTopicsPage />} />
                           <Route path="/fun/:topicId" element={<FunFlashcardsPage />} />
@@ -157,8 +154,7 @@ export function App() {
                         </Route>
                         {/* toàn màn hình */}
                         {lessonPlayerRoutes()}
-                        <Route path="/lesson/:lessonId/mini-test" element={<ComingSoonPage />} />
-                        <Route path="/exam/:examId" element={<ExamRunnerPage />} />
+                        {examRoomFocusRoutes()}
                         {skillTaskRoutes()}
                         {listeningReadingRoutes()}
                       </Route>

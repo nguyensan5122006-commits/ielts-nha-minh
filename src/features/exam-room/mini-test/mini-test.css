@@ -1,0 +1,111 @@
+/*
+ * mini-test.css — MINI-TEST CÓ TIM (màn mở đầu, màn kết quả, chỉ báo tim trên thanh trên)
+ * Phần làm bài dùng lại CSS của trình học (lesson-player.css + exercises.css).
+ */
+
+.xr-mini-screen {
+  max-width: 560px;
+  margin: 0 auto;
+  padding: var(--s-6) 0 var(--s-9);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--s-3);
+  text-align: center;
+}
+.xr-mini-screen__title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--fs-2xl);
+  font-weight: 800;
+  line-height: var(--lh-tight);
+}
+.xr-mini-screen__text {
+  margin: 0;
+  color: var(--c-ink-2);
+  max-width: 46ch;
+}
+.xr-mini-screen__rule {
+  margin: 0;
+  font-size: var(--fs-sm);
+  color: var(--c-ink-2);
+}
+.xr-mini-screen .xr-notice {
+  margin: var(--s-2) 0 0;
+  text-align: left;
+}
+.xr-mini-screen__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--s-3);
+  margin-top: var(--s-4);
+}
+.xr-mini-hearts {
+  margin: var(--s-1) 0 0;
+  font-size: 1.8rem;
+  letter-spacing: 6px;
+  color: var(--c-red);
+}
+.xr-mini-stars {
+  margin: 0;
+  display: flex;
+  gap: var(--s-2);
+  font-size: 2.6rem;
+  line-height: 1;
+  color: var(--c-line-strong);
+}
+.xr-mini-stars .is-on {
+  color: var(--c-gold);
+  animation: ds-pop 420ms var(--ease-spring) both;
+}
+.xr-mini-stars .is-on:nth-child(2) {
+  animation-delay: 120ms;
+}
+.xr-mini-stars .is-on:nth-child(3) {
+  animation-delay: 240ms;
+}
+.xr-mini-xp {
+  color: var(--c-gold-ink);
+}
+.xr-mini-qcount {
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  color: var(--c-ink-2);
+}
+
+/* tim trên thanh trên: mất tim -> nảy nhẹ 1 lần */
+.xr-hearts {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  border-radius: var(--r-pill);
+  background: var(--c-red-soft);
+  color: var(--c-red-ink);
+  font-weight: 800;
+}
+.xr-hearts__icon {
+  font-size: 1.05rem;
+  line-height: 1;
+}
+.xr-hearts__icon.is-bumped {
+  animation: xr-heart-bump 520ms var(--ease-spring) both;
+}
+@keyframes xr-heart-bump {
+  30% {
+    transform: scale(0.6);
+  }
+  70% {
+    transform: scale(1.25);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .xr-mini-stars .is-on,
+  .xr-hearts__icon.is-bumped {
+    animation: none;
+  }
+}

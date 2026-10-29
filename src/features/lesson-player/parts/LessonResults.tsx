@@ -234,6 +234,12 @@ export function LessonResults({ lesson, unit, levelId, targetBand, completion }:
               {gridOpen && <AnswerGrid items={summary.items} />}
             </div>
           )}
+          {/* Lối vào mini-test (chỉ bài cũ Level 1–2 có; bài v3 để miniTest: []) — nút phụ nhỏ, không tranh chỗ nút "Học tiếp" */}
+          {lesson.miniTest.length > 0 && (
+            <Button variant="ghost" size="sm" to={`/lesson/${lesson.id}/mini-test`}>
+              {text.miniTestButton(lesson.miniTest.length)}
+            </Button>
+          )}
         </section>
 
         {/* 4. tiến độ hôm nay */}

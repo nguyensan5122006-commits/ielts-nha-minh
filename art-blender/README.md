@@ -25,12 +25,25 @@ art-blender/
 │   │   ├── render_settings.py Cycles + AgX + nền trong suốt + khử nhiễu, lưu PNG/WebP
 │   │   ├── export_glb.py      xuất .glb (nén Draco) + cảnh báo vật liệu không xuất được
 │   │   └── test_render.py     script KIỂM TRA cả pipeline (quả bóng lông có mắt)
-│   └── mascot/            ← script dựng mascot (sẽ thêm sau)
+│   └── mascot/            ← script dựng mascot Corgi "Ki" (xem mục "Mascot Corgi" bên dưới)
+│       ├── corgi_concepts.py      THÔNG SỐ 3 concept A/B/C + MÀU (lông, đồng phục) — đổi màu ở đây
+│       ├── corgi_poses.py         13 tư thế + biểu cảm (tay đặt đâu, mắt/miệng, đồ vật cầm theo)
+│       ├── corgi_builder.py       dựng nhân vật từ concept + tư thế (đầu, thân, tay, áo, mũ kê-pi...)
+│       ├── corgi_props.py         đồ vật: tai nghe, sách, bút chì, sổ, micro, trái tim, chữ Z, dấu ?...
+│       ├── corgi_materials.py     vật liệu vinyl, vải, vàng kim loại, mắt vẽ bằng shader
+│       ├── sdf_toolkit.py         "đất nặn kỹ thuật số": SDF → lưới (giải thích chi tiết ở đầu file)
+│       ├── mascot_stage.py        sân khấu chung: đèn, camera, căn khung
+│       ├── build_and_render_concept.py  render bảng so sánh concept (chính diện, 3/4, nghiêng, chào, đầu)
+│       └── render_poses.py        render ảnh cho WEBSITE (các tư thế + ảnh đầu)
 ├── blend-files/           ← file nguồn .blend (mở bằng Blender để xem/chỉnh)
 ├── renders/               ← ảnh render THÔ và file xuất thử — KHÔNG đưa thẳng lên web
 │   └── _pipeline-test/        kết quả của test_render.py
 └── tools/                 ← công cụ Node.js để tối ưu file trước khi lên web
-    └── package.json           @gltf-transform/cli (tối ưu .glb) + sharp (xử lý ảnh)
+    ├── package.json           @gltf-transform/cli (tối ưu .glb) + sharp (xử lý ảnh)
+    ├── render_mascot_all.mjs  MỘT LỆNH: render mọi tư thế mascot (song song) + chép lên public/mascot
+    ├── publish_mascot.mjs     tối ưu ảnh mascot (WebP 256/512/1024, PNG đầu 32..512) → public/mascot
+    ├── make_concept_sheets.mjs  ghép bảng so sánh 3 concept + kiểm tra cỡ 64/32 px
+    └── montage.mjs            ghép nhanh nhiều ảnh thành lưới để xem
 ```
 
 ### Giải thích từng thư mục
@@ -92,3 +105,72 @@ npx gltf-transform inspect ../renders/_pipeline-test/pipeline-test_fuzzy-ball.gl
 | **glTF / .glb** | Định dạng 3D chuẩn cho web (three.js đọc được). |
 | **Draco** | Thuật toán nén lưới 3D, giảm dung lượng khoảng 5–7 lần. |
 | **Bake** | "Nướng" hiệu ứng vật liệu procedural thành ảnh texture để xuất ra web. |
+
+---
+
+## Mascot Corgi "Ki" — dựng và render
+
+Nhân vật được dựng **hoàn toàn bằng code** (không nặn tay): mỗi bộ phận là một hàm khoảng cách SDF
+(xem giải thích ở đầu `scripts/mascot/sdf_toolkit.py`), hợp mềm với nhau như đất sét rồi biến thành lưới.
+Nhờ vậy đổi tư thế, biểu cảm, màu áo hay cả concept chỉ là **đổi vài con số** rồi chạy lại.
+
+### Làm lại TOÀN BỘ ảnh cho website — 1 lệnh
+
+```bash
+cd "E:/IELTS_ThienThao/art-blender/tools"
+node render_mascot_all.mjs --concept C --uniform olive
+```
+
+Lệnh này chạy 3 tiến trình Blender song song (~25–35 phút cho 13 tư thế + ảnh đầu), rồi tự tối ưu và chép vào:
+
+| File trên web | Nội dung |
+|---|---|
+| `public/mascot/poses/<pose>-256.webp`, `-512.webp`, `-1024.webp` | 13 tư thế, nền trong suốt, có bóng mềm dưới chân |
+| `public/mascot/head/head-32.png` … `head-512.png` | chỉ cái đầu (logo, avatar, favicon) |
+
+Tư thế: `salute` (chào — CHÍNH), `happy`, `wave`, `comfort`, `thinking`, `celebrate`, `sleepy`, `listening`,
+`thumbs-up`, `surprised`, `reading`, `writing`, `speaking`. Component `<Mascot>` và `<KidsMascot>` của web
+tự dùng ảnh khi file có đúng tên (không cần sửa code web).
+
+Tuỳ chọn hay dùng:
+
+- `--concept A|B|C`: đổi concept.
+- `--uniform traffic`: áo + mũ màu vàng kem kiểu Cảnh sát giao thông (xem `UNIFORM_PRESETS`).
+- `--poses salute,happy,head`: chỉ làm lại vài tư thế.
+- `--draft --no-publish`: bản nháp nhanh để xem thử, không đụng tới web.
+- `--jobs 2`: số tiến trình Blender chạy song song.
+
+### Đổi màu đồng phục
+
+Mọi màu nằm ở **một chỗ**: `PALETTE_BASE` trong `scripts/mascot/corgi_concepts.py` (màu tuyến tính, có ghi
+mã hex gần đúng bên cạnh). Có sẵn 2 bộ trong `UNIFORM_PRESETS`: `olive` (Cảnh sát, mặc định) và
+`traffic` (CSGT). Muốn thêm bộ mới thì thêm 1 dòng vào `UNIFORM_PRESETS` rồi chạy lệnh trên với `--uniform <tên>`.
+
+### Từng bước riêng lẻ (khi cần)
+
+```bash
+# 1) Render vài tư thế (ảnh gốc PNG 1024 px → renders/poses/c_olive/)
+"E:/Tools/Blender/5.2.3/blender.exe" --background --factory-startup   --python "E:/IELTS_ThienThao/art-blender/scripts/mascot/render_poses.py" -- --concept C --poses salute,head
+
+# 2) Tối ưu + chép lên web
+cd "E:/IELTS_ThienThao/art-blender/tools" && node publish_mascot.mjs --concept C
+
+# Bảng so sánh concept (renders/concepts/concepts-sheet.png)
+"E:/Tools/Blender/5.2.3/blender.exe" --background --factory-startup   --python "E:/IELTS_ThienThao/art-blender/scripts/mascot/build_and_render_concept.py" -- --concept A
+#   (lặp lại với B, C) rồi:
+cd "E:/IELTS_ThienThao/art-blender/tools" && node make_concept_sheets.mjs
+```
+
+### Thêm một tư thế mới
+
+1. Mở `scripts/mascot/corgi_poses.py`, copy một tư thế gần giống (vd `wave`), đặt tên mới.
+2. Sửa: vị trí bàn tay (`at`), hướng ngón (`fingers`), hướng lòng bàn tay (`palm`), mắt (`eyes`),
+   miệng (`mouth`), lông mày (`brows`), đồ vật (`props`). Giải thích từng khoá ở đầu file.
+3. Xem nhanh: `node render_mascot_all.mjs --poses <tên> --draft --no-publish`
+   → ảnh ở `renders/poses/c_olive/<tên>.png`.
+
+### Việc để sau (chưa làm)
+
+- `mascot.glb` (model 3D cho trang chủ) + hoạt cảnh idle/wave/celebrate/blink.
+- `turnaround/` (4 góc), `outfits/` (trang phục mở khoá), `stickers/`, `anim/*.webm`.
+- Huy hiệu level, icon 5 kỹ năng (`public/art/`).

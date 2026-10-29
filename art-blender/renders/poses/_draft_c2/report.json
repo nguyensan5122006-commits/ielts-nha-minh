@@ -1,0 +1,19 @@
+{
+  "concept": "C",
+  "uniform": "olive",
+  "size": 512,
+  "samples": 40,
+  "frame_box": [
+    -0.16,
+    2.265
+  ],
+  "poses": {
+    "head": {
+      "build_s": 26.6,
+      "render_s": 43.6,
+      "view": 0.0,
+      "clipped_edges": []
+    }
+  },
+  "total_s": 71.3
+}

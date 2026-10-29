@@ -16,6 +16,7 @@
  */
 import { useEffect, useRef, useState, type ReactNode } from 'react'
 import { useNavigate } from 'react-router-dom'
+import type { KidsWord } from '../../../content/content-types'
 import { todayString } from '../../../learning-progress/study-calendar'
 import { useKidsData } from '../kids-data/kids-data-context'
 import { outfitIdForStore } from '../kids-data/kids-rewards'
@@ -44,10 +45,12 @@ export interface GameRoundShellProps {
   topicId?: string
   /** trò cần ảnh 3D cho mỗi từ (chọn hình) — mặc định true */
   needsPicture?: boolean
+  /** lọc thêm từ hợp với trò (khai trong game-definition.ts) */
+  wordFilter?: (word: KidsWord) => boolean
   renderGame: (props: KidsGameProps) => ReactNode
 }
 
-export function GameRoundShell({ gameId, topicId, needsPicture = true, renderGame }: GameRoundShellProps) {
+export function GameRoundShell({ gameId, topicId, needsPicture = true, wordFilter, renderGame }: GameRoundShellProps) {
   const kidsData = useKidsData()
   const navigate = useNavigate()
 
@@ -59,6 +62,7 @@ export function GameRoundShell({ gameId, topicId, needsPicture = true, renderGam
       difficulty: currentDifficulty(gameId),
       topicId,
       needsPicture,
+      wordFilter,
       newWordsLeftToday: newWordsLeftToday(),
     })
 

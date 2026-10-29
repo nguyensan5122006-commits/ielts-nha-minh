@@ -24,6 +24,7 @@ export function KidsPlayPage() {
       gameId={definition.id}
       topicId={searchParams.get('topic') ?? undefined}
       needsPicture={definition.needsPicture}
+      wordFilter={definition.wordFilter}
       renderGame={(props) => <Game {...props} />}
     />
   )

@@ -1,0 +1,537 @@
+/* =============================================================================
+ * memory-match.css — TRÒ "LẬT THẺ GHÉP CẶP"
+ * -----------------------------------------------------------------------------
+ * Bố cục 1 màn (không cuộn): thanh trên | [dòng hướng dẫn + lưới thẻ]  [túi đồ] | Ki góc trái dưới
+ * Cỡ thẻ tự tính theo chỗ trống (rộng / cao màn hình, số cột / hàng) -> 8–16 thẻ đều vừa 1440×900 và 1100×800.
+ * Thẻ lật = xoay 3D quanh trục dọc (giảm chuyển động: chỉ đổi mặt, không xoay).
+ * Màu: mặt úp tím-chàm có dấu chân Corgi · ghép đúng = viền vàng + dấu ✓ · lỗi = cam san hô · gợi ý = vàng.
+ * Mục lục: 1. khung + cỡ thẻ · 2. lưới + ô · 3. thẻ (mặt úp / mặt ngửa) · 4. trạng thái thẻ · 5. túi đồ
+ *          6. nút Tiếp · 7. keyframes · 8. màn hẹp · 9. giảm chuyển động
+ * ========================================================================== */
+
+/* ---------- 1. KHUNG + CỠ THẺ ---------- */
+.mm-stage {
+  justify-content: center;
+  /* chừa đáy vừa đủ cho Ki + bong bóng thoại (lưới nằm giữa, không chạm Ki) */
+  padding-bottom: clamp(100px, 13vh, 130px);
+}
+.mm-board {
+  --bag-w: 210px;
+  --bag-h: 0px; /* màn hẹp: túi nằm trên lưới -> trừ chiều cao túi */
+  --gap: clamp(10px, 1.3vw, 18px);
+  /* phần chiều cao KHÔNG dành cho lưới: thanh trên + dòng hướng dẫn + chỗ của Ki/đồi cỏ ở đáy */
+  --chrome-h: calc(96px + 52px + clamp(100px, 13vh, 130px) + var(--bag-h));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 32px;
+  width: 100%;
+}
+.mm-board__main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+/* Cỡ thẻ = nhỏ nhất trong 3: vừa chiều ngang · vừa chiều dọc (thẻ cao = 1.12 × rộng) · tối đa 190px.
+ * Tính trên .mm-grid vì --cols / --rows được đặt inline ở đây (số cột / hàng của bàn). */
+.mm-grid {
+  --card-w: min(
+    calc((min(100vw - 48px, 1180px) - var(--bag-w) - 32px - (var(--cols) - 1) * var(--gap)) / var(--cols)),
+    calc((100dvh - var(--chrome-h) - (var(--rows) - 1) * var(--gap)) / var(--rows) / 1.12),
+    190px
+  );
+}
+.mm-instruction {
+  margin: 0 0 12px;
+  text-align: center;
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  font-weight: 700;
+  line-height: 1.25;
+  color: var(--kz-ink);
+}
+.mm-instruction__keys {
+  display: block;
+  font-family: var(--font-ui);
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--kz-ink-2);
+}
+
+/* ---------- 2. LƯỚI + Ô ---------- */
+/* flex-wrap (không dùng grid) để hàng cuối thiếu thẻ vẫn nằm giữa */
+.mm-grid {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--gap);
+  width: calc(var(--cols) * var(--card-w) + (var(--cols) - 1) * var(--gap));
+}
+/* 1 ô: phía dưới thẻ có chỗ trống viền đứt -> thẻ bay vào túi rồi vẫn thấy "chỗ cũ" */
+.mm-cell {
+  position: relative;
+  width: var(--card-w);
+  height: calc(var(--card-w) * 1.12);
+  border-radius: 22px;
+  border: 2.5px dashed color-mix(in srgb, var(--kz-ink) 14%, transparent);
+  background: color-mix(in srgb, var(--kz-card-bg) 25%, transparent);
+}
+
+/* ---------- 3. THẺ ---------- */
+.mm-card {
+  position: absolute;
+  inset: -2.5px; /* phủ cả viền đứt của ô */
+  padding: 0;
+  border: 0;
+  border-radius: 22px;
+  background: none;
+  cursor: pointer;
+  perspective: 900px;
+  -webkit-tap-highlight-color: transparent;
+  /* chia bài: thẻ bay vào lần lượt */
+  animation: mm-deal 420ms var(--ease-spring) calc(var(--i) * 40ms) backwards;
+  transition:
+    transform 160ms var(--ease-out),
+    opacity 200ms var(--ease-out);
+}
+.mm-card:hover:not(:disabled):not(.is-face-up) {
+  transform: translateY(-5px);
+}
+.mm-card:active:not(:disabled):not(.is-face-up) {
+  transform: scale(0.97);
+}
+.mm-card:focus-visible {
+  outline: none;
+}
+.mm-card:disabled {
+  cursor: default;
+}
+.mm-card__inner {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+  transition: transform 380ms var(--ease-out);
+}
+.mm-card.is-face-up .mm-card__inner {
+  transform: rotateY(180deg);
+}
+.mm-card__back,
+.mm-card__front {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  border-radius: 22px;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+/* mặt úp: nền tím-chàm, chấm bi mờ, viền trắng như bài thật, giữa là dấu chân Corgi */
+.mm-card__back {
+  border: 4px solid rgba(255, 255, 255, 0.85);
+  background:
+    radial-gradient(circle at 30% 18%, rgba(255, 255, 255, 0.35), transparent 40%),
+    radial-gradient(rgba(255, 255, 255, 0.16) 2px, transparent 2.5px) 0 0 / 18px 18px,
+    linear-gradient(155deg, #8b6cff 0%, #5b4ff0 55%, #3f33c9 100%);
+  box-shadow:
+    0 3px 0 rgba(40, 30, 120, 0.35),
+    0 18px 26px -16px rgba(var(--shadow-rgb), 0.55);
+  transition: box-shadow 200ms var(--ease-out);
+}
+.mm-card__emblem {
+  display: grid;
+  place-items: center;
+  width: 52%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow:
+    inset 0 -3px 0 rgba(63, 51, 201, 0.15),
+    0 6px 12px -6px rgba(0, 0, 0, 0.35);
+}
+.mm-card__emblem .kz-picture {
+  width: 64% !important;
+  height: 64% !important;
+}
+.mm-card:focus-visible .mm-card__back,
+.mm-card:focus-visible .mm-card__front {
+  box-shadow: var(--focus-ring);
+}
+/* mặt ngửa */
+.mm-card__front {
+  transform: rotateY(180deg);
+  border: 3px solid var(--kz-card-line);
+  background: var(--kz-card-bg);
+  color: var(--kz-ink);
+  box-shadow:
+    var(--gloss-top),
+    0 18px 26px -16px rgba(var(--shadow-rgb), 0.5);
+  transition:
+    border-color 160ms var(--ease-out),
+    background-color 160ms var(--ease-out),
+    box-shadow 200ms var(--ease-out);
+}
+.mm-card__front .kz-picture {
+  width: 70% !important;
+  height: 70% !important;
+  filter: drop-shadow(0 8px 8px rgba(var(--shadow-rgb), 0.16));
+}
+.mm-card__word {
+  padding: 0 10px;
+  font-family: var(--font-display);
+  /* chữ dài thì nhỏ lại cho vừa thẻ: ~ bề rộng thẻ chia cho số chữ */
+  font-size: min(2.3rem, calc(var(--card-w) * 0.84 / (var(--len) * 0.56)));
+  font-weight: 800;
+  line-height: 1.05;
+  text-align: center;
+  color: var(--kz-ink);
+}
+.mm-card__tiny-speaker {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  color: var(--kz-listen);
+  opacity: 0.75;
+}
+/* thẻ loa (mức 3): nền xanh nhạt + loa tròn */
+.mm-card--sound .mm-card__front {
+  background:
+    radial-gradient(circle at 50% 45%, color-mix(in srgb, var(--kz-listen) 16%, transparent), transparent 70%),
+    var(--kz-card-bg);
+}
+.mm-card__speaker {
+  display: grid;
+  place-items: center;
+  width: 52%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  color: #fff;
+  background:
+    radial-gradient(circle at 34% 26%, rgba(255, 255, 255, 0.45), transparent 42%),
+    linear-gradient(180deg, color-mix(in srgb, var(--kz-listen) 78%, #fff) 0%, var(--kz-listen) 55%, color-mix(in srgb, var(--kz-listen) 80%, #0b2a6b) 100%);
+  box-shadow: 0 8px 16px -8px color-mix(in srgb, var(--kz-listen) 75%, transparent);
+}
+.mm-card__check {
+  position: absolute;
+  top: -12px;
+  right: -12px;
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: var(--grad-success);
+  color: #fff;
+  box-shadow:
+    0 0 0 4px var(--kz-card-bg),
+    0 6px 12px -4px color-mix(in srgb, var(--c-success) 70%, transparent);
+  animation: mm-check 380ms var(--ease-spring) 60ms both;
+}
+
+/* ---------- 4. TRẠNG THÁI THẺ ---------- */
+/* ghép đúng: viền vàng phát sáng, nảy nhẹ */
+.mm-card.is-matched {
+  z-index: 3;
+}
+.mm-card.is-matched .mm-card__front {
+  border-color: var(--c-gold);
+  box-shadow:
+    var(--gloss-top),
+    0 0 0 5px color-mix(in srgb, var(--c-gold) 40%, transparent),
+    0 0 34px 6px color-mix(in srgb, var(--c-gold) 50%, transparent);
+  animation: mm-match 460ms var(--ease-spring) 120ms both;
+}
+/* bay vào túi: trượt tới ô trong túi, nhỏ dần, mờ dần */
+.mm-card.is-flying {
+  z-index: 10;
+  pointer-events: none;
+  transform: translate(var(--fly-x), var(--fly-y)) scale(0.22);
+  opacity: 0;
+  transition:
+    transform 520ms var(--ease-in-out),
+    opacity 300ms ease-in 220ms;
+}
+/* lỗi "lẽ ra nhận ra được": 2 thẻ loé cam san hô + lắc nhẹ, rồi úp lại */
+.mm-card.is-miss .mm-card__front {
+  border-color: color-mix(in srgb, var(--c-oops) 75%, transparent);
+  background: var(--c-oops-soft);
+}
+.mm-card.is-miss {
+  animation: mm-wiggle 340ms var(--ease-out) 380ms;
+}
+/* gợi ý bậc 2: thẻ cùng cặp (đang úp) sáng viền vàng, thở chậm */
+.mm-card.is-glow .mm-card__back {
+  animation: mm-glow 1.3s ease-in-out infinite;
+}
+/* gợi ý bậc 3: 2 thẻ của cặp ngửa sẵn, phát sáng chờ bé bấm */
+.mm-card.is-revealed .mm-card__front {
+  border-color: var(--c-gold);
+  animation: mm-glow 1.3s ease-in-out infinite;
+}
+/* xong bàn: các ô trong túi loé vàng */
+.mm-board.is-done .mm-slot.is-filled .mm-slot__card {
+  box-shadow:
+    0 0 0 3px var(--c-gold),
+    0 8px 16px -10px rgba(var(--shadow-rgb), 0.5);
+}
+
+/* ---------- 5. TÚI ĐỒ ---------- */
+.mm-bag {
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: var(--bag-w);
+  padding: 16px 14px;
+  border-radius: 26px;
+  animation: mm-rise 320ms var(--ease-out) 200ms both;
+}
+.mm-bag__head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.mm-bag__title {
+  margin: 0;
+  font-size: 1.3rem;
+  font-weight: 800;
+  line-height: 1.1;
+  color: var(--kz-ink);
+}
+.mm-bag__count {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--kz-ink-2);
+}
+.mm-bag__slots {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.mm-slot {
+  height: 52px;
+  border-radius: 16px;
+  border: 2px dashed color-mix(in srgb, var(--kz-ink) 18%, transparent);
+  background: color-mix(in srgb, var(--kz-card-bg) 35%, transparent);
+}
+.mm-slot.is-filled {
+  border-color: transparent;
+  background: transparent;
+}
+.mm-slot__card {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  height: 100%;
+  padding: 0 10px 0 8px;
+  border: 0;
+  border-radius: 16px;
+  background: var(--kz-card-bg);
+  color: var(--kz-ink);
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 8px 16px -10px rgba(var(--shadow-rgb), 0.5);
+  animation: mm-slot-pop 360ms var(--ease-spring) both;
+}
+.mm-slot__card:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+.mm-slot__word {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-align: left;
+}
+.mm-slot__speaker {
+  flex: none;
+  color: var(--kz-listen);
+}
+.mm-bag__flips {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--kz-ink-2);
+}
+
+/* ---------- 6. NÚT TIẾP ---------- */
+.mm-next {
+  position: fixed;
+  right: clamp(16px, 3vw, 48px);
+  bottom: clamp(18px, 4vh, 40px);
+  z-index: 5;
+}
+.mm-next__btn {
+  animation: mm-rise 260ms var(--ease-out) 200ms both;
+}
+
+/* ---------- 7. KEYFRAMES ---------- */
+@keyframes mm-deal {
+  from {
+    opacity: 0;
+    transform: translateY(40px) scale(0.8) rotate(-4deg);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes mm-match {
+  0% {
+    scale: 1;
+  }
+  45% {
+    scale: 1.08;
+  }
+  100% {
+    scale: 1.03;
+  }
+}
+@keyframes mm-check {
+  from {
+    opacity: 0;
+    transform: scale(0) rotate(-45deg);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes mm-wiggle {
+  0%,
+  100% {
+    translate: 0;
+  }
+  25% {
+    translate: -7px 0;
+  }
+  55% {
+    translate: 5px 0;
+  }
+  80% {
+    translate: -2px 0;
+  }
+}
+@keyframes mm-glow {
+  0%,
+  100% {
+    box-shadow:
+      0 0 0 4px color-mix(in srgb, var(--c-gold) 45%, transparent),
+      0 0 22px 4px color-mix(in srgb, var(--c-gold) 40%, transparent);
+  }
+  50% {
+    box-shadow:
+      0 0 0 8px color-mix(in srgb, var(--c-gold) 60%, transparent),
+      0 0 38px 10px color-mix(in srgb, var(--c-gold) 55%, transparent);
+  }
+}
+@keyframes mm-slot-pop {
+  from {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes mm-rise {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ---------- 8. MÀN HẸP (tablet dọc): túi nằm ngang phía trên lưới ---------- */
+@media (max-width: 900px) {
+  .mm-board {
+    --bag-w: 0px;
+    --bag-h: 84px;
+    flex-direction: column-reverse;
+    gap: 14px;
+  }
+  .mm-bag {
+    flex-direction: row;
+    align-items: center;
+    width: 100%;
+    max-width: 720px;
+    padding: 10px 14px;
+  }
+  .mm-bag__slots {
+    flex: 1;
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+  .mm-slot {
+    width: 48px;
+    height: 48px;
+  }
+  .mm-slot__word,
+  .mm-slot__speaker,
+  .mm-bag__flips {
+    display: none;
+  }
+  .mm-slot__card {
+    justify-content: center;
+    padding: 0;
+  }
+  .mm-instruction__keys {
+    display: none;
+  }
+}
+
+/* ---------- 9. GIẢM CHUYỂN ĐỘNG: không xoay / bay / lắc, chỉ đổi mặt + đổi màu ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .mm-card,
+  .mm-card.is-miss,
+  .mm-card.is-matched .mm-card__front,
+  .mm-card__check,
+  .mm-slot__card,
+  .mm-bag,
+  .mm-next__btn {
+    animation: none;
+  }
+  .mm-card__inner {
+    transition: none;
+  }
+  .mm-card.is-face-up .mm-card__inner {
+    transform: none;
+  }
+  .mm-card__front {
+    transform: none;
+    opacity: 0;
+  }
+  .mm-card.is-face-up .mm-card__front {
+    opacity: 1;
+  }
+  .mm-card.is-face-up .mm-card__back {
+    opacity: 0;
+  }
+  .mm-card.is-flying {
+    transform: none;
+    transition: opacity 200ms linear;
+  }
+  .mm-card.is-glow .mm-card__back,
+  .mm-card.is-revealed .mm-card__front {
+    animation: none;
+    box-shadow: 0 0 0 6px color-mix(in srgb, var(--c-gold) 60%, transparent);
+  }
+  .mm-card:hover:not(:disabled):not(.is-face-up),
+  .mm-card:active:not(:disabled):not(.is-face-up) {
+    transform: none;
+  }
+}

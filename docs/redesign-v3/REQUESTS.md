@@ -315,3 +315,157 @@ Link mở thẳng dùng được từ nơi khác: `/review?start=1` (mở phiên
 ### 4. Nhóm trình bài học (`lesson-player`) — để sổ câu sai nhóm đúng
 - `recordAnswer(..., mistake)` nên điền `question` bằng chữ câu hỏi đầy đủ (như `checkExerciseAnswer().questionText`) — sổ hiện đúng chữ này.
 - Lỗi từ task Nghe/Đọc đã được sổ nhận ra qua `findQuestionInLesson` (exam-ui) → làm lại được, câu nghe phát lại lời thoại.
+
+---
+
+## Nhóm KIDS GAMES 2–5 (`games/memory-match`, `games/spell-it`, `games/balloon-pop`, `games/sentence-builder`) → nhóm kids-zone (động cơ), audio, QA
+
+Đã làm: 4 trò chơi được (sảnh tự nhận qua `game-definition.ts`, không sửa file chung). Xem thử: `/kids-preview/play/<id>?scenario=default|fresh`.
+
+### 1. Nhóm kids-zone — động cơ trò chơi (`game-engine/`)
+- **Lượt rỗng bị kẹt (lỗi, ảnh hưởng MỌI trò kể cả listen-tap)**: bé mới (`scenario=fresh`) + sổ hôm nay đã đủ 8 từ mới (`kids-zone:day-log`
+  `newWords: 8`) → `buildRound` trả **0 câu** → màn chơi trống "0/0", không có gì để bấm ngoài ✕. Cách lặp lại: chơi 3 lượt `?scenario=fresh`
+  rồi mở lại. Đề xuất: `GameRoundShell` thấy `plan.items.length === 0` thì hiện màn nhẹ nhàng "Hôm nay đủ từ mới rồi" + nút về sảnh;
+  hoặc cho bé chưa có từ nào luyện lại từ đã gặp hôm nay.
+- **`KidsGameDefinition.wordFilter?`**: `round-builder` đã có `wordFilter` nhưng định nghĩa trò / `GameRoundShell` chưa truyền xuống.
+  Ghép câu cần lọc "từ có câu" (8 từ không có câu ví dụ lẫn mẫu câu: tuesday, wednesday, thursday, baseball, hockey, golf, bank, airport —
+  hiện trò dùng câu dự phòng "Today is Tuesday." / "I like golf." / "This is the bank.", xem `sentence-builder/sentence-pick.ts`).
+  Xếp chữ có thể muốn bỏ từ > 12 chữ cái. Khi có trường này, 2 trò sẽ khai báo.
+- **Lời khen riêng từng trò không bao giờ được chọn**: `praise-picker.ts` `CONDITIONS` chưa có các câu `gameId` riêng: p04 (spell-it),
+  p07 / p14 / r04 (sentence-builder), p12 / r07 (memory-match), r08 (balloon-pop). Gợi ý điều kiện: p04 = spell-it và `wrongCount 0`;
+  p12 = memory-match và `wrongCount 0`; r08 = balloon-pop và `wrongCount 0`; p14 = sentence-builder và `wrongCount 0` + `responseMs > 4000`;
+  r04 / r07 cần thêm dữ kiện (số khối của câu / số lần lật cả bàn) → có thể thêm `CompleteItemInput.praiseHints?: Record<string, number>`.
+- **`answer-options.ts` loại trùng theo `image`** → với trò chữ (`needsPicture: false`, VD Bóng bay) các từ `image: ''` bị coi là "cùng ảnh":
+  tối đa 1 đáp án nhiễu không ảnh, và từ đích không ảnh thì không có đáp án nhiễu không ảnh nào. Đề xuất chỉ so ảnh khi cả 2 ảnh khác rỗng.
+- (không gấp) `RoundSession` cho đọc `queue: readonly RoundItem[]`: Lật thẻ phải giữ 1 bản sao hàng câu (nối câu "xem đáp án" vào cuối y hệt
+  động cơ) để gom câu thành bàn — có `queue` thì bỏ được bản sao này (`memory-match/MemoryMatchGame.tsx`).
+- (không gấp) `useGameKeys` chỉ có phím 1–4: Bóng bay cần 1–5, Ghép câu 1–9/0, Xếp chữ gõ chữ cái → 3 trò tự viết bộ phím. Có thể thêm `maxChoice`.
+- (không gấp) Lật thẻ gom các câu LIỀN NHAU, 1 bàn không có 2 cặp cùng từ → vì từ mới "gặp lại cách ≥ 3 câu", bàn thường 4–5 cặp thay vì 6–8.
+  Nếu muốn bàn to hơn: cho trò khai `minRepeatGap` (VD Lật thẻ = 6).
+
+### 2. Nhóm audio (không gấp)
+- Ghép câu: bấm vào khối trong câu đã ghép để nghe từng từ → các từ chức năng (the, is, on, can't…) chưa có mp3 → giọng máy đọc.
+  Nếu tiện: tạo `kids-word` cho ~80 từ trong `KIDS_SENTENCES` chưa có file.
+
+### 3. Nhóm QA — đánh dấu tự động hoá (chỉ khi `npm run dev`)
+| Trò | Bấm vào | Nút Tiếp |
+|---|---|---|
+| spell-it | `.sp-tile[data-answer]` = ô chữ cái cần bấm tiếp theo (bấm lặp tới đủ từ) | `.sp-next__btn` |
+| sentence-builder | `.sb-block[data-answer]` = khối cần bấm tiếp theo | `.sb-next__btn` |
+| balloon-pop | `.bp-balloon[data-answer]` = bóng đúng (bóng đang bay → dùng `el.click()` hoặc `force`) | `.bp-next__btn` |
+| memory-match | `.mm-card[data-answer]` = các thẻ ÚP của 1 cặp chưa ghép (bấm 2 lần = ghép 1 cặp; bậc 3 thì là 2 thẻ đang ngửa) | `.mm-next__btn` (cuối bàn) |
+
+Thẻ giới thiệu từ mới: `.kz-intro__skip`. Phím: Xếp chữ **không** dùng R để nghe lại (R là chữ cái bé gõ) → nghe lại = phím cách.
+
+---
+
+## Điều phối viên (29/10 sáng) → kids games 2–8, QA
+
+- ĐÃ SỬA lỗi "lượt trống 0/0" (yêu cầu đầu tiên của nhóm KIDS GAMES 2–5): `round-builder.ts` mục 3b — khi không có từ mới (hết trần 8 từ/ngày),
+  không có từ đến hạn và không có từ luyện thêm, lượt vẫn lấy 3 từ mới (trần là luật mềm); hết từ mới thì luyện lại cả từ đã thuộc.
+  Đã thử: bé mới + `newWordsLeftToday: 0` → 8 câu, 3 từ mới.
+- Nguyên nhân gốc vẫn còn: sổ ngày `kids-day-log.ts` dùng 1 khoá localStorage chung cho mọi bé trên cùng máy. Nên chuyển sang đếm từ tiến độ
+  thật (`KidsWordState.firstSeen`) như nhóm kids-zone đã đề xuất.
+
+---
+
+## Nhóm KIDS GAMES 6–8 (`games/colour-command`, `games/speak-unlock`, `games/patrol-adventure`) → nhóm kids-zone (động cơ), audio, hệ thiết kế, QA
+
+Đã xong 3 trò (tự hiện ở sảnh qua `game-definition.ts`, chơi tới màn "Túi đồ từ vựng" được): **Nghe lệnh tô màu**, **Nói để mở khoá**
+(đặc tả gọi `say-it`), **Phiêu lưu cùng Ki** (đặc tả gọi `patrol-story`). Không sửa file chung nào.
+
+### 1. Nhóm kids-zone (động cơ) — theo thứ tự cần
+- **Cho trò tự xếp lượt: `KidsGameDefinition.buildPlan?(ctx) => RoundPlan`** (GameRoundShell dùng nó thay `buildRound` nếu có).
+  Phiêu lưu: 1 lượt = 1 chương (5 cảnh, từ của cảnh = `question.wordId`). Hiện trò phải tự chạy `useRoundSession(kế hoạch chương)` lồng bên trong,
+  tự vẽ phần cuối lượt (`patrol-adventure/StoryRoundEnd.tsx` = bản sao phần cuối `RoundRunner`) và dùng `useLayoutEffect` gọi
+  `shellSession.finishIntro()` để thẻ giới thiệu từ mới của lượt "theo từ" (không dùng tới) không phủ lên truyện — với bé mới tinh,
+  thẻ đó vẫn kịp kêu 1 tiếng "pop". Có `buildPlan` thì xoá được cả 2 chỗ.
+- **Truyền `wordFilter` của trò vào `buildRound`** (round-builder đã hỗ trợ, chỉ thiếu ô trong `KidsGameDefinition` + `KidsPlayPage`/`GameRoundShell`).
+  Tô màu muốn `(w) => w.tags?.includes('colorable') || w.tags?.includes('color')`. Hiện chủ đề Hành động / Cơ thể vẫn vào lượt tô màu →
+  trò dùng câu dự phòng `Find "swim". Colour it red.` (đúng ngữ pháp nhưng kém tự nhiên hơn "Colour the cat red.").
+- **`session.skipItem()` chính thức**: nút "Bỏ qua" của trò Nói gọi `session.advance()` mà KHÔNG gọi `completeItem()` → không sao, không đổi hộp
+  Leitner (luật 31: bỏ qua không bị phạt). Chạy đúng với code hiện tại; có hàm riêng thì đổi động cơ sau này không lỡ làm hỏng.
+- **`praise-picker.ts` thiếu điều kiện cho câu khen riêng của trò** (`CONDITIONS` không có `kids-vl-praise-p09`, `p10` — speak-unlock;
+  `p15`, `r05` — colour-command; `r09` — patrol-adventure) → các câu này không bao giờ được chọn. Gợi ý: p09/p10/r05 = `wrongCount === 0`
+  + đúng `gameId`; p15 = colour-command + `wrongCount === 0` + `!usedReplay`; r09 cần biết "câu cuối chương" (thêm cờ vào `CompleteItemInput`).
+- (không gấp) `useGameKeys` chỉ có 1–4: tô màu cần 1–8 cho lọ sơn → tự viết. +1 cho đề xuất `maxChoice` của nhóm 2–5.
+- (không gấp) `kids-data-context` chưa có hành động lưu chương truyện → Phiêu lưu gọi thẳng `useProgress().kidsSetStoryChapter` khi không phải
+  xem thử (`kids.storyChapter` = số chương đã xong, chương mở theo thứ tự). Nếu muốn mọi thứ đi qua `useKidsData()`, thêm `setStoryChapter`.
+
+### 2. Nhóm audio (không gấp)
+- Lệnh tô màu **ghép từ mẫu** chưa có mp3 (script chỉ tạo mẫu `kidsColourCommand` khi KHÔNG có danh sách lệnh riêng; giờ đã có 30 lệnh riêng)
+  → đọc bằng giọng máy. Nếu tiện: tạo thêm `Colour the {thing} {colour}.` cho (từ 'colorable' × 10 màu, bỏ white) ≈ 1100 câu,
+  và nếu được cả `Colour the big|small {thing} {colour}.` (độ khó 3). 30 lệnh soạn sẵn + lời kể / câu hỏi truyện đã có file, chạy tốt.
+
+### 3. Nhóm hệ thiết kế (không gấp)
+- Icon **`mic`** chưa có → `SpeakUnlockGame.tsx` tự vẽ `MicGlyph`.
+
+### 4. Nhóm QA — tự động hoá (chỉ khi `npm run dev`)
+| Trò | Bấm vào | Nút Tiếp | Tham số địa chỉ (chỉ dev) |
+|---|---|---|---|
+| colour-command | `.cc-pot[data-answer]` (lọ sơn đúng) rồi `button.cc-thing[data-answer]:not(:disabled)` (lệnh "both / all" có nhiều vật) | `.cc-next__btn` | `?command=kids-colour-07` ép 1 lệnh soạn sẵn, `?command=all` câu thứ n = lệnh thứ n |
+| speak-unlock | `.su-mic` (dùng kèm `?speech=right`) · tự so sánh: "Giống" = `[data-answer]` · bỏ qua `.su-skip` | `.su-next__btn` | `?speech=off` (trình duyệt không hỗ trợ) · `blocked` (micro bị chặn) · `right` / `wrong` (giả máy nghe) |
+| patrol-adventure | bản đồ `.pa-start-btn` · bỏ qua lời kể `.pa-skip` · `.pa-option[data-answer]` | `.pa-next__btn` · huy hiệu `.pa-badge-next` | — |
+Trình duyệt headless không có micro: không tham số thì `.su-mic` nghe 7 giây rồi coi là im lặng (2 lần → tự so sánh); bấm "Ghi giọng bạn" → micro bị chặn → chế độ "nói to theo mẫu".
+
+### 5. Ghi chú kỹ thuật
+- **Không dùng nhận diện giọng ngay trên máy** (`processLocally`): gọi `SpeechRecognition.available()` làm **treo hẳn trang** trên Chrome 141 headless
+  → quá rủi ro. Đang dùng Web Speech API thường (Chrome gửi âm thanh lên máy chủ Google) — liên quan câu hỏi #6 trong `_research/OPEN-QUESTIONS.md`.
+  Micro chỉ được xin khi bé bấm nút; bản ghi tự nghe lại chỉ nằm trong bộ nhớ (`blob:`), rời câu là xoá.
+- `services/speech-recognition.ts` (người lớn) để `maxAlternatives = 3`, `en-US` → trò Nói có bản riêng `speak-unlock/speech-recognizer.ts`
+  (6 phương án, en-GB, phân loại lỗi, hẹn giờ dự phòng). Nếu muốn gộp: cho hàm chung nhận `{ lang, maxAlternatives }`.
+- Công cụ trình duyệt chung (`_research/tools/browser-server.mjs`) chưa đổi được kích thước / chế độ tối → nhóm dùng bản riêng có thêm
+  `viewport`, `scheme`, `motion` (scratchpad `kg68-browser.mjs`). Vite riêng có `cacheDir` riêng: `node_modules/.cache/vite-kg68/vite.config.mjs`.
+- ĐÃ LÀM `wordFilter` (cả nhóm trò 2–5 và 6–8 cùng xin): `KidsGameDefinition.wordFilter?` → `KidsPlayPage` → `GameRoundShell` → `buildRound`.
+  Chủ đề không còn từ nào qua bộ lọc → `buildRound` tự đổi sang chủ đề đầu tiên có từ hợp. Trò Tô màu đã dùng: chỉ từ có nhãn
+  `colorable` hoặc `color` (đã thử chủ đề `family`, `actions` → tự đổi sang `animals`, mọi câu đều qua bộ lọc).
+
+---
+
+## Nhóm PHÒNG THI (`src/features/exam-room/`, route `/exams`, `/exam/:id`, `/exam-result/:id` (+ `/review`), `/lesson/:id/mini-test`) → exam-ui, skill-writing/speaking, nền móng, lesson-player
+
+Đã gắn route bằng 2 dòng trong `App.tsx`: `{examRoomShellRoutes()}` (trong AppShellRoute) + `{examRoomFocusRoutes()}` (toàn màn hình).
+Trang cũ `src/pages/ExamsPage.tsx`, `ExamRunnerPage.tsx`, `ExamResultPage.tsx` KHÔNG còn route nào dùng (giữ làm tham khảo — nhóm nền móng xoá
+khi muốn; `features/playground/styles/exams.css` chỉ trang cũ dùng). `App.tsx` bỏ import `ComingSoonPage` (không còn route nào trỏ tới).
+Kết quả cũ (đề `level-1-test`, `placement-test`… và kết quả kiểu cũ không có `answers`) vẫn mở + xem lại được (`exam-result-model.ts`).
+Tài khoản test: `qa_exam_1` (tên đăng nhập không nhận dấu `-`).
+
+### 1. Nhóm exam-ui (`src/features/exam-ui/`) — không gấp, phòng thi đã tự vá trong thư mục mình
+- `splitInstructions` bỏ sót tiêu đề nhóm khi (a) có dòng "ô dù" ở đầu: `"Questions 1–13. Questions 1–5: …"` (regex nuốt dấu chấm sau "1–13"
+  nên "Questions 1–5" không có ký tự `[\n.:;]` đứng trước), (b) tiêu đề đứng sau dấu `?`: `"…following information? Questions 19–22: …"`.
+  Hậu quả: nhóm 1–5 hiện tiêu đề "Questions 1–13"; nhóm 19–22 mất tiêu đề và bị xếp SAU nhóm 23–26 (đề thi thử 1, Passage 2).
+  Phòng thi đang tiền xử lý bằng `cleanInstructions()` (`exam-room/exam-part-content.ts`) — sửa trong `question-grouping.ts` thì mình bỏ hàm đó.
+- `.xf` là grid 1 cột `auto`: thanh câu hỏi dài (40 số + Part thu gọn) làm cả khung standalone tràn ngang ở màn ≤ 1300px. Phòng thi thêm
+  `.xf.xr-frame { grid-template-columns: minmax(0, 1fr) }` — đề nghị đưa dòng này vào `ExamFrame.css` cho mọi khung.
+
+### 2. Nhóm skill-writing / skill-speaking — không gấp
+- `AiResultView`: đề thi không có bài mẫu theo band → mốc "bài mẫu" trên thước là sai nghĩa. Phòng thi đang ẩn bằng CSS
+  (`.xr-ai .band-range__sample`, mục chú thích cuối) và truyền `bands` quanh kết quả. Đề nghị: `bands={[]}` = ẩn mốc + chú thích.
+- `MicGate`: (a) dòng riêng tư ghi "Chỉ gửi tới AI khi bạn bấm 'Chấm bằng AI'" — ở phòng thi AI chấm tự động sau khi nộp cả đề → xin prop
+  `privacyNote?: string`; (b) phòng thi không dùng mascot (04-DESIGN-SYSTEM mục 13) → xin prop `hideMascot?`.
+- Phòng thi import trực tiếp `WritingEditor`, `TaskChart`, `feedback/AiResultView`, `MicGate`, `SpeakingRecorder`, `use-microphone` và CSS
+  `WritingTaskPlayer.css`, `SpeakingTaskPlayer.css`, `feedback/feedback.css` — đổi tên/props thì báo giúp.
+
+### 3. Nhóm nền móng / backend
+- **(nên có)** `PATCH /api/exam-results?id=` (hoặc `PUT`) để cập nhật kết quả đã lưu: khi AI lỗi lúc nộp, người học "Xem kết quả luôn" thì
+  hiện chưa chấm lại được Writing từ trang kết quả (bài viết đã lưu trong `result.answers`, chỉ thiếu chỗ ghi lại). Có API thì mình thêm nút
+  "Chấm lại bằng AI" ở trang kết quả.
+- `/api/exam-results` giới hạn 300 KB: kết quả cũ lưu `context` = cả bài đọc cho từng câu → đề thi thử đủ 80 câu sẽ VƯỢT (trang thi cũ sẽ rơi
+  vào "kết quả tạm trong máy"). Phòng thi mới đã bỏ `context` khỏi `questionReviews` (đề còn trong ALL_EXAMS nên tra lại được) — chỉ để biết.
+- Câu sai đề thi vào sổ lỗi qua `recordAnswer(skill, false, undefined, mistake)` (không tạo thẻ `item:` vì `findExercise` không tra được câu đề
+  thi — giống nhóm Nghe/Đọc). `context` = đoạn văn / 3 dòng thoại chứa đáp án (≤ 1.200 ký tự), không phải cả bài.
+- Nháp Writing của phòng thi dùng `saveDraft('exam:<examId>:<taskId>', text)` (đổi máy vẫn còn), xoá khi nộp xong.
+- Phiên làm dở của đề thi lưu `localStorage['ielts-exam-room:<userId>:<examId>']` (đúng 10-EXAM-UI mục 5: đề thi không dùng `progress.resume`).
+
+### 4. Nhóm lesson-player / learning-path — cần 1 lối vào mini-test
+- Trang mini-test `/lesson/:lessonId/mini-test` đã chạy (5 tim, sao, Hồi tim, ghi `recordMiniTestAttempt` + XP + chuối) nhưng **chưa có nút nào
+  dẫn tới**. Đề nghị: màn kết quả bài học (`parts/LessonResults.tsx`) hoặc popover bài trên lộ trình thêm nút phụ "Làm mini-test (5 tim)" khi
+  `lesson.miniTest.length > 0` (100 bài cũ Level 1–2). Bài v3 `miniTest: []` vào link này sẽ tự quay về `/lesson/:id`, bài không tồn tại → `/learn`.
+- Mini-test dùng lại `ExerciseView`, `checkExerciseAnswer`, `FeedbackSheet`, `BottomBar`/`CheckButton`, `passageOf`/`skillOfExercise`,
+  `replayCurrentAudio` + `lesson-player.css` (theo mục 4 phần LESSON-PLAYER ở trên) — đổi tên thì báo giúp.
+
+### 5. Ghi chú chạy thử
+- Gemini key trong `.dev.vars` local đang báo "GEMINI_API_KEY không hợp lệ" → Writing/Speaking không chấm được ở máy dev; đã thử luồng
+  "AI lỗi → Thử chấm lại / Xem kết quả luôn" (phần đó hiện "Chưa có band", không mất bài làm).
+- Trình duyệt test riêng có thêm `viewport`, `media` (sáng/tối) và micro giả (`--use-fake-device-for-media-stream`) để thử ghi âm Speaking:
+  scratchpad `exam-room/exam-room-browser.mjs`. Vite riêng: `node_modules/.cache/vite.exam-room.config.ts` (cacheDir `.vite-exam-room`).

@@ -20,7 +20,7 @@
  * ----------------------------------------------------------------------------
  */
 import type { ComponentType, LazyExoticComponent } from 'react'
-import type { BilingualText } from '../../../content/content-types'
+import type { BilingualText, KidsWord } from '../../../content/content-types'
 import { KIDS_GAMES } from '../../../content/kids'
 import type { KidsGameId } from '../game-engine/engine-types'
 import type { KidsGameProps } from '../game-engine/GameRoundShell'
@@ -33,6 +33,11 @@ export interface KidsGameDefinition {
   accent: string
   /** trò cần ảnh cho mỗi từ (chọn hình)? -> round-builder chỉ lấy từ có ảnh */
   needsPicture: boolean
+  /**
+   * (Không bắt buộc) lọc thêm từ hợp với trò, VD Tô màu chỉ lấy đồ vật tô được + từ chỉ màu.
+   * Chủ đề không còn từ nào qua bộ lọc -> round-builder tự đổi sang chủ đề khác.
+   */
+  wordFilter?: (word: KidsWord) => boolean
   /** kỹ năng luyện, VD "nghe hiểu từ" */
   skill: BilingualText
   /** Component trò chơi — nên dùng lazy() để sảnh tải nhanh */

@@ -8,6 +8,8 @@
   --xf-accent: var(--c-navy);
   display: grid;
   grid-template-rows: auto minmax(0, 1fr) auto;
+  /* minmax(0, 1fr): cột không bị nội dung dài (thanh 40 số câu) kéo rộng -> không tràn ngang ở màn ≤ 1300px */
+  grid-template-columns: minmax(0, 1fr);
   height: var(--exam-frame-height, 100dvh);
   min-height: 0;
   background: var(--c-bg);

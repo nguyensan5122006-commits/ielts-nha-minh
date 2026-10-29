@@ -21,7 +21,7 @@
 import type { KidsWord } from '../../../content/content-types'
 import { KIDS_NEW_WORDS_PER_ROUND, kidsWordsDueToday, pickNewKidsWords } from '../../../learning-progress/kids-word-boxes'
 import type { KidsProgress } from '../../../learning-progress/progress-types'
-import { ALL_KIDS_WORDS, findKidsTopic, findKidsWord, hasPicture, pickActiveTopic, topicOfWord } from '../kids-data/kids-word-bank'
+import { ALL_KIDS_WORDS, KIDS_TOPICS, findKidsTopic, findKidsWord, hasPicture, pickActiveTopic, topicOfWord } from '../kids-data/kids-word-bank'
 import type { DifficultySettings, KidsGameId, RoundItem, RoundItemKind, RoundPlan } from './engine-types'
 
 export const ROUND_MIN_ITEMS = 8
@@ -65,7 +65,14 @@ export function buildRound(options: BuildRoundOptions): RoundPlan {
   const targetSize = Math.min(ROUND_MAX_ITEMS, Math.max(ROUND_MIN_ITEMS, options.targetSize ?? ROUND_TARGET_ITEMS))
   const usable = makeUsable(needsPicture, options.wordFilter)
 
-  const topic = (options.topicId && findKidsTopic(options.topicId)) || pickActiveTopic(kids, needsPicture)
+  // Chủ đề bé chọn ở sảnh / chủ đề đang học — nhưng nếu không còn từ nào hợp với trò này
+  // (VD trò Tô màu + chủ đề "hành động") thì đổi sang chủ đề đầu tiên có từ hợp.
+  const requestedTopic = (options.topicId && findKidsTopic(options.topicId)) || pickActiveTopic(kids, needsPicture)
+  const topic = requestedTopic.words.some(usable)
+    ? requestedTopic
+    : (KIDS_TOPICS.find((candidate) => candidate.words.some((word) => usable(word) && !kids.words[word.id])) ??
+      KIDS_TOPICS.find((candidate) => candidate.words.some(usable)) ??
+      requestedTopic)
 
   /* ---------- 1. Từ đến hạn ôn (hộp thấp trước; từ của chủ đề bé chọn lên đầu) ---------- */
   const due = kidsWordsDueToday(kids, today)
@@ -78,7 +85,7 @@ export function buildRound(options: BuildRoundOptions): RoundPlan {
   /* ---------- 2. Từ mới: 3 từ; nhưng nếu nhiều từ đến hạn (≥ 8) thì chỉ 2 để giữ tỉ lệ mới : ôn ≈ 30 : 70 ---------- */
   const maxNew = Math.max(0, Math.min(due.length >= 8 ? 2 : KIDS_NEW_WORDS_PER_ROUND, options.newWordsLeftToday ?? KIDS_NEW_WORDS_PER_ROUND))
   const topicCandidates = topic.words.filter(usable).map((word) => word.id)
-  const newWords = pickNewKidsWords(kids, topicCandidates, maxNew).map((id) => findKidsWord(id)!)
+  let newWords = pickNewKidsWords(kids, topicCandidates, maxNew).map((id) => findKidsWord(id)!)
 
   // Mỗi từ mới chiếm 2 câu (câu đầu + 1 lần gặp lại); mỗi từ ôn 1 câu.
   // Còn từ đến hạn thì lượt được dài tới 12 câu (không để từ đến hạn phải chờ).
@@ -103,6 +110,23 @@ export function buildRound(options: BuildRoundOptions): RoundPlan {
     for (const { word } of candidates) {
       if (plannedCount + practice.length >= ROUND_MIN_ITEMS) break
       practice.push(word)
+    }
+  }
+
+  /* ---------- 3b. Không bao giờ để lượt trống ("0/0" là ngõ cụt) ---------- */
+  // Trần 8 từ mới/ngày được đếm trong máy (localStorage, chung cho mọi bé trên máy này), nên có lúc
+  // "hết từ mới hôm nay" trong khi bé chưa có từ nào để ôn — VD 2 bé dùng chung 1 máy, hoặc tiến độ
+  // vừa làm mới. Khi đó trần chỉ là luật mềm: vẫn cho 1 lượt từ mới bình thường.
+  if (newWords.length + reviews.length + practice.length === 0) {
+    const pickFallbackNew = (candidateIds: string[]) =>
+      pickNewKidsWords(kids, candidateIds, KIDS_NEW_WORDS_PER_ROUND).map((id) => findKidsWord(id)!)
+    newWords = pickFallbackNew(topicCandidates)
+    // Chủ đề đang học đã hết từ mới -> lấy từ mới ở bất kỳ chủ đề nào
+    if (!newWords.length) newWords = pickFallbackNew(ALL_KIDS_WORDS.filter(usable).map((word) => word.id))
+    // Đã gặp hết mọi từ (và không từ nào đến hạn) -> luyện thêm cả từ đã thuộc
+    if (!newWords.length) {
+      const mastered = Object.keys(kids.words).map(findKidsWord).filter(usable)
+      practice.push(...shuffle(mastered, random).slice(0, targetSize))
     }
   }
 

@@ -1,0 +1,539 @@
+/* =============================================================================
+ * balloon-pop.css — TRÒ "BÓNG BAY CHỮ"
+ * -----------------------------------------------------------------------------
+ * Bầu trời bóng bay phủ CẢ màn hình (bóng bay qua sau thanh trên rồi biến mất ở mép trên,
+ * vòng lại từ mép dưới). Phần nghe là 1 viên "kính mờ" nổi phía trên, Ki góc trái dưới.
+ *
+ * Cách bóng bay: mỗi quả đặt ngay dưới mép dưới (top: 100%) rồi chạy animation translateY lên
+ * đúng 1 "quãng bay" (--travel = chiều cao màn + chiều cao bóng, đo bằng JS). animation-delay ÂM
+ * (--delay) = bóng đã bay được 1 đoạn lúc câu hiện ra -> các quả hiện ngay ở nhiều độ cao.
+ * Rê chuột lên bóng -> animation-play-state: paused (bóng đứng lại cho dễ bấm).
+ *
+ * Mục lục: 1. khung · 2. phần nghe · 3. bầu trời + quả bóng · 4. trạng thái bóng · 5. thẻ từ khi đúng
+ *          6. nút Tiếp · 7. keyframes · 8. màn thấp / hẹp · 9. giảm chuyển động
+ * ========================================================================== */
+
+/* ---------- 1. KHUNG ---------- */
+.bp-stage {
+  position: relative;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.bp-defs {
+  position: absolute;
+  width: 0;
+  height: 0;
+}
+
+/* ---------- 2. PHẦN NGHE ---------- */
+.bp-prompt {
+  position: relative;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-top: clamp(2px, 1.2vh, 14px);
+  padding: 10px 26px 10px 10px;
+  border-radius: var(--r-pill);
+  animation: bp-rise-in 320ms var(--ease-out) both;
+}
+.bp-listen {
+  --size: clamp(76px, 10vh, 88px);
+  position: relative;
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: var(--size);
+  height: var(--size);
+  border: none;
+  border-radius: 50%;
+  color: #fff;
+  cursor: pointer;
+  background:
+    radial-gradient(circle at 34% 26%, rgba(255, 255, 255, 0.45), transparent 42%),
+    linear-gradient(180deg, color-mix(in srgb, var(--kz-listen) 78%, #fff) 0%, var(--kz-listen) 55%, color-mix(in srgb, var(--kz-listen) 80%, #0b2a6b) 100%);
+  box-shadow:
+    inset 0 2px 0 rgba(255, 255, 255, 0.5),
+    inset 0 -4px 0 rgba(0, 0, 0, 0.1),
+    0 12px 22px -12px color-mix(in srgb, var(--kz-listen) 75%, transparent);
+  transition: transform var(--dur-press) var(--ease-out);
+}
+.bp-listen:hover {
+  transform: translateY(-2px) scale(1.02);
+}
+.bp-listen:active {
+  transform: scale(0.95);
+}
+.bp-listen:focus-visible,
+.bp-slow:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+.bp-listen svg {
+  position: relative;
+  filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.18));
+}
+.bp-listen__ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 4px solid color-mix(in srgb, var(--kz-listen) 60%, #fff);
+  opacity: 0;
+  pointer-events: none;
+}
+.bp-listen.is-playing .bp-listen__ring {
+  animation: bp-ring 1.2s var(--ease-out) infinite;
+}
+.bp-listen.is-playing svg {
+  animation: bp-speaker 600ms ease-in-out infinite alternate;
+}
+.bp-slow {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 56px;
+  height: 56px;
+  border: 1px solid var(--kz-glass-line);
+  border-radius: 50%;
+  background: var(--kz-card-bg);
+  color: color-mix(in srgb, var(--c-success) 70%, var(--kz-ink));
+  cursor: pointer;
+  transition: transform var(--dur-press) var(--ease-out);
+}
+.bp-slow:hover {
+  transform: translateY(-2px);
+}
+.bp-slow.is-playing svg {
+  animation: bp-turtle 900ms ease-in-out infinite;
+}
+.bp-prompt__text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 300px;
+}
+.bp-instruction {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 700;
+  line-height: 1.25;
+  color: var(--kz-ink);
+}
+.bp-hover-hint {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--kz-ink-2);
+}
+/* gợi ý bậc 2: cam san hô nhẹ */
+.bp-clue {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  align-self: flex-start;
+  padding: 6px 16px;
+  border-radius: var(--r-pill);
+  background: var(--c-oops-soft);
+  color: var(--c-oops-ink);
+  font-size: 1.15rem;
+  font-weight: 600;
+  animation: bp-rise-in 260ms var(--ease-out) both;
+}
+.bp-clue b {
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+}
+
+/* ---------- 3. BẦU TRỜI + QUẢ BÓNG ---------- */
+.bp-sky {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  overflow: hidden;
+}
+.bp-balloon {
+  --w: 150px;
+  position: absolute;
+  top: 100%;
+  left: var(--left);
+  width: var(--w);
+  height: calc(var(--w) * 1.8); /* tỉ lệ khung vẽ 120 × 216 (kể cả dây) */
+  margin-left: calc(var(--w) / -2);
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  animation: bp-float var(--seconds) linear var(--delay) infinite;
+}
+/* rê chuột lên = bóng đứng lại */
+.bp-balloon:hover,
+.bp-balloon:focus-visible {
+  animation-play-state: paused;
+}
+.bp-balloon:focus-visible {
+  outline: none;
+}
+.bp-balloon:focus-visible .bp-balloon__label {
+  box-shadow: var(--focus-ring);
+}
+.bp-balloon:disabled {
+  cursor: default;
+}
+/* lắc lư nhẹ quanh đầu dây (như có gió) */
+.bp-balloon__sway {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+  transform-origin: 50% 100%;
+  animation: bp-sway 3.2s ease-in-out var(--sway-delay) infinite alternate;
+  transition:
+    opacity 300ms var(--ease-out) 260ms,
+    filter 300ms var(--ease-out) 260ms,
+    scale 300ms var(--ease-out) 260ms;
+}
+.bp-balloon__svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  filter: drop-shadow(0 12px 14px rgba(var(--shadow-rgb), 0.22));
+  transition: filter 200ms var(--ease-out);
+}
+.bp-balloon:hover:not(:disabled) .bp-balloon__svg {
+  filter: drop-shadow(0 0 0 transparent) drop-shadow(0 14px 18px rgba(var(--shadow-rgb), 0.3)) brightness(1.06);
+}
+.bp-balloon__body,
+.bp-balloon__knot {
+  fill: var(--balloon);
+}
+.bp-balloon__string {
+  fill: none;
+  stroke: color-mix(in srgb, var(--kz-ink) 40%, transparent);
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+/* nhãn chữ: nền trắng chữ mực cố định (không đổi theo chế độ tối -> luôn đọc rõ trên mọi màu bóng) */
+.bp-balloon__label {
+  position: absolute;
+  left: 50%;
+  top: 30%; /* tâm thân bóng (y = 66 / 220) */
+  transform: translate(-50%, -50%);
+  /* width: max-content -> chữ không bị bẻ giữa từ (left: 50% thì khung mặc định chỉ rộng nửa quả bóng) */
+  width: max-content;
+  max-width: calc(var(--w) * 0.86);
+  padding: 6px 12px 5px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.95);
+  color: #1e2347;
+  font-family: var(--font-display);
+  /* chữ dài thì nhỏ lại cho vừa nhãn: lấy cỡ nhỏ hơn giữa (a) giảm dần theo số chữ và (b) bề rộng nhãn
+     chia cho số chữ (mỗi chữ ≈ 0.58em). Bóng nhỏ (màn hẹp) -> chữ tự nhỏ theo. Tối thiểu 0.95rem. */
+  font-size: clamp(0.95rem, min(calc(2.05rem - var(--len) * 0.072rem), calc((var(--w) * 0.86 - 24px) / (var(--len) * 0.58))), 1.7rem);
+  font-weight: 800;
+  line-height: 1.1;
+  text-align: center;
+  overflow-wrap: normal; /* chỉ xuống dòng ở dấu cách (VD "ice cream") */
+  box-shadow: 0 6px 12px -6px rgba(0, 0, 0, 0.35);
+  pointer-events: none;
+}
+.bp-balloon__key {
+  position: absolute;
+  left: 50%;
+  top: 49%;
+  transform: translateX(-50%);
+  min-width: 26px;
+  height: 26px;
+  font-size: 0.85rem;
+  pointer-events: none;
+}
+
+/* ---------- 4. TRẠNG THÁI BÓNG ---------- */
+/* bấm sai: bóng lắc + nhãn loé cam san hô */
+.bp-balloon.is-wrong .bp-balloon__svg {
+  animation: bp-wiggle 340ms var(--ease-out);
+}
+.bp-balloon.is-wrong .bp-balloon__label {
+  animation: bp-oops-flash 900ms var(--ease-out);
+}
+/* bị loại: xẹp nhỏ, mờ, xám (vẫn bay, không bấm được) */
+.bp-balloon.is-eliminated .bp-balloon__sway {
+  opacity: 0.36;
+  filter: grayscale(0.85);
+  scale: 0.8;
+}
+/* xem đáp án (bậc 3): bóng đúng đứng yên, phát sáng thở chậm + bàn tay chỉ */
+.bp-balloon.is-revealed {
+  z-index: 2;
+  animation-play-state: paused;
+}
+.bp-balloon.is-revealed .bp-balloon__sway {
+  animation: none;
+}
+.bp-balloon.is-revealed .bp-balloon__svg {
+  animation: bp-glow 1.4s ease-in-out infinite;
+}
+.bp-balloon__pointer {
+  position: absolute;
+  top: -6px;
+  right: -26px;
+  transform: rotate(-28deg);
+  animation: bp-point 900ms ease-in-out infinite;
+}
+/* đúng: cả bầu trời dừng lại, bóng đúng nổ, bóng khác bay mất */
+.bp-sky.is-solved .bp-balloon {
+  animation-play-state: paused;
+}
+.bp-balloon.is-popped {
+  z-index: 2;
+}
+.bp-balloon.is-popped .bp-balloon__svg,
+.bp-balloon.is-popped .bp-balloon__label,
+.bp-balloon.is-popped .bp-balloon__key {
+  animation: bp-pop 260ms var(--ease-out) forwards;
+}
+.bp-balloon.is-away .bp-balloon__sway {
+  opacity: 0;
+  scale: 0.7;
+  transition-delay: 0ms;
+}
+
+/* ---------- 5. THẺ TỪ KHI ĐÚNG ---------- */
+.bp-reward {
+  position: absolute;
+  left: 50%;
+  top: 48%;
+  z-index: 3;
+  transform: translate(-50%, -50%);
+  animation: bp-reward-in 380ms var(--ease-spring) 140ms both;
+}
+.bp-reward__card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  min-width: 300px;
+  padding: 24px 44px 26px;
+}
+/* tia nắng vàng xoay chậm phía sau thẻ */
+.bp-reward__rays {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: -1;
+  width: 560px;
+  height: 560px;
+  margin: -280px 0 0 -280px;
+  border-radius: 50%;
+  background: repeating-conic-gradient(from 0deg, color-mix(in srgb, var(--c-gold) 32%, transparent) 0deg 10deg, transparent 10deg 30deg);
+  mask-image: radial-gradient(circle, #000 20%, transparent 66%);
+  -webkit-mask-image: radial-gradient(circle, #000 20%, transparent 66%);
+  pointer-events: none;
+  animation: bp-rays-spin 16s linear infinite;
+}
+.bp-reward__picture .kz-picture {
+  filter: drop-shadow(0 10px 10px rgba(var(--shadow-rgb), 0.18));
+}
+.bp-reward__word {
+  font-family: var(--font-display);
+  font-size: clamp(2.4rem, 6vh, 3.2rem);
+  font-weight: 800;
+  line-height: 1;
+  padding-top: 0.1em;
+  color: var(--kz-ink);
+}
+.bp-reward__meaning {
+  padding: 4px 18px;
+  border-radius: var(--r-pill);
+  background: var(--c-gold-soft);
+  color: var(--c-gold-ink);
+  font-family: var(--font-display);
+  font-size: 1.45rem;
+  font-weight: 700;
+}
+
+/* ---------- 6. NÚT TIẾP ---------- */
+.bp-next {
+  position: fixed;
+  right: clamp(16px, 3vw, 48px);
+  bottom: clamp(18px, 4vh, 40px);
+  z-index: 5;
+}
+.bp-next__btn {
+  animation: bp-rise-in 260ms var(--ease-out) 200ms both;
+}
+
+/* ---------- 7. KEYFRAMES ---------- */
+@keyframes bp-float {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(calc(-1 * var(--travel)));
+  }
+}
+@keyframes bp-sway {
+  from {
+    transform: rotate(-4deg);
+  }
+  to {
+    transform: rotate(4deg);
+  }
+}
+@keyframes bp-wiggle {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  20% {
+    transform: translateX(-10px) rotate(-4deg);
+  }
+  45% {
+    transform: translateX(8px) rotate(3deg);
+  }
+  70% {
+    transform: translateX(-4px);
+  }
+}
+@keyframes bp-oops-flash {
+  0%,
+  60% {
+    background: var(--c-oops-soft);
+    color: var(--c-oops-ink);
+    box-shadow: 0 0 0 3px var(--c-oops);
+  }
+}
+@keyframes bp-glow {
+  0%,
+  100% {
+    filter: drop-shadow(0 0 10px color-mix(in srgb, var(--c-gold) 70%, transparent));
+  }
+  50% {
+    filter: drop-shadow(0 0 26px var(--c-gold));
+  }
+}
+@keyframes bp-pop {
+  0% {
+    opacity: 1;
+    scale: 1;
+  }
+  45% {
+    opacity: 1;
+    scale: 1.22;
+  }
+  100% {
+    opacity: 0;
+    scale: 1.45;
+  }
+}
+@keyframes bp-point {
+  0%,
+  100% {
+    transform: rotate(-28deg) translate(0, 0);
+  }
+  50% {
+    transform: rotate(-28deg) translate(0, -10px);
+  }
+}
+@keyframes bp-reward-in {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -40%) scale(0.85);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%);
+  }
+}
+@keyframes bp-rays-spin {
+  to {
+    rotate: 360deg;
+  }
+}
+@keyframes bp-ring {
+  0% {
+    opacity: 0.8;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.55);
+  }
+}
+@keyframes bp-speaker {
+  to {
+    transform: scale(1.08);
+  }
+}
+@keyframes bp-turtle {
+  50% {
+    transform: translateX(4px) rotate(4deg);
+  }
+}
+@keyframes bp-rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ---------- 8. MÀN THẤP / HẸP ---------- */
+@media (max-height: 820px) {
+  .bp-balloon {
+    --w: 132px;
+  }
+}
+@media (max-width: 900px) {
+  .bp-balloon {
+    --w: 120px;
+  }
+  .bp-prompt__text {
+    min-width: 0;
+  }
+  .bp-hover-hint {
+    display: none;
+  }
+}
+
+/* ---------- 9. GIẢM CHUYỂN ĐỘNG: bóng đứng yên thành 1 hàng, giữ đổi màu ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .bp-balloon {
+    top: var(--rest-top);
+    animation: none;
+  }
+  .bp-balloon__sway,
+  .bp-balloon.is-wrong .bp-balloon__svg,
+  .bp-balloon.is-revealed .bp-balloon__svg,
+  .bp-balloon__pointer,
+  .bp-listen.is-playing .bp-listen__ring,
+  .bp-listen.is-playing svg,
+  .bp-slow.is-playing svg,
+  .bp-prompt,
+  .bp-clue,
+  .bp-reward__rays,
+  .bp-next__btn {
+    animation: none;
+  }
+  .bp-balloon.is-revealed .bp-balloon__svg {
+    filter: drop-shadow(0 0 18px var(--c-gold));
+  }
+  .bp-balloon.is-popped .bp-balloon__svg,
+  .bp-balloon.is-popped .bp-balloon__label,
+  .bp-balloon.is-popped .bp-balloon__key {
+    animation: none;
+    opacity: 0;
+  }
+  .bp-balloon__sway {
+    transition: none;
+  }
+  .bp-reward {
+    animation: none;
+  }
+}

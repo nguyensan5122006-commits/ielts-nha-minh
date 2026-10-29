@@ -1,0 +1,943 @@
+/*
+ * exam-runner.css — PHÒNG THI TOÀN MÀN HÌNH (bổ sung cho khung exam-ui: ExamFrame, SplitPane, câu hỏi…)
+ * ----------------------------------------------------------------------------
+ * Chỉ thêm những gì phòng thi cần riêng: dải Part kiểu máy thi, cột âm thanh phần Nghe,
+ * ô viết Writing, màn Speaking, màn chấm bài, bảng các phần ở màn mở đầu.
+ * Màu lấy từ tokens -> tự có chế độ tối + 3 chế độ tương phản của ExamDisplaySettings.
+ */
+
+/* ---------- khung ---------- */
+/* khung là grid 1 cột: ép cột tối đa = bề rộng màn hình, nếu không thanh câu hỏi dài (40 số) đẩy cả khung tràn ngang */
+.xf.xr-frame {
+  grid-template-columns: minmax(0, 1fr);
+}
+.xr-frame__position {
+  flex: none;
+  padding: 2px 8px;
+  border-radius: var(--r-pill);
+  background: var(--c-surface-2);
+  color: var(--c-ink-2);
+  font: 600 var(--fs-xs) / 1.5 var(--font-ui);
+  white-space: nowrap;
+}
+.xr-intro-scroll {
+  height: 100%;
+  overflow: auto;
+}
+.xr-intro-scroll > .xintro {
+  height: auto;
+  min-height: 100%;
+}
+.xr-fullscreen-empty {
+  min-height: 100dvh;
+  display: grid;
+  place-items: center;
+  background: var(--c-bg);
+  padding: var(--s-6);
+}
+.xr-save {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--c-success-ink);
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  white-space: nowrap;
+}
+.xr-save.is-saving {
+  color: var(--c-ink-2);
+}
+.xr-save.is-error {
+  color: var(--c-oops-ink);
+}
+.xr-dialog-text {
+  margin: 0;
+  display: flex;
+  gap: var(--s-2);
+  align-items: flex-start;
+}
+.xr-dialog-list {
+  margin: var(--s-3) 0 0;
+  padding-left: var(--s-5);
+  color: var(--c-ink-2);
+  font-size: var(--fs-sm);
+}
+.xr-link-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 0;
+  border: 0;
+  background: none;
+  color: var(--c-navy);
+  font: 600 var(--fs-sm) / 1.4 var(--font-ui);
+  cursor: pointer;
+}
+.xr-link-button:hover {
+  text-decoration: underline;
+}
+.xr-link-button:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+  border-radius: var(--r-xs);
+}
+
+/* ---------- màn mở đầu: bảng các phần + luật ---------- */
+.xr-sections,
+.xr-rules {
+  margin-top: var(--s-5);
+}
+.xr-sections__title {
+  margin: 0 0 var(--s-2);
+  font-weight: 700;
+  font-size: var(--fs-sm);
+}
+.xr-sections__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border: 1px solid var(--c-line);
+  border-radius: var(--r-md);
+  overflow: hidden;
+}
+.xr-sections__list li + li {
+  border-top: 1px solid var(--c-line);
+}
+.xr-sections__row {
+  display: grid;
+  grid-template-columns: auto auto minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: var(--s-3);
+  padding: var(--s-3) var(--s-4);
+  background: var(--c-surface);
+}
+div.xr-sections__row {
+  grid-template-columns: auto minmax(0, 1fr) auto auto;
+}
+label.xr-sections__row {
+  cursor: pointer;
+}
+label.xr-sections__row:hover {
+  background: var(--c-surface-2);
+}
+.xr-sections__row input {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--c-navy);
+  margin: 0;
+}
+.xr-sections__row:not(.is-picked) input ~ * {
+  opacity: 0.55;
+}
+.xr-sections__dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--c-navy);
+}
+.xr-sections__dot--listening { background: var(--skill-listening); }
+.xr-sections__dot--reading { background: var(--skill-reading); }
+.xr-sections__dot--writing { background: var(--skill-writing); }
+.xr-sections__dot--speaking { background: var(--skill-speaking); }
+.xr-sections__dot--vocabulary { background: var(--skill-vocabulary); }
+.xr-sections__name {
+  display: flex;
+  align-items: baseline;
+  gap: var(--s-2);
+  min-width: 0;
+}
+.xr-sections__name strong {
+  font-weight: 700;
+}
+.xr-sections__name span {
+  color: var(--c-ink-2);
+  font-size: var(--fs-xs);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.xr-sections__count,
+.xr-sections__time {
+  color: var(--c-ink-2);
+  font-size: var(--fs-sm);
+  white-space: nowrap;
+}
+.xr-sections__time {
+  min-width: 4.5em;
+  text-align: right;
+  font-weight: 600;
+}
+.xr-sections__warn {
+  margin: var(--s-2) 0 0;
+  color: var(--c-oops-ink);
+  font-size: var(--fs-sm);
+}
+.xr-rules ul {
+  margin: 0;
+  padding-left: var(--s-5);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  color: var(--c-ink-2);
+  font-size: var(--fs-sm);
+}
+.xr-resume-card {
+  margin-top: var(--s-5);
+  display: flex;
+  align-items: flex-start;
+  gap: var(--s-3);
+  padding: var(--s-4);
+  border-radius: var(--r-md);
+  background: var(--c-primary-soft);
+  border: 1px solid color-mix(in srgb, var(--c-primary) 30%, transparent);
+}
+.xr-resume-card > svg {
+  flex: none;
+  margin-top: 2px;
+  color: var(--c-primary-ink);
+}
+.xr-resume-card > div {
+  flex: 1;
+  min-width: 0;
+}
+.xr-resume-card p {
+  margin: 2px 0 0;
+  color: var(--c-ink-2);
+  font-size: var(--fs-sm);
+}
+.xr-soundcheck {
+  margin-top: var(--s-4);
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  font-size: 1.4rem;
+}
+
+/* ---------- 1 Part: dải "Part 1 · Trả lời câu 1–10" như máy thi ---------- */
+.xr-qpane {
+  min-height: 100%;
+}
+.xr-part-banner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 2px var(--s-3);
+  margin: var(--s-5) var(--s-7) 0;
+  padding: var(--s-3) var(--s-4);
+  border-radius: var(--r-sm);
+  border: 1px solid var(--c-line);
+  background: var(--c-surface-2);
+  font-size: calc(var(--fs-sm) * var(--exam-text-scale, 1));
+}
+.xr-part-banner strong {
+  font-weight: 700;
+}
+.xr-part-banner span {
+  color: var(--c-ink-2);
+}
+.xr-qpane .xq-list {
+  padding-top: var(--s-5);
+  padding-bottom: var(--s-5);
+}
+.xr-part-next {
+  display: flex;
+  justify-content: flex-end;
+  padding: 0 var(--s-7) var(--s-8);
+}
+.xr-single {
+  height: 100%;
+  overflow: auto;
+}
+.xr-single > .xr-qpane {
+  max-width: 880px;
+  margin: 0 auto;
+}
+
+/* ---------- phần Nghe: cột âm thanh ---------- */
+.xr-listen {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-4);
+  padding: var(--s-5) var(--s-5) var(--s-8);
+}
+.xr-listen__now {
+  padding: var(--s-4);
+  border-radius: var(--r-lg);
+  border: 1px solid var(--c-line);
+  background: var(--c-surface);
+  box-shadow: var(--shadow-card);
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-3);
+}
+.xr-listen__now-top {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+}
+.xr-listen__icon {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  flex: none;
+  border-radius: var(--r-sm);
+  background: color-mix(in srgb, var(--skill-listening) 14%, var(--c-surface));
+  font-size: 1.25rem;
+}
+.xr-listen__now-title {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+  line-height: 1.3;
+}
+.xr-listen__now-title strong {
+  font-weight: 700;
+}
+.xr-listen__now-title span {
+  font-size: var(--fs-xs);
+  color: var(--c-ink-2);
+}
+.xr-listen__status {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 10px;
+  border-radius: var(--r-pill);
+  background: var(--c-surface-2);
+  color: var(--c-ink-2);
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  white-space: nowrap;
+}
+.xr-listen__status.is-playing,
+.xr-listen__status.is-loading {
+  background: color-mix(in srgb, var(--skill-listening) 16%, var(--c-surface));
+  color: var(--c-ink);
+}
+.xr-listen__status.is-done {
+  background: var(--c-success-soft);
+  color: var(--c-success-ink);
+}
+.xr-listen__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--skill-listening);
+  animation: xr-pulse 1.4s ease-in-out infinite;
+}
+@keyframes xr-pulse {
+  50% {
+    opacity: 0.35;
+  }
+}
+.xr-listen__time {
+  font-size: var(--fs-sm);
+  color: var(--c-ink-2);
+  text-align: right;
+}
+.xr-listen__time strong {
+  color: var(--c-ink);
+  font-size: var(--fs-lg);
+}
+.xr-listen__bar {
+  height: 8px;
+  border-radius: var(--r-pill);
+  background: var(--c-surface-2);
+  overflow: hidden;
+}
+.xr-listen__bar.is-seekable {
+  cursor: pointer;
+}
+.xr-listen__bar span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--skill-listening);
+  transition: width 0.25s linear;
+}
+.xr-listen__controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s-2);
+}
+.xr-listen__controls .ds-segmented {
+  margin-left: auto;
+}
+.xr-listen__note {
+  margin: 0;
+  font-size: var(--fs-xs);
+  color: var(--c-ink-2);
+}
+.xr-listen__parts {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-1);
+}
+.xr-listen__part {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+  padding-right: var(--s-2);
+  border-radius: var(--r-md);
+}
+.xr-listen__part.is-current {
+  background: var(--c-surface);
+  box-shadow: inset 0 0 0 1.5px color-mix(in srgb, var(--c-navy) 40%, transparent);
+}
+.xr-listen__part.is-playing {
+  background: color-mix(in srgb, var(--skill-listening) 10%, var(--c-surface));
+}
+.xr-listen__part-main {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  flex: 1;
+  min-width: 0;
+  padding: var(--s-2) var(--s-3);
+  border: 0;
+  border-radius: var(--r-md);
+  background: transparent;
+  color: inherit;
+  text-align: left;
+  font: inherit;
+  cursor: pointer;
+}
+.xr-listen__part-main:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+.xr-listen__part-num {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  flex: none;
+  border-radius: 50%;
+  border: 1.5px solid var(--c-line-strong);
+  font-size: var(--fs-xs);
+  font-weight: 700;
+}
+.xr-listen__part.is-playing .xr-listen__part-num {
+  background: var(--skill-listening);
+  border-color: var(--skill-listening);
+  color: #fff;
+}
+.xr-listen__part.is-done .xr-listen__part-num {
+  background: var(--c-success-soft);
+  border-color: transparent;
+  color: var(--c-success-ink);
+}
+.xr-listen__part-text {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+  line-height: 1.3;
+}
+.xr-listen__part-text strong {
+  font-weight: 700;
+  font-size: var(--fs-sm);
+}
+.xr-listen__part-text span {
+  font-size: var(--fs-xs);
+  color: var(--c-ink-2);
+}
+.xr-listen__part-state {
+  font-size: var(--fs-xs);
+  color: var(--c-ink-2);
+  white-space: nowrap;
+}
+.xr-listen__locked {
+  display: flex;
+  gap: var(--s-3);
+  padding: var(--s-4);
+  border: 1.5px dashed var(--c-line-strong);
+  border-radius: var(--r-md);
+  color: var(--c-ink-2);
+}
+.xr-listen__locked > svg {
+  flex: none;
+  margin-top: 2px;
+}
+.xr-listen__locked span {
+  display: flex;
+  flex-direction: column;
+  font-size: var(--fs-sm);
+}
+.xr-listen__locked strong {
+  color: var(--c-ink);
+}
+
+/* header: chip "đang phát" + 2 phút kiểm tra */
+.xr-playing-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  border-radius: var(--r-pill);
+  background: color-mix(in srgb, var(--skill-listening) 14%, var(--c-surface));
+  font: 700 var(--fs-sm) / 1.2 var(--font-ui);
+  white-space: nowrap;
+}
+.xr-check {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-3);
+}
+.xr-check__label {
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  color: var(--c-ink-2);
+}
+
+/* ---------- Writing ---------- */
+.xr-task {
+  padding-bottom: var(--s-8);
+}
+.xr-task__prompt {
+  margin: var(--s-5) var(--s-7) 0;
+  font-size: calc(var(--fs-md) * var(--exam-text-scale, 1));
+  line-height: 1.65;
+}
+.xr-task__prompt p {
+  margin: 0 0 var(--s-3);
+  white-space: pre-line;
+}
+.xr-task__chart {
+  margin: var(--s-4) var(--s-7) 0;
+}
+.xr-write {
+  padding: var(--s-5) var(--s-7) var(--s-6);
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+.xr-write .xr-part-next {
+  padding: var(--s-3) 0 0;
+}
+.xr-exam-writing {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-2);
+  flex: 1;
+}
+.xr-exam-writing__label {
+  font-weight: 700;
+  font-size: var(--fs-sm);
+}
+.xr-exam-writing__input {
+  flex: 1;
+  min-height: 360px;
+  resize: vertical;
+  font-size: calc(var(--fs-md) * var(--exam-text-scale, 1));
+}
+.xr-exam-writing__meter {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  font-size: var(--fs-sm);
+}
+.xr-exam-writing__meter .writing-editor__bar {
+  flex: 0 1 200px;
+}
+.xr-exam-writing__state {
+  color: var(--c-ink-2);
+}
+.xr-exam-writing__state.is-enough {
+  color: var(--c-success-ink);
+  font-weight: 600;
+}
+
+/* ---------- Speaking ---------- */
+.xr-speak {
+  height: 100%;
+  overflow: auto;
+  padding: var(--s-8) var(--s-5);
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+.xr-speak > * {
+  width: 100%;
+  max-width: 780px;
+}
+.xr-speak__card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-5);
+  padding: var(--s-7);
+  border-radius: var(--r-xl);
+  border: 1px solid var(--c-line);
+  background: var(--c-surface);
+  box-shadow: var(--shadow-card);
+}
+.xr-speak__intro {
+  align-items: flex-start;
+  gap: var(--s-3);
+}
+.xr-speak__title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--fs-xl);
+  font-weight: 700;
+  line-height: var(--lh-tight);
+}
+.xr-speak__meta {
+  margin: 0;
+  color: var(--c-ink-2);
+}
+.xr-speak__note {
+  margin: 0 0 var(--s-3);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--fs-xs);
+  color: var(--c-ink-2);
+}
+.xr-speak__examiner {
+  display: flex;
+  gap: var(--s-4);
+  align-items: flex-start;
+}
+.xr-speak__avatar {
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  flex: none;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--skill-speaking) 16%, var(--c-surface));
+  font-size: 1.6rem;
+}
+.xr-speak__bubble {
+  flex: 1;
+  min-width: 0;
+  padding: var(--s-4) var(--s-5);
+  border-radius: 4px var(--r-lg) var(--r-lg) var(--r-lg);
+  background: var(--c-surface-2);
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-2);
+}
+.xr-speak__who {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s-2);
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  color: var(--c-ink-2);
+}
+.xr-speak__asking {
+  color: var(--skill-speaking);
+  font-weight: 600;
+}
+.xr-speak__question {
+  margin: 0;
+  font-size: calc(var(--fs-lg) * var(--exam-text-scale, 1));
+  font-weight: 600;
+  line-height: 1.45;
+}
+.xr-speak__cue span {
+  font-size: var(--fs-sm);
+  color: var(--c-ink-2);
+}
+.xr-speak__cue ul {
+  margin: 4px 0 0;
+  padding-left: var(--s-5);
+  font-size: calc(var(--fs-md) * var(--exam-text-scale, 1));
+}
+.xr-speak__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--s-2);
+}
+.xr-speak__prep {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-2);
+}
+.xr-speak__prep-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-3);
+}
+.xr-speak__prep-bar {
+  height: 6px;
+  border-radius: var(--r-pill);
+  background: var(--c-surface-2);
+  overflow: hidden;
+}
+.xr-speak__prep-bar span {
+  display: block;
+  height: 100%;
+  background: var(--skill-speaking);
+  transition: width 0.25s linear;
+}
+.xr-speak__prep-label {
+  margin-top: var(--s-2);
+  font-size: var(--fs-sm);
+  font-weight: 600;
+}
+.xr-speak__prep-notes {
+  min-height: 120px;
+  padding: var(--s-3);
+  border-radius: var(--r-md);
+  border: 1px solid var(--c-line-strong);
+  background: var(--c-surface);
+  color: var(--c-ink);
+  font: 400 var(--fs-md) / 1.5 var(--font-ui);
+  resize: vertical;
+}
+.xr-speak__prep-notes:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+.xr-speak__record {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-3);
+}
+.xr-speak__my-notes {
+  margin: 0;
+  padding: var(--s-2) var(--s-3);
+  border-radius: var(--r-sm);
+  background: var(--c-gold-soft);
+  font-size: var(--fs-sm);
+  white-space: pre-line;
+  display: flex;
+  gap: 6px;
+}
+.xr-speak__no-mic {
+  margin: 0;
+  padding: var(--s-3) var(--s-4);
+  border-radius: var(--r-md);
+  background: var(--c-gold-soft);
+  font-size: var(--fs-sm);
+}
+.xr-speak__moving {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--c-success-ink);
+  font-weight: 600;
+}
+.xr-speak-bar {
+  display: flex;
+  align-items: center;
+  gap: var(--s-4);
+  min-height: 60px;
+  padding: var(--s-2) var(--s-5);
+  border-top: 1px solid var(--c-line);
+  background: var(--c-surface);
+}
+.xr-speak-bar__parts {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  gap: var(--s-5);
+  flex: 1;
+  min-width: 0;
+}
+.xr-speak-bar__parts li {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+  color: var(--c-ink-2);
+}
+.xr-speak-bar__parts li.is-current {
+  color: var(--c-ink);
+}
+.xr-speak-bar__label {
+  font-size: var(--fs-sm);
+  font-weight: 700;
+}
+.xr-speak-bar__dots {
+  display: flex;
+  gap: 4px;
+}
+.xr-speak-bar__dots i {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--c-line-strong);
+}
+.xr-speak-bar__dots i.is-current {
+  background: var(--skill-speaking);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--skill-speaking) 25%, transparent);
+}
+.xr-speak-bar__dots i.is-done {
+  background: var(--c-success);
+}
+.xr-speak-bar__count {
+  font-size: var(--fs-sm);
+  font-weight: 700;
+  color: var(--c-ink-2);
+}
+
+/* ---------- màn chấm bài ---------- */
+.xr-grading {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: var(--s-9) var(--s-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-4);
+}
+.xr-grading__title {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  font-family: var(--font-display);
+  font-size: var(--fs-2xl);
+  font-weight: 800;
+  line-height: var(--lh-tight);
+}
+.xr-grading__spinner {
+  width: 22px;
+  height: 22px;
+}
+.xr-grading__intro {
+  margin: 0;
+  color: var(--c-ink-2);
+}
+.xr-steps {
+  list-style: none;
+  margin: var(--s-2) 0 0;
+  padding: var(--s-2);
+  border-radius: var(--r-lg);
+  border: 1px solid var(--c-line);
+  background: var(--c-surface);
+  box-shadow: var(--shadow-card);
+}
+.xr-step {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  padding: var(--s-3) var(--s-3);
+}
+.xr-step + .xr-step {
+  border-top: 1px solid var(--c-line);
+}
+.xr-step__icon {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  flex: none;
+  border-radius: 50%;
+  border: 1.5px solid var(--c-line-strong);
+  font-weight: 800;
+  font-size: var(--fs-sm);
+  color: var(--c-ink-2);
+}
+.xr-step.is-done .xr-step__icon {
+  background: var(--c-success);
+  border-color: var(--c-success);
+  color: #fff;
+}
+.xr-step.is-failed .xr-step__icon {
+  background: var(--c-oops-soft);
+  border-color: var(--c-oops);
+  color: var(--c-oops-ink);
+}
+.xr-step.is-running .xr-step__icon {
+  border-color: transparent;
+}
+.xr-step__spinner {
+  width: 18px;
+  height: 18px;
+}
+.xr-step__label {
+  flex: 1;
+  font-weight: 600;
+}
+.xr-step__state {
+  font-size: var(--fs-xs);
+  color: var(--c-ink-2);
+}
+.xr-step.is-done .xr-step__state {
+  color: var(--c-success-ink);
+}
+.xr-step.is-failed .xr-step__state {
+  color: var(--c-oops-ink);
+}
+.xr-grading__problem {
+  padding: var(--s-4);
+  border-radius: var(--r-md);
+  background: var(--c-oops-soft);
+}
+.xr-grading__problem p {
+  margin: var(--s-1) 0 var(--s-3);
+  font-size: var(--fs-sm);
+}
+.xr-grading__actions {
+  display: flex;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: var(--s-2);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .xr-listen__dot {
+    animation: none;
+  }
+  .xr-listen__bar span,
+  .xr-speak__prep-bar span {
+    transition: none;
+  }
+}
+
+@media (max-width: 1180px) {
+  .xr-frame__position {
+    display: none;
+  }
+}
+@media (max-width: 860px) {
+  .xr-part-banner,
+  .xr-task__prompt,
+  .xr-task__chart {
+    margin-left: var(--s-4);
+    margin-right: var(--s-4);
+  }
+  .xr-part-next,
+  .xr-write {
+    padding-left: var(--s-4);
+    padding-right: var(--s-4);
+  }
+  .xr-speak {
+    padding: var(--s-5) var(--s-3);
+  }
+  .xr-speak__card {
+    padding: var(--s-5);
+  }
+  .xr-speak-bar__parts {
+    gap: var(--s-3);
+  }
+  .xr-speak-bar__dots {
+    display: none;
+  }
+}
+
+/* ô viết kiểu máy thi: viền rõ để biết chỗ gõ (editor luyện tập của skill-writing không viền) */
+.xr-exam-writing__input.writing-editor__input {
+  padding: var(--s-4) var(--s-5);
+  border: 1px solid var(--c-line-strong);
+  border-radius: var(--r-md);
+  background: var(--c-surface);
+}
+.xr-exam-writing__input.writing-editor__input:focus-visible {
+  outline: none;
+  border-color: color-mix(in srgb, var(--c-navy) 55%, transparent);
+  box-shadow: var(--focus-ring);
+}

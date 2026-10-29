@@ -8,7 +8,9 @@ NGUYÊN TẮC CHUNG:
         m_white  : khoảng cách có dấu tới vùng lông trắng (âm = trong vùng trắng)
         m_inner  : vùng trong tai (hồng kem)
         m_mouth  : vùng trong miệng (đỏ sẫm)
-        m_brow   : mảng "lông mày" (chỉ concept B)
+        m_brow   : mảng "lông mày" (màu kem; góc nghiêng đổi theo biểu cảm)
+        m_pad    : đệm thịt hồng ở lòng bàn tay
+        m_blush  : má hồng phun sơn
         m_shade  : 0..1, càng lớn càng về phía lưng/đỉnh đầu → cam đậm hơn
       Shader dùng node Map Range (kiểu SMOOTHSTEP) trên các giá trị này → đường ranh màu SẮC NÉT,
       mượt (vì giá trị khoảng cách được nội suy tuyến tính giữa các đỉnh, đường 0 rất trơn).
@@ -127,11 +129,16 @@ def make_fur_vinyl(name, palette, edge=0.006, gloss=0.3, fur_bump=0.018, blush=0
     white_attr = nb.attr("m_white", -1400, 150)
     white_fac = nb.smooth_mask(white_attr.outputs["Factor"], -edge, edge, -1150, 150)
     col = nb.mix_color(white_fac, base, _rgba(palette["white"]), -900, 300)
-    # --- mảng lông mày (concept B) ---
+    # --- mảng lông mày (màu kem, nhô nhẹ — góc theo biểu cảm) ---
     if "brow" in palette:
         brow_attr = nb.attr("m_brow", -1400, -50)
         brow_fac = nb.smooth_mask(brow_attr.outputs["Factor"], -edge, edge, -1150, -50)
         col = nb.mix_color(brow_fac, col, _rgba(palette["brow"]), -700, 250)
+    # --- đệm thịt hồng ở lòng bàn tay ("hạt đậu") ---
+    if "pad" in palette:
+        pad_attr = nb.attr("m_pad", -1400, -350)
+        pad_fac = nb.smooth_mask(pad_attr.outputs["Factor"], -0.003, 0.003, -1150, -350)
+        col = nb.mix_color(pad_fac, col, _rgba(palette["pad"]), -550, 180)
     # --- má hồng phun sơn: chuyển rất mềm (ranh rộng 4 cm), trộn tối đa `blush` ---
     if blush > 0:
         blush_attr = nb.attr("m_blush", -1400, -150)
@@ -168,7 +175,7 @@ def make_fur_vinyl(name, palette, edge=0.006, gloss=0.3, fur_bump=0.018, blush=0
 
     p = nb.principled(
         Roughness=0.42, Coat_Weight=gloss, Coat_Roughness=0.28,
-        Subsurface_Weight=0.07, Subsurface_Radius=(1.0, 0.45, 0.25), Subsurface_Scale=0.008,
+        Subsurface_Weight=0.05, Subsurface_Radius=(1.0, 0.45, 0.25), Subsurface_Scale=0.008,
         Sheen_Weight=0.25, Sheen_Roughness=0.45, Sheen_Tint=(1.0, 0.85, 0.7, 1.0),
         Specular_IOR_Level=0.45,
     )
@@ -335,7 +342,20 @@ def make_eye(name, style, iris_color=(0.16, 0.05, 0.012), iris_radius=0.05, pupi
     if emit is not None:
         strength = nb.math("MULTIPLY", emit, 0.6, 300, -700)
         nb.link(strength, p.inputs["Emission Strength"])
+    # QUAN TRỌNG cho tốc độ: không coi mắt là "nguồn sáng". Nếu để mặc định (Auto), Cycles biến MỖI tam
+    # giác của mắt thành 1 đèn nhỏ và phải dựng "cây đèn" (light tree) cho hàng trăm nghìn tam giác
+    # → mỗi lần đổi cảnh mất thêm ~1 phút. Đốm sáng vẫn hiện bình thường khi camera nhìn thấy.
+    _no_emission_sampling(mat)
     return mat
+
+
+def _no_emission_sampling(mat):
+    for owner in (mat, getattr(mat, "cycles", None)):
+        if owner is not None and hasattr(owner, "emission_sampling"):
+            owner.emission_sampling = "NONE"
+            return True
+    print(f"[materials] không tìm thấy emission_sampling cho {mat.name}")
+    return False
 
 
 def assign(obj, mat):
