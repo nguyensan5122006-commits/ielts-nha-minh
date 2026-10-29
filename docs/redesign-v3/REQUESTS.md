@@ -127,7 +127,7 @@ cũ hỏng. `tts:v3` tự vá khi chạy nên vẫn tạo được audio; nâng 
 ## Nhóm ONBOARDING (landing, /start, /start/result, /login, /signup) → mọi nhóm
 
 ### Vite treo — ĐÃ XỬ LÝ trong `vite.config.ts` (điều phối viên)
-Trước đây Vite theo dõi cả thư mục dự án nên treo trên file bị khoá (`_research/profiles/*`, `.wrangler/state`…).
+Trước đây Vite theo dõi cả thư mục dự án nên treo trên file bị khoá (`docs/research/profiles/*`, `.wrangler/state`…).
 `vite.config.ts` chung giờ đã bỏ qua các thư mục đó — chỉ cần khởi động lại Vite. (File cấu hình riêng tạm thời của
 onboarding `node_modules/.cache/vite-onboarding/vite.config.mjs` không còn cần.)
 
@@ -234,7 +234,7 @@ ngoài `LayoutWithNavigation` — khu trẻ em toàn màn hình). Vui lòng gi�
 
 ### 6. Ghi chú chạy thử
 - Cổng trình duyệt 9322 được giao cho nhóm này đang bị 1 `static-server.mjs` của nhóm khác chiếm → kids-zone dùng 9326 (Vite 5179).
-- (Đã xong — nhóm nền móng đã cho `vite.config.ts` bỏ theo dõi `_research/` …) Vite trước đó rất chậm vì theo dõi hồ sơ trình duyệt của mọi nhóm.
+- (Đã xong — nhóm nền móng đã cho `vite.config.ts` bỏ theo dõi `docs/research/` …) Vite trước đó rất chậm vì theo dõi hồ sơ trình duyệt của mọi nhóm.
 
 ---
 
@@ -414,11 +414,11 @@ Trình duyệt headless không có micro: không tham số thì `.su-mic` nghe 7
 
 ### 5. Ghi chú kỹ thuật
 - **Không dùng nhận diện giọng ngay trên máy** (`processLocally`): gọi `SpeechRecognition.available()` làm **treo hẳn trang** trên Chrome 141 headless
-  → quá rủi ro. Đang dùng Web Speech API thường (Chrome gửi âm thanh lên máy chủ Google) — liên quan câu hỏi #6 trong `_research/OPEN-QUESTIONS.md`.
+  → quá rủi ro. Đang dùng Web Speech API thường (Chrome gửi âm thanh lên máy chủ Google) — liên quan câu hỏi #6 trong `docs/research/OPEN-QUESTIONS.md`.
   Micro chỉ được xin khi bé bấm nút; bản ghi tự nghe lại chỉ nằm trong bộ nhớ (`blob:`), rời câu là xoá.
 - `services/speech-recognition.ts` (người lớn) để `maxAlternatives = 3`, `en-US` → trò Nói có bản riêng `speak-unlock/speech-recognizer.ts`
   (6 phương án, en-GB, phân loại lỗi, hẹn giờ dự phòng). Nếu muốn gộp: cho hàm chung nhận `{ lang, maxAlternatives }`.
-- Công cụ trình duyệt chung (`_research/tools/browser-server.mjs`) chưa đổi được kích thước / chế độ tối → nhóm dùng bản riêng có thêm
+- Công cụ trình duyệt chung (`(công cụ trình duyệt research — đã xoá 29/10)`) chưa đổi được kích thước / chế độ tối → nhóm dùng bản riêng có thêm
   `viewport`, `scheme`, `motion` (scratchpad `kg68-browser.mjs`). Vite riêng có `cacheDir` riêng: `node_modules/.cache/vite-kg68/vite.config.mjs`.
 - ĐÃ LÀM `wordFilter` (cả nhóm trò 2–5 và 6–8 cùng xin): `KidsGameDefinition.wordFilter?` → `KidsPlayPage` → `GameRoundShell` → `buildRound`.
   Chủ đề không còn từ nào qua bộ lọc → `buildRound` tự đổi sang chủ đề đầu tiên có từ hợp. Trò Tô màu đã dùng: chỉ từ có nhãn
@@ -497,7 +497,7 @@ Tài khoản test: `qa_exam_1` (tên đăng nhập không nhận dấu `-`).
    <link rel="apple-touch-icon" href="/mascot/head/head-192.png" />
    ```
    Giữ `favicon.svg` làm dự phòng. Nếu có `manifest.webmanifest` thì thêm icon `head-192.png` và `head-512.png`.
-   Chủ nhà chưa quyết (`_research/OPEN-QUESTIONS.md` dòng 19).
+   Chủ nhà chưa quyết (`docs/research/OPEN-QUESTIONS.md` dòng 19).
 3. **Dung lượng:** ảnh 512 px mỗi pose < 80 KB (WebP), 256 px < 28 KB. `Mascot.tsx` đã chọn file theo `srcSet`, rất hợp.
 4. **Chưa có** (để sau): `mascot.glb` + hoạt cảnh, `turnaround/`, `outfits/`, `stickers/`, `anim/*.webm`.
    `MascotModel` vẫn hiện ảnh `salute` làm poster như đang thiết kế.

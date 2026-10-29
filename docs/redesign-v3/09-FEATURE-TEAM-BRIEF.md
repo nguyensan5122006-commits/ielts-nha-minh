@@ -6,8 +6,8 @@
 3. `docs/redesign-v3/03-DATA-LAYER.md` — API của progress store, selectors, migration (DÙNG CÁI NÀY, đừng tự lưu tiến độ).
 4. `docs/redesign-v3/05-COMPONENTS.md` (nếu đã có) + `src/design-system/components/*` — DÙNG component có sẵn; thiếu thì làm bản nhỏ trong thư mục mình và ghi vào `REQUESTS.md`.
 5. `docs/redesign-v3/02-CONTENT-GUIDE.md` (cuối file có quy ước hiển thị: canDo, matching, YNNG, pre-line, fading…).
-6. Ghi chú research liên quan tới phần mình trong `_research/notes/` (mục "10 ý tưởng") + mở vài ảnh trong `_research/shots/` bằng Read để thấy tận mắt. Chỉ lấy ý tưởng, làm lại theo phong cách của mình — không chép giao diện.
-7. `_research/notes/psych-adult.md` mục D (luật thiết kế kiểm thử được) — tuân theo.
+6. Ghi chú research liên quan tới phần mình trong `docs/research/notes/` (mục "10 ý tưởng") + mở vài ảnh trong `(ảnh chụp research — đã xoá 29/10)` bằng Read để thấy tận mắt. Chỉ lấy ý tưởng, làm lại theo phong cách của mình — không chép giao diện.
+7. `docs/research/notes/psych-adult.md` mục D (luật thiết kế kiểm thử được) — tuân theo.
 
 ## Quy tắc
 - Chỉ sửa trong thư mục mình sở hữu (`src/features/<tên>/`). Route: tạo `src/features/<tên>/<tên>-routes.tsx`; cuối cùng đọc lại `src/app/App.tsx` và thêm route bằng 1 sửa nhỏ (file này nhiều nhóm cùng sửa — luôn đọc lại ngay trước khi sửa).
@@ -22,7 +22,7 @@
 - API dùng chung đã chạy sẵn ở `http://127.0.0.1:8788` (wrangler pages dev, D1 local đã migrate 0003). KHÔNG tự chạy thêm wrangler (2 tiến trình chung SQLite sẽ lỗi SQLITE_BUSY). Nếu 8788 không trả lời, ghi vào REQUESTS.md và báo trong kết quả.
 - Mỗi nhóm tự chạy Vite riêng ở cổng riêng: `npx vite --port <cổng của bạn> --strictPort` (proxy /api → 8788 có sẵn trong vite.config.ts).
 - Tài khoản test: đăng ký qua giao diện hoặc `curl -s http://127.0.0.1:8788/api/auth/register -H 'content-type: application/json' -d '{"username":"<ten>","displayName":"<Tên>","password":"<mk>","inviteCode":"<INVITE_CODE trong .dev.vars>"}'` (không còn `ageGroup` — mọi tài khoản như nhau). Đặt username có tiền tố nhóm (VD `qa-path-1`).
-- Trình duyệt riêng: `node E:/IELTS_ThienThao/_research/tools/browser-server.mjs <tên-nhóm> <cổng-trình-duyệt> desktop` (cách dùng ở đầu file). Script phụ để trong thư mục scratchpad RIÊNG có tên nhóm (đừng dùng tên chung như b.sh — các agent từng ghi đè nhau).
+- Trình duyệt riêng: `node E:/IELTS_ThienThao/(công cụ trình duyệt research — đã xoá 29/10) <tên-nhóm> <cổng-trình-duyệt> desktop` (cách dùng ở đầu file). Script phụ để trong thư mục scratchpad RIÊNG có tên nhóm (đừng dùng tên chung như b.sh — các agent từng ghi đè nhau).
 - NHÌN BẰNG MẮT: chụp màn hình từng trạng thái (light + dark, 1440 + 1100), mở bằng Read, sửa tới khi thật sự đẹp, gọn, rõ bước tiếp theo, không tràn chữ, tương phản đủ.
 
 ## Bảng cổng

@@ -4,7 +4,7 @@
  * Thuật toán FSRS cho mỗi thẻ 1 con số "độ bền trí nhớ" (stability, tính bằng ngày):
  * ở mức nhớ mục tiêu 90%, độ bền ≈ khoảng cách tới lần ôn sau. Con số này khó hiểu với
  * người học, nên ta chia nó thành 5 nấc dễ nhìn (ý tưởng "Thời điểm vàng" của Mochi,
- * _research/notes/ui-vn-b.md ý 1; tên nấc theo 04-DESIGN-SYSTEM.md):
+ * docs/research/notes/ui-vn-b.md ý 1; tên nấc theo 04-DESIGN-SYSTEM.md):
  *
  *   1 Mới gặp   — thẻ chưa ôn lần nào / vừa quên / độ bền < 1 ngày
  *   2 Quen mặt  — độ bền 1–4 ngày

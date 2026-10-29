@@ -7,7 +7,7 @@
  *   topRepeatedWords(text)      3 từ nội dung bị lặp nhiều nhất (≥ 3 lần)
  *   paragraphRoles(paras, kind) gắn nhãn vai trò cho từng đoạn: Mở bài / Overview / Thân bài 1… (kiểu Writing9)
  *   writingKindOf(task)         đề này là "báo cáo biểu đồ", "thư/email" hay "bài luận"
- * Ý tưởng: _research/notes/ui-ielts-ai.md ý 4 (thước đo trong editor) và ý 6 (nhãn đoạn).
+ * Ý tưởng: docs/research/notes/ui-ielts-ai.md ý 4 (thước đo trong editor) và ý 6 (nhãn đoạn).
  * ----------------------------------------------------------------------------
  */
 import type { WritingTask } from '../../content/content-types'

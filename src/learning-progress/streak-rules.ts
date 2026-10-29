@@ -1,7 +1,7 @@
 /**
  * streak-rules.ts
  * ----------------------------------------------------------------------------
- * LUẬT CHUỖI NGÀY HỌC (streak) — theo _research/notes/psych-adult.md mục A10 + D7.
+ * LUẬT CHUỖI NGÀY HỌC (streak) — theo docs/research/notes/psych-adult.md mục A10 + D7.
  *
  *  1. Chuỗi +1 khi trong ngày có ≥ 1 bài học HOẶC 1 phiên ôn thẻ trọn vẹn (hoặc làm 1 bài thi).
  *     (Chơi game, xem thẻ Học vui KHÔNG tính — chúng vẫn có XP và nhiệm vụ riêng.)

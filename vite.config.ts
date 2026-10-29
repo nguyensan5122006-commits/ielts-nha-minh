@@ -41,7 +41,7 @@ export default defineConfig({
     // Không theo dõi các thư mục làm việc phụ (ảnh research, hồ sơ Chrome, file Blender, bản build):
     // chúng thay đổi liên tục và làm dev server rất chậm.
     watch: {
-      ignored: ['**/_research/**', '**/art-blender/**', '**/dist/**', '**/.wrangler/**', '**/public/audio/**'],
+      ignored: ['**/docs/research/**', '**/private/**', '**/art-blender/**', '**/dist/**', '**/.wrangler/**', '**/public/audio/**'],
     },
   },
 })

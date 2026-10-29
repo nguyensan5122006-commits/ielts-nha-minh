@@ -2,7 +2,7 @@
  * SelfCheckPanel.tsx — TỰ CHẤM THEO 4 TIÊU CHÍ (dùng chung Writing + Speaking)
  * ----------------------------------------------------------------------------
  * psych-adult D9 luật 37: "tự chấm trước, AI chấm sau". Mỗi câu hỏi checklist có 3 lựa chọn
- * Có / Một phần / Chưa (ý 3 trong _research/notes/ui-ielts-ai.md). Band từng tiêu chí và band chung
+ * Có / Một phần / Chưa (ý 3 trong docs/research/notes/ui-ielts-ai.md). Band từng tiêu chí và band chung
  * tính bằng công thức minh bạch trong band-scale.selfBandFromChecklist — công thức in ngay dưới kết quả.
  * Track general: hiện nhãn "Cơ bản / Tốt / Rất tốt" thay số.
  * ----------------------------------------------------------------------------

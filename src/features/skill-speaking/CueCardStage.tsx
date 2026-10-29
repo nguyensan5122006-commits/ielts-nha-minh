@@ -1,5 +1,5 @@
 /**
- * CueCardStage.tsx — PART 2: THẺ ĐỀ 3 PHA (ý 1 trong _research/notes/ui-ielts-ai.md, LingoLeap)
+ * CueCardStage.tsx — PART 2: THẺ ĐỀ 3 PHA (ý 1 trong docs/research/notes/ui-ielts-ai.md, LingoLeap)
  * ----------------------------------------------------------------------------
  *   Sẵn sàng    : đọc thẻ đề (nghe được bằng giọng máy) -> nút "Bắt đầu 1 phút chuẩn bị"
  *   Chuẩn bị 1:00: đồng hồ số to ở góc thẻ + thanh mảnh chạy; Ô GHI CHÚ từ khoá bên cạnh

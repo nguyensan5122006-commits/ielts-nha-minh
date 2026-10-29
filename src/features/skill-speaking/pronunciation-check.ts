@@ -1,7 +1,7 @@
 /**
  * pronunciation-check.ts — CHỌN CÂU LUYỆN ÂM MỤC TIÊU + TÔ MÀU TỪNG TỪ 3 MỨC
  * ----------------------------------------------------------------------------
- * Ý 3 trong _research/notes/ui-vn-b.md (ELSA): mỗi từ 1 màu — Đúng / Gần đúng / Chưa đúng,
+ * Ý 3 trong docs/research/notes/ui-vn-b.md (ELSA): mỗi từ 1 màu — Đúng / Gần đúng / Chưa đúng,
  * KHÔNG hiện % trên từng từ (ui-ielts-ai.md, Tránh 5). Tên riêng tiếng Việt (Da Lat, Hanoi…)
  * không chấm, vì máy nhận dạng tiếng Anh luôn nghe sai (Tránh 11).
  *

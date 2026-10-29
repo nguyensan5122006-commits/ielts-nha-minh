@@ -1,7 +1,7 @@
 /**
  * WritingEditor.tsx — KHUNG VIẾT BÀI: yên tĩnh, không viền, giãn dòng thoáng
  * ----------------------------------------------------------------------------
- * Ý 4 trong _research/notes/ui-ielts-ai.md: thước đo ngay trong editor (không cần AI):
+ * Ý 4 trong docs/research/notes/ui-ielts-ai.md: thước đo ngay trong editor (không cần AI):
  *   - thanh số từ: cam khi còn thiếu -> XANH khi đạt minWords -> vàng nhắc khi quá dài
  *   - số đoạn · số từ nối (bấm xem đã dùng những từ nào) · top 3 từ lặp
  *   - "Đang lưu… / Đã lưu" (trình cha lưu nháp bằng useProgress().saveDraft)

@@ -1,7 +1,7 @@
 /**
  * use-microphone.ts — QUYỀN MICRO + "TAI NGHE" ÂM LƯỢNG ĐỂ VẼ SÓNG ÂM
  * ----------------------------------------------------------------------------
- * Trạng thái micro (ý 7 trong _research/notes/ui-ielts-ai.md — xin quyền có giải thích trước,
+ * Trạng thái micro (ý 7 trong docs/research/notes/ui-ielts-ai.md — xin quyền có giải thích trước,
  * không bật hộp thoại bất ngờ):
  *   'checking'    đang hỏi trình duyệt đã cho phép chưa
  *   'prompt'      chưa cho phép -> hiện thẻ giải thích + nút "Cho phép dùng micro"

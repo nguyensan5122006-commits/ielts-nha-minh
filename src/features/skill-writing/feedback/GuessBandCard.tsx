@@ -1,7 +1,7 @@
 /**
  * GuessBandCard.tsx — TRÒ "ĐOÁN BAND BÀI MẪU" (dùng chung Writing + Speaking)
  * ----------------------------------------------------------------------------
- * Ý 7 trong _research/notes/ui-ielts-a.md: đọc bài mẫu GIẤU band -> tự đoán -> lật đáp án
+ * Ý 7 trong docs/research/notes/ui-ielts-a.md: đọc bài mẫu GIẤU band -> tự đoán -> lật đáp án
  * kèm nhận xét giám khảo. Luyện "con mắt giám khảo" trước khi xem bài mẫu đặt cạnh bài mình.
  * Component chỉ vẽ; trạng thái (bài nào, đã chọn gì) do trình cha giữ để lưu resume. Phím 1–3 = chọn.
  * ----------------------------------------------------------------------------

@@ -6,7 +6,7 @@
  *   - Track IELTS: mốc band 0 · 2.0 · 4.0 · 6.5
  *   - Track tổng quát: mốc CEFR Pre-A1 · A1 · A2 · B2 — không nói "band"
  * Không bao giờ hiện 1 con số band lẻ cho người học (psych-adult D6.23) — chỉ vị trí trên thang.
- * Ý tưởng: _research/notes/ui-ielts-b.md ý 9 (band hiện tại vs mục tiêu), ui-vn-a.md ý 2.
+ * Ý tưởng: docs/research/notes/ui-ielts-b.md ý 9 (band hiện tại vs mục tiêu), ui-vn-a.md ý 2.
  * ----------------------------------------------------------------------------
  */
 import type { LevelId, TrackId } from '../../../content/content-types'

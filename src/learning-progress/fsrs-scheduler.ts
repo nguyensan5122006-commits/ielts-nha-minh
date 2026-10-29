@@ -7,7 +7,7 @@
  * (stability, tính bằng ngày). Ôn đúng lúc sắp quên thì trí nhớ bền thêm nhiều nhất.
  * FSRS tự tính lần ôn tiếp theo sao cho xác suất còn nhớ ≈ 90% (retention 0.90).
  *
- * Cấu hình (theo _research/notes/psych-adult.md mục A2 + D8):
+ * Cấu hình (theo docs/research/notes/psych-adult.md mục A2 + D8):
  *   - desiredRetention 0.90, maximumInterval 365 ngày, fuzz bật (tránh dồn thẻ vào 1 ngày)
  *   - 2 nút "Quên / Nhớ"  = Again / Good  (Level 1–2)
  *   - 4 nút "Quên / Khó / Nhớ / Dễ" = Again / Hard / Good / Easy (Level 3)

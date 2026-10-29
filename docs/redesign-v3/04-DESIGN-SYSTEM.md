@@ -2,7 +2,7 @@
 
 > Chủ nhà chọn phong cách **"vui nhộn kiểu game"**. Nhưng phải **khác Duolingo rõ rệt** (không xanh lá chanh, không font tròn kiểu Feather, không nút "đế dày" border-bottom kiểu Duo, không đường đi zigzag vòng tròn y hệt).
 > Ý tưởng chủ đạo: **"Vinyl Toy UI" + "Tuần tra học tập"** — mọi thứ mềm, tròn, bóng nhẹ như đồ chơi vinyl (khớp mascot Corgi vinyl), và câu chuyện "cún cảnh sát tuần tra cùng bạn qua các trạm học".
-> Nguồn ý tưởng: `_research/notes/*.md` (Mochi: khung phản hồi + mascot ló đầu; Khan: thang gợi ý, sai không tô đỏ; ELSA: tô màu phát âm 3 mức; Cambridge W&I: thanh đếm từ, tab so sánh bản nháp; LingoLeap: cue card 3 pha; Brilliant: onboarding 1 câu/màn; DataCamp: thanh kỹ năng quanh vạch mục tiêu).
+> Nguồn ý tưởng: `docs/research/notes/*.md` (Mochi: khung phản hồi + mascot ló đầu; Khan: thang gợi ý, sai không tô đỏ; ELSA: tô màu phát âm 3 mức; Cambridge W&I: thanh đếm từ, tab so sánh bản nháp; LingoLeap: cue card 3 pha; Brilliant: onboarding 1 câu/màn; DataCamp: thanh kỹ năng quanh vạch mục tiêu).
 
 ## 1. Màu (CSS custom properties trong `src/design-system/tokens.css`)
 

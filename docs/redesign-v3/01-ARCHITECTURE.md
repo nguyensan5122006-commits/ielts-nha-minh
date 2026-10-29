@@ -2,7 +2,7 @@
 
 > Tài liệu "hợp đồng" chung cho mọi nhóm (code, nội dung, 3D, kiểm thử).
 > Quyết định của chủ nhà: xem `C:\Users\San\.claude\projects\E--IELTS-ThienThao\memory\ielts-family-site.md` (phần Redesign v3).
-> Nghiên cứu: `E:\IELTS_ThienThao\_research\notes\*.md` (đặc biệt `psych-adult.md` mục D).
+> Nghiên cứu: `E:\IELTS_ThienThao\docs\research\notes\*.md` (đặc biệt `psych-adult.md` mục D).
 >
 > **Cập nhật 29/10/2026 — chủ nhà thu hẹp phạm vi.** Web còn: track IELTS + Tiếng Anh tổng quát, phòng thi, chat,
 > 3 trò chơi chữ (Thử thách từ mỗi ngày `/daily-word`, Spelling Bee `/games/spelling`, Nối từ `/games/word-chain`),
@@ -262,4 +262,4 @@ Mọi file có comment đầu file bằng tiếng Việt giải thích vai trò 
 
 ## 8. Việc để trống / hỏi lại chủ nhà
 
-Ghi vào `E:\IELTS_ThienThao\_research\OPEN-QUESTIONS.md`.
+Ghi vào `E:\IELTS_ThienThao\docs\research\OPEN-QUESTIONS.md`.

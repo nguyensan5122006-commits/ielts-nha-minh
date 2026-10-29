@@ -4,7 +4,7 @@
  * BÀI XẾP LỚP THÍCH ỨNG v3 — ngân hàng 60 câu + thuật toán chọn câu + chấm kết quả.
  * (Thay cho placement-test.ts cũ 30 câu / 20 phút. File cũ giữ nguyên để không vỡ dữ liệu cũ.)
  *
- * Nguồn luật: _research/notes/psych-adult.md D2 (≤ 12 câu, ≤ 5–6 phút, kết quả = CEFR + khoảng band)
+ * Nguồn luật: docs/research/notes/psych-adult.md D2 (≤ 12 câu, ≤ 5–6 phút, kết quả = CEFR + khoảng band)
  * và A15 (người mới hay lo lắng: không đồng hồ, không "buzz", mở đầu bằng thành công).
  *
  * NGÂN HÀNG CÂU (PLACEMENT_V3_ITEMS) — 60 câu, 7 mức độ khó × 4 kỹ năng:

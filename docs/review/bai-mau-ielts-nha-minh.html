@@ -1,0 +1,2560 @@
+<title>Bài Mẫu IELTS Nhà Mình</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700&family=Be+Vietnam+Pro:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
+<style>
+/* Bố cục: mục lục 6 bài dính bên trái + cột đọc ~70 ký tự bên phải; điện thoại: mục lục thành hàng chip cuộn ngang.
+   Màu + font lấy từ hệ thiết kế của web (src/design-system/tokens.css) để bài mẫu trông như trong web thật. */
+:root {
+  --bg: #fff8ee; --surface: #ffffff; --surface-2: #fff1dd; --ink: #1e2347; --muted: #5d6286; --line: #ecdcc4;
+  --navy: #2b3a8f; --navy-soft: #e6e9f8; --ok: #13804f; --ok-soft: #e3f5ea; --warn-soft: #fff1dd;
+  --listening: #2e9bf0; --reading: #8b5cf6; --writing: #f0568c; --speaking: #13b5a5; --vocabulary: #f5a623;
+  --font-display: "Baloo 2", "Be Vietnam Pro", system-ui, sans-serif;
+  --font-body: "Be Vietnam Pro", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-read: "Source Serif 4", Georgia, "Times New Roman", serif;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #0e1330; --surface: #171d40; --surface-2: #20285a; --ink: #f4f1ff; --muted: #a9acd0; --line: #2c3570;
+  --navy: #9aa6ff; --navy-soft: #252f6b; --ok: #5fd39a; --ok-soft: #173a33; --warn-soft: #2a2550;
+  --listening: #5cb4ff; --reading: #a78bfa; --writing: #ff7aa8; --speaking: #3fd3c3; --vocabulary: #ffbf4d; color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --bg: #0e1330; --surface: #171d40; --surface-2: #20285a; --ink: #f4f1ff; --muted: #a9acd0; --line: #2c3570;
+  --navy: #9aa6ff; --navy-soft: #252f6b; --ok: #5fd39a; --ok-soft: #173a33; --warn-soft: #2a2550;
+  --listening: #5cb4ff; --reading: #a78bfa; --writing: #ff7aa8; --speaking: #3fd3c3; --vocabulary: #ffbf4d; color-scheme: dark; }
+
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font: 15px/1.6 var(--font-body); }
+.page { max-width: 1180px; margin: 0 auto; padding-block: 28px 64px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+header.intro { max-width: 760px; margin-bottom: 28px; }
+.eyebrow { font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+h1 { font: 700 34px/1.15 var(--font-display); margin: 4px 0 10px; text-wrap: balance; }
+.intro p { margin: 0 0 8px; color: var(--muted); max-width: 66ch; }
+.how { display: flex; flex-wrap: wrap; gap: 8px 18px; margin-top: 12px; font-size: 14px; }
+.how span { display: inline-flex; gap: 6px; align-items: baseline; }
+.how b { color: var(--ink); }
+
+.layout { display: grid; grid-template-columns: 250px minmax(0, 1fr); gap: 36px; align-items: start; }
+nav.toc { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 16px); display: grid; gap: 6px; }
+nav.toc a { display: grid; grid-template-columns: 26px 1fr; gap: 10px; align-items: center; padding: 9px 10px; border-radius: 10px; color: var(--ink); text-decoration: none; }
+nav.toc a:hover, nav.toc a:focus-visible { background: var(--surface-2); outline: none; }
+nav.toc a:focus-visible { box-shadow: 0 0 0 2px var(--navy); }
+.toc-num { width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center; font: 700 13px var(--font-body); color: #fff; background: var(--skill); }
+.toc-text { min-width: 0; font-size: 13px; line-height: 1.35; }
+.toc-text small { display: block; color: var(--muted); font-size: 11.5px; }
+
+main { display: grid; gap: 56px; min-width: 0; }
+section.lesson { scroll-margin-top: 16px; min-width: 0; }
+.lesson-head { border-left: 5px solid var(--skill); padding-left: 16px; margin-bottom: 20px; }
+.lesson-head h2 { font: 700 28px/1.2 var(--font-display); margin: 2px 0 4px; text-wrap: balance; }
+.lesson-head .en { color: var(--muted); font-size: 14px; }
+.meta { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+.pill { font-size: 12px; font-weight: 600; padding: 3px 10px; border-radius: 999px; background: var(--surface-2); color: var(--ink); font-variant-numeric: tabular-nums; }
+.pill.skill { background: var(--skill); color: #fff; }
+.desc { margin: 10px 0 0; max-width: 68ch; }
+
+h3 { font: 700 13px var(--font-body); letter-spacing: .07em; text-transform: uppercase; color: var(--muted); margin: 28px 0 10px; }
+.cards { display: grid; gap: 12px; }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 16px 18px; }
+.card h4 { margin: 0 0 6px; font-size: 16px; }
+.card .body { white-space: normal; }
+.examples { margin: 10px 0 0; padding: 0; list-style: none; display: grid; gap: 6px; }
+.examples li { background: var(--surface-2); border-radius: 8px; padding: 6px 10px; font-size: 14px; }
+.examples li i { color: var(--muted); font-style: normal; display: block; font-size: 13px; }
+
+.words { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 10px; }
+.word { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; font-size: 14px; }
+.word b { font-size: 16px; }
+.word .ipa { color: var(--muted); font-size: 13px; }
+
+.reading { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 20px 22px; font: 16.5px/1.7 var(--font-read); max-width: 72ch; }
+.reading h4 { font: 600 19px var(--font-read); margin: 0 0 10px; }
+.reading p { margin: 0 0 12px; }
+.para-label { font: 700 12px var(--font-body); color: var(--skill); margin-right: 6px; }
+.transcript { display: grid; gap: 8px; max-width: 72ch; }
+.line { display: grid; grid-template-columns: 92px minmax(0, 1fr); gap: 10px; font: 15.5px/1.6 var(--font-read); }
+.line .who { font: 600 12.5px/1.9 var(--font-body); color: var(--muted); text-align: right; }
+.seg-break { border-top: 1px dashed var(--line); margin: 6px 0; }
+.note { background: var(--warn-soft); border-radius: 12px; padding: 10px 14px; font-size: 14px; max-width: 72ch; }
+.note b { display: block; font-size: 12px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+
+ol.items { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; counter-reset: item; }
+ol.items > li { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 12px 16px 12px 52px; position: relative; counter-increment: item; min-width: 0; }
+ol.items > li::before { content: counter(item); position: absolute; left: 14px; top: 12px; width: 26px; height: 26px; border-radius: 8px; background: var(--navy-soft); color: var(--navy); font: 700 13px/26px var(--font-body); text-align: center; font-variant-numeric: tabular-nums; }
+ol.items.task > li::before { content: attr(data-n); }
+.kind { font-size: 11.5px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+.q { margin: 2px 0 6px; overflow-wrap: anywhere; }
+.opts { display: flex; flex-wrap: wrap; gap: 6px; margin: 4px 0 6px; padding: 0; list-style: none; }
+.opts li { border: 1px solid var(--line); border-radius: 8px; padding: 3px 10px; font-size: 14px; }
+.opts li.right { border-color: var(--ok); background: var(--ok-soft); color: var(--ok); font-weight: 600; }
+.answer { font-size: 14px; color: var(--ok); font-weight: 600; overflow-wrap: anywhere; }
+.answer span { color: var(--muted); font-weight: 500; }
+.why { font-size: 13.5px; color: var(--muted); margin-top: 4px; overflow-wrap: anywhere; }
+.pairs { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 4px 14px; font-size: 14px; margin: 4px 0; }
+.audio { font: 15px/1.5 var(--font-read); background: var(--surface-2); border-radius: 8px; padding: 6px 10px; margin: 4px 0 6px; overflow-wrap: anywhere; }
+.audio::before { content: "Nghe: "; font: 600 12px var(--font-body); color: var(--muted); }
+
+.prompt { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 18px 20px; font: 16px/1.65 var(--font-read); max-width: 72ch; }
+.chart-wrap { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 14px; margin-top: 12px; max-width: 72ch; }
+.chart-wrap svg { width: 100%; height: auto; display: block; }
+.chart-wrap .ttl { font-size: 13px; font-weight: 600; margin: 0 0 6px; }
+.legend { display: flex; gap: 14px; flex-wrap: wrap; font-size: 12.5px; color: var(--muted); margin-top: 4px; }
+.legend i { display: inline-block; width: 14px; height: 3px; border-radius: 2px; vertical-align: middle; margin-right: 5px; }
+.table-scroll { overflow-x: auto; margin-top: 10px; }
+table { border-collapse: collapse; font-size: 13px; font-variant-numeric: tabular-nums; }
+th, td { border-bottom: 1px solid var(--line); padding: 5px 10px; text-align: right; white-space: nowrap; }
+th:first-child, td:first-child { text-align: left; }
+details.sample { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 10px 16px; max-width: 72ch; }
+details.sample + details.sample { margin-top: 8px; }
+details.sample summary { cursor: pointer; font-weight: 600; }
+details.sample summary:focus-visible { outline: 2px solid var(--navy); outline-offset: 3px; border-radius: 4px; }
+details.sample .txt { font: 15.5px/1.7 var(--font-read); white-space: pre-line; margin-top: 8px; }
+.band { display: inline-block; min-width: 38px; text-align: center; border-radius: 6px; background: var(--navy-soft); color: var(--navy); font-size: 12.5px; padding: 1px 6px; margin-right: 6px; font-variant-numeric: tabular-nums; }
+.check { display: grid; gap: 8px; max-width: 72ch; }
+.check div { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 10px 14px; font-size: 14px; }
+.check ul { margin: 4px 0 0; padding-left: 18px; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chips span { background: var(--surface-2); border-radius: 8px; padding: 3px 10px; font-size: 14px; }
+.feedback { margin-top: 22px; background: var(--navy-soft); color: var(--ink); border-radius: 12px; padding: 12px 16px; font-size: 14px; max-width: 72ch; }
+
+@media (max-width: 860px) {
+  .layout { grid-template-columns: minmax(0, 1fr); gap: 20px; }
+  nav.toc { position: static; display: flex; overflow-x: auto; gap: 6px; padding-bottom: 4px; }
+  nav.toc a { grid-template-columns: 26px auto; flex: 0 0 auto; background: var(--surface); border: 1px solid var(--line); }
+  .toc-text small { display: none; }
+  h1 { font-size: 28px; }
+  .line { grid-template-columns: minmax(0, 1fr); gap: 0; }
+  .line .who { text-align: left; }
+}
+@media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } }
+</style>
+
+<div class="page">
+  <header class="intro">
+    <div class="eyebrow">IELTS Nhà Mình · nội dung v3</div>
+    <h1>6 bài mẫu để duyệt</h1>
+    <p>Mỗi track và level một bài, lấy nguyên văn từ code. Đáp án đúng được tô xanh, kèm giải thích người học sẽ thấy sau khi trả lời.</p>
+    <div class="how">
+      <span><b>Xem gì:</b> câu chữ có tự nhiên không, độ khó có vừa level không, giải thích có dễ hiểu không.</span>
+      <span><b>Góp ý:</b> nhắn trong chat, ví dụ "Bài 3, câu 5: đáp án nên là …".</span>
+    </div>
+  </header>
+  <div class="layout">
+    <nav class="toc" id="toc" aria-label="Danh sách bài mẫu"></nav>
+    <main id="lessons"></main>
+  </div>
+</div>
+
+<script id="lesson-data" type="application/json">[
+ {
+  "label": "Level 2 · Tiếng Anh tổng quát · Từ vựng",
+  "lesson": {
+   "id": "l2b-g-01-vocab",
+   "skill": "vocabulary",
+   "mode": "practice",
+   "estimatedMinutes": 10,
+   "title": {
+    "vi": "Du lịch: sân bay, khách sạn và hỏi đường",
+    "en": "Travel: airports, hotels and directions"
+   },
+   "description": {
+    "vi": "Học từ cần dùng ở sân bay, khách sạn và cách nhờ giúp đỡ, hỏi đường thật lịch sự.",
+    "en": "Learn words for airports and hotels, and how to ask for help and directions politely."
+   },
+   "teachingCards": [
+    {
+     "title": {
+      "vi": "Ở sân bay và khách sạn",
+      "en": "At the airport and the hotel"
+     },
+     "body": {
+      "vi": "Thứ tự quen thuộc khi đi máy bay:\n**check in** (làm thủ tục) → nhận **boarding pass** (thẻ lên máy bay) → đến **gate** (cổng ra máy bay).\nMáy bay trễ giờ = **delayed**.\nĐến khách sạn: ra **reception** (quầy lễ tân) để **check in**.\nLưu ý: **luggage** (hành lý) **không thêm -s**: nói 'two bags', không nói 'two luggages'.",
+      "en": "The usual order at the airport:\n**check in** → get your **boarding pass** → go to the **gate**.\nIf the plane is late, it is **delayed**.\nAt a hotel, go to **reception** to **check in**.\nNote: **luggage** has **no -s**. Say 'two bags', not 'two luggages'."
+     },
+     "examples": [
+      {
+       "en": "Where can I check in for my flight?",
+       "vi": "Tôi làm thủ tục cho chuyến bay ở đâu ạ?"
+      },
+      {
+       "en": "Our flight is delayed by one hour.",
+       "vi": "Chuyến bay của chúng tôi bị trễ một tiếng."
+      }
+     ]
+    },
+    {
+     "title": {
+      "vi": "Nhờ giúp đỡ thật lịch sự",
+      "en": "Asking politely"
+     },
+     "body": {
+      "vi": "Muốn xin một thứ: **I'd like** + danh từ / **Could I have** ...?\nMuốn nhờ ai làm gì: **Could you** + động từ ... **please**?\nMở lời: **Excuse me, ...** (xin lỗi, cho hỏi...).\nTránh nói 'I want...' hay 'Give me...' với người lạ — nghe khá cộc.",
+      "en": "To ask for something: **I'd like** + noun / **Could I have** ...?\nTo ask someone to do something: **Could you** + verb ... **please**?\nStart with **Excuse me, ...**\nAvoid 'I want...' or 'Give me...' with strangers — it can sound rude."
+     },
+     "examples": [
+      {
+       "en": "I'd like a window seat, please.",
+       "vi": "Tôi muốn ghế cạnh cửa sổ ạ."
+      },
+      {
+       "en": "Could you call a taxi for me, please?",
+       "vi": "Bạn gọi giúp tôi một chiếc taxi được không?"
+      }
+     ]
+    },
+    {
+     "title": {
+      "vi": "Hỏi đường và chỉ đường",
+      "en": "Asking for and giving directions"
+     },
+     "body": {
+      "vi": "Hỏi: **Could you tell me the way to** the station? / **How do I get to** ...?\nChỉ đường (dùng động từ nguyên mẫu): **go straight on** (đi thẳng), **turn left / right** (rẽ trái / phải), **take the second street on the left**.\nVị trí: **opposite** (đối diện), **next to** (bên cạnh), **between** (ở giữa).",
+      "en": "Ask: **Could you tell me the way to** the station? / **How do I get to** ...?\nGive directions with the base verb: **go straight on**, **turn left / right**, **take the second street on the left**.\nPlaces: **opposite**, **next to**, **between**."
+     },
+     "examples": [
+      {
+       "en": "Go straight on and turn right at the bank.",
+       "vi": "Đi thẳng rồi rẽ phải ở chỗ ngân hàng."
+      },
+      {
+       "en": "The pharmacy is opposite the park.",
+       "vi": "Hiệu thuốc ở đối diện công viên."
+      }
+     ]
+    }
+   ],
+   "words": [
+    {
+     "id": "l2b-g-w-check-in",
+     "word": "check in",
+     "ipa": "/tʃek ˈɪn/",
+     "partOfSpeech": "phrasal verb",
+     "meaningVi": "làm thủ tục (sân bay); nhận phòng (khách sạn)",
+     "definitionEn": "To show your ticket or booking when you arrive at an airport or a hotel.",
+     "examples": [
+      {
+       "en": "We checked in two hours before the flight.",
+       "vi": "Chúng tôi làm thủ tục hai tiếng trước chuyến bay."
+      },
+      {
+       "en": "You can check in at the hotel after 2 pm.",
+       "vi": "Bạn có thể nhận phòng khách sạn sau 2 giờ chiều."
+      }
+     ],
+     "usageNote": {
+      "vi": "Động từ viết rời: **check in**. Danh từ có gạch nối: **check-in**, VD 'the check-in desk' (quầy làm thủ tục).",
+      "en": "Verb: **check in** (two words). Noun: **check-in**, e.g. 'the check-in desk'."
+     }
+    },
+    {
+     "id": "l2b-g-w-boarding-pass",
+     "word": "boarding pass",
+     "ipa": "/ˈbɔː.dɪŋ ˌpɑːs/",
+     "partOfSpeech": "noun",
+     "meaningVi": "thẻ lên máy bay",
+     "definitionEn": "A card that you must show before you get on a plane.",
+     "examples": [
+      {
+       "en": "Please have your boarding pass ready.",
+       "vi": "Vui lòng chuẩn bị sẵn thẻ lên máy bay."
+      },
+      {
+       "en": "Oh no, I can't find my boarding pass!",
+       "vi": "Ôi không, tôi không tìm thấy thẻ lên máy bay!"
+      }
+     ]
+    },
+    {
+     "id": "l2b-g-w-luggage",
+     "word": "luggage",
+     "ipa": "/ˈlʌɡ.ɪdʒ/",
+     "partOfSpeech": "noun (uncountable)",
+     "meaningVi": "hành lý",
+     "definitionEn": "The bags and suitcases that you take on a trip.",
+     "examples": [
+      {
+       "en": "How much luggage do you have?",
+       "vi": "Bạn có bao nhiêu hành lý?"
+      },
+      {
+       "en": "My luggage didn't arrive in Bangkok.",
+       "vi": "Hành lý của tôi không đến Bangkok."
+      }
+     ],
+     "usageNote": {
+      "vi": "Danh từ không đếm được: KHÔNG nói 'luggages' hay 'a luggage'. Nói **two bags** hoặc **a piece of luggage**.",
+      "en": "Uncountable: no 'luggages' and no 'a luggage'. Say **two bags** or **a piece of luggage**."
+     }
+    },
+    {
+     "id": "l2b-g-w-gate",
+     "word": "gate",
+     "ipa": "/ɡeɪt/",
+     "partOfSpeech": "noun",
+     "meaningVi": "cổng (ra máy bay)",
+     "definitionEn": "The place in an airport where you get on your plane.",
+     "examples": [
+      {
+       "en": "Our flight leaves from gate 12.",
+       "vi": "Chuyến bay của chúng ta khởi hành ở cổng 12."
+      },
+      {
+       "en": "Please go to the gate now.",
+       "vi": "Xin mời quý khách đến cổng ra máy bay ngay."
+      }
+     ]
+    },
+    {
+     "id": "l2b-g-w-delayed",
+     "word": "delayed",
+     "ipa": "/dɪˈleɪd/",
+     "partOfSpeech": "adjective",
+     "meaningVi": "bị trễ, bị hoãn",
+     "definitionEn": "Later than planned.",
+     "examples": [
+      {
+       "en": "The train was delayed because of the heavy rain.",
+       "vi": "Chuyến tàu bị trễ vì mưa to."
+      },
+      {
+       "en": "Sorry, your flight is delayed by forty minutes.",
+       "vi": "Xin lỗi, chuyến bay của bạn bị trễ bốn mươi phút."
+      }
+     ],
+     "usageNote": {
+      "vi": "**delayed** = trễ nhưng vẫn đi. **cancelled** = bị huỷ, không đi nữa.",
+      "en": "**delayed** = late, but it will still go. **cancelled** = it will not go at all."
+     }
+    },
+    {
+     "id": "l2b-g-w-reception",
+     "word": "reception",
+     "ipa": "/rɪˈsep.ʃən/",
+     "partOfSpeech": "noun",
+     "meaningVi": "quầy lễ tân",
+     "definitionEn": "The desk near the entrance of a hotel or office where people help visitors.",
+     "examples": [
+      {
+       "en": "Please leave your key at reception.",
+       "vi": "Vui lòng để lại chìa khoá ở quầy lễ tân."
+      },
+      {
+       "en": "I asked at reception for a city map.",
+       "vi": "Tôi đã xin bản đồ thành phố ở quầy lễ tân."
+      }
+     ],
+     "usageNote": {
+      "vi": "Người làm ở quầy lễ tân = **receptionist**. Thường nói **at reception** (không cần \"the\").",
+      "en": "The person is a **receptionist**. We usually say **at reception**."
+     }
+    },
+    {
+     "id": "l2b-g-w-opposite",
+     "word": "opposite",
+     "ipa": "/ˈɒp.ə.zɪt/",
+     "partOfSpeech": "preposition",
+     "meaningVi": "đối diện",
+     "definitionEn": "On the other side of a street or room, facing something.",
+     "examples": [
+      {
+       "en": "The bus stop is opposite the hotel.",
+       "vi": "Trạm xe buýt ở đối diện khách sạn."
+      },
+      {
+       "en": "She sat opposite me on the train.",
+       "vi": "Cô ấy ngồi đối diện tôi trên tàu."
+      }
+     ],
+     "usageNote": {
+      "vi": "Thường nói thẳng **opposite the bank**, không cần thêm 'to'.",
+      "en": "We usually say **opposite the bank**, without 'to'."
+     }
+    }
+   ],
+   "exercises": [
+    {
+     "id": "l2b-g-01-vocab-ex01",
+     "type": "match-pairs",
+     "instruction": {
+      "vi": "Nối từ tiếng Anh với nghĩa tiếng Việt.",
+      "en": "Match the English words with their Vietnamese meanings."
+     },
+     "pairs": [
+      {
+       "left": "check in",
+       "right": "làm thủ tục"
+      },
+      {
+       "left": "boarding pass",
+       "right": "thẻ lên máy bay"
+      },
+      {
+       "left": "luggage",
+       "right": "hành lý"
+      },
+      {
+       "left": "gate",
+       "right": "cổng ra máy bay"
+      },
+      {
+       "left": "reception",
+       "right": "quầy lễ tân"
+      },
+      {
+       "left": "opposite",
+       "right": "đối diện"
+      }
+     ],
+     "explanation": {
+      "vi": "Ôn lại 6 từ chính của bài trước khi luyện câu.",
+      "en": "Review the six key words before you practise sentences."
+     }
+    },
+    {
+     "id": "l2b-g-01-vocab-ex02",
+     "type": "multiple-choice",
+     "question": "Your plane will leave two hours late. Your flight is ___.",
+     "options": [
+      "cancelled",
+      "delayed",
+      "boarding",
+      "early"
+     ],
+     "correctIndex": 1,
+     "explanation": {
+      "vi": "Trễ nhưng vẫn bay = delayed. Cancelled = bị huỷ, không bay nữa.",
+      "en": "Late but still going = delayed. Cancelled = it won't fly at all."
+     }
+    },
+    {
+     "id": "l2b-g-01-vocab-ex03",
+     "type": "fill-blank",
+     "sentence": "Please show your passport and ___ pass at the gate.",
+     "acceptedAnswers": [
+      "boarding"
+     ],
+     "hint": "the card you need to get on the plane",
+     "explanation": {
+      "vi": "boarding pass = thẻ lên máy bay, đưa cho nhân viên ở cổng.",
+      "en": "You show your boarding pass at the gate."
+     }
+    },
+    {
+     "id": "l2b-g-01-vocab-ex04",
+     "type": "multiple-choice",
+     "question": "Which sentence is correct?",
+     "options": [
+      "I have three luggages.",
+      "I have three bags.",
+      "I have a luggages.",
+      "I have three luggage."
+     ],
+     "correctIndex": 1,
+     "explanation": {
+      "vi": "luggage không đếm được, không thêm -s. Muốn đếm thì dùng 'bags'.",
+      "en": "Luggage is uncountable. Use 'bags' when you count."
+     }
+    },
+    {
+     "id": "l2b-g-01-vocab-ex05",
+     "type": "listen-choose",
+     "audioText": "Flight two-five-one to Bangkok is now boarding at gate twelve.",
+     "question": "Which gate does the flight leave from?",
+     "options": [
+      "Gate 2",
+      "Gate 12",
+      "Gate 20",
+      "Gate 251"
+     ],
+     "correctIndex": 1,
+     "explanation": {
+      "vi": "'Gate twelve' = cổng 12. Còn 251 là số hiệu chuyến bay.",
+      "en": "'Gate twelve' = gate 12. 251 is the flight number."
+     }
+    },
+    {
+     "id": "l2b-g-01-vocab-ex06",
+     "type": "fill-blank",
+     "sentence": "I'd ___ a room with a sea view, please.",
+     "acceptedAnswers": [
+      "like"
+     ],
+     "hint": "I'd ... = I would ...",
+     "explanation": {
+      "vi": "I'd like + danh từ = tôi muốn... (cách xin lịch sự).",
+      "en": "I'd like + noun is a polite way to ask for something."
+     }
+    },
+    {
+     "id": "l2b-g-01-vocab-ex07",
+     "type": "multiple-choice",
+     "question": "You are at a hotel. Which is the most polite?",
+     "options": [
+      "Give me the key.",
+      "I want my key now.",
+      "Could I have my key, please?",
+      "Key, please, quick."
+     ],
+     "correctIndex": 2,
+     "explanation": {
+      "vi": "'Could I have ..., please?' là cách lịch sự nhất với người lạ.",
+      "en": "'Could I have ..., please?' is the most polite choice."
+     }
+    },
+    {
+     "id": "l2b-g-01-vocab-ex08",
+     "type": "arrange-words",
+     "translationVi": "Bạn có thể chỉ cho tôi đường đến nhà ga được không?",
+     "correctSentence": "Could you tell me the way to the station?",
+     "extraWords": [
+      "say",
+      "at"
+     ],
+     "explanation": {
+      "vi": "Mẫu câu hỏi đường: Could you tell me the way to + nơi chốn?",
+      "en": "Pattern: Could you tell me the way to + place?"
+     }
+    },
+    {
+     "id": "l2b-g-01-vocab-ex09",
+     "type": "listen-type",
+     "audioText": "Go straight on and turn left at the bank.",
+     "acceptedAnswers": [
+      "Go straight on and turn left at the bank."
+     ],
+     "explanation": {
+      "vi": "go straight on = đi thẳng; turn left = rẽ trái.",
+      "en": "Go straight on = continue forward; turn left = go to the left."
+     }
+    },
+    {
+     "id": "l2b-g-01-vocab-ex10",
+     "type": "multiple-choice",
+     "question": "The café is on one side of the street. The hotel is on the other side, facing it. The café is ___ the hotel.",
+     "options": [
+      "between",
+      "opposite",
+      "behind",
+      "under"
+     ],
+     "correctIndex": 1,
+     "explanation": {
+      "vi": "Ở hai bên đường, nhìn sang nhau = opposite (đối diện).",
+      "en": "On the other side of the street, facing it = opposite."
+     }
+    },
+    {
+     "id": "l2b-g-01-vocab-ex11",
+     "type": "match-pairs",
+     "instruction": {
+      "vi": "Nối mỗi vấn đề với câu nhờ giúp phù hợp.",
+      "en": "Match each problem with a polite request."
+     },
+     "pairs": [
+      {
+       "left": "My room is too noisy.",
+       "right": "Could I change rooms, please?"
+      },
+      {
+       "left": "I can't find gate eight.",
+       "right": "Excuse me, where is gate eight?"
+      },
+      {
+       "left": "My bag is very heavy.",
+       "right": "Could you help me with my bag?"
+      },
+      {
+       "left": "I'm lost in the city.",
+       "right": "How do I get to the hotel?"
+      },
+      {
+       "left": "The Wi-Fi isn't working.",
+       "right": "Could you check the Wi-Fi, please?"
+      }
+     ],
+     "explanation": {
+      "vi": "Mỗi vấn đề cần một câu nhờ giúp đúng ý và lịch sự.",
+      "en": "Each problem needs a matching, polite request."
+     }
+    },
+    {
+     "id": "l2b-g-01-vocab-ex12",
+     "type": "speak-sentence",
+     "sentence": "Excuse me, could you tell me the way to the station?",
+     "translationVi": "Xin lỗi, bạn có thể chỉ cho tôi đường đến nhà ga không?",
+     "explanation": {
+      "vi": "Nối âm 'could you' thật mượt và nhấn mạnh từ 'STA-tion'.",
+      "en": "Link 'could you' smoothly and stress 'STA-tion'."
+     }
+    }
+   ],
+   "miniTest": []
+  }
+ },
+ {
+  "label": "Level 2 · IELTS · Đọc",
+  "lesson": {
+   "id": "l2b-i-read-01",
+   "skill": "reading",
+   "mode": "reading",
+   "estimatedMinutes": 15,
+   "title": {
+    "vi": "Đề IELTS Reading và câu trả lời ngắn",
+    "en": "The IELTS Reading test and short-answer questions"
+   },
+   "description": {
+    "vi": "Biết cấu trúc đề Reading và trả lời câu hỏi ngắn đúng giới hạn số từ.",
+    "en": "Learn the Reading test format and answer short questions within the word limit."
+   },
+   "teachingCards": [
+    {
+     "title": {
+      "vi": "Bài thi IELTS Reading",
+      "en": "The IELTS Reading test"
+     },
+     "body": {
+      "vi": "**60 phút, 3 bài đọc, 40 câu.** Không có thêm giờ để chép đáp án.\n- **Academic**: bài từ sách, tạp chí, báo khoa học phổ thông.\n- **General Training**: thông báo, quảng cáo, bài báo đời thường.\nMỗi bài dài khoảng **700–900 từ** — ở chặng này bạn tập với bài ngắn hơn.\nTrung bình **20 phút cho mỗi bài**.",
+      "en": "**60 minutes, 3 passages, 40 questions.** There is no extra time to copy your answers.\n- **Academic**: texts from books, magazines and popular science.\n- **General Training**: notices, adverts and everyday articles.\nEach passage is about **700–900 words** — in this unit you practise with shorter ones.\nAim for about **20 minutes per passage**."
+     },
+     "examples": [
+      {
+       "en": "Passage 1 is usually the easiest.",
+       "vi": "Bài đọc 1 thường dễ nhất."
+      }
+     ]
+    },
+    {
+     "title": {
+      "vi": "Trả lời ngắn và giới hạn từ",
+      "en": "Short answers and word limits"
+     },
+     "body": {
+      "vi": "Đề: **Choose NO MORE THAN TWO WORDS AND/OR A NUMBER from the passage.**\n- Lấy **đúng từ trong bài**, không tự đổi từ.\n- Tối đa **2 từ + 1 số** (VD: 20 years ✓).\n- Viết thừa từ = **sai**, kể cả khi ý đúng.\n- Chép **đúng chính tả và số ít/số nhiều** như trong bài.",
+      "en": "Task: **Choose NO MORE THAN TWO WORDS AND/OR A NUMBER from the passage.**\n- Use **words from the passage** — don't change them.\n- Maximum **2 words + a number** (e.g. 20 years ✓).\n- Too many words = **wrong**, even if the idea is right.\n- Copy the **spelling and singular/plural** exactly."
+     },
+     "examples": [
+      {
+       "en": "Text: '...they use sharp knives.' → sharp knives ✓  a knife ✗",
+       "vi": "Chép đúng 'sharp knives' như trong bài"
+      }
+     ]
+    },
+    {
+     "title": {
+      "vi": "Quét tìm từ khoá 'khó đổi'",
+      "en": "Scan for keywords that can't change"
+     },
+     "body": {
+      "vi": "Một số từ **không thể paraphrase**: **tên riêng, con số, năm, địa danh**. Dùng chúng để **định vị** đáp án nhanh.\nVD câu hỏi có 'Vietnamese' → quét tìm chữ V viết hoa trong bài, rồi **đọc kỹ 1–2 câu quanh đó**.\nCâu trả lời ngắn thường đi **theo thứ tự** bài đọc.",
+      "en": "Some words **can't be paraphrased**: **names, numbers, years and places**. Use them to **find the answer quickly**.\nE.g. the question has 'Vietnamese' → scan for the capital V, then **read 1–2 sentences around it** carefully.\nShort-answer questions usually follow the **order of the passage**."
+     },
+     "examples": [
+      {
+       "en": "What did Vietnamese families build with bamboo?",
+       "vi": "Từ khoá khó đổi: Vietnamese"
+      }
+     ]
+    }
+   ],
+   "exercises": [
+    {
+     "id": "l2b-i-read-01-ex01",
+     "type": "multiple-choice",
+     "question": "How long is the IELTS Reading test?",
+     "options": [
+      "30 minutes",
+      "45 minutes",
+      "60 minutes",
+      "90 minutes"
+     ],
+     "correctIndex": 2,
+     "explanation": {
+      "vi": "60 phút cho 3 bài đọc, 40 câu.",
+      "en": "60 minutes for 3 passages and 40 questions."
+     }
+    },
+    {
+     "id": "l2b-i-read-01-ex02",
+     "type": "true-false",
+     "statement": "In the IELTS Reading test, you get extra time at the end to copy your answers.",
+     "answer": "FALSE",
+     "allowNotGiven": false,
+     "explanation": {
+      "vi": "Sai. Việc chép đáp án nằm trong 60 phút, không có thêm giờ.",
+      "en": "False. Copying answers is part of the 60 minutes; there is no extra time."
+     }
+    },
+    {
+     "id": "l2b-i-read-01-ex03",
+     "type": "multiple-choice",
+     "question": "Instruction: NO MORE THAN TWO WORDS AND/OR A NUMBER. Which answer is NOT allowed?",
+     "options": [
+      "bamboo shoots",
+      "20 years",
+      "very young bamboo shoots",
+      "water"
+     ],
+     "correctIndex": 2,
+     "explanation": {
+      "vi": "'very young bamboo shoots' có 4 từ → quá giới hạn.",
+      "en": "'Very young bamboo shoots' has four words → over the limit."
+     }
+    },
+    {
+     "id": "l2b-i-read-01-ex04",
+     "type": "multiple-choice",
+     "question": "Text: 'The workers use sharp knives.' Question: 'What do the workers use?' Which answer is correct?",
+     "options": [
+      "sharp knifes",
+      "sharp knife",
+      "sharp knives",
+      "they use knives"
+     ],
+     "correctIndex": 2,
+     "explanation": {
+      "vi": "Chép đúng từ trong bài: 'knives' (số nhiều, đúng chính tả).",
+      "en": "Copy the words exactly: 'knives' — plural, correct spelling."
+     }
+    },
+    {
+     "id": "l2b-i-read-01-ex05",
+     "type": "multiple-choice",
+     "question": "Which keyword is the EASIEST to scan for in a passage?",
+     "options": [
+      "important",
+      "1,000",
+      "useful",
+      "people"
+     ],
+     "correctIndex": 1,
+     "explanation": {
+      "vi": "Con số nổi bật trên trang và không thể paraphrase.",
+      "en": "Numbers stand out on the page and can't be paraphrased."
+     }
+    },
+    {
+     "id": "l2b-i-read-01-ex06",
+     "type": "speak-sentence",
+     "sentence": "Bamboo is actually a type of grass.",
+     "translationVi": "Tre thật ra là một loại cỏ.",
+     "explanation": {
+      "vi": "Nhấn bamBOO ở âm tiết thứ hai. Giữ âm /s/ cuối trong grass.",
+      "en": "Stress bamBOO on the second syllable. Keep the final /s/ in 'grass'."
+     }
+    }
+   ],
+   "readingTask": {
+    "passage": {
+     "title": "Bamboo: A Plant with a Thousand Uses",
+     "paragraphs": [
+      {
+       "label": "A",
+       "text": "Bamboo grows in many warm parts of the world, from China and Vietnam to Africa and South America. Although some kinds are as tall as trees, bamboo is actually a type of grass. Scientists have described more than one thousand different kinds of bamboo, and they come in many sizes and colours, from green and yellow to almost black."
+      },
+      {
+       "label": "B",
+       "text": "The most surprising thing about bamboo is its speed. Some kinds can grow almost one metre in a single day, which makes bamboo one of the fastest-growing plants on Earth. A young plant reaches its full height in just a few months, and after that its stem becomes harder every year. Farmers usually harvest bamboo when it is three to five years old. Many trees, by comparison, need twenty years or more before their wood can be used."
+      },
+      {
+       "label": "C",
+       "text": "In Vietnam, bamboo has been part of village life for centuries. In the past, families used it to build houses, fences and small bridges. It was also made into everyday objects such as baskets, chopsticks and fishing traps. Even today, many people enjoy eating young bamboo shoots, which are often cooked in soups or with meat."
+      },
+      {
+       "label": "D",
+       "text": "Bamboo is now becoming popular around the world because it is good for the environment. When it is cut, it grows back from its roots, so farmers do not need to plant it again. It also needs very little water and usually no chemicals. As a result, companies now use bamboo to make products such as floors, toothbrushes and even clothes."
+      },
+      {
+       "label": "E",
+       "text": "However, bamboo is not perfect. Some kinds spread very quickly and can take over gardens and forests, which makes life difficult for other plants. Also, turning hard bamboo into soft cloth often uses strong chemicals, so bamboo clothes are not always as 'green' as they seem. Experts advise shoppers to read labels carefully before they buy."
+      }
+     ]
+    },
+    "instructions": "Questions 1–7. Answer the questions below. Choose NO MORE THAN TWO WORDS AND/OR A NUMBER from the passage for each answer.",
+    "strategyTip": {
+     "vi": "Mỗi câu: tìm từ khoá khó đổi (Vietnamese, one day...), đọc kỹ quanh đó, rồi đếm số từ trước khi viết.",
+     "en": "For each question, find a keyword, read around it, then count your words before you write."
+    },
+    "questions": [
+     {
+      "kind": "gap-fill",
+      "id": "l2b-i-read-01-q1",
+      "paragraphLabel": "A",
+      "number": 1,
+      "prompt": "What type of plant is bamboo? ___",
+      "acceptedAnswers": [
+       "grass",
+       "a grass"
+      ],
+      "explanation": {
+       "vi": "'bamboo is actually a type of grass' → grass.",
+       "en": "'Bamboo is actually a type of grass' → grass."
+      }
+     },
+     {
+      "kind": "gap-fill",
+      "id": "l2b-i-read-01-q2",
+      "paragraphLabel": "B",
+      "number": 2,
+      "prompt": "How much can some kinds of bamboo grow in one day? ___",
+      "acceptedAnswers": [
+       "almost one metre",
+       "one metre",
+       "1 metre",
+       "almost 1 metre",
+       "1m",
+       "1 m",
+       "one meter",
+       "1 meter",
+       "almost one meter",
+       "almost 1 meter"
+      ],
+      "explanation": {
+       "vi": "'grow almost one metre in a single day' → almost one metre (2 từ + 1 số).",
+       "en": "'Grow almost one metre in a single day' → almost one metre."
+      }
+     },
+     {
+      "kind": "gap-fill",
+      "id": "l2b-i-read-01-q3",
+      "paragraphLabel": "B",
+      "number": 3,
+      "prompt": "Which part of a bamboo plant becomes harder every year? ___",
+      "acceptedAnswers": [
+       "stem",
+       "its stem",
+       "the stem"
+      ],
+      "explanation": {
+       "vi": "'its stem becomes harder every year' → stem.",
+       "en": "'Its stem becomes harder every year' → stem."
+      }
+     },
+     {
+      "kind": "gap-fill",
+      "id": "l2b-i-read-01-q4",
+      "paragraphLabel": "C",
+      "number": 4,
+      "prompt": "Apart from houses and fences, what did Vietnamese families build with bamboo in the past? ___",
+      "acceptedAnswers": [
+       "small bridges",
+       "bridges"
+      ],
+      "explanation": {
+       "vi": "'to build houses, fences and small bridges' → small bridges.",
+       "en": "'To build houses, fences and small bridges' → small bridges."
+      }
+     },
+     {
+      "kind": "gap-fill",
+      "id": "l2b-i-read-01-q5",
+      "paragraphLabel": "C",
+      "number": 5,
+      "prompt": "Which part of young bamboo do people cook in soups? ___",
+      "acceptedAnswers": [
+       "shoots",
+       "bamboo shoots"
+      ],
+      "explanation": {
+       "vi": "'young bamboo shoots, which are often cooked in soups' → shoots.",
+       "en": "'Young bamboo shoots, which are often cooked in soups' → shoots."
+      }
+     },
+     {
+      "kind": "gap-fill",
+      "id": "l2b-i-read-01-q6",
+      "paragraphLabel": "D",
+      "number": 6,
+      "prompt": "What does bamboo need very little of? ___",
+      "acceptedAnswers": [
+       "water"
+      ],
+      "explanation": {
+       "vi": "'It also needs very little water' → water.",
+       "en": "'It also needs very little water' → water."
+      }
+     },
+     {
+      "kind": "gap-fill",
+      "id": "l2b-i-read-01-q7",
+      "paragraphLabel": "E",
+      "number": 7,
+      "prompt": "According to experts, what should shoppers read carefully? ___",
+      "acceptedAnswers": [
+       "labels"
+      ],
+      "explanation": {
+       "vi": "'Experts advise shoppers to read labels carefully' → labels (số nhiều).",
+       "en": "'Experts advise shoppers to read labels carefully' → labels (plural)."
+      }
+     }
+    ]
+   },
+   "miniTest": []
+  }
+ },
+ {
+  "label": "Level 3 · Tiếng Anh tổng quát · Đọc",
+  "lesson": {
+   "id": "l3-g-u1-read",
+   "skill": "reading",
+   "mode": "reading",
+   "estimatedMinutes": 18,
+   "title": {
+    "vi": "Bài báo: Gây ấn tượng khi phỏng vấn",
+    "en": "Article: Making a good impression at interviews"
+   },
+   "description": {
+    "vi": "Đọc bài báo về kỹ năng phỏng vấn, luyện tìm ý chính của đoạn và phân biệt TRUE / FALSE / NOT GIVEN.",
+    "en": "Read an article about interview skills; practise finding main ideas and TRUE / FALSE / NOT GIVEN."
+   },
+   "teachingCards": [
+    {
+     "title": {
+      "vi": "Tìm ý chính của đoạn",
+      "en": "Finding the main idea of a paragraph"
+     },
+     "body": {
+      "vi": "Ý chính thường nằm ở **câu đầu** (đôi khi câu cuối). Các câu giữa là **ví dụ, chi tiết**. Khi chọn tiêu đề cho đoạn, hãy hỏi: \"Đoạn này **chủ yếu** nói gì?\" Đừng chọn tiêu đề chỉ khớp với **một chi tiết nhỏ** hoặc một từ giống trong bài.",
+      "en": "The main idea is usually in the **first sentence** (sometimes the last). The middle sentences give **examples and details**. When choosing a heading, ask: \"What is this paragraph **mainly** about?\" Don't pick a heading that only matches **one small detail** or one repeated word."
+     },
+     "examples": [
+      {
+       "en": "Arriving early shows you are organised. Reading about the company helps too.",
+       "vi": "Đến sớm cho thấy bạn ngăn nắp. Tìm hiểu công ty cũng giúp ích. → Ý chính: những cách đơn giản cho thấy bạn nghiêm túc."
+      }
+     ]
+    },
+    {
+     "title": {
+      "vi": "TRUE / FALSE / NOT GIVEN",
+      "en": "TRUE / FALSE / NOT GIVEN"
+     },
+     "body": {
+      "vi": "**TRUE** = bài nói đúng như vậy (có thể bằng từ khác).\n**FALSE** = bài nói **ngược lại**.\n**NOT GIVEN** = bài **không nhắc đến**, không thể biết.\nBẫy hay gặp: dùng hiểu biết của mình. Chỉ dựa vào **bài đọc**, dù câu đó nghe rất hợp lý.",
+      "en": "**TRUE** = the text says the same thing (maybe in other words).\n**FALSE** = the text says **the opposite**.\n**NOT GIVEN** = the text **doesn't say**, so you can't know.\nCommon trap: using your own knowledge. Use **only the text**, even if a statement sounds sensible."
+     }
+    }
+   ],
+   "exercises": [
+    {
+     "id": "l3-g-u1-read-ex01",
+     "type": "match-pairs",
+     "instruction": {
+      "vi": "Nối từ trong bài với nghĩa đúng",
+      "en": "Match words from the article with their meanings"
+     },
+     "pairs": [
+      {
+       "left": "punctuality",
+       "right": "being on time"
+      },
+      {
+       "left": "posture",
+       "right": "the way you sit or stand"
+      },
+      {
+       "left": "exaggerated",
+       "right": "made to seem bigger than it is"
+      },
+      {
+       "left": "manageable",
+       "right": "not too big to deal with"
+      },
+      {
+       "left": "decisive",
+       "right": "the thing that decides the result"
+      }
+     ],
+     "explanation": {
+      "vi": "Năm từ xuất hiện trong bài đọc. Biết trước giúp bạn đọc nhanh hơn.",
+      "en": "Five words from the article. Knowing them first helps you read faster."
+     }
+    },
+    {
+     "id": "l3-g-u1-read-ex02",
+     "type": "fill-blank",
+     "sentence": "Interviewers like candidates who show a ___ to learn new things.",
+     "acceptedAnswers": [
+      "willingness"
+     ],
+     "hint": "(being happy to do something)",
+     "explanation": {
+      "vi": "\"a willingness to + V\" = sự sẵn lòng làm gì.",
+      "en": "\"a willingness to + verb\" = being happy to do something."
+     }
+    },
+    {
+     "id": "l3-g-u1-read-ex03",
+     "type": "multiple-choice",
+     "question": "Paragraph: \"Arriving early shows you are organised. Reading about the company helps too. Both tell the interviewer you take the job seriously.\" What is the main idea?",
+     "options": [
+      "Arriving early",
+      "Reading about the company",
+      "Simple ways to show you are serious",
+      "Being organised at work"
+     ],
+     "correctIndex": 2,
+     "explanation": {
+      "vi": "Câu cuối gom ý cả đoạn: cho thấy bạn nghiêm túc. A và B chỉ là chi tiết.",
+      "en": "The last sentence sums up both details: showing you are serious."
+     }
+    },
+    {
+     "id": "l3-g-u1-read-ex04",
+     "type": "true-false",
+     "statement": "Text: \"Most interviews last about forty minutes.\" Statement: \"Most interviews last less than an hour.\"",
+     "answer": "TRUE",
+     "allowNotGiven": true,
+     "explanation": {
+      "vi": "40 phút ít hơn 1 giờ: cùng nghĩa, chỉ khác cách diễn đạt.",
+      "en": "Forty minutes is less than an hour: same meaning, different words."
+     }
+    },
+    {
+     "id": "l3-g-u1-read-ex05",
+     "type": "true-false",
+     "statement": "Text: \"Tom applied for three jobs last month.\" Statement: \"Tom got one of the jobs.\"",
+     "answer": "NOT GIVEN",
+     "allowNotGiven": true,
+     "explanation": {
+      "vi": "Bài chỉ nói Tom nộp đơn, không nói kết quả, nên không thể biết.",
+      "en": "The text only says he applied; it says nothing about the result."
+     }
+    },
+    {
+     "id": "l3-g-u1-read-ex06",
+     "type": "true-false",
+     "statement": "Text: \"Very few managers cared about expensive clothes.\" Statement: \"Most managers thought expensive clothes were important.\"",
+     "answer": "FALSE",
+     "allowNotGiven": true,
+     "explanation": {
+      "vi": "\"Very few cared\" ngược hẳn với \"most thought… important\".",
+      "en": "\"Very few cared\" is the opposite of \"most thought… important\"."
+     }
+    },
+    {
+     "id": "l3-g-u1-read-ex07",
+     "type": "multiple-choice",
+     "question": "Text: \"Linh works in a bank. Two of her colleagues come from Da Nang.\" Which statement is NOT GIVEN?",
+     "options": [
+      "Linh has a job.",
+      "Linh works with people from Da Nang.",
+      "Linh enjoys her job.",
+      "Linh works in a bank."
+     ],
+     "correctIndex": 2,
+     "explanation": {
+      "vi": "Bài không nói Linh thích công việc hay không.",
+      "en": "The text never says whether Linh enjoys her job."
+     }
+    },
+    {
+     "id": "l3-g-u1-read-ex08",
+     "type": "multiple-choice",
+     "question": "\"A weak start could be rescued if the candidate gave strong answers later.\" What does \"rescued\" mean here?",
+     "options": [
+      "saved",
+      "repeated",
+      "forgotten",
+      "recorded"
+     ],
+     "correctIndex": 0,
+     "explanation": {
+      "vi": "\"rescue\" = cứu vãn: khởi đầu kém vẫn có thể được \"cứu\" bằng câu trả lời tốt.",
+      "en": "\"rescue\" = save: a bad start can still be saved by good answers."
+     }
+    },
+    {
+     "id": "l3-g-u1-read-ex09",
+     "type": "multiple-choice",
+     "question": "Where is the main idea of a paragraph USUALLY found?",
+     "options": [
+      "In the first sentence",
+      "In the longest word",
+      "In the numbers",
+      "In the middle sentence"
+     ],
+     "correctIndex": 0,
+     "explanation": {
+      "vi": "Câu chủ đề thường đứng đầu đoạn; câu sau là chi tiết, ví dụ.",
+      "en": "The topic sentence usually comes first; details follow."
+     }
+    },
+    {
+     "id": "l3-g-u1-read-ex10",
+     "type": "speak-sentence",
+     "sentence": "Arriving early shows that you take the interview seriously.",
+     "translationVi": "Đến sớm cho thấy bạn nghiêm túc với buổi phỏng vấn.",
+     "explanation": {
+      "vi": "Đọc rõ -s cuối \"shows\" /z/. Nhấn ar-RI-ving, EAR-ly, SE-ri-ous-ly.",
+      "en": "Say the final /z/ in \"shows\". Stress ar-RI-ving, EAR-ly, SE-ri-ous-ly."
+     }
+    }
+   ],
+   "readingTask": {
+    "passage": {
+     "title": "First Impressions: What Really Happens in a Job Interview",
+     "paragraphs": [
+      {
+       "label": "A",
+       "text": "Most of us have heard that interviewers make up their minds in the first few minutes. According to a survey of three hundred hiring managers carried out by a recruitment website, around a third said they knew within ten minutes whether a candidate was right for the job. However, the same managers also said that a weak start could be rescued if the candidate gave strong answers later. In other words, first impressions matter, but they are not the end of the story."
+      },
+      {
+       "label": "B",
+       "text": "So what creates a good first impression? Surprisingly, it is not usually what candidates wear. Most managers in the survey said they expected people to look tidy, but very few cared about expensive clothes. What they noticed far more was punctuality and preparation. Arriving ten minutes early, knowing the name of the person you are meeting and having read about the company all send a clear message: I take this seriously."
+      },
+      {
+       "label": "C",
+       "text": "Body language also plays a part, although its importance is often exaggerated online. A friendly greeting, eye contact and a relaxed posture help, but nobody expects a candidate to look completely calm. \"Everyone is nervous,\" says Laura Bennett, who has interviewed staff for a group of language schools for twelve years. \"I actually worry a little when someone seems too relaxed. It can look as if they don't really care.\""
+      },
+      {
+       "label": "D",
+       "text": "The answers themselves are, of course, the most important part. Interviewers are not only listening to what you have done but to how you explain it. A useful method is to describe a real situation, the action you took and the result. For example, instead of saying \"I'm good at solving problems\", a candidate might describe how they reorganised a messy delivery schedule and reduced late orders by half. Specific stories are easier to believe and easier to remember."
+      },
+      {
+       "label": "E",
+       "text": "One question that many candidates find difficult is \"What is your biggest weakness?\" Bennett advises against pretending to have no weaknesses or giving a fake one, such as \"I work too hard.\" Instead, she suggests choosing a real but manageable weakness and explaining what you are doing to improve it. \"Saying that you used to find public speaking difficult, and that you joined a speaking club to get better, shows honesty and a willingness to learn.\""
+      },
+      {
+       "label": "F",
+       "text": "Finally, the end of the interview matters as much as the beginning. Candidates who ask one or two thoughtful questions, about training, the team or what success looks like in the first six months, leave a stronger impression than those who simply say they have no questions. And a short thank-you email sent on the same day, while rarely decisive, is a polite way to follow up and keep your name in the interviewer's mind."
+      }
+     ]
+    },
+    "instructions": "Questions 1–3: Choose the best heading for each paragraph.\nQuestions 4–6: Write TRUE, FALSE or NOT GIVEN.\nQuestions 7–9: Choose the correct answer, or write ONE WORD AND/OR A NUMBER from the text.",
+    "examMinutes": 15,
+    "strategyTip": {
+     "vi": "Làm câu chọn tiêu đề trước: đọc câu đầu mỗi đoạn. Với TRUE/FALSE/NOT GIVEN, tìm đúng câu trong bài rồi so từng ý, đừng đoán theo hiểu biết riêng.",
+     "en": "Do the headings first by reading the first sentence of each paragraph. For TRUE/FALSE/NOT GIVEN, find the exact sentence and compare carefully; don't use your own knowledge."
+    },
+    "questions": [
+     {
+      "kind": "choice",
+      "id": "l3-g-u1-read-q1",
+      "paragraphLabel": "B",
+      "number": 1,
+      "prompt": "Choose the best heading for Paragraph B.",
+      "options": [
+       "Why clothes matter most",
+       "Small signals that you take it seriously",
+       "Nerves are normal",
+       "Real examples work best",
+       "An honest answer to a difficult question",
+       "What to do after you get the job",
+       "Ending on a strong note"
+      ],
+      "correctIndex": 1,
+      "explanation": {
+       "vi": "Đoạn B nói về đúng giờ và chuẩn bị kỹ. Quần áo chỉ được nhắc để bác bỏ.",
+       "en": "B is about punctuality and preparation. Clothes are mentioned only to be dismissed."
+      }
+     },
+     {
+      "kind": "choice",
+      "id": "l3-g-u1-read-q2",
+      "paragraphLabel": "D",
+      "number": 2,
+      "prompt": "Choose the best heading for Paragraph D.",
+      "options": [
+       "Why clothes matter most",
+       "Small signals that you take it seriously",
+       "Nerves are normal",
+       "Real examples work best",
+       "An honest answer to a difficult question",
+       "What to do after you get the job",
+       "Ending on a strong note"
+      ],
+      "correctIndex": 3,
+      "explanation": {
+       "vi": "Đoạn D khuyên kể tình huống thật, hành động và kết quả cụ thể.",
+       "en": "D recommends describing a real situation, action and result."
+      }
+     },
+     {
+      "kind": "choice",
+      "id": "l3-g-u1-read-q3",
+      "paragraphLabel": "F",
+      "number": 3,
+      "prompt": "Choose the best heading for Paragraph F.",
+      "options": [
+       "Why clothes matter most",
+       "Small signals that you take it seriously",
+       "Nerves are normal",
+       "Real examples work best",
+       "An honest answer to a difficult question",
+       "What to do after you get the job",
+       "Ending on a strong note"
+      ],
+      "correctIndex": 6,
+      "explanation": {
+       "vi": "Đoạn F nói về cuối buổi phỏng vấn và email cảm ơn, không phải sau khi được nhận.",
+       "en": "F is about the end of the interview and a thank-you email, not about after getting the job."
+      }
+     },
+     {
+      "kind": "true-false-not-given",
+      "id": "l3-g-u1-read-q4",
+      "paragraphLabel": "A",
+      "number": 4,
+      "prompt": "About a third of the managers in the survey decided within ten minutes.",
+      "answer": "TRUE",
+      "explanation": {
+       "vi": "\"around a third said they knew within ten minutes\" = cùng nghĩa.",
+       "en": "\"around a third said they knew within ten minutes\" = same meaning."
+      }
+     },
+     {
+      "kind": "true-false-not-given",
+      "id": "l3-g-u1-read-q5",
+      "paragraphLabel": "B",
+      "number": 5,
+      "prompt": "Most managers expected candidates to wear expensive clothes.",
+      "answer": "FALSE",
+      "explanation": {
+       "vi": "Bài nói \"very few cared about expensive clothes\": ngược lại.",
+       "en": "The text says \"very few cared about expensive clothes\": the opposite."
+      }
+     },
+     {
+      "kind": "true-false-not-given",
+      "id": "l3-g-u1-read-q6",
+      "paragraphLabel": "C",
+      "number": 6,
+      "prompt": "Laura Bennett was very nervous at her own first job interview.",
+      "answer": "NOT GIVEN",
+      "explanation": {
+       "vi": "Bà nói \"Everyone is nervous\" nhưng không kể về buổi phỏng vấn của chính mình.",
+       "en": "She says \"Everyone is nervous\" but never mentions her own first interview."
+      }
+     },
+     {
+      "kind": "gap-fill",
+      "id": "l3-g-u1-read-q7",
+      "paragraphLabel": "D",
+      "number": 7,
+      "prompt": "In the example, the candidate reduced late orders by ___.",
+      "acceptedAnswers": [
+       "half",
+       "50%",
+       "fifty percent",
+       "50 percent"
+      ],
+      "explanation": {
+       "vi": "\"reduced late orders by half\" = giảm một nửa số đơn giao trễ.",
+       "en": "\"reduced late orders by half\"."
+      }
+     },
+     {
+      "kind": "choice",
+      "id": "l3-g-u1-read-q8",
+      "paragraphLabel": "E",
+      "number": 8,
+      "prompt": "What does Bennett advise about the \"biggest weakness\" question?",
+      "options": [
+       "Say you have no weaknesses.",
+       "Say that you work too hard.",
+       "Give a real weakness and explain how you are improving.",
+       "Politely refuse to answer."
+      ],
+      "correctIndex": 2,
+      "explanation": {
+       "vi": "\"choosing a real but manageable weakness and explaining what you are doing to improve it\".",
+       "en": "\"choosing a real but manageable weakness and explaining what you are doing to improve it\"."
+      }
+     },
+     {
+      "kind": "gap-fill",
+      "id": "l3-g-u1-read-q9",
+      "paragraphLabel": "F",
+      "number": 9,
+      "prompt": "A thank-you email should be sent on the ___ day as the interview.",
+      "acceptedAnswers": [
+       "same"
+      ],
+      "explanation": {
+       "vi": "\"a short thank-you email sent on the same day\".",
+       "en": "\"a short thank-you email sent on the same day\"."
+      }
+     }
+    ]
+   },
+   "miniTest": []
+  }
+ },
+ {
+  "label": "Level 3 · Tiếng Anh tổng quát · Nói",
+  "lesson": {
+   "id": "l3-g-u1-speak",
+   "skill": "speaking",
+   "mode": "speaking",
+   "estimatedMinutes": 15,
+   "title": {
+    "vi": "Nói về công việc và giới thiệu bản thân",
+    "en": "Talking about work and presenting yourself"
+   },
+   "description": {
+    "vi": "Trả lời câu hỏi về công việc hoặc việc học như khi phỏng vấn: kinh nghiệm, điểm mạnh và quan điểm về cách làm việc.",
+    "en": "Answer questions about your job or studies as in an interview: experience, strengths and views on working life."
+   },
+   "teachingCards": [
+    {
+     "title": {
+      "vi": "Giới thiệu bản thân như người đi làm",
+      "en": "Presenting yourself professionally"
+     },
+     "body": {
+      "vi": "Công việc: **I'm currently working as** + nghề / **I work for** + công ty / **I'm in charge of** + việc.\nKinh nghiệm (vẫn đang làm): **I've been working there for** three years / **since** 2022.\nĐiểm mạnh + bằng chứng: **One of my strengths is… For example, last year I…**",
+      "en": "Your job: **I'm currently working as** + job / **I work for** + company / **I'm in charge of** + task.\nExperience (still true now): **I've been working there for** three years / **since** 2022.\nStrength + proof: **One of my strengths is… For example, last year I…**"
+     },
+     "examples": [
+      {
+       "en": "I've been working as a receptionist for two years.",
+       "vi": "Tôi làm lễ tân được hai năm rồi."
+      },
+      {
+       "en": "I'm in charge of training new staff.",
+       "vi": "Tôi phụ trách đào tạo nhân viên mới."
+      }
+     ]
+    },
+    {
+     "title": {
+      "vi": "Câu trả lời 4 bước",
+      "en": "A four-step answer"
+     },
+     "body": {
+      "vi": "Mở rộng công thức A + R + E đã học: **Answer** (trả lời) → **Reason** (lý do) → **Example** (chuyện thật, ngắn) → **Contrast** (một ý \"mặt khác\").\nVD: \"I prefer teamwork **because**… **For instance**, … **That said**, I do need quiet time to…\"\nBước Contrast làm câu trả lời nghe **chín chắn** hơn.",
+      "en": "Extend the A + R + E formula: **Answer** → **Reason** → **Example** (a short, real story) → **Contrast** (the other side).\nE.g. \"I prefer teamwork **because**… **For instance**, … **That said**, I do need quiet time to…\"\nThe Contrast step makes you sound more **thoughtful**."
+     }
+    },
+    {
+     "title": {
+      "vi": "Trọng âm từ chỉ công việc",
+      "en": "Word stress in work words"
+     },
+     "body": {
+      "vi": "Nhấn sai trọng âm làm người nghe khó hiểu hơn cả sai ngữ pháp:\n**COL**-league, ex-**PE**-ri-ence, **MAN**-a-ger, de-**VEL**-op, re-**SPON**-si-ble, pre-sen-**TA**-tion.\nÂm không nhấn đọc **nhẹ và ngắn**, thường thành /ə/.",
+      "en": "Wrong word stress confuses listeners more than grammar mistakes:\n**COL**-league, ex-**PE**-ri-ence, **MAN**-a-ger, de-**VEL**-op, re-**SPON**-si-ble, pre-sen-**TA**-tion.\nUnstressed syllables are **short and light**, often /ə/."
+     },
+     "examples": [
+      {
+       "en": "I have five years of experience as a manager.",
+       "vi": "Tôi có năm năm kinh nghiệm làm quản lý."
+      }
+     ]
+    }
+   ],
+   "exercises": [
+    {
+     "id": "l3-g-u1-speak-ex01",
+     "type": "multiple-choice",
+     "question": "Which answer to \"What do you do?\" sounds the most natural?",
+     "options": [
+      "I am a worker.",
+      "I'm currently working as a sales assistant in an electronics shop.",
+      "I do work.",
+      "My work is a sales assistant."
+     ],
+     "correctIndex": 1,
+     "explanation": {
+      "vi": "\"I'm currently working as + nghề + ở đâu\" rõ ràng và tự nhiên.",
+      "en": "\"I'm currently working as + job + place\" is clear and natural."
+     }
+    },
+    {
+     "id": "l3-g-u1-speak-ex02",
+     "type": "fill-blank",
+     "sentence": "I've been working at this company ___ 2021.",
+     "acceptedAnswers": [
+      "since"
+     ],
+     "explanation": {
+      "vi": "\"since\" + mốc thời gian (2021, last May).",
+      "en": "\"since\" + a point in time (2021, last May)."
+     }
+    },
+    {
+     "id": "l3-g-u1-speak-ex03",
+     "type": "fill-blank",
+     "sentence": "I've been working there ___ about three years.",
+     "acceptedAnswers": [
+      "for"
+     ],
+     "explanation": {
+      "vi": "\"for\" + khoảng thời gian (three years, a long time).",
+      "en": "\"for\" + a length of time (three years, a long time)."
+     }
+    },
+    {
+     "id": "l3-g-u1-speak-ex04",
+     "type": "multiple-choice",
+     "question": "Which word is stressed on the SECOND syllable?",
+     "options": [
+      "colleague",
+      "manager",
+      "experience",
+      "office"
+     ],
+     "correctIndex": 2,
+     "explanation": {
+      "vi": "ex-PE-ri-ence nhấn âm 2; COL-league, MAN-a-ger, OF-fice nhấn âm 1.",
+      "en": "ex-PE-ri-ence; the others are stressed first: COL-league, MAN-a-ger, OF-fice."
+     }
+    },
+    {
+     "id": "l3-g-u1-speak-ex05",
+     "type": "arrange-words",
+     "translationVi": "Tôi phụ trách đào tạo nhân viên mới.",
+     "correctSentence": "I'm in charge of training new staff.",
+     "extraWords": [
+      "for",
+      "train"
+     ],
+     "explanation": {
+      "vi": "\"be in charge of + V-ing\" = phụ trách việc gì.",
+      "en": "\"be in charge of + -ing\" = be responsible for a task."
+     }
+    },
+    {
+     "id": "l3-g-u1-speak-ex06",
+     "type": "multiple-choice",
+     "question": "\"Do you prefer working alone or in a team?\" Which answer includes a good CONTRAST step?",
+     "options": [
+      "In a team. I like people.",
+      "In a team, because I learn from others. That said, I need some quiet time to write reports.",
+      "Alone. Teams are bad.",
+      "Both are good, I think, yes."
+     ],
+     "correctIndex": 1,
+     "explanation": {
+      "vi": "Có trả lời, lý do và \"That said…\" nêu mặt khác: câu trả lời chín chắn.",
+      "en": "It answers, gives a reason, then \"That said…\" adds the other side."
+     }
+    },
+    {
+     "id": "l3-g-u1-speak-ex07",
+     "type": "multiple-choice",
+     "question": "Which phrase introduces an EXAMPLE?",
+     "options": [
+      "For instance,",
+      "That said,",
+      "On the other hand,",
+      "To be honest,"
+     ],
+     "correctIndex": 0,
+     "explanation": {
+      "vi": "\"For instance\" = \"For example\". \"That said\", \"On the other hand\" nêu mặt khác.",
+      "en": "\"For instance\" = \"For example\". The others introduce a contrast or opinion."
+     }
+    },
+    {
+     "id": "l3-g-u1-speak-ex08",
+     "type": "speak-sentence",
+     "sentence": "I've been working as a receptionist for two years.",
+     "translationVi": "Tôi làm lễ tân được hai năm rồi.",
+     "explanation": {
+      "vi": "Nhấn re-CEP-tion-ist. Đọc rõ /v/ trong \"I've\" và /z/ cuối \"years\".",
+      "en": "Stress re-CEP-tion-ist. Say the /v/ in \"I've\" and the /z/ in \"years\"."
+     }
+    },
+    {
+     "id": "l3-g-u1-speak-ex09",
+     "type": "speak-sentence",
+     "sentence": "One of my strengths is that I stay calm with difficult customers.",
+     "translationVi": "Một trong những điểm mạnh của tôi là giữ bình tĩnh với khách hàng khó tính.",
+     "explanation": {
+      "vi": "Cụm âm /ŋθs/ trong \"strengths\"; đọc rõ /z/ cuối \"customers\".",
+      "en": "Say the /ŋθs/ cluster in \"strengths\" and the final /z/ in \"customers\"."
+     }
+    },
+    {
+     "id": "l3-g-u1-speak-ex10",
+     "type": "speak-answer",
+     "question": "Tell me a little about your job or your studies. What do you like most about it?",
+     "tipsVi": "Nói theo 4 bước: bạn làm/học gì (I'm currently…) → điều bạn thích nhất + lý do → 1 ví dụ thật → 1 ý \"That said…\". Nhấn đúng trọng âm các từ công việc. Nói 30–60 giây.",
+     "sampleAnswer": "I'm currently working as an accountant for a small furniture company in Da Nang. What I like most is that every day is a bit different, because I deal with suppliers, customers and our own team. For instance, last week I helped my manager plan the budget for a new showroom, which was really interesting. That said, the end of the month can be quite stressful, because everything has to be finished on time.",
+     "recordSeconds": 60,
+     "explanation": {
+      "vi": "Câu trả lời tốt có đủ: trả lời + lý do + ví dụ thật + một ý trái chiều.",
+      "en": "A good answer has an answer, a reason, a real example and a contrast."
+     }
+    }
+   ],
+   "speakingTask": {
+    "part": 1,
+    "questions": [
+     "What do you do? Do you work or are you a student?",
+     "What do you like most about your job or your studies?",
+     "Would you rather work in a team or on your own? Why?",
+     "What makes someone a good colleague, in your opinion?",
+     "Do you think more people will work from home in the future? Why or why not?"
+    ],
+    "bandSamples": [
+     {
+      "band": "4.5",
+      "text": "Q: What do you like most about your job?\nA: Um... I like my job because it is interesting. I work in office, uh, in a bank. My colleague is very friendly and help me a lot. I like it very much.\n\nQ: Would you rather work in a team or on your own?\nA: Team. Because, um... team is more fun. When I work alone I feel boring. So I like team more than alone.\n\nQ: Will more people work from home in the future?\nA: Yes, I think yes. Because the internet is good now. And, um... people don't like traffic. So they work at home more.",
+      "notesVi": "Mức cơ bản (khoảng 4.5). FC: trả lời được nhưng rất ngắn, ngập ngừng nhiều (\"um\", \"uh\") và lặp ý. LR: từ đơn giản (interesting, fun) và dùng sai \"I feel boring\" (phải là bored). GRA: lỗi cơ bản như thiếu mạo từ \"in office\", thiếu -s \"help\", \"I think yes\". P: cần đọc rõ âm cuối và nhấn đúng COL-league."
+     },
+     {
+      "band": "5.5",
+      "text": "Q: What do you like most about your job?\nA: Well, I work as a receptionist in a hotel, and what I like most is meeting people from many countries. Every day I talk with guests, so my English is improving. But sometimes it's tiring because I have to work at night.\n\nQ: Would you rather work in a team or on your own?\nA: I prefer to work in a team, because we can share ideas and help each other. For example, when our hotel was very busy in Tet holiday, my team divided the work and we finished everything on time. But working alone is also good when you need to concentrate.\n\nQ: Will more people work from home in the future?\nA: I think yes, more people will work from home, because technology is more and more developed. It saves time for travelling. However, some jobs like doctor or waiter cannot do at home, so not everyone can work from home.",
+      "notesVi": "Mức khá (khoảng 5.5). FC: câu trả lời đủ dài, có lý do, ví dụ và từ nối (because, for example, however), nhưng từ nối hơi \"sách vở\". LR: đủ dùng (share ideas, concentrate) nhưng có cách nói chưa tự nhiên: \"technology is more and more developed\". GRA: còn lỗi \"in Tet holiday\" (during Tet), \"jobs… cannot do at home\" (cannot be done)."
+     },
+     {
+      "band": "6.5",
+      "text": "Q: What do you like most about your job?\nA: I'd say it's the variety. I work in customer service for an online furniture shop, so one minute I'm sorting out a delivery problem and the next I'm helping someone choose a sofa. It keeps me on my toes. The only downside is that some customers can be quite demanding, but I've learned not to take it personally.\n\nQ: Would you rather work in a team or on your own?\nA: On the whole, I'd go for a team. I find I come up with better ideas when I can bounce them off other people, and it's more motivating. That said, I do need a bit of quiet time on my own, especially when I'm writing reports, because constant interruptions really slow me down.\n\nQ: Will more people work from home in the future?\nA: Probably, yes, at least for part of the week. Most people I know would happily skip the commute, and companies can save money on office space. But I don't think offices will disappear completely, because a lot of learning happens informally, just by sitting next to more experienced colleagues.",
+      "notesVi": "Mức tốt (khoảng 6.5). FC: nói trôi chảy, mỗi ý có lý do và mặt trái (That said, But I don't think…). LR: cụm tự nhiên như keeps me on my toes, bounce ideas off, skip the commute. GRA: câu phức đa dạng, gần như không lỗi. Muốn cao hơn: thêm ví dụ cá nhân cụ thể cho câu cuối."
+     }
+    ],
+    "checklist": [
+     {
+      "criterion": "FC",
+      "questionsVi": [
+       "Mỗi câu trả lời có ít nhất 2–3 câu (không chỉ \"Yes\" hay \"No\") không?",
+       "Bạn có dùng từ nối như because, for instance, that said không?",
+       "Bạn có nói liền mạch, không dừng quá lâu giữa các câu không?"
+      ]
+     },
+     {
+      "criterion": "LR",
+      "questionsVi": [
+       "Bạn có dùng ít nhất 2 cụm từ công việc của chặng (meet a deadline, be in charge of…) không?",
+       "Bạn có tránh lặp một từ (good, interesting) quá nhiều lần không?"
+      ]
+     },
+     {
+      "criterion": "GRA",
+      "questionsVi": [
+       "Bạn có dùng đúng \"I've been working… for / since…\" không?",
+       "Động từ sau he / she / it / my colleague có thêm -s không?"
+      ]
+     },
+     {
+      "criterion": "P",
+      "questionsVi": [
+       "Bạn có nhấn đúng COL-league, ex-PE-ri-ence, MAN-a-ger không?",
+       "Âm cuối (-s, -t, -k) có được đọc rõ, không bị nuốt mất không?"
+      ]
+     }
+    ],
+    "usefulPhrases": [
+     "I'm currently working as…",
+     "I've been working there for… / since…",
+     "I'm in charge of…",
+     "What I like most about it is…",
+     "On the whole, I'd rather…",
+     "For instance, …",
+     "That said, …",
+     "I'd say…"
+    ],
+    "targetSounds": [
+     "word stress: COL-league, ex-PE-ri-ence, MAN-a-ger",
+     "final -s: works, colleagues, customers",
+     "final cluster /ŋθs/ in \"strengths\""
+    ]
+   },
+   "miniTest": []
+  }
+ },
+ {
+  "label": "Level 3 · IELTS · Nghe",
+  "lesson": {
+   "id": "l3-i-lis-10-01",
+   "skill": "listening",
+   "mode": "listening",
+   "estimatedMinutes": 20,
+   "title": {
+    "vi": "Section 1: Điền form — báo mất đồ",
+    "en": "Section 1: Form completion — reporting lost property"
+   },
+   "description": {
+    "vi": "Nghe cuộc gọi báo mất đồ và điền form: tên được đánh vần, số điện thoại, ngày tháng và thông tin bị sửa lại.",
+    "en": "Listen to a call about lost property and complete a form: spelled names, phone numbers, dates and corrected details."
+   },
+   "teachingCards": [
+    {
+     "title": {
+      "vi": "Đoán loại đáp án trước khi nghe",
+      "en": "Predict the answer type"
+     },
+     "body": {
+      "vi": "Trước khi nghe bạn có khoảng **30 giây**. Đọc từng chỗ trống và **đoán loại đáp án**: tên riêng, con số, ngày tháng hay danh từ? Nhìn từ đứng **trước và sau** chỗ trống. VD \"Colour: dark ___\" → cần một **từ chỉ màu**. Đoán đúng loại giúp bạn **nghe đúng chỗ** và bỏ qua chi tiết thừa.",
+      "en": "You get about **30 seconds** before the recording. Read each gap and **predict the answer type**: a name, a number, a date or a noun? Look at the words **before and after** the gap. E.g. \"Colour: dark ___\" → you need a **colour word**. Knowing the type helps you **listen for the right thing**."
+     },
+     "examples": [
+      {
+       "en": "My postcode is B S seven, four T Q.",
+       "vi": "Postcode → nghe cả chữ cái lẫn con số."
+      },
+      {
+       "en": "I lost it on the twelfth of May.",
+       "vi": "Date of loss → nghe một ngày tháng."
+      }
+     ]
+    },
+    {
+     "title": {
+      "vi": "Bẫy sửa lời và đánh vần",
+      "en": "Corrections and spelling traps"
+     },
+     "body": {
+      "vi": "Section 1 rất hay có **bẫy sửa lời**: người nói đưa một thông tin rồi đổi lại (\"It's the ninth... no, the tenth\"). Luôn ghi **thông tin cuối cùng**. Khi đánh vần: **\"double L\" = LL**, **\"oh\" = số 0**. Sai **một chữ cái** là mất điểm, nên kiểm tra chính tả kỹ.",
+      "en": "Section 1 often has **corrections**: a speaker gives one detail, then changes it (\"It's the ninth... no, the tenth\"). Always write the **final information**. In spelling, **\"double L\" = LL** and **\"oh\" = zero**. **One wrong letter** loses the mark, so check your spelling."
+     },
+     "examples": [
+      {
+       "en": "It's on the fourteenth. No, sorry, the fifteenth.",
+       "vi": "Đáp án là ngày 15 — thông tin sau cùng."
+      }
+     ]
+    }
+   ],
+   "exercises": [
+    {
+     "id": "l3-i-lis-10-01-ex01",
+     "type": "listen-type",
+     "audioText": "H, A, double L, O, R, A, N.",
+     "acceptedAnswers": [
+      "Halloran"
+     ],
+     "explanation": {
+      "vi": "\"Double L\" là hai chữ L viết liền: H-A-L-L-O-R-A-N.",
+      "en": "\"Double L\" means two Ls together: H-A-L-L-O-R-A-N."
+     }
+    },
+    {
+     "id": "l3-i-lis-10-01-ex02",
+     "type": "listen-choose",
+     "audioText": "My mobile number is oh seven seven, double nine, four oh three, six one five.",
+     "question": "Which number did you hear?",
+     "options": [
+      "07799 403 615",
+      "07799 430 615",
+      "07709 403 615",
+      "07799 403 651"
+     ],
+     "correctIndex": 0,
+     "explanation": {
+      "vi": "\"Oh\" = số 0, \"double nine\" = 99 → 07799 403 615.",
+      "en": "\"Oh\" is zero and \"double nine\" is 99 → 07799 403 615."
+     }
+    },
+    {
+     "id": "l3-i-lis-10-01-ex03",
+     "type": "multiple-choice",
+     "question": "Form: \"Colour of bag: dark ___\". What should you listen for?",
+     "options": [
+      "a colour word, e.g. blue or brown",
+      "a number",
+      "a person's name",
+      "a verb, e.g. carry"
+     ],
+     "correctIndex": 0,
+     "explanation": {
+      "vi": "Chữ \"Colour\" và \"dark\" cho biết cần một từ chỉ màu sắc.",
+      "en": "\"Colour\" and \"dark\" tell you the answer is a colour word."
+     }
+    },
+    {
+     "id": "l3-i-lis-10-01-ex04",
+     "type": "listen-choose",
+     "audioText": "Clerk: So you lost it on Tuesday the fourteenth?\nCaller: Hmm, no. I think it was the Monday. Yes, Monday the thirteenth, because I'd been to the dentist that morning.",
+     "question": "When did the caller lose the item?",
+     "options": [
+      "Monday the 13th",
+      "Tuesday the 14th",
+      "Monday the 14th",
+      "Tuesday the 13th"
+     ],
+     "correctIndex": 0,
+     "explanation": {
+      "vi": "Người gọi sửa lại: \"Monday the thirteenth\". Luôn chọn thông tin cuối cùng.",
+      "en": "The caller corrects the clerk: \"Monday the thirteenth\". Take the final information."
+     }
+    },
+    {
+     "id": "l3-i-lis-10-01-ex05",
+     "type": "fill-blank",
+     "sentence": "You hear: \"It has a brown leather strap.\" Form: Strap made of ___",
+     "acceptedAnswers": [
+      "leather"
+     ],
+     "explanation": {
+      "vi": "\"Leather strap\" = quai làm bằng da. Form diễn đạt lại bằng \"made of\".",
+      "en": "\"Leather strap\" = a strap made of leather. The form rephrases it."
+     }
+    },
+    {
+     "id": "l3-i-lis-10-01-ex06",
+     "type": "speak-sentence",
+     "sentence": "I left my rucksack on the six fifteen train.",
+     "translationVi": "Tôi để quên ba lô trên chuyến tàu 6 giờ 15.",
+     "explanation": {
+      "vi": "Đọc rõ âm cuối /ft/ trong \"left\", /k/ trong \"rucksack\"; nhấn \"fif-TEEN\".",
+      "en": "Pronounce final /ft/ in \"left\" and /k/ in \"rucksack\"; stress fif-TEEN."
+     }
+    }
+   ],
+   "miniTest": [],
+   "listeningTask": {
+    "instructions": "Questions 1–10. Complete the form below (Westbury Station — Lost Property Report). Write ONE WORD AND/OR A NUMBER for each answer.",
+    "strategyTip": {
+     "vi": "Đọc cả form trong 30 giây, gạch chân từ khoá. Nghe \"actually\", \"sorry\", \"hang on\" là dấu hiệu người nói sửa lời.",
+     "en": "Read the whole form in 30 seconds. \"Actually\", \"sorry\" and \"hang on\" signal that the speaker is correcting something."
+    },
+    "segments": [
+     {
+      "id": "l3-i-lis-10-01-s1",
+      "lines": [
+       {
+        "speaker": "Clerk",
+        "voice": "gb-female",
+        "text": "Good afternoon, Lost Property Office, Westbury Station. How can I help?"
+       },
+       {
+        "speaker": "Daniel",
+        "voice": "au-male",
+        "text": "Hi. I think I left a bag on one of your trains last week, and I'm hoping someone's handed it in."
+       },
+       {
+        "speaker": "Clerk",
+        "voice": "gb-female",
+        "text": "Right, I'll take some details and fill in a report for you. Could I have your name, please?"
+       },
+       {
+        "speaker": "Daniel",
+        "voice": "au-male",
+        "text": "Yes, it's Daniel Hartigan."
+       },
+       {
+        "speaker": "Clerk",
+        "voice": "gb-female",
+        "text": "Could you spell your surname for me?"
+       },
+       {
+        "speaker": "Daniel",
+        "voice": "au-male",
+        "text": "Sure. H, A, R, T, I, G, A, N."
+       },
+       {
+        "speaker": "Clerk",
+        "voice": "gb-female",
+        "text": "H, A, R, T, I, G, A, N. Thank you. And is there a phone number we can reach you on?"
+       },
+       {
+        "speaker": "Daniel",
+        "voice": "au-male",
+        "text": "My mobile's best. It's oh seven eight eight four, two one five, nine three oh."
+       },
+       {
+        "speaker": "Clerk",
+        "voice": "gb-female",
+        "text": "Let me read that back. Oh seven eight eight four, two one five, nine three oh."
+       },
+       {
+        "speaker": "Daniel",
+        "voice": "au-male",
+        "text": "That's right."
+       },
+       {
+        "speaker": "Clerk",
+        "voice": "gb-female",
+        "text": "And when did you lose the bag?"
+       },
+       {
+        "speaker": "Daniel",
+        "voice": "au-male",
+        "text": "It was last Thursday, so that would be the ninth of March. Actually, hang on. I had a meeting in Cardiff that day, and the meeting was definitely on the Friday. So it must have been Friday the tenth."
+       },
+       {
+        "speaker": "Clerk",
+        "voice": "gb-female",
+        "text": "Friday the tenth of March. OK."
+       }
+      ]
+     },
+     {
+      "id": "l3-i-lis-10-01-s2",
+      "lines": [
+       {
+        "speaker": "Clerk",
+        "voice": "gb-female",
+        "text": "And which train were you on?"
+       },
+       {
+        "speaker": "Daniel",
+        "voice": "au-male",
+        "text": "The six o'clock from Cardiff back to Westbury."
+       },
+       {
+        "speaker": "Clerk",
+        "voice": "gb-female",
+        "text": "Do you remember which carriage you were sitting in?"
+       },
+       {
+        "speaker": "Daniel",
+        "voice": "au-male",
+        "text": "I got on at the front, in carriage five, but it was really crowded, so I moved back to the quiet carriage. That was number seven, I'm fairly sure. Yes, seven."
+       },
+       {
+        "speaker": "Clerk",
+        "voice": "gb-female",
+        "text": "Carriage seven. And can you describe the bag for me?"
+       },
+       {
+        "speaker": "Daniel",
+        "voice": "au-male",
+        "text": "It's not a suitcase or anything big. It's a laptop bag, the kind you carry over your shoulder."
+       },
+       {
+        "speaker": "Clerk",
+        "voice": "gb-female",
+        "text": "What colour is it?"
+       },
+       {
+        "speaker": "Daniel",
+        "voice": "au-male",
+        "text": "Most people think it's black when they see it, but it's actually dark green."
+       },
+       {
+        "speaker": "Clerk",
+        "voice": "gb-female",
+        "text": "Dark green. Is there anything that would help us identify it? A lot of laptop bags look the same."
+       },
+       {
+        "speaker": "Daniel",
+        "voice": "au-male",
+        "text": "Yes, there's a small badge on the front pocket. It's from a walking club I belong to, and it's got a picture of a mountain on it."
+       },
+       {
+        "speaker": "Clerk",
+        "voice": "gb-female",
+        "text": "That's very helpful. A badge on the front pocket."
+       }
+      ]
+     },
+     {
+      "id": "l3-i-lis-10-01-s3",
+      "lines": [
+       {
+        "speaker": "Clerk",
+        "voice": "gb-female",
+        "text": "And what was inside it?"
+       },
+       {
+        "speaker": "Daniel",
+        "voice": "au-male",
+        "text": "Well, my laptop, obviously, and the charger. My wallet was in my jacket, thank goodness, but I'm afraid my house keys were in the side pocket of the bag."
+       },
+       {
+        "speaker": "Clerk",
+        "voice": "gb-female",
+        "text": "Laptop, charger and keys. Right. Now, let me explain what happens if we find it. You can either collect the bag from this office, or we can send it to you by courier."
+       },
+       {
+        "speaker": "Daniel",
+        "voice": "au-male",
+        "text": "How much does the courier cost?"
+       },
+       {
+        "speaker": "Clerk",
+        "voice": "gb-female",
+        "text": "The courier service is fifteen pounds, and that includes insurance. If you collect it yourself, there's just a small handling fee of three pounds."
+       },
+       {
+        "speaker": "Daniel",
+        "voice": "au-male",
+        "text": "Oh, I'll definitely collect it, then. The office isn't far from where I work."
+       },
+       {
+        "speaker": "Clerk",
+        "voice": "gb-female",
+        "text": "Fine. I'll give you a reference number for your report, so please keep it safe. It's L P four four seven one."
+       },
+       {
+        "speaker": "Daniel",
+        "voice": "au-male",
+        "text": "L P four four seven one. Got it."
+       },
+       {
+        "speaker": "Clerk",
+        "voice": "gb-female",
+        "text": "When you come in, please bring some photo ID, like a driving licence, and the reference number. We'll call you as soon as anything matching your description is handed in."
+       },
+       {
+        "speaker": "Daniel",
+        "voice": "au-male",
+        "text": "Brilliant. Thanks very much for your help."
+       }
+      ]
+     }
+    ],
+    "questions": [
+     {
+      "kind": "gap-fill",
+      "id": "l3-i-lis-10-01-q01",
+      "segmentId": "l3-i-lis-10-01-s1",
+      "number": 1,
+      "prompt": "Name: Daniel ___",
+      "acceptedAnswers": [
+       "Hartigan"
+      ],
+      "explanation": {
+       "vi": "Anh ấy đánh vần: H, A, R, T, I, G, A, N → Hartigan.",
+       "en": "He spells it: H, A, R, T, I, G, A, N → Hartigan."
+      }
+     },
+     {
+      "kind": "gap-fill",
+      "id": "l3-i-lis-10-01-q02",
+      "segmentId": "l3-i-lis-10-01-s1",
+      "number": 2,
+      "prompt": "Mobile number: ___",
+      "acceptedAnswers": [
+       "07884 215 930",
+       "07884215930",
+       "07884 215930",
+       "07884-215-930",
+       "0788 4215 930"
+      ],
+      "explanation": {
+       "vi": "\"Oh seven eight eight four, two one five, nine three oh\" — \"oh\" là số 0.",
+       "en": "\"Oh seven eight eight four, two one five, nine three oh\" — \"oh\" means zero."
+      }
+     },
+     {
+      "kind": "gap-fill",
+      "id": "l3-i-lis-10-01-q03",
+      "segmentId": "l3-i-lis-10-01-s1",
+      "number": 3,
+      "prompt": "Date of loss: Friday ___ March",
+      "acceptedAnswers": [
+       "10",
+       "10th",
+       "tenth",
+       "the 10th",
+       "the tenth"
+      ],
+      "explanation": {
+       "vi": "Ngày 9 là bẫy; anh ấy sửa lại: \"it must have been Friday the tenth\".",
+       "en": "The ninth is a trap; he corrects it: \"it must have been Friday the tenth\"."
+      }
+     },
+     {
+      "kind": "gap-fill",
+      "id": "l3-i-lis-10-01-q04",
+      "segmentId": "l3-i-lis-10-01-s2",
+      "number": 4,
+      "prompt": "Carriage number: ___",
+      "acceptedAnswers": [
+       "7",
+       "seven"
+      ],
+      "explanation": {
+       "vi": "Toa 5 đông nên anh chuyển sang toa yên tĩnh, \"number seven\".",
+       "en": "Carriage five was crowded; he moved to the quiet carriage, \"number seven\"."
+      }
+     },
+     {
+      "kind": "gap-fill",
+      "id": "l3-i-lis-10-01-q05",
+      "segmentId": "l3-i-lis-10-01-s2",
+      "number": 5,
+      "prompt": "Item lost: a ___ bag",
+      "acceptedAnswers": [
+       "laptop"
+      ],
+      "explanation": {
+       "vi": "\"It's not a suitcase... It's a laptop bag\" → laptop.",
+       "en": "\"It's not a suitcase... It's a laptop bag\" → laptop."
+      }
+     },
+     {
+      "kind": "gap-fill",
+      "id": "l3-i-lis-10-01-q06",
+      "segmentId": "l3-i-lis-10-01-s2",
+      "number": 6,
+      "prompt": "Colour: dark ___",
+      "acceptedAnswers": [
+       "green"
+      ],
+      "explanation": {
+       "vi": "\"Black\" là bẫy: \"but it's actually dark green\" → green.",
+       "en": "\"Black\" is a trap: \"but it's actually dark green\" → green."
+      }
+     },
+     {
+      "kind": "gap-fill",
+      "id": "l3-i-lis-10-01-q07",
+      "segmentId": "l3-i-lis-10-01-s2",
+      "number": 7,
+      "prompt": "Identifying feature: a ___ on the front pocket",
+      "acceptedAnswers": [
+       "badge"
+      ],
+      "explanation": {
+       "vi": "\"There's a small badge on the front pocket\" → badge (huy hiệu).",
+       "en": "\"There's a small badge on the front pocket\" → badge."
+      }
+     },
+     {
+      "kind": "gap-fill",
+      "id": "l3-i-lis-10-01-q08",
+      "segmentId": "l3-i-lis-10-01-s3",
+      "number": 8,
+      "prompt": "Contents: laptop, charger and ___",
+      "acceptedAnswers": [
+       "keys"
+      ],
+      "explanation": {
+       "vi": "Ví ở trong áo khoác (bẫy); \"my house keys were in the side pocket\".",
+       "en": "The wallet was in his jacket (trap); \"my house keys were in the side pocket\"."
+      }
+     },
+     {
+      "kind": "gap-fill",
+      "id": "l3-i-lis-10-01-q09",
+      "segmentId": "l3-i-lis-10-01-s3",
+      "number": 9,
+      "prompt": "Fee to collect in person: £___",
+      "acceptedAnswers": [
+       "3",
+       "three",
+       "3.00"
+      ],
+      "explanation": {
+       "vi": "15 bảng là phí chuyển phát; tự đến lấy: \"a small handling fee of three pounds\".",
+       "en": "Fifteen pounds is the courier; collecting costs \"a small handling fee of three pounds\"."
+      }
+     },
+     {
+      "kind": "gap-fill",
+      "id": "l3-i-lis-10-01-q10",
+      "segmentId": "l3-i-lis-10-01-s3",
+      "number": 10,
+      "prompt": "Reference number: LP ___",
+      "acceptedAnswers": [
+       "4471"
+      ],
+      "explanation": {
+       "vi": "\"L P four four seven one\" → 4471.",
+       "en": "\"L P four four seven one\" → 4471."
+      }
+     }
+    ]
+   }
+  }
+ },
+ {
+  "label": "Level 3 · IELTS · Viết",
+  "lesson": {
+   "id": "l3-i-wri-01",
+   "skill": "writing",
+   "mode": "writing",
+   "estimatedMinutes": 35,
+   "title": {
+    "vi": "Task 1 – Biểu đồ đường: overview và ngôn ngữ xu hướng",
+    "en": "Task 1 – Line graphs: overview and trend language"
+   },
+   "description": {
+    "vi": "Nấc 1: học từ bài mẫu có chú thích từng câu, rồi tự viết bài cho một biểu đồ đường mới.",
+    "en": "Step 1: study a model annotated sentence by sentence, then write your own report on a new line graph."
+   },
+   "teachingCards": [
+    {
+     "title": {
+      "vi": "Bố cục 4 đoạn của Task 1",
+      "en": "The four-paragraph Task 1 layout"
+     },
+     "body": {
+      "vi": "Bài Task 1 (≥ 150 từ, 20 phút) nên có **4 đoạn**:\n1. **Mở bài**: viết lại đề bằng từ khác (1 câu).\n2. **Overview**: 2 đặc điểm lớn nhất, **không ghi số**.\n3–4. **Hai thân bài**: số liệu chi tiết, chia theo nhóm hợp lý.\n**Không** viết ý kiến cá nhân, **không** đoán nguyên nhân.",
+      "en": "A Task 1 report (150+ words, 20 minutes) needs **four paragraphs**:\n1. **Introduction**: paraphrase the question (one sentence).\n2. **Overview**: the two biggest features, **no numbers**.\n3–4. **Two body paragraphs**: detailed figures, grouped logically.\n**No** personal opinions and **no** guessing at reasons."
+     },
+     "examples": [
+      {
+       "en": "The graph shows… → The line graph compares…",
+       "vi": "Mở bài: đổi động từ của đề (shows → compares / illustrates)."
+      },
+      {
+       "en": "Overall, car use rose steadily, while cycling became less common.",
+       "vi": "Overview: xu hướng chung của các đường, không có số."
+      }
+     ]
+    },
+    {
+     "title": {
+      "vi": "Ngôn ngữ xu hướng: động từ + trạng từ",
+      "en": "Trend language: verbs + adverbs"
+     },
+     "body": {
+      "vi": "Hai cách viết cùng một ý:\n• **Động từ + trạng từ**: *rose sharply, fell gradually, remained stable*.\n• **Tính từ + danh từ**: *a sharp rise, a gradual fall*.\nGiới từ: **from 20% to 35%** (từ… đến), **by 15 points** (mức chênh), **peaked at 40%** (đạt đỉnh).\nCác năm đã qua → **quá khứ đơn**; viết và đọc rõ đuôi **-ed**.",
+      "en": "Two ways to say the same idea:\n• **Verb + adverb**: *rose sharply, fell gradually, remained stable*.\n• **Adjective + noun**: *a sharp rise, a gradual fall*.\nPrepositions: **from 20% to 35%**, **by 15 points** (the difference), **peaked at 40%**.\nPast years → **past simple**; write and say the **-ed** ending clearly."
+     },
+     "examples": [
+      {
+       "en": "Bus use fell gradually from 40% to 25%.",
+       "vi": "Lượng người đi xe buýt giảm dần từ 40% xuống 25%."
+      },
+      {
+       "en": "There was a sharp rise in cycling after 2015.",
+       "vi": "Sau năm 2015, việc đi xe đạp tăng mạnh."
+      }
+     ]
+    },
+    {
+     "title": {
+      "vi": "Bài mẫu có chú thích (đọc kỹ trước khi viết)",
+      "en": "Annotated model (study it before you write)"
+     },
+     "body": {
+      "vi": "Đề mẫu: tỉ lệ hộ gia đình ở một nước có **máy tính bàn, laptop và máy tính bảng**, 2008–2023. Đọc từng câu bên dưới: phần tiếng Việt cho biết **câu đó làm nhiệm vụ gì** trong bài. Bài đầy đủ khoảng 170 từ; đây là bộ khung để bạn bắt chước.",
+      "en": "Model task: the percentage of households in one country owning a **desktop, a laptop and a tablet**, 2008–2023. Read each sentence below; the Vietnamese note says **what job the sentence does**. A full answer is about 170 words; this is the skeleton to copy."
+     },
+     "examples": [
+      {
+       "en": "The line graph compares the proportion of households in one country that owned a desktop computer, a laptop and a tablet between 2008 and 2023.",
+       "vi": "MỞ BÀI – viết lại đề: shows → compares, percentage → proportion."
+      },
+      {
+       "en": "Overall, desktop ownership declined steadily, while both portable devices became more common, and laptops were the most widely owned device by the end of the period.",
+       "vi": "OVERVIEW – 2 ý lớn (xu hướng chung + thiết bị phổ biến nhất cuối kỳ), không có số."
+      },
+      {
+       "en": "In 2008, 62% of households had a desktop computer, compared with 28% for laptops and almost none for tablets.",
+       "vi": "THÂN BÀI 1 – điểm xuất phát; \"compared with\" để đặt các số cạnh nhau."
+      },
+      {
+       "en": "Desktop ownership then fell gradually, reaching just 30% in 2023.",
+       "vi": "THÂN BÀI 1 – xu hướng + điểm cuối của đường giảm."
+      },
+      {
+       "en": "By contrast, the figure for laptops rose sharply to 70%, overtaking desktops in 2013.",
+       "vi": "THÂN BÀI 2 – nhóm các đường tăng; nêu mốc hai đường cắt nhau."
+      },
+      {
+       "en": "Tablet ownership also grew rapidly after 2011, before levelling off at around 45% in the final five years.",
+       "vi": "THÂN BÀI 2 – \"levelling off\" = chững lại; \"around\" khi số không tròn."
+      }
+     ]
+    }
+   ],
+   "exercises": [
+    {
+     "id": "l3-i-wri-01-ex01",
+     "type": "multiple-choice",
+     "question": "Which sentence is the best OVERVIEW for the model graph (desktops, laptops and tablets, 2008–2023)?",
+     "options": [
+      "In 2008, 62% of households owned a desktop, but by 2023 this had dropped to 30%.",
+      "Overall, desktops became less common, while laptops and tablets grew in popularity, with laptops ending the period as the most owned device.",
+      "In conclusion, people prefer laptops because they are lighter and cheaper.",
+      "The graph shows how many households had three kinds of computer from 2008 to 2023."
+     ],
+     "correctIndex": 1,
+     "explanation": {
+      "vi": "Overview nêu xu hướng chung và đặc điểm nổi bật, không có số, không giải thích lý do.",
+      "en": "An overview gives the general trends and the main feature, with no figures and no reasons."
+     }
+    },
+    {
+     "id": "l3-i-wri-01-ex02",
+     "type": "match-pairs",
+     "instruction": {
+      "vi": "Nối mỗi động từ tả đường biểu đồ với nghĩa của nó.",
+      "en": "Match each line-graph verb with its meaning."
+     },
+     "pairs": [
+      {
+       "left": "levelled off",
+       "right": "stopped rising or falling"
+      },
+      {
+       "left": "peaked at",
+       "right": "reached its highest point"
+      },
+      {
+       "left": "plummeted",
+       "right": "fell very quickly"
+      },
+      {
+       "left": "overtook",
+       "right": "became higher than another line"
+      },
+      {
+       "left": "fluctuated",
+       "right": "went up and down"
+      }
+     ],
+     "explanation": {
+      "vi": "Năm động từ này tả đường biểu đồ chính xác hơn \"increase/decrease\".",
+      "en": "These five verbs describe lines more precisely than \"increase/decrease\"."
+     }
+    },
+    {
+     "id": "l3-i-wri-01-ex03",
+     "type": "fill-blank",
+     "sentence": "Laptop ownership rose ___ 42 percentage points between 2008 and 2023.",
+     "acceptedAnswers": [
+      "by"
+     ],
+     "hint": "(giới từ chỉ mức chênh lệch)",
+     "explanation": {
+      "vi": "\"rise by\" = tăng thêm bao nhiêu; \"rise to\" = tăng đến mức nào.",
+      "en": "\"Rise by\" gives the size of the change; \"rise to\" gives the final figure."
+     }
+    },
+    {
+     "id": "l3-i-wri-01-ex04",
+     "type": "multiple-choice",
+     "question": "Choose the best paraphrase of: \"The graph shows the number of people who visited a library each month.\"",
+     "options": [
+      "The graph shows the number of people who visited a library each month.",
+      "The line graph illustrates how many people went to a library on a monthly basis.",
+      "The graph is about library.",
+      "The line graph illustrates the library numbers people monthly."
+     ],
+     "correctIndex": 1,
+     "explanation": {
+      "vi": "Đổi từ nhưng giữ đủ thông tin: shows → illustrates, the number of → how many.",
+      "en": "Change the words but keep all the information: shows → illustrates, the number of → how many."
+     }
+    },
+    {
+     "id": "l3-i-wri-01-ex05",
+     "type": "arrange-words",
+     "translationVi": "Nhìn chung, số hộ có laptop tăng đáng kể trong suốt giai đoạn.",
+     "correctSentence": "Overall, laptop ownership increased significantly over the period.",
+     "extraWords": [
+      "in",
+      "significant"
+     ],
+     "explanation": {
+      "vi": "Overview mở bằng \"Overall,\" rồi nêu xu hướng của cả giai đoạn.",
+      "en": "Start the overview with \"Overall,\" then give the trend for the whole period."
+     }
+    },
+    {
+     "id": "l3-i-wri-01-ex06",
+     "type": "fill-blank",
+     "sentence": "Tablet ownership grew rapidly, then ___ off at around 45%.",
+     "acceptedAnswers": [
+      "levelled",
+      "leveled"
+     ],
+     "hint": "(level, quá khứ)",
+     "explanation": {
+      "vi": "\"level off\" = chững lại; quá khứ: levelled (Anh) hoặc leveled (Mỹ).",
+      "en": "\"Level off\" means stop changing; past form: levelled (UK) or leveled (US)."
+     }
+    },
+    {
+     "id": "l3-i-wri-01-ex07",
+     "type": "multiple-choice",
+     "question": "The graph covers 2008 to 2023. Which tense should most of your report use?",
+     "options": [
+      "Present simple",
+      "Past simple",
+      "Present continuous",
+      "Future simple"
+     ],
+     "correctIndex": 1,
+     "explanation": {
+      "vi": "Số liệu thuộc các năm đã qua nên dùng quá khứ đơn.",
+      "en": "The data is about finished years, so use the past simple."
+     }
+    },
+    {
+     "id": "l3-i-wri-01-ex08",
+     "type": "speak-sentence",
+     "sentence": "Desktop ownership dropped sharply and then levelled off.",
+     "translationVi": "Số hộ có máy tính bàn giảm mạnh rồi chững lại.",
+     "explanation": {
+      "vi": "\"dropped\" kết thúc bằng /t/, \"levelled\" kết thúc bằng /d/; đừng nuốt âm cuối.",
+      "en": "\"Dropped\" ends in /t/ and \"levelled\" ends in /d/; do not drop them."
+     }
+    }
+   ],
+   "writingTask": {
+    "id": "l3-i-wri-01-task",
+    "taskNumber": 1,
+    "prompt": "The line graph below shows the average amount of rice, meat and fruit eaten per person each year in one country between 1995 and 2025.\n\nSummarise the information by selecting and reporting the main features, and make comparisons where relevant.\n\nWrite at least 150 words.",
+    "chartData": {
+     "chartType": "line",
+     "title": "Average yearly consumption of rice, meat and fruit per person in one country, 1995–2025",
+     "unit": "kg per person per year",
+     "labels": [
+      "1995",
+      "2000",
+      "2005",
+      "2010",
+      "2015",
+      "2020",
+      "2025"
+     ],
+     "series": [
+      {
+       "name": "Rice",
+       "values": [
+        160,
+        154,
+        146,
+        137,
+        128,
+        119,
+        110
+       ]
+      },
+      {
+       "name": "Meat",
+       "values": [
+        18,
+        24,
+        31,
+        38,
+        46,
+        52,
+        55
+       ]
+      },
+      {
+       "name": "Fruit",
+       "values": [
+        40,
+        41,
+        40,
+        43,
+        44,
+        46,
+        48
+       ]
+      }
+     ]
+    },
+    "minWords": 150,
+    "suggestedMinutes": 20,
+    "sampleAnswer": "The line graph illustrates how much rice, meat and fruit an average person in one country ate each year between 1995 and 2025.\n\nOverall, rice was by far the most consumed food throughout the period, although its consumption fell steadily. In contrast, meat consumption increased significantly and overtook fruit, while the amount of fruit eaten rose only slightly.\n\nIn 1995, each person ate 160 kg of rice per year, which was four times the figure for fruit (40 kg) and almost nine times that for meat (18 kg). Over the next thirty years, rice consumption declined gradually, reaching 110 kg in 2025, a fall of nearly one third.\n\nMeat showed the most dramatic change. It rose continuously from 18 kg to 38 kg in 2010 and overtook fruit between 2010 and 2015, before ending the period at 55 kg, roughly three times the 1995 figure. Fruit consumption, on the other hand, remained stable at about 40 kg until 2005 and then increased slowly to 48 kg in 2025.",
+    "bandSamples": [
+     {
+      "band": "4.0",
+      "text": "The graph show about rice, meat and fruit in one country. People in this country eat rice very much, 160 kg in 1995 and 110kg in 2025, rice is decrease. Meat is increase, in 1995 is 18 kg and 2025 is 55 kg. Fruit is the same, 40 kg. I think people eat more meat because they have more money, and rice is not good for health so they eat less rice. In my country people also eat rice every day with family. Fruit is good for health and people should eat more fruit. Meat and fruit is increase but rice is decrease.",
+      "notesVi": "TA: Chỉ khoảng 105 từ (thiếu so với 150), không có overview, số liệu sai ('Fruit is the same') và thêm ý kiến, lời khuyên mà đề không hỏi.\nCC: Cả bài là một khối không chia đoạn; ý nhảy qua lại giữa số liệu và ý kiến, chỉ nối bằng 'and/but/so'.\nLR: Từ rất cơ bản và lặp ('increase/decrease', 'eat'), chép lại từ của đề.\nGRA: Lỗi cấu trúc dày đặc ('rice is decrease', 'in 1995 is 18 kg', 'The graph show'), nhiều câu nối với nhau chỉ bằng dấu phẩy."
+     },
+     {
+      "band": "5.5",
+      "text": "The line graph show the consumption of rice, meat and fruit per person in one country from 1995 to 2025.\n\nFirstly, rice. In 1995 people eat 160 kg of rice per year. After that it decrease to 146 kg in 2005 and 128 kg in 2015. In 2025 it was only 110 kg. Rice is the highest food in the graph.\n\nSecondly, meat. The meat consumption was 18 kg in 1995. It increased to 24 kg in 2000, 31 kg in 2005, 38 kg in 2010 and 46 kg in 2015. Moreover, it increased to 55 kg in 2025. Meat became higher than fruit in 2015.\n\nThirdly, fruit. Fruit was 40 kg in 1995 and it was still 40 kg in 2005. Moreover, it increased a little bit to 48 kg in 2025.\n\nIn conclusion, rice decreased but meat and fruit increased. Rice is still the most popular food in this country.",
+      "notesVi": "TA: Số liệu đúng nhưng kể lần lượt từng năm một cách máy móc; overview chỉ xuất hiện ở câu kết và rất chung chung ('rice decreased but meat and fruit increased').\nCC: Có chia đoạn nhưng theo từng loại thực phẩm; 'Firstly/Secondly/Thirdly' và 'Moreover' dùng sai chức năng (Moreover không dùng để nối số liệu tiếp theo).\nLR: Vốn từ hạn chế, lặp 'increased' nhiều lần; 'the highest food' là cách dùng từ chưa chính xác.\nGRA: Phần lớn là câu đơn; sai thì và chia động từ ('The line graph show', 'people eat' cho năm 1995, 'it decrease')."
+     },
+     {
+      "band": "6.5",
+      "text": "The line graph illustrates how much rice, meat and fruit an average person in one country ate each year between 1995 and 2025.\n\nOverall, rice was by far the most consumed food throughout the period, although its consumption fell steadily. In contrast, meat consumption increased significantly and overtook fruit, while the amount of fruit eaten rose only slightly.\n\nIn 1995, each person ate 160 kg of rice per year, which was four times higher than the figure for fruit (40 kg) and almost nine times the figure for meat (18 kg). Over the next thirty years, rice consumption declined gradually and reached 110 kg in 2025, a fall of nearly one third.\n\nMeat showed the most dramatic change. It rose continuously from 18 kg to 38 kg in 2010 and overtook fruit between 2010 and 2015, before ending the period at 55 kg, which is three times more than in 1995. Fruit consumption, on the other hand, stayed quite stable at about 40 kg until 2005, and then it increased slowly to 48 kg in 2025.",
+      "notesVi": "TA: Overview rõ (gạo cao nhất nhưng giảm, thịt vượt trái cây), số liệu chọn lọc và chính xác; một vài so sánh còn hơi máy móc.\nCC: 4 đoạn rõ ràng, nhóm dữ liệu hợp lý (gạo riêng; thịt và trái cây chung), từ nối đa dạng nhưng có chỗ nối dài bằng 'and then'.\nLR: Đủ từ chỉ xu hướng (declined gradually, overtook, the most dramatic change); 'four times higher than', 'three times more than' chưa thật chuẩn.\nGRA: Có câu phức (which…, before…, although…); lỗi nhỏ như lệch thì 'which is three times' (đúng: which was) không gây khó hiểu."
+     }
+    ],
+    "checklist": [
+     {
+      "criterion": "TA",
+      "questionsVi": [
+       "Có đoạn overview (không có số) nêu 2 xu hướng chính không?",
+       "Có nêu số đầu, số cuối và chỗ hai đường cắt nhau (thịt vượt trái cây) không?",
+       "Số liệu có đúng biểu đồ và có đơn vị (kg) không?",
+       "Bài có tránh ý kiến cá nhân và việc đoán nguyên nhân không?"
+      ]
+     },
+     {
+      "criterion": "CC",
+      "questionsVi": [
+       "Bài có 4 đoạn: mở bài, overview, 2 thân bài không?",
+       "Mỗi thân bài có gom các đường có xu hướng giống nhau (hoặc tách riêng đường nổi bật nhất) không?",
+       "Câu có tránh bắt đầu liên tục bằng \"Firstly / Moreover / Then\" không?"
+      ]
+     },
+     {
+      "criterion": "LR",
+      "questionsVi": [
+       "Câu mở bài có viết lại đề bằng từ của bạn không?",
+       "Có dùng ít nhất 4 cách khác nhau để tả tăng / giảm / ổn định không?",
+       "Có dùng \"the figure for…\" hoặc \"consumption\" để tránh lặp tên thực phẩm không?"
+      ]
+     },
+     {
+      "criterion": "GRA",
+      "questionsVi": [
+       "Các năm đã qua có dùng thì quá khứ đơn không?",
+       "Có ít nhất 2 câu phức (while…, which…, before…) không?",
+       "Giới từ với số liệu có đúng không (from… to, by, at)?"
+      ]
+     }
+    ],
+    "planningHintsVi": [
+     "Phút 0–3: tìm 3 điểm lớn — đường nào cao nhất, đường nào thay đổi nhiều nhất, có chỗ nào hai đường cắt nhau không.",
+     "Mở bài: làm theo câu MỞ BÀI của bài mẫu — đổi \"shows\" thành \"illustrates\", đổi \"the average amount of… eaten\" thành \"how much… an average person ate\".",
+     "Overview: bắt đầu bằng \"Overall,\" + 2 ý lớn, không ghi số (xem câu OVERVIEW của bài mẫu).",
+     "Thân bài 1: gạo (số 1995 → xu hướng → số 2025). Thân bài 2: thịt và trái cây — nhớ nêu thịt vượt trái cây giữa 2010 và 2015.",
+     "3 phút cuối: đếm từ (≥ 150), soát thì quá khứ và đuôi -ed, đối chiếu lại từng con số."
+    ]
+   },
+   "miniTest": []
+  }
+ }
+]</script>
+<script>
+(() => {
+  const DATA = JSON.parse(document.getElementById('lesson-data').textContent)
+  const SKILL_VI = { vocabulary: 'Từ vựng', listening: 'Nghe', reading: 'Đọc', writing: 'Viết', speaking: 'Nói' }
+  const KIND_VI = {
+    'multiple-choice': 'Chọn đáp án', 'fill-blank': 'Điền từ', 'match-pairs': 'Nối cặp', 'listen-choose': 'Nghe rồi chọn',
+    'listen-type': 'Nghe rồi gõ lại', 'arrange-words': 'Xếp thành câu', 'speak-sentence': 'Đọc to câu', 'speak-answer': 'Trả lời bằng lời nói',
+    'true-false': 'Đúng / Sai', 'gap-fill': 'Điền vào chỗ trống', 'choice': 'Chọn đáp án', 'true-false-not-given': 'True / False / Not Given',
+  }
+
+  // Chữ an toàn: escape HTML rồi mới đổi **đậm** và xuống dòng
+  const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c])
+  const rich = (s) => esc(s).replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br>')
+  const vi = (t) => (t && typeof t === 'object' ? t.vi ?? t.en ?? '' : t ?? '')
+  const en = (t) => (t && typeof t === 'object' ? t.en ?? '' : '')
+
+  function why(exp) {
+    if (!exp) return ''
+    const e = en(exp)
+    return `<div class="why">${rich(vi(exp))}${e && e !== vi(exp) ? `<br><span lang="en">${rich(e)}</span>` : ''}</div>`
+  }
+  const options = (list, right) => `<ul class="opts">${list.map((o, i) => `<li class="${i === right ? 'right' : ''}">${esc(o)}</li>`).join('')}</ul>`
+  const accepted = (list) => `<div class="answer"><span>Đáp án:</span> ${list.map(esc).join(' <span>hoặc</span> ')}</div>`
+
+  function exercise(ex) {
+    const kind = `<div class="kind">${KIND_VI[ex.type] ?? ex.type}</div>`
+    const instr = ex.instruction ? `<div class="why">${esc(vi(ex.instruction))}</div>` : ''
+    switch (ex.type) {
+      case 'match-pairs':
+        return kind + instr + `<div class="pairs">${ex.pairs.map((p) => `<div><b>${esc(p.left)}</b> = ${esc(p.right)}</div>`).join('')}</div>` + why(ex.explanation)
+      case 'multiple-choice':
+        return kind + `<p class="q">${rich(ex.question)}</p>` + options(ex.options, ex.correctIndex) + why(ex.explanation)
+      case 'listen-choose':
+        return kind + `<div class="audio">${esc(ex.audioText)}</div><p class="q">${rich(ex.question)}</p>` + options(ex.options, ex.correctIndex) + why(ex.explanation)
+      case 'fill-blank':
+        return kind + `<p class="q">${rich(ex.sentence)}</p>${ex.hint ? `<div class="why">Gợi ý: ${esc(vi(ex.hint))}</div>` : ''}` + accepted(ex.acceptedAnswers) + why(ex.explanation)
+      case 'listen-type':
+        return kind + `<div class="audio">${esc(ex.audioText)}</div>` + accepted(ex.acceptedAnswers) + why(ex.explanation)
+      case 'arrange-words':
+        return kind + `<p class="q">${esc(ex.translationVi)}</p>` + accepted([ex.correctSentence]) +
+          (ex.extraWords?.length ? `<div class="why">Từ gây nhiễu: ${ex.extraWords.map(esc).join(', ')}</div>` : '') + why(ex.explanation)
+      case 'speak-sentence':
+        return kind + `<p class="q" lang="en">${esc(ex.sentence)}</p>${ex.translationVi ? `<div class="why">${esc(ex.translationVi)}</div>` : ''}` + why(ex.explanation)
+      case 'speak-answer':
+        return kind + `<p class="q" lang="en">${esc(ex.question)}</p>${ex.tipsVi ? `<div class="why">${rich(ex.tipsVi)}</div>` : ''}` +
+          (ex.sampleAnswer ? `<details class="sample"><summary>Câu trả lời mẫu</summary><div class="txt" lang="en">${esc(vi(ex.sampleAnswer))}</div></details>` : '') + why(ex.explanation)
+      case 'true-false':
+        return kind + `<p class="q">${rich(ex.statement)}</p>` + accepted([ex.answer]) + why(ex.explanation)
+      default:
+        return kind + `<pre class="why">${esc(JSON.stringify(ex, null, 1))}</pre>`
+    }
+  }
+
+  function taskQuestion(q) {
+    const kind = `<div class="kind">${KIND_VI[q.kind] ?? q.kind}${q.paragraphLabel ? ` · đoạn ${esc(q.paragraphLabel)}` : ''}</div>`
+    let body = `<p class="q">${rich(q.prompt)}</p>`
+    if (q.kind === 'choice') body += options(q.options, q.correctIndex)
+    else if (q.acceptedAnswers) body += accepted(q.acceptedAnswers)
+    else if (q.answer) body += accepted([q.answer])
+    return kind + body + why(q.explanation)
+  }
+
+  // Biểu đồ đường vẽ đúng tỉ lệ: trục y từ 0 tới số "tròn" gần nhất trên giá trị lớn nhất
+  function lineChart(chart) {
+    const W = 640, H = 300, L = 48, R = 16, T = 14, B = 34
+    const all = chart.series.flatMap((s) => s.values)
+    const rawMax = Math.max(...all)
+    const step = [1, 2, 5, 10, 20, 25, 50, 100, 200, 500].find((s) => rawMax / s <= 6) ?? 1000
+    const max = Math.ceil(rawMax / step) * step
+    const x = (i) => L + (i * (W - L - R)) / Math.max(1, chart.labels.length - 1)
+    const y = (v) => T + (1 - v / max) * (H - T - B)
+    const colors = ['var(--listening)', 'var(--writing)', 'var(--speaking)', 'var(--vocabulary)', 'var(--reading)']
+    let svg = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(chart.title)}">`
+    for (let v = 0; v <= max; v += step) {
+      svg += `<line x1="${L}" x2="${W - R}" y1="${y(v)}" y2="${y(v)}" stroke="var(--line)" stroke-width="1" fill="none"/>`
+      svg += `<text x="${L - 8}" y="${y(v) + 4}" text-anchor="end" font-size="11" fill="var(--muted)">${v}</text>`
+    }
+    chart.labels.forEach((label, i) => { svg += `<text x="${x(i)}" y="${H - 12}" text-anchor="middle" font-size="11" fill="var(--muted)">${esc(label)}</text>` })
+    chart.series.forEach((s, si) => {
+      const pts = s.values.map((v, i) => `${x(i)},${y(v)}`).join(' ')
+      svg += `<polyline points="${pts}" fill="none" stroke="${colors[si % colors.length]}" stroke-width="2.5" stroke-linejoin="round"/>`
+      s.values.forEach((v, i) => { svg += `<circle cx="${x(i)}" cy="${y(v)}" r="3" fill="${colors[si % colors.length]}"/>` })
+    })
+    svg += '</svg>'
+    const legend = `<div class="legend">${chart.series.map((s, si) => `<span><i style="background:${colors[si % colors.length]}"></i>${esc(s.name)}</span>`).join('')}<span>Đơn vị: ${esc(chart.unit ?? '')}</span></div>`
+    return svg + legend
+  }
+  function chartTable(chart) {
+    return `<div class="table-scroll"><table><thead><tr><th></th>${chart.labels.map((l) => `<th>${esc(l)}</th>`).join('')}</tr></thead><tbody>${
+      chart.series.map((s) => `<tr><td>${esc(s.name)}</td>${s.values.map((v) => `<td>${esc(v)}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`
+  }
+
+  function bandSamples(list) {
+    return (list ?? []).map((s) => `<details class="sample"><summary><span class="band">${esc(s.band)}</span>Bài mẫu band ${esc(s.band)}</summary><div class="txt" lang="en">${esc(s.text)}</div></details>`).join('')
+  }
+  function checklist(list) {
+    if (!list?.length) return ''
+    return `<h3>Tự kiểm tra (4 tiêu chí chấm)</h3><div class="check">${list.map((c) => `<div><b>${esc(c.criterion)}</b><ul>${(c.questionsVi ?? []).map((q) => `<li>${esc(q)}</li>`).join('')}</ul></div>`).join('')}</div>`
+  }
+
+  function lessonHtml({ label, lesson }, index) {
+    const skill = lesson.skill
+    let html = `<section class="lesson" id="bai-${index + 1}" style="--skill: var(--${skill})">
+      <div class="lesson-head">
+        <div class="eyebrow">Bài ${index + 1} · ${esc(label)}</div>
+        <h2>${esc(vi(lesson.title))}</h2>
+        <div class="en" lang="en">${esc(en(lesson.title))}</div>
+        <div class="meta"><span class="pill skill">${SKILL_VI[skill] ?? skill}</span>${lesson.estimatedMinutes ? `<span class="pill">~${lesson.estimatedMinutes} phút</span>` : ''}<span class="pill">${esc(lesson.id)}</span><span class="pill">${lesson.exercises.length} bài tập</span></div>
+        <p class="desc">${rich(vi(lesson.description))}</p>
+      </div>`
+
+    html += `<h3>Thẻ dạy</h3><div class="cards">${lesson.teachingCards.map((c) => `<div class="card"><h4>${esc(vi(c.title))}</h4><div class="body">${rich(vi(c.body))}</div>${
+      c.examples?.length ? `<ul class="examples">${c.examples.map((e) => `<li lang="en">${rich(e.en ?? vi(e))}${e.vi ? `<i>${esc(e.vi)}</i>` : ''}</li>`).join('')}</ul>` : ''}</div>`).join('')}</div>`
+
+    if (lesson.words?.length) {
+      html += `<h3>Từ mới (${lesson.words.length})</h3><div class="words">${lesson.words.map((w) => `<div class="word"><b lang="en">${esc(w.word)}</b> <span class="ipa">${esc(w.ipa ?? '')} · ${esc(w.partOfSpeech ?? '')}</span><div>${esc(w.meaningVi)}</div>${
+        w.examples?.[0] ? `<div class="why" lang="en">${esc(w.examples[0].en)}</div>` : ''}</div>`).join('')}</div>`
+    }
+
+    html += `<h3>Bài tập khởi động · ${lesson.exercises.length} câu</h3><ol class="items">${lesson.exercises.map((ex) => `<li>${exercise(ex)}</li>`).join('')}</ol>`
+
+    const rt = lesson.readingTask
+    if (rt) {
+      html += `<h3>Bài đọc chính</h3><div class="reading"><h4>${esc(rt.passage.title)}</h4>${rt.passage.paragraphs.map((p) => `<p><span class="para-label">${esc(p.label)}</span>${esc(p.text)}</p>`).join('')}</div>`
+      if (rt.strategyTip) html += `<div class="note" style="margin-top:12px"><b>Mẹo làm bài</b>${rich(vi(rt.strategyTip))}</div>`
+      html += `<h3>Câu hỏi · ${esc(rt.instructions ?? '')}</h3><ol class="items task">${rt.questions.map((q) => `<li data-n="${q.number}">${taskQuestion(q)}</li>`).join('')}</ol>`
+    }
+    const lt = lesson.listeningTask
+    if (lt) {
+      if (lt.strategyTip) html += `<div class="note" style="margin-top:20px"><b>Mẹo làm bài</b>${rich(vi(lt.strategyTip))}</div>`
+      html += `<h3>Lời thoại bài nghe</h3><div class="transcript">${lt.segments.map((seg, si) => (si ? '<div class="seg-break"></div>' : '') +
+        seg.lines.map((l) => `<div class="line"><span class="who">${esc(l.speaker)}</span><span lang="en">${esc(l.text)}</span></div>`).join('')).join('')}</div>`
+      html += `<h3>Câu hỏi · ${esc(lt.instructions ?? '')}</h3><ol class="items task">${lt.questions.map((q) => `<li data-n="${q.number}">${taskQuestion(q)}</li>`).join('')}</ol>`
+    }
+    const wt = lesson.writingTask
+    if (wt) {
+      html += `<h3>Đề viết · Task ${wt.taskNumber} · tối thiểu ${wt.minWords} từ · ${wt.suggestedMinutes} phút</h3><div class="prompt" lang="en">${rich(wt.prompt)}</div>`
+      if (wt.chartData?.labels && wt.chartData?.series) {
+        html += `<div class="chart-wrap"><p class="ttl" lang="en">${esc(wt.chartData.title)}</p>${wt.chartData.chartType === 'line' ? lineChart(wt.chartData) : ''}${chartTable(wt.chartData)}</div>`
+      }
+      if (wt.planningHintsVi) html += `<div class="note" style="margin-top:12px"><b>Gợi ý lập dàn ý</b>${rich(Array.isArray(wt.planningHintsVi) ? wt.planningHintsVi.join('\n') : wt.planningHintsVi)}</div>`
+      html += checklist(wt.checklist)
+      html += `<h3>Bài mẫu theo band</h3>${bandSamples(wt.bandSamples)}`
+      if (wt.sampleAnswer) html += `<details class="sample"><summary><span class="band">Mẫu</span>Bài mẫu chính</summary><div class="txt" lang="en">${esc(wt.sampleAnswer)}</div></details>`
+    }
+    const st = lesson.speakingTask
+    if (st) {
+      html += `<h3>Câu hỏi nói · Part ${st.part}</h3><ol class="items">${st.questions.map((q) => `<li><p class="q" lang="en">${esc(typeof q === 'string' ? q : vi(q))}</p></li>`).join('')}</ol>`
+      if (st.usefulPhrases?.length) html += `<h3>Cụm từ hữu ích</h3><div class="chips">${st.usefulPhrases.map((p) => `<span lang="en">${esc(p)}</span>`).join('')}</div>`
+      if (st.targetSounds?.length) html += `<h3>Âm cần luyện</h3><div class="chips">${st.targetSounds.map((p) => `<span lang="en">${esc(p)}</span>`).join('')}</div>`
+      html += checklist(st.checklist)
+      html += `<h3>Câu trả lời mẫu theo band</h3>${bandSamples(st.bandSamples)}`
+    }
+    html += `<div class="feedback">Góp ý cho bài ${index + 1}: nhắn trong chat, ghi "Bài ${index + 1}" và số câu (nếu có).</div></section>`
+    return html
+  }
+
+  document.getElementById('toc').innerHTML = DATA.map(({ label, lesson }, i) =>
+    `<a href="#bai-${i + 1}" style="--skill: var(--${lesson.skill})"><span class="toc-num">${i + 1}</span><span class="toc-text">${esc(vi(lesson.title))}<small>${esc(label)}</small></span></a>`).join('')
+  document.getElementById('lessons').innerHTML = DATA.map(lessonHtml).join('')
+})()
+</script>

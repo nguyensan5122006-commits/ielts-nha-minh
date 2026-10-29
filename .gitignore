@@ -4,4 +4,5 @@ dist
 .dev.vars
 *.log
 .playwright-mcp
-_research
+docs/research
+private

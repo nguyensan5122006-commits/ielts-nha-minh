@@ -8,7 +8,7 @@
  * Thứ tự (psych-adult D5 + research ui-vn-b ý 8): điểm + % câu đúng
  * -> % đúng theo DẠNG câu hỏi -> 1 điều làm tốt + 1–2 việc sửa được -> 2 nút (chính + phụ).
  *
- * KHÔNG hiện band sau 1 task (quyết định 29/10/2026, luật D6.23 trong _research/notes/psych-adult.md):
+ * KHÔNG hiện band sau 1 task (quyết định 29/10/2026, luật D6.23 trong docs/research/notes/psych-adult.md):
  * 1 task chỉ 5–13 câu — quá ít để nói band (sai số lớn, dễ làm nản hoặc ảo tưởng). Band chỉ hiện ở
  * /progress khi kỹ năng đã có ≥ 20 câu. `bandLater` = thêm dòng nhắc điều đó (bài track IELTS).
  * Không chữ chê bai; sai = "Chưa đúng" + bước tiếp theo.

@@ -30,6 +30,13 @@ IELTS_ThienThao/
 ├── wrangler.toml               Cấu hình Cloudflare cho trang web (D1, Gemini, nối tới realtime)
 ├── .dev.vars                   Bí mật khi chạy local: GEMINI_API_KEY, INVITE_CODE (không đưa lên git)
 │
+├── docs/                       ===== TÀI LIỆU =====
+│   ├── redesign-v3/            Thiết kế bản v3: kiến trúc, nội dung, dữ liệu, giao diện, âm thanh, phòng thi
+│   ├── research/               Ghi chú + báo cáo nghiên cứu, OPEN-QUESTIONS (không đưa lên git)
+│   └── review/                 Trang xem 6 bài mẫu để duyệt nội dung
+├── private/tai-khoan/          3 tài khoản gia đình + file SQL thêm tài khoản (KHÔNG đưa lên git)
+├── art-blender/                Xưởng 3D: script Blender dựng mascot Ki, file .blend, ảnh render (xem README trong đó)
+│
 ├── database/migrations/        Các bước tạo / nâng cấp database (chạy theo thứ tự 0001, 0002...)
 │
 ├── functions/api/              ===== MÁY CHỦ (API) — mỗi file là 1 đường dẫn =====

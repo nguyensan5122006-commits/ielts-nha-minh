@@ -4,7 +4,7 @@
  * "KẾ HOẠCH TRUNG THỰC" SAU BÀI XẾP LỚP — các con số trên màn kết quả.
  * (Hàm thuần: không React, không localStorage — đọc 1 chỗ là hiểu cách tính.)
  *
- * Luật gốc: _research/notes/psych-adult.md
+ * Luật gốc: docs/research/notes/psych-adult.md
  *   - D6 luật 25 "Kỳ vọng trung thực": hiện "với X phút/ngày, mốc CEFR tiếp theo
  *     dự kiến sau khoảng N tháng", dựa trên ~200 giờ luyện tập cho mỗi bậc CEFR.
  *   - A18: giờ học có hướng dẫn cộng dồn từ con số 0 (Cambridge):
