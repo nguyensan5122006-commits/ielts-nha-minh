@@ -14,7 +14,7 @@
  *   u3-g03-news        Tin tức & bài báo               (icon newspaper)
  *   u3-g04-media       Phim, series, podcast & âm nhạc (icon clapper-board)
  *   u3-g05-daily-life  Đời sống & các mối quan hệ      (icon house)
- *   u3-g06-our-world   (thêm 29/10) Thế giới quanh ta: môi trường, khoa học, vấn đề toàn cầu,
+ *   u3-g06-our-world   (thêm 29/10) Thế giới quanh ta: tội phạm, văn hoá, công nghệ (để riêng ở đây cho chặng 3–5 cũ không bị "chưa xong" lại), môi trường, khoa học, vấn đề toàn cầu,
  *                      thành ngữ + cụm động từ (icon globe-showing-asia-australia)
  *
  * (thêm 29/10) Bài từ vựng chủ đề IELTS còn thiếu (topic-vocabulary-lessons.ts) được gắn VÀO CUỐI
@@ -70,7 +70,7 @@ export const level3GeneralUnits: Unit[] = [
       vi: 'Sau chặng này bạn có thể hiểu tin ngắn và bài bình luận, phân biệt sự thật với ý kiến và tóm tắt một tin trong vài câu.',
       en: 'After this unit, you can understand short news and opinion pieces, tell facts from opinions and summarise a story in a few sentences.',
     },
-    lessonIds: ['l3-g-u3-vocab', 'l3-g-u3-listen', 'l3-g-u3-read', 'l3-g-u3-speak', 'l3-g-u3-write', 'l3-g-u3-crime'],
+    lessonIds: ['l3-g-u3-vocab', 'l3-g-u3-listen', 'l3-g-u3-read', 'l3-g-u3-speak', 'l3-g-u3-write'],
   },
 
   // Chặng 4: nghe nói nhanh tự nhiên, nối âm, review phim, nói về sở thích, thành ngữ trên phim ảnh
@@ -85,7 +85,7 @@ export const level3GeneralUnits: Unit[] = [
       vi: 'Sau chặng này bạn có thể theo kịp lời nói nhanh tự nhiên hơn, viết review phim và nói về gu giải trí của mình.',
       en: 'After this unit, you can follow fast natural speech more easily, write a film review and talk about your taste in entertainment.',
     },
-    lessonIds: ['l3-g-u4-vocab', 'l3-g-u4-listen', 'l3-g-u4-read', 'l3-g-u4-speak', 'l3-g-u4-write', 'l3-g-u4-culture'],
+    lessonIds: ['l3-g-u4-vocab', 'l3-g-u4-listen', 'l3-g-u4-read', 'l3-g-u4-speak', 'l3-g-u4-write'],
   },
 
   // Chặng 5: sức khoẻ, tiền bạc, công nghệ trong nhà, đưa lời khuyên, kể chuyện ở quá khứ
@@ -100,7 +100,7 @@ export const level3GeneralUnits: Unit[] = [
       vi: 'Sau chặng này bạn có thể nói về sức khoẻ, tiền bạc và công nghệ trong nhà, đưa lời khuyên tự nhiên và kể chuyện ở quá khứ.',
       en: 'After this unit, you can talk about health, money and technology at home, give natural advice and tell stories in the past.',
     },
-    lessonIds: ['l3-g-u5-vocab', 'l3-g-u5-listen', 'l3-g-u5-read', 'l3-g-u5-speak', 'l3-g-u5-write', 'l3-g-u5-tech'],
+    lessonIds: ['l3-g-u5-vocab', 'l3-g-u5-listen', 'l3-g-u5-read', 'l3-g-u5-speak', 'l3-g-u5-write'],
   },
 
   // (thêm 29/10) Chặng 6: từ vựng các chủ đề IELTS lớn còn thiếu + thành ngữ, cụm động từ để thảo luận
@@ -115,6 +115,6 @@ export const level3GeneralUnits: Unit[] = [
       vi: 'Sau chặng này bạn có thể bàn về môi trường, khoa học và các vấn đề toàn cầu bằng từ vựng chính xác, và dùng thành ngữ, cụm động từ tự nhiên khi nói.',
       en: 'After this unit, you can discuss the environment, science and global issues with precise vocabulary, and use idioms and phrasal verbs naturally when you speak.',
     },
-    lessonIds: ['l3-g-u6-environment', 'l3-g-u6-science', 'l3-g-u6-global', 'l3-g-u6-idioms', 'l3-g-u6-phrasal'],
+    lessonIds: ['l3-g-u3-crime', 'l3-g-u4-culture', 'l3-g-u5-tech', 'l3-g-u6-environment', 'l3-g-u6-science', 'l3-g-u6-global', 'l3-g-u6-idioms', 'l3-g-u6-phrasal'],
   },
 ]

@@ -28,7 +28,8 @@ export interface SoloRunResult {
 
 interface SoloQuestionRunnerProps {
   questions: GameQuestion[]
-  secondsPerQuestion: number
+  /** số giây mỗi câu; null = chế độ "Thong thả" (không đồng hồ, đúng là được điểm cố định) */
+  secondsPerQuestion: number | null
   onFinish: (result: SoloRunResult) => void
 }
 
@@ -48,13 +49,14 @@ export function SoloQuestionRunner({ questions, secondsPerQuestion, onFinish }: 
   const finished = useRef(false)
 
   const question = questions[index]
-  const timeLimitMs = secondsPerQuestion * 1000
+  const timeLimitMs = secondsPerQuestion === null ? null : secondsPerQuestion * 1000
 
   const handleAnswer = useCallback(
     (answer: string) => {
       if (revealed || !question) return
       const isCorrect = answer !== '' && isGameAnswerCorrect(question, answer)
-      const points = pointsForAnswer(isCorrect, Date.now() - startedAt, timeLimitMs)
+      // Thong thả: không thưởng tốc độ -> tính như trả lời ở nửa thời gian (75 điểm / câu đúng)
+      const points = timeLimitMs === null ? pointsForAnswer(isCorrect, 1, 2) : pointsForAnswer(isCorrect, Date.now() - startedAt, timeLimitMs)
       const newCombo = isCorrect ? combo + 1 : 0
       setMyAnswer(answer)
       setRevealed(true)
@@ -71,7 +73,7 @@ export function SoloQuestionRunner({ questions, secondsPerQuestion, onFinish }: 
 
   // hết giờ = trả lời trống
   useEffect(() => {
-    if (revealed) return
+    if (revealed || timeLimitMs === null) return
     const timer = window.setTimeout(() => handleAnswer(''), Math.max(0, startedAt + timeLimitMs - Date.now()))
     return () => window.clearTimeout(timer)
   }, [revealed, startedAt, timeLimitMs, handleAnswer])
@@ -120,7 +122,7 @@ export function SoloQuestionRunner({ questions, secondsPerQuestion, onFinish }: 
         </span>
       </div>
       <div className="gq-card">
-        {!revealed ? <TimerBar key={index} startedAt={startedAt} durationMs={timeLimitMs} /> : <TimerBarIdle />}
+        {!revealed && timeLimitMs !== null ? <TimerBar key={index} startedAt={startedAt} durationMs={timeLimitMs} /> : <TimerBarIdle />}
         <GameQuestionView
           question={question}
           onAnswer={handleAnswer}

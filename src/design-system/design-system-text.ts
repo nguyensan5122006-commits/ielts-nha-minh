@@ -20,7 +20,7 @@ export const DS_TEXT = {
   navReview: { vi: 'Ôn tập', en: 'Review' },
   navExams: { vi: 'Luyện thi', en: 'Practice tests' },
   navGrammar: { vi: 'Ngữ pháp', en: 'Grammar' },
-  navPlay: { vi: 'Sân chơi', en: 'Playground' },
+  navPlay: { vi: 'Trò chơi chữ', en: 'Word games' },
   navChat: { vi: 'Chat', en: 'Chat' },
   navProfile: { vi: 'Hồ sơ', en: 'Profile' },
   mainNavigation: { vi: 'Điều hướng chính', en: 'Main navigation' },

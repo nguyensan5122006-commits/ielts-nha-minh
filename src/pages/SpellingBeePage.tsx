@@ -1,7 +1,7 @@
 /**
  * SpellingBeePage.tsx — SPELLING BEE CHƠI MỘT MÌNH: /games/spelling
  * ----------------------------------------------------------------------------
- * 1. Chọn chủ đề, số câu (mỗi câu 15 giây)
+ * 1. Chọn chủ đề, số câu + nhịp chơi (Thong thả không đồng hồ / Tính giờ 15 giây mỗi câu)
  * 2. Chơi (SoloQuestionRunner): nghe từ -> gõ đúng chính tả
  * 3. Kết quả: màn kết quả chung của Trò chơi chữ (RoundResult — điểm, kỷ lục, từ cần ôn)
  * Cột phải: bảng kỷ lục chung (GameRecordsPanel — của bạn / cả nhà tuần này / kỷ lục nhà).
@@ -41,6 +41,8 @@ export function SpellingBeePage() {
   const { recordActivity } = useProgress()
   const [topicId, setTopicId] = useState('fun:animals')
   const [count, setCount] = useState(10)
+  // Nhịp chơi: mặc định "Thong thả" (không đồng hồ) như 2 trò mới; "Tính giờ" = 15 giây / từ
+  const [timed, setTimed] = useState(false)
   const [phase, setPhase] = useState<'setup' | 'playing' | 'result'>('setup')
   const [questions, setQuestions] = useState<GameQuestion[]>([])
   const [result, setResult] = useState<SoloRunResult | null>(null)
@@ -100,6 +102,19 @@ export function SpellingBeePage() {
                   <span className="pg-field__label">{t('questionCountLabel')}</span>
                   <SegmentedControl<number> label={t('questionCountLabel')} value={count} onChange={setCount} options={[5, 10, 20].map((n) => ({ value: n, label: String(n) }))} />
                 </div>
+                <div className="pg-field">
+                  <span className="pg-field__label">{text('setupPace')}</span>
+                  <SegmentedControl<'relaxed' | 'timed'>
+                    label={text('setupPace')}
+                    value={timed ? 'timed' : 'relaxed'}
+                    onChange={(value) => setTimed(value === 'timed')}
+                    options={[
+                      { value: 'relaxed', label: text('paceRelaxed') },
+                      { value: 'timed', label: text('paceTimed') },
+                    ]}
+                  />
+                  <span className="pg-field__hint">{timed ? text('paceTimedHint', { n: SECONDS_PER_QUESTION }) : text('paceRelaxedHint')}</span>
+                </div>
               </div>
               {enoughQuestions < count && <p className="pg-note pg-note--gold">{t('notEnoughQuestions', { n: enoughQuestions })}</p>}
               <div className="wg-setup__footer">
@@ -110,7 +125,7 @@ export function SpellingBeePage() {
             </section>
           )}
 
-          {phase === 'playing' && <SoloQuestionRunner questions={questions} secondsPerQuestion={SECONDS_PER_QUESTION} onFinish={(run) => void finish(run)} />}
+          {phase === 'playing' && <SoloQuestionRunner questions={questions} secondsPerQuestion={timed ? SECONDS_PER_QUESTION : null} onFinish={(run) => void finish(run)} />}
 
           {phase === 'result' && result && (
             <RoundResult
