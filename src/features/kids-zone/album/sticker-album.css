@@ -1,0 +1,252 @@
+/* =============================================================================
+ * sticker-album.css — SỔ STICKER: cột chủ đề | trang sticker (có + bóng đen chưa có)
+ * ========================================================================== */
+.kz-album {
+  width: min(1180px, 100% - 48px);
+  margin: 0 auto;
+  padding: 18px 0 clamp(120px, 18vh, 200px);
+}
+.kz-album__header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+.kz-album__title {
+  margin: 0;
+  font-size: 2.2rem;
+  font-weight: 800;
+}
+.kz-album__total {
+  margin-left: auto;
+  font-size: 1.05rem;
+  padding: 6px 14px;
+}
+.kz-album__body {
+  display: grid;
+  grid-template-columns: 290px minmax(0, 1fr);
+  gap: 20px;
+  align-items: start;
+}
+
+/* ---------- cột chủ đề ---------- */
+.kz-album__topics {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 10px;
+  max-height: calc(100vh - 140px);
+  overflow-y: auto;
+}
+.kz-album__topic {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 52px;
+  padding: 6px 10px;
+  border: none;
+  border-radius: 16px;
+  background: transparent;
+  color: var(--kz-ink);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.kz-album__topic:hover {
+  background: var(--c-surface-2);
+}
+.kz-album__topic.is-active {
+  background: var(--c-primary-soft);
+}
+.kz-album__topic:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+.kz-album__topic-text {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+  min-width: 0;
+}
+.kz-album__topic-name {
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  font-weight: 700;
+  line-height: 1.1;
+}
+.kz-album__topic-bar,
+.kz-album__progress-bar {
+  position: relative;
+  height: 6px;
+  border-radius: 3px;
+  background: color-mix(in srgb, var(--kz-ink) 10%, transparent);
+  overflow: hidden;
+}
+.kz-album__topic-bar::after,
+.kz-album__progress-bar::after {
+  content: '';
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: var(--fill);
+  border-radius: inherit;
+  background: var(--grad-gold);
+}
+.kz-album__topic-count {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--kz-ink-2);
+}
+.kz-album__topic.is-complete .kz-album__topic-count {
+  color: var(--c-success-ink);
+}
+
+/* ---------- trang sticker ---------- */
+.kz-album__page {
+  position: relative;
+  padding: 20px 24px 28px;
+}
+.kz-album__page-head {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding-bottom: 14px;
+  margin-bottom: 16px;
+  border-bottom: 2px dashed var(--kz-card-line);
+}
+.kz-album__page-title {
+  flex: 1;
+}
+.kz-album__page-title h2 {
+  margin: 0 0 6px;
+  font-size: 1.8rem;
+}
+.kz-album__progress {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  max-width: 320px;
+}
+.kz-album__progress-bar {
+  flex: 1;
+  height: 10px;
+  border-radius: 5px;
+}
+.kz-album__progress-text {
+  font-family: var(--font-display);
+  font-weight: 800;
+}
+.kz-album__reward {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  max-width: 260px;
+  padding: 6px 14px 6px 6px;
+  border-radius: 20px;
+  background: var(--c-surface-2);
+  font-size: 0.95rem;
+  font-weight: 600;
+  line-height: 1.25;
+}
+/* trang phục chưa mở: bóng đen như sticker thiếu */
+.kz-album__reward:not(.is-owned) .kz-mascot {
+  filter: brightness(0) opacity(0.22);
+}
+.kz-album__reward.is-owned {
+  background: var(--c-success-soft);
+  color: var(--c-success-ink);
+}
+
+.kz-album__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(118px, 1fr));
+  gap: 14px 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.kz-album-sticker {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  width: 100%;
+  padding: 10px 4px 8px;
+  border: none;
+  border-radius: 20px;
+  background: transparent;
+  color: var(--kz-ink);
+  cursor: pointer;
+  transition: transform 180ms var(--ease-spring);
+}
+.kz-album-sticker:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+.kz-album-sticker.is-owned .kz-picture,
+.kz-album-sticker.is-owned .kz-album-sticker__letters {
+  transform: rotate(var(--tilt));
+}
+.kz-album-sticker.is-owned:hover {
+  transform: translateY(-4px) scale(1.05);
+}
+/* ô CHƯA CÓ: ô nét đứt + bóng đen của hình */
+.kz-album-sticker.is-missing {
+  background: color-mix(in srgb, var(--kz-ink) 4%, transparent);
+  outline: 2px dashed color-mix(in srgb, var(--kz-ink) 14%, transparent);
+  outline-offset: -2px;
+}
+.kz-album-sticker.is-missing .kz-picture {
+  filter: brightness(0) opacity(0.16);
+}
+.kz-album-sticker.is-selected {
+  background: var(--c-primary-soft);
+}
+.kz-album-sticker__letters {
+  display: grid;
+  place-items: center;
+  width: 84px;
+  height: 84px;
+  border-radius: 22px;
+  background: var(--grad-gold);
+  color: #4a2f00;
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: 800;
+  box-shadow: 0 0 0 4px #fff, 0 10px 14px -6px rgba(var(--shadow-rgb), 0.3);
+}
+.kz-album-sticker.is-missing .kz-album-sticker__letters {
+  background: color-mix(in srgb, var(--kz-ink) 10%, transparent);
+  color: var(--kz-ink-2);
+  box-shadow: none;
+}
+.kz-album-sticker__label {
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  font-weight: 700;
+  line-height: 1.1;
+}
+.kz-album-sticker.is-missing .kz-album-sticker__label {
+  color: var(--kz-ink-2);
+}
+.kz-album__message {
+  position: sticky;
+  bottom: 16px;
+  width: fit-content;
+  margin: 16px auto 0;
+}
+
+@media (max-width: 900px) {
+  .kz-album__body {
+    grid-template-columns: 1fr;
+  }
+  .kz-album__topics {
+    flex-direction: row;
+    overflow-x: auto;
+    max-height: none;
+  }
+  .kz-album__topic {
+    flex: none;
+    width: 220px;
+  }
+}

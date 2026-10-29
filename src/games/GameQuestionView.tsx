@@ -1,0 +1,194 @@
+/**
+ * GameQuestionView.tsx — HIỂN THỊ 1 CÂU HỎI TRÒ CHƠI (dùng cho cả chơi 1 mình và đấu trực tiếp)
+ * ----------------------------------------------------------------------------
+ *   choice  : hình / câu hỏi + 4 nút đáp án (phím 1-4)
+ *   type    : nghe từ rồi gõ (Spelling Bee)
+ *   arrange : bấm thẻ từ theo thứ tự để ghép câu (Đua xếp câu)
+ * Sau khi lật đáp án (reveal): đáp án đúng tô xanh + dấu ✓, đáp án mình chọn sai tô cam san hô
+ * (không đỏ chói — 04-DESIGN-SYSTEM mục 1), các đáp án khác mờ đi.
+ * (v3) Giao diện làm lại: thẻ đáp án lớn có số phím, ô gõ to, thẻ từ dạng viên kẹo.
+ *      Lớp CSS: gq-* trong src/features/playground/styles/game.css
+ * ----------------------------------------------------------------------------
+ */
+import { useEffect, useRef, useState, type FormEvent } from 'react'
+import type { GameQuestion } from '../game-questions/question-bank'
+import { CardImage } from '../components/PlayerIdentity'
+import { Button, Icon, IconButton } from '../design-system'
+import { speak } from '../services/text-to-speech'
+import { useLanguage } from '../translations/language-context'
+import '../features/playground/styles/game.css'
+
+interface GameQuestionViewProps {
+  question: GameQuestion
+  onAnswer: (answer: string) => void
+  /** đã trả lời / hết giờ / bị đóng băng -> khoá */
+  locked: boolean
+  myAnswer: string | null
+  /** sau khi lật: đáp án đúng */
+  reveal?: { correctIndex?: number; correctAnswer: string } | null
+  removedIndexes?: number[]
+}
+
+export function GameQuestionView({ question, onAnswer, locked, myAnswer, reveal, removedIndexes = [] }: GameQuestionViewProps) {
+  const { t } = useLanguage()
+  const [typed, setTyped] = useState('')
+  const [chosenTiles, setChosenTiles] = useState<number[]>([])
+  const inputRef = useRef<HTMLInputElement>(null)
+
+  // câu mới: xoá ô gõ, tự đọc câu nghe
+  useEffect(() => {
+    setTyped('')
+    setChosenTiles([])
+    if (question.audioText && question.kind !== 'arrange') void speak(question.audioText)
+    if (question.kind === 'type') window.setTimeout(() => inputRef.current?.focus(), 50)
+  }, [question])
+
+  // phím 1-4 cho câu trắc nghiệm
+  useEffect(() => {
+    if (question.kind !== 'choice') return
+    function onKey(event: KeyboardEvent) {
+      const index = Number(event.key) - 1
+      if (!locked && index >= 0 && index < (question.options?.length ?? 0) && !removedIndexes.includes(index)) onAnswer(String(index))
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [question, locked, removedIndexes, onAnswer])
+
+  function submitTyped(event: FormEvent) {
+    event.preventDefault()
+    if (!locked && typed.trim()) onAnswer(typed.trim())
+  }
+
+  const tiles = question.tiles ?? []
+  const builtSentence = chosenTiles.map((i) => tiles[i]).join(' ')
+
+  return (
+    <div className={`gq ${reveal ? 'is-revealed' : ''}`}>
+      {question.image && (
+        <div className="gq__image">
+          <CardImage image={question.image} size={110} />
+        </div>
+      )}
+      <div className="gq__prompt-row">
+        <div className="gq__prompt">{question.prompt}</div>
+        {question.audioText && question.kind !== 'arrange' && (
+          <IconButton icon="volume" label={t('listenNormal')} variant="primary" size="lg" className="gq__speaker" onClick={() => speak(question.audioText!)} />
+        )}
+      </div>
+
+      {/* -------- trắc nghiệm -------- */}
+      {question.kind === 'choice' && (
+        <div className="gq-options">
+          {(question.options ?? []).map((option, index) => {
+            const isRemoved = removedIndexes.includes(index)
+            let state = myAnswer === String(index) ? 'is-selected' : ''
+            if (reveal) {
+              if (index === reveal.correctIndex) state = 'is-correct'
+              else if (myAnswer === String(index)) state = 'is-wrong'
+              else state = 'is-muted'
+            }
+            return (
+              <button
+                key={index}
+                type="button"
+                className={`gq-option ${state}`}
+                disabled={locked || isRemoved}
+                style={isRemoved ? { visibility: 'hidden' } : undefined}
+                onClick={() => onAnswer(String(index))}
+              >
+                <span className="gq-option__key" aria-hidden>
+                  {state === 'is-correct' ? <Icon name="check" size={16} strokeWidth={3} /> : state === 'is-wrong' ? <Icon name="close" size={16} strokeWidth={3} /> : index + 1}
+                </span>
+                <span className="gq-option__text">{option}</span>
+              </button>
+            )
+          })}
+        </div>
+      )}
+
+      {/* -------- gõ chữ (Spelling Bee) -------- */}
+      {question.kind === 'type' && (
+        <form onSubmit={submitTyped} className="gq-type">
+          <input
+            ref={inputRef}
+            className={`pg-input pg-input--big gq-type__input ${reveal ? (myAnswer && myAnswer.trim().toLowerCase() === reveal.correctAnswer.trim().toLowerCase() ? 'is-correct' : 'is-wrong') : ''}`}
+            value={locked ? (myAnswer ?? typed) : typed}
+            onChange={(e) => setTyped(e.target.value)}
+            disabled={locked}
+            autoComplete="off"
+            autoCapitalize="off"
+            spellCheck={false}
+            placeholder={t('typeTheWord')}
+            aria-label={t('typeTheWord')}
+          />
+          <Button type="submit" size="lg" disabled={locked || !typed.trim()}>
+            {t('submit')}
+          </Button>
+        </form>
+      )}
+
+      {/* -------- xếp câu -------- */}
+      {question.kind === 'arrange' && (
+        <>
+          <div className={`gq-line ${chosenTiles.length === 0 ? 'is-empty' : ''}`}>
+            {chosenTiles.map((tileIndex) => (
+              <button key={tileIndex} type="button" className="gq-tile is-placed" disabled={locked} onClick={() => setChosenTiles(chosenTiles.filter((i) => i !== tileIndex))}>
+                {tiles[tileIndex]}
+              </button>
+            ))}
+          </div>
+          <div className="gq-bank">
+            {tiles.map((tile, index) => (
+              <button
+                key={index}
+                type="button"
+                className={`gq-tile ${chosenTiles.includes(index) ? 'is-used' : ''}`}
+                disabled={locked || chosenTiles.includes(index)}
+                onClick={() => setChosenTiles([...chosenTiles, index])}
+              >
+                {tile}
+              </button>
+            ))}
+          </div>
+          <div className="gq-submit">
+            <Button size="lg" disabled={locked || chosenTiles.length !== tiles.length} onClick={() => onAnswer(builtSentence)}>
+              {t('submit')}
+            </Button>
+          </div>
+        </>
+      )}
+
+      {reveal && question.kind !== 'choice' && (
+        <p className="gq-answer">
+          {t('correctAnswerIs')} <strong>{reveal.correctAnswer}</strong>
+        </p>
+      )}
+    </div>
+  )
+}
+
+/** Thanh thời gian chạy lùi (cam -> cam san hô khi còn < 30%; không nhấp nháy). */
+export function TimerBar({ startedAt, durationMs }: { startedAt: number; durationMs: number }) {
+  const [now, setNow] = useState(Date.now())
+  useEffect(() => {
+    const timer = window.setInterval(() => setNow(Date.now()), 100)
+    return () => window.clearInterval(timer)
+  }, [])
+  const remaining = Math.max(0, startedAt + durationMs - now)
+  const percent = (remaining / durationMs) * 100
+  return (
+    <div className={`gq-timer ${percent < 30 ? 'is-low' : ''}`} role="timer" aria-label={`${Math.ceil(remaining / 1000)}s`}>
+      <div className="gq-timer__fill" style={{ width: `${percent}%` }} />
+      <span className="gq-timer__label ds-num">{Math.ceil(remaining / 1000)}s</span>
+    </div>
+  )
+}
+
+/** Thanh thời gian "đứng yên" (lúc đang lật đáp án) — giữ chỗ để bố cục không nhảy. */
+export function TimerBarIdle() {
+  return (
+    <div className="gq-timer is-idle" aria-hidden>
+      <div className="gq-timer__fill" style={{ width: '0%' }} />
+    </div>
+  )
+}

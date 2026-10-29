@@ -1,0 +1,88 @@
+/* =============================================================================
+ * IconButton.css — nút tròn chỉ có icon
+ * ========================================================================== */
+.ds-icon-btn {
+  --ib-size: 44px;
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+  width: var(--ib-size);
+  height: var(--ib-size);
+  flex: none;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: var(--c-surface-2);
+  color: var(--c-ink);
+  font-size: 1.15rem;
+  line-height: 1;
+  cursor: pointer;
+  box-shadow: var(--gloss-top), inset 0 0 0 1px var(--c-line);
+  transition:
+    transform var(--dur-press) var(--ease-out),
+    background-color var(--dur-micro) var(--ease-out),
+    color var(--dur-micro) var(--ease-out),
+    box-shadow var(--dur-micro) var(--ease-out);
+}
+.ds-icon-btn:hover {
+  background: var(--c-surface-3);
+}
+.ds-icon-btn:active:not(:disabled) {
+  transform: scale(0.92);
+}
+.ds-icon-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.ds-icon-btn--sm {
+  --ib-size: 36px;
+}
+.ds-icon-btn--lg {
+  --ib-size: 52px;
+}
+
+.ds-icon-btn--ghost {
+  background: transparent;
+  color: var(--c-ink-2);
+  box-shadow: none;
+}
+.ds-icon-btn--ghost:hover {
+  background: var(--c-surface-2);
+  color: var(--c-ink);
+}
+
+.ds-icon-btn--primary {
+  background: var(--grad-primary);
+  color: var(--c-on-primary);
+  box-shadow:
+    var(--gloss-top),
+    0 6px 14px -6px color-mix(in srgb, var(--c-primary-deep) 60%, transparent);
+}
+.ds-icon-btn--primary:hover {
+  background: var(--grad-primary);
+  filter: brightness(1.04);
+}
+
+/* Trên nền màu (VD khung phản hồi xanh/cam): nền trắng mờ, chữ theo màu khung */
+.ds-icon-btn--plain {
+  background: color-mix(in srgb, var(--c-surface) 75%, transparent);
+  color: currentColor;
+  box-shadow: var(--gloss-top), 0 4px 10px -6px rgba(var(--shadow-rgb), 0.4);
+}
+.ds-icon-btn--plain:hover {
+  background: var(--c-surface);
+}
+
+/* Nút bật/tắt đang bật */
+.ds-icon-btn[aria-pressed='true'] {
+  background: var(--c-primary-soft);
+  color: var(--c-primary-ink);
+  box-shadow: var(--gloss-top), inset 0 0 0 1.5px color-mix(in srgb, var(--c-primary) 55%, transparent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ds-icon-btn:active:not(:disabled) {
+    transform: none;
+  }
+}

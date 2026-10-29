@@ -1,0 +1,105 @@
+/* =============================================================================
+ * Stepper.css — thanh chia đoạn / chấm / vòng số
+ * ========================================================================== */
+.ds-stepper {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* --- thanh chia đoạn --- */
+.ds-stepper--segments .ds-stepper__step {
+  flex: 1 1 0;
+  height: 8px;
+  border-radius: var(--r-pill);
+  background: var(--c-surface-2);
+  box-shadow: inset 0 1px 2px rgba(var(--shadow-rgb), 0.1);
+  transition: background-color var(--dur-panel) var(--ease-out);
+}
+.ds-stepper--segments .ds-stepper__step.is-done {
+  background: var(--grad-primary);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.45);
+}
+.ds-stepper--segments .ds-stepper__step.is-current {
+  background: linear-gradient(90deg, var(--c-primary) 0 50%, var(--c-surface-2) 50%);
+}
+
+/* --- chấm tròn --- */
+.ds-stepper--dots {
+  gap: 8px;
+}
+.ds-stepper--dots .ds-stepper__step {
+  width: 10px;
+  height: 10px;
+  border-radius: var(--r-pill);
+  background: var(--c-line-strong);
+  transition:
+    width var(--dur-panel) var(--ease-spring),
+    background-color var(--dur-micro) var(--ease-out);
+}
+.ds-stepper--dots .ds-stepper__step.is-done {
+  background: color-mix(in srgb, var(--c-primary) 55%, var(--c-surface));
+}
+.ds-stepper--dots .ds-stepper__step.is-current {
+  width: 28px;
+  background: var(--c-primary);
+}
+
+/* --- vòng số + tên bước --- */
+.ds-stepper--numbered {
+  gap: 0;
+}
+.ds-stepper--numbered .ds-stepper__step {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1 1 0;
+  color: var(--c-ink-2);
+  font-size: var(--fs-sm);
+  font-weight: 600;
+}
+.ds-stepper--numbered .ds-stepper__step:not(:last-child)::after {
+  /* đường nối giữa 2 bước */
+  content: '';
+  flex: 1 1 auto;
+  height: 3px;
+  min-width: 16px;
+  margin-right: 10px;
+  border-radius: 3px;
+  background: var(--c-line);
+}
+.ds-stepper--numbered .ds-stepper__step.is-done:not(:last-child)::after {
+  background: var(--c-primary);
+}
+.ds-stepper__marker {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--c-surface-2);
+  color: var(--c-ink-2);
+  font-family: var(--font-display);
+  font-weight: 800;
+  box-shadow: inset 0 0 0 1.5px var(--c-line);
+}
+.ds-stepper__label {
+  white-space: nowrap;
+}
+.ds-stepper__step.is-current {
+  color: var(--c-ink);
+}
+.ds-stepper__step.is-current .ds-stepper__marker {
+  background: var(--grad-primary);
+  color: var(--c-on-primary);
+  box-shadow: var(--gloss-top), 0 0 0 4px var(--c-primary-soft);
+}
+.ds-stepper__step.is-done .ds-stepper__marker {
+  background: var(--c-primary-soft);
+  color: var(--c-primary-ink);
+  box-shadow: none;
+}

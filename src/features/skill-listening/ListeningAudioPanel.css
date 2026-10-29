@@ -1,0 +1,244 @@
+/* =============================================================================
+ * ListeningAudioPanel.css — thẻ trình phát + danh sách đoạn nghe
+ * Màu nhấn = xanh trời của kỹ năng Listening.
+ * ========================================================================== */
+
+.xaudio {
+  --xaudio-accent: var(--skill-listening);
+  padding: var(--s-4) var(--s-5);
+  border-radius: var(--r-lg);
+  border: 1px solid var(--c-line);
+  background: var(--c-surface);
+  box-shadow: var(--gloss-top), var(--shadow-card);
+}
+.xaudio__now {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+}
+.xaudio__now-icon {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--r-sm);
+  background: color-mix(in srgb, var(--xaudio-accent) 16%, var(--c-surface));
+  font-size: 20px;
+}
+.xaudio__now-text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  flex: 1;
+  line-height: 1.3;
+}
+.xaudio__now-text strong {
+  font-size: var(--fs-md);
+}
+.xaudio__now-text span {
+  font-size: var(--fs-xs);
+  color: var(--c-ink-2);
+}
+.xaudio__of {
+  font-weight: 500;
+  color: var(--c-ink-2);
+}
+.xaudio__status {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 10px;
+  border-radius: var(--r-pill);
+  background: color-mix(in srgb, var(--xaudio-accent) 14%, var(--c-surface));
+  color: var(--c-ink);
+  font: 600 var(--fs-xs) / 1.3 var(--font-ui);
+  white-space: nowrap;
+}
+.xaudio__pulse {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--xaudio-accent);
+}
+.xaudio__status--playing .xaudio__pulse {
+  animation: xaudio-pulse 1.6s var(--ease-in-out) infinite;
+}
+.xaudio__status--paused .xaudio__pulse {
+  background: var(--c-ink-2);
+}
+@keyframes xaudio-pulse {
+  50% {
+    transform: scale(1.5);
+    opacity: 0.5;
+  }
+}
+
+.xaudio__controls {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  margin-top: var(--s-4);
+}
+.xaudio__play {
+  width: 56px;
+  height: 56px;
+}
+.xaudio__time {
+  margin-left: auto;
+  font: 700 var(--fs-md) / 1 var(--font-ui);
+  font-variant-numeric: tabular-nums;
+}
+.xaudio__time span {
+  font-weight: 500;
+  color: var(--c-ink-2);
+}
+.xaudio__controls--exam {
+  flex-wrap: wrap;
+}
+.xaudio__exam-note {
+  flex-basis: 100%;
+  margin: 0;
+  font-size: var(--fs-xs);
+  color: var(--c-ink-2);
+}
+
+/* thanh tiến độ chia đoạn */
+.xaudio__track {
+  display: flex;
+  gap: 4px;
+  margin-top: var(--s-4);
+}
+.xaudio__track-part {
+  position: relative;
+  height: 8px;
+  flex-basis: 0;
+  border-radius: var(--r-pill);
+  background: var(--c-surface-2);
+  overflow: hidden;
+}
+.xaudio__track-part.is-clickable {
+  cursor: pointer;
+}
+.xaudio__track-part.is-clickable:hover {
+  background: var(--c-surface-3);
+}
+.xaudio__track-part.is-current {
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--xaudio-accent) 40%, transparent);
+}
+.xaudio__track-fill {
+  position: absolute;
+  inset: 0 auto 0 0;
+  border-radius: inherit;
+  background: var(--xaudio-accent);
+  transition: width 220ms linear;
+}
+
+.xaudio__speed {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  margin-top: var(--s-4);
+}
+.xaudio__speed-label {
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  color: var(--c-ink-2);
+}
+.xaudio__total {
+  margin-left: auto;
+  font-size: var(--fs-xs);
+  color: var(--c-ink-2);
+  font-variant-numeric: tabular-nums;
+}
+
+/* danh sách đoạn */
+.xaudio__segments {
+  list-style: none;
+  margin: var(--s-4) 0 0;
+  padding: var(--s-3) 0 0;
+  border-top: 1px solid var(--c-line);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.xaudio__segment {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  padding: 6px var(--s-2);
+  border-radius: var(--r-sm);
+}
+.xaudio__segment.is-playing {
+  background: color-mix(in srgb, var(--xaudio-accent) 10%, var(--c-surface));
+}
+.xaudio__segment-num {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: 1.5px solid var(--c-line-strong);
+  font: 700 var(--fs-xs) / 1 var(--font-ui);
+}
+.xaudio__segment.is-playing .xaudio__segment-num {
+  border-color: var(--xaudio-accent);
+  background: var(--xaudio-accent);
+  color: #fff;
+}
+.xaudio__segment.is-played .xaudio__segment-num {
+  border-color: var(--c-success);
+  background: var(--c-success-soft);
+  color: var(--c-success-ink);
+}
+.xaudio__segment-text {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+  line-height: 1.3;
+}
+.xaudio__segment-text strong {
+  font-size: var(--fs-sm);
+}
+.xaudio__segment-text span {
+  font-size: var(--fs-xs);
+  color: var(--c-ink-2);
+  font-variant-numeric: tabular-nums;
+}
+.xaudio__segment-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 32px;
+  padding: 0 var(--s-3);
+  border-radius: var(--r-pill);
+  border: 1px solid var(--c-line-strong);
+  background: var(--c-surface);
+  color: var(--c-ink);
+  font: 600 var(--fs-xs) / 1 var(--font-ui);
+  white-space: nowrap;
+  cursor: pointer;
+}
+.xaudio__segment-btn:hover {
+  border-color: var(--xaudio-accent);
+}
+.xaudio__segment-btn:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+.xaudio__segment-state {
+  font-size: var(--fs-xs);
+  color: var(--c-ink-2);
+  white-space: nowrap;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .xaudio__status--playing .xaudio__pulse {
+    animation: none;
+  }
+  .xaudio__track-fill {
+    transition: none;
+  }
+}

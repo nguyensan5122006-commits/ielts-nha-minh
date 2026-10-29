@@ -1,0 +1,96 @@
+/* =============================================================================
+ * MarkedText.css — màu tô trên chữ bài đọc / lời thoại
+ *   vàng      = người học tự tô (highlight)
+ *   cam nhạt  = chữ có ghi chú (gạch chấm)
+ *   xanh navy = bằng chứng của đáp án (chỉ đậm ở câu đang xem; câu khác chỉ còn nhãn "Q5")
+ * Màu lấy từ token -> tự đổi theo sáng/tối và 3 chế độ tương phản (ExamDisplaySettings.css).
+ * ========================================================================== */
+
+[data-hl-block] {
+  --xm-highlight: color-mix(in srgb, var(--c-gold) 52%, transparent);
+  --xm-note: color-mix(in srgb, var(--c-primary) 22%, transparent);
+  --xm-note-line: var(--c-primary-deep);
+  --xm-evidence: color-mix(in srgb, var(--c-navy) 13%, transparent);
+  --xm-evidence-strong: color-mix(in srgb, var(--c-navy) 26%, transparent);
+  --xm-evidence-line: var(--c-navy);
+}
+
+.xm {
+  color: inherit;
+  background: transparent;
+  border-radius: 3px;
+  padding: 0.05em 0;
+  /* nền tô kéo dài qua chỗ xuống dòng giống bút dạ thật */
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+  transition: background-color var(--dur-micro) var(--ease-out);
+}
+.xm--highlight {
+  background: var(--xm-highlight);
+}
+.xm--note {
+  background: var(--xm-note);
+  text-decoration: underline dotted var(--xm-note-line);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 4px;
+  cursor: pointer;
+}
+/* bằng chứng: câu đang xem tô nhạt, cụm then chốt tô đậm + gạch chân */
+.xm--evidence.is-active {
+  background: var(--xm-evidence);
+}
+.xm--evidence-phrase.is-active {
+  background: var(--xm-evidence-strong);
+  text-decoration: underline solid var(--xm-evidence-line);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 4px;
+}
+.xm--highlight.xm--evidence.is-active,
+.xm--highlight.xm--evidence-phrase.is-active {
+  background: linear-gradient(var(--xm-evidence-strong), var(--xm-evidence-strong)), var(--xm-highlight);
+}
+
+/* nhãn "Q5" trước bằng chứng */
+.xm-label {
+  display: inline-block;
+  margin: 0 0.3em 0 0.1em;
+  padding: 0 0.4em;
+  border-radius: var(--r-xs);
+  font-family: var(--font-ui);
+  font-size: 0.7em;
+  font-weight: 700;
+  line-height: 1.6;
+  vertical-align: 0.12em;
+  color: var(--c-ink-2);
+  background: var(--c-surface-2);
+  border: 1px solid var(--c-line-strong);
+  user-select: none;
+}
+.xm-label.is-active {
+  color: var(--c-on-navy);
+  background: var(--c-navy);
+  border-color: var(--c-navy);
+}
+
+/* nháy viền 1 lần khi "Tìm trong bài" cuộn tới */
+.xm-flash {
+  animation: xm-flash 1.3s var(--ease-out) 1;
+}
+@keyframes xm-flash {
+  0% {
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--c-navy) 55%, transparent);
+  }
+  35% {
+    box-shadow: 0 0 0 5px color-mix(in srgb, var(--c-navy) 30%, transparent);
+  }
+  100% {
+    box-shadow: 0 0 0 0 transparent;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .xm-flash {
+    animation: none;
+    outline: 2px solid var(--c-navy);
+    outline-offset: 2px;
+  }
+}

@@ -1,0 +1,112 @@
+/* =============================================================================
+ * ListeningTranscript.css — lời thoại sau khi nộp: tên người nói có màu, dòng đang phát có vạch
+ * ========================================================================== */
+
+.xtranscript {
+  margin-top: var(--s-5);
+}
+.xtranscript__title {
+  margin: 0 0 var(--s-3);
+  font: 700 var(--fs-md) / 1.3 var(--font-ui);
+}
+.xtranscript__segment {
+  padding: var(--s-3) var(--s-4) var(--s-4);
+  border-radius: var(--r-lg);
+  border: 1px solid var(--c-line);
+  background: var(--c-surface);
+}
+.xtranscript__segment + .xtranscript__segment {
+  margin-top: var(--s-3);
+}
+.xtranscript__segment-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-2);
+  margin-bottom: var(--s-2);
+  font: 700 var(--fs-sm) / 1.3 var(--font-ui);
+  color: var(--c-ink-2);
+}
+.xtranscript__play {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 30px;
+  padding: 0 var(--s-3);
+  border-radius: var(--r-pill);
+  border: 1px solid var(--c-line-strong);
+  background: var(--c-surface);
+  color: var(--c-ink);
+  font: 600 var(--fs-xs) / 1 var(--font-ui);
+  cursor: pointer;
+}
+.xtranscript__play:hover {
+  border-color: var(--skill-listening);
+}
+.xtranscript__play:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+.xtranscript__line {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: var(--s-2);
+  padding: 4px var(--s-2) 4px 0;
+  border-radius: var(--r-sm);
+  transition: background-color var(--dur-micro) var(--ease-out);
+}
+.xtranscript__line.is-playing {
+  background: color-mix(in srgb, var(--skill-listening) 10%, transparent);
+}
+.xtranscript__line.is-playing::before {
+  content: '';
+  position: absolute;
+  left: -10px;
+  top: 6px;
+  bottom: 6px;
+  width: 3px;
+  border-radius: 2px;
+  background: var(--skill-listening);
+}
+.xtranscript__line-play {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 24px;
+  height: 24px;
+  margin-top: 4px;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--c-ink-2);
+  opacity: 0.35;
+  cursor: pointer;
+  transition: opacity var(--dur-micro) var(--ease-out), background-color var(--dur-micro) var(--ease-out);
+}
+.xtranscript__line:hover .xtranscript__line-play,
+.xtranscript__line.is-playing .xtranscript__line-play,
+.xtranscript__line-play:focus-visible {
+  opacity: 1;
+}
+.xtranscript__line-play:hover {
+  background: var(--c-surface-2);
+  color: var(--skill-listening);
+}
+.xtranscript__line-play:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+.xtranscript__text {
+  margin: 0;
+  font: 400 calc(1.0625rem * var(--exam-text-scale, 1)) / 1.7 var(--font-reading);
+}
+.xtranscript__speaker {
+  font-family: var(--font-ui);
+  font-weight: 700;
+  font-size: 0.88em;
+}
+/* chế độ tương phản cao: tên người nói theo màu chữ chính cho đủ tương phản */
+[data-exam-contrast]:not([data-exam-contrast='theme']) .xtranscript__speaker {
+  color: var(--c-ink) !important;
+}

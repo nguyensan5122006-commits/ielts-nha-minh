@@ -1,0 +1,167 @@
+/* =============================================================================
+ * QuestionNavigator.css — thanh câu hỏi dưới đáy (cao ~60px)
+ * ========================================================================== */
+
+.xnav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-4);
+  min-height: 60px;
+  padding: var(--s-2) var(--s-5);
+  border-top: 1px solid var(--c-line);
+  background: var(--c-surface);
+}
+.xnav__parts {
+  display: flex;
+  align-items: center;
+  gap: var(--s-4);
+  min-width: 0;
+  overflow-x: auto;
+  scrollbar-width: thin;
+  padding: 4px 2px;
+}
+.xnav__part {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  flex: none;
+}
+.xnav__part-label {
+  font: 700 var(--fs-sm) / 1 var(--font-ui);
+  color: var(--c-ink);
+  white-space: nowrap;
+}
+.xnav__part--collapsed {
+  gap: var(--s-2);
+  min-height: 36px;
+  padding: 0 var(--s-3);
+  border: 1px solid var(--c-line);
+  border-radius: var(--r-pill);
+  background: transparent;
+  color: var(--c-ink-2);
+  cursor: pointer;
+  font: inherit;
+}
+.xnav__part--collapsed:hover {
+  background: var(--c-surface-2);
+}
+.xnav__part--collapsed:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+.xnav__part--collapsed .xnav__part-label {
+  font-weight: 600;
+}
+.xnav__part-count {
+  font-size: var(--fs-xs);
+  color: var(--c-ink-2);
+  font-variant-numeric: tabular-nums;
+}
+.xnav__part-check {
+  color: var(--c-success-ink);
+}
+
+.xnav__numbers {
+  display: flex;
+  gap: 6px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.xnav__num {
+  position: relative;
+  display: grid;
+  place-items: center;
+  min-width: 34px;
+  height: 36px;
+  padding: 0 6px;
+  border: 0;
+  border-radius: var(--r-xs);
+  background: transparent;
+  color: var(--c-ink-2);
+  font: 600 var(--fs-sm) / 1 var(--font-ui);
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+  transition: background-color var(--dur-micro) var(--ease-out), color var(--dur-micro) var(--ease-out);
+}
+/* vạch trạng thái phía trên số câu */
+.xnav__num::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 5px;
+  right: 5px;
+  height: 3px;
+  border-radius: 2px;
+  background: var(--c-line-strong);
+  transition: background-color var(--dur-micro) var(--ease-out);
+}
+.xnav__num:hover {
+  background: var(--c-surface-2);
+  color: var(--c-ink);
+}
+.xnav__num.is-answered {
+  color: var(--c-ink);
+}
+.xnav__num.is-answered::before {
+  background: var(--c-success);
+}
+.xnav__num.is-current {
+  box-shadow: inset 0 0 0 2px var(--c-navy);
+  color: var(--c-ink);
+}
+.xnav__num:focus-visible {
+  outline: none;
+  box-shadow: inset 0 0 0 2px var(--c-navy), var(--focus-ring);
+}
+.xnav__flag {
+  position: absolute;
+  top: 5px;
+  right: 3px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--c-red);
+  box-shadow: 0 0 0 2px var(--c-surface);
+}
+/* màn kết quả */
+.xnav__num.is-correct {
+  background: var(--c-success-soft);
+  color: var(--c-success-ink);
+}
+.xnav__num.is-correct::before {
+  background: var(--c-success);
+}
+.xnav__num.is-incorrect {
+  background: var(--c-oops-soft);
+  color: var(--c-oops-ink);
+}
+.xnav__num.is-incorrect::before {
+  background: var(--c-oops);
+}
+
+.xnav__actions {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+  flex: none;
+}
+.xnav__extra {
+  margin-right: var(--s-2);
+  font-size: var(--fs-sm);
+  color: var(--c-ink-2);
+  white-space: nowrap;
+}
+.xnav__prev-icon {
+  transform: scaleX(-1);
+}
+
+@media (max-width: 900px) {
+  .xnav {
+    padding: var(--s-2) var(--s-3);
+  }
+  .xnav__extra {
+    display: none;
+  }
+}

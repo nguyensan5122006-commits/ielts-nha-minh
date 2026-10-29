@@ -1,0 +1,173 @@
+/* =============================================================================
+ * ExamDisplaySettings.css — nút "Aa Hiển thị" + 3 chế độ tương phản như máy thi IELTS
+ *   [data-exam-contrast='black-on-white' | 'white-on-black' | 'yellow-on-black']
+ *   khai báo lại token màu cho riêng khung bài thi (không ảnh hưởng phần còn lại của web).
+ *   'theme' = giữ nguyên màu sáng/tối của web.
+ * ========================================================================== */
+
+/* ---------- nút + bảng chọn ---------- */
+.xdisplay {
+  position: relative;
+}
+.xdisplay__aa {
+  font: 800 var(--fs-md) / 1 var(--font-reading);
+  letter-spacing: -0.02em;
+}
+.xdisplay__panel {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  z-index: var(--z-sheet);
+  width: 300px;
+  padding: var(--s-4);
+  border-radius: var(--r-lg);
+  border: 1px solid var(--c-line);
+  background: var(--c-surface);
+  color: var(--c-ink);
+  box-shadow: var(--shadow-pop);
+  animation: ds-fade-in var(--dur-micro) var(--ease-out);
+}
+.xdisplay__heading {
+  margin: 0 0 var(--s-2);
+  font: 700 var(--fs-xs) / 1.2 var(--font-ui);
+  color: var(--c-ink-2);
+}
+.xdisplay__heading:not(:first-child) {
+  margin-top: var(--s-4);
+}
+.xdisplay__swatches {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--s-2);
+}
+.xdisplay__swatch {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+  min-height: 44px;
+  padding: var(--s-2);
+  border: 1.5px solid var(--c-line);
+  border-radius: var(--r-sm);
+  background: var(--c-surface);
+  color: var(--c-ink);
+  font: 600 var(--fs-xs) / 1.25 var(--font-ui);
+  text-align: left;
+  cursor: pointer;
+}
+.xdisplay__swatch[aria-checked='true'] {
+  border-color: var(--c-navy);
+  box-shadow: inset 0 0 0 1px var(--c-navy);
+}
+.xdisplay__swatch:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+.xdisplay__sample {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  border: 1px solid var(--c-line-strong);
+  font: 700 13px / 1 var(--font-reading);
+  background: var(--c-bg);
+  color: var(--c-ink);
+}
+.xdisplay__swatch--black-on-white .xdisplay__sample {
+  background: #fff;
+  color: #000;
+}
+.xdisplay__swatch--white-on-black .xdisplay__sample {
+  background: #000;
+  color: #fff;
+}
+.xdisplay__swatch--yellow-on-black .xdisplay__sample {
+  background: #000;
+  color: #ffe600;
+}
+
+/* ---------- 3 chế độ tương phản ---------- */
+[data-exam-contrast='black-on-white'] {
+  color-scheme: light;
+  --c-bg: #ffffff;
+  --c-surface: #ffffff;
+  --c-surface-2: #f1f1f1;
+  --c-surface-3: #e4e4e4;
+  --c-ink: #000000;
+  --c-ink-2: #2e2e2e;
+  --c-line: #c4c4c4;
+  --c-line-strong: #7a7a7a;
+  --c-navy: #0b3d91;
+  --c-navy-soft: #dbe5f7;
+  --c-on-navy: #ffffff;
+  --c-primary: #d35f00;
+  --c-primary-deep: #a84b00;
+  --c-primary-soft: #ffeedd;
+  --c-primary-ink: #7a3600;
+  --c-gold: #f5c400;
+  --c-success: #0a7a2f;
+  --c-success-soft: #e1f3e6;
+  --c-success-ink: #075f24;
+  --c-oops: #c2361a;
+  --c-oops-soft: #fde6df;
+  --c-oops-ink: #9a2410;
+  --c-red: #c4001a;
+  --shadow-card: 0 0 0 1px #c4c4c4;
+  --shadow-pop: 0 0 0 1px #7a7a7a, 0 18px 40px -14px rgba(0, 0, 0, 0.35);
+  --focus-ring: 0 0 0 3px rgba(11, 61, 145, 0.45);
+  --grad-navy: linear-gradient(180deg, #2a5cb8 0%, #0b3d91 100%);
+  background: var(--c-bg);
+  color: var(--c-ink);
+}
+
+[data-exam-contrast='white-on-black'],
+[data-exam-contrast='yellow-on-black'] {
+  color-scheme: dark;
+  --c-bg: #000000;
+  --c-surface: #000000;
+  --c-surface-2: #161616;
+  --c-surface-3: #242424;
+  --c-ink: #ffffff;
+  --c-ink-2: #d6d6d6;
+  --c-line: #4a4a4a;
+  --c-line-strong: #8c8c8c;
+  /* như máy thi: đang chọn = hổ phách / cam, không dùng xanh dương */
+  --c-navy: #ffb547;
+  --c-navy-soft: #3a2608;
+  --c-on-navy: #000000;
+  --c-primary: #ffb547;
+  --c-primary-deep: #ff9d1a;
+  --c-primary-soft: #3a2608;
+  --c-primary-ink: #ffc978;
+  --c-gold: #ffe600;
+  --c-success: #4ade80;
+  --c-success-soft: #0b2b17;
+  --c-success-ink: #7cf0a8;
+  --c-oops: #ff8f6b;
+  --c-oops-soft: #3a1a10;
+  --c-oops-ink: #ffb59e;
+  --c-red: #ff6b62;
+  --shadow-card: 0 0 0 1px #4a4a4a;
+  --shadow-pop: 0 0 0 1px #8c8c8c;
+  --focus-ring: 0 0 0 3px rgba(255, 181, 71, 0.55);
+  --grad-navy: linear-gradient(180deg, #ffc978 0%, #ffb547 100%);
+  background: var(--c-bg);
+  color: var(--c-ink);
+}
+[data-exam-contrast='yellow-on-black'] {
+  --c-ink: #ffe600;
+  --c-ink-2: #f2df5c;
+  --c-navy: #6fe3ff;
+  --c-navy-soft: #08303a;
+  --c-primary-ink: #6fe3ff;
+  --focus-ring: 0 0 0 3px rgba(111, 227, 255, 0.55);
+  --grad-navy: linear-gradient(180deg, #a6efff 0%, #6fe3ff 100%);
+}
+
+/* chữ tô vàng trên nền đen: nền vàng đặc, chữ đen cho dễ đọc */
+[data-exam-contrast='white-on-black'] .xm--highlight,
+[data-exam-contrast='yellow-on-black'] .xm--highlight {
+  background: #ffe600;
+  color: #000;
+}

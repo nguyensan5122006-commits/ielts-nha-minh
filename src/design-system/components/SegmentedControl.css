@@ -1,0 +1,61 @@
+/* =============================================================================
+ * SegmentedControl.css — rãnh kem + viên trắng bóng trượt theo lựa chọn
+ * ========================================================================== */
+.ds-segmented {
+  --seg-h: 40px;
+  position: relative;
+  display: inline-grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  padding: 4px;
+  border-radius: var(--r-pill);
+  background: var(--c-surface-2);
+  box-shadow: inset 0 1px 2px rgba(var(--shadow-rgb), 0.1), inset 0 0 0 1px var(--c-line);
+  isolation: isolate;
+}
+.ds-segmented--sm {
+  --seg-h: 32px;
+}
+.ds-segmented__thumb {
+  position: absolute;
+  top: 4px;
+  bottom: 4px;
+  left: 4px;
+  width: calc((100% - 8px) / var(--seg-count));
+  transform: translateX(calc(100% * var(--seg-index)));
+  border-radius: var(--r-pill);
+  background: var(--c-surface);
+  box-shadow: var(--gloss-top), 0 3px 8px -3px rgba(var(--shadow-rgb), 0.3), inset 0 0 0 1px var(--c-line);
+  transition: transform var(--dur-panel) var(--ease-spring);
+  z-index: -1;
+}
+.ds-segmented__option {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-width: 44px;
+  height: var(--seg-h);
+  padding: 0 var(--s-3);
+  border: none;
+  background: none;
+  border-radius: var(--r-pill);
+  color: var(--c-ink-2);
+  font-size: var(--fs-sm);
+  font-weight: 700;
+  line-height: 1;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: color var(--dur-micro) var(--ease-out);
+}
+.ds-segmented--sm .ds-segmented__option {
+  min-width: 36px;
+  font-size: var(--fs-xs);
+  padding: 0 var(--s-2);
+}
+.ds-segmented__option:hover {
+  color: var(--c-ink);
+}
+.ds-segmented__option.is-checked {
+  color: var(--c-ink);
+}

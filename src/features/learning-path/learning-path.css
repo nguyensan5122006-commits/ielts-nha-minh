@@ -1,0 +1,1219 @@
+/* =============================================================================
+ * learning-path.css — TRANG LỘ TRÌNH "TUYẾN TUẦN TRA" (/learn)
+ * -----------------------------------------------------------------------------
+ * Tiền tố lp- (learning path). Chỉ dùng biến của hệ thiết kế (tokens.css) -> chế độ
+ * tối tự chạy. Mục lục:
+ *   1. Khung trang + đầu trang (tiêu đề, tab track, chọn level, dòng trạng thái, bậc thang)
+ *   2. Đường tuần tra: biến màu đường, dải đường sau biển trạm, SVG đường
+ *   3. Biển trạm + dòng trạm gọn
+ *   4. Nút bài (khiên) + nhãn + mascot dẫn đường + khung xem trước
+ *   5. Cổng bài kiểm tra level + thẻ level sau
+ *   6. Nút "Học tiếp" nổi
+ *   7. Màn hẹp + giảm chuyển động
+ * ========================================================================== */
+
+/* ---------- 1. KHUNG TRANG + ĐẦU TRANG ---------- */
+.lp-page {
+  /* màu con đường — trộn từ biến theme nên tự đổi sáng/tối */
+  --road: color-mix(in srgb, var(--c-line-strong) 62%, var(--c-surface-2));
+  --road-edge: color-mix(in srgb, var(--c-line-strong) 82%, var(--c-ink) 10%);
+  --lane: var(--c-bg);
+  --road-traveled: color-mix(in srgb, var(--c-gold) 34%, var(--road));
+  --lane-traveled: color-mix(in srgb, var(--c-gold) 85%, var(--c-primary-deep));
+  --road-width: 44px;
+
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.lp-header {
+  display: grid;
+  gap: var(--s-4);
+}
+.lp-header__top {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--s-4);
+  flex-wrap: wrap;
+}
+.lp-header__title {
+  margin: 0;
+  font-size: var(--fs-2xl);
+  line-height: var(--lh-tight);
+  letter-spacing: -0.01em;
+}
+.lp-header__subtitle {
+  margin: 2px 0 0;
+  color: var(--c-ink-2);
+  font-size: var(--fs-sm);
+}
+
+/* chọn level: 3 ô */
+.lp-levels {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--s-3);
+}
+.lp-level {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  min-width: 0;
+  padding: 10px 14px 10px 10px;
+  border: 1.5px solid var(--c-line);
+  border-radius: 20px;
+  background: var(--c-surface);
+  color: var(--c-ink);
+  text-align: left;
+  font: inherit;
+  cursor: pointer;
+  box-shadow: var(--gloss-top), var(--shadow-card);
+  transition:
+    transform var(--dur-micro) var(--ease-out),
+    border-color var(--dur-micro) var(--ease-out),
+    box-shadow var(--dur-micro) var(--ease-out);
+}
+.lp-level:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--gloss-top), var(--shadow-raised);
+}
+.lp-level:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring), var(--shadow-card);
+}
+.lp-level.is-selected {
+  border-color: var(--c-primary);
+  background: linear-gradient(160deg, color-mix(in srgb, var(--c-primary) 12%, var(--c-surface)), var(--c-surface) 70%);
+  box-shadow:
+    var(--gloss-top),
+    0 0 0 3px color-mix(in srgb, var(--c-primary) 16%, transparent),
+    var(--shadow-card);
+}
+.lp-level.is-locked:not(.is-selected) {
+  background: var(--c-surface-2);
+  box-shadow: none;
+}
+.lp-level .ds-level-badge {
+  flex: none;
+}
+.lp-level__text {
+  display: grid;
+  gap: 1px;
+  min-width: 0;
+}
+.lp-level__eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--c-ink-2);
+}
+.lp-level.is-selected .lp-level__eyebrow {
+  color: var(--c-primary-ink);
+}
+.lp-level__done {
+  color: var(--c-success-ink);
+}
+.lp-level__name {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: var(--fs-md);
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.lp-level__band {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  color: var(--c-ink-2);
+  white-space: nowrap;
+}
+.lp-level__cefr {
+  padding: 0 7px;
+  border-radius: var(--r-pill);
+  background: var(--c-olive-soft);
+  color: var(--c-olive-ink);
+  font-size: 11.5px;
+  line-height: 18px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.lp-level__progress {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 3px;
+  font-size: 12px;
+  color: var(--c-ink-2);
+  white-space: nowrap;
+}
+.lp-level__bar {
+  position: relative;
+  flex: 1;
+  min-width: 28px;
+  height: 6px;
+  border-radius: var(--r-pill);
+  background: var(--c-surface-3);
+  overflow: hidden;
+}
+.lp-level__bar > span {
+  position: absolute;
+  inset: 0 auto 0 0;
+  border-radius: inherit;
+  background: var(--grad-primary);
+}
+
+/* dòng trạng thái + bậc thang band */
+.lp-status {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-4);
+  padding: 12px 12px 10px 22px;
+  border-radius: var(--r-lg);
+  background:
+    radial-gradient(140% 120% at 0% 0%, color-mix(in srgb, var(--c-gold) 16%, transparent), transparent 60%),
+    var(--c-surface);
+  border: 1px solid var(--c-line);
+  box-shadow: var(--gloss-top), var(--shadow-card);
+}
+.lp-status.is-locked {
+  background: var(--c-surface-2);
+  box-shadow: none;
+}
+.lp-status__text {
+  min-width: 0;
+}
+.lp-status__headline {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: var(--fs-lg);
+  line-height: var(--lh-tight);
+}
+.lp-status__sub {
+  margin: 4px 0 0;
+  font-size: var(--fs-sm);
+  color: var(--c-ink-2);
+  line-height: 1.45;
+}
+
+.lp-stairs {
+  flex: none;
+  margin: 0;
+  display: grid;
+  justify-items: end;
+  gap: 2px;
+}
+.lp-stairs svg {
+  display: block;
+  overflow: visible;
+}
+.lp-stairs__step {
+  stroke-width: 1.5;
+}
+.lp-stairs__step.is-done {
+  fill: color-mix(in srgb, var(--c-gold) 62%, var(--c-surface));
+  stroke: color-mix(in srgb, var(--c-gold) 85%, var(--c-ink) 8%);
+}
+.lp-stairs__step.is-current {
+  fill: color-mix(in srgb, var(--c-primary) 16%, var(--c-surface));
+  stroke: color-mix(in srgb, var(--c-primary) 55%, transparent);
+}
+.lp-stairs__step.is-future {
+  fill: var(--c-surface-2);
+  stroke: var(--c-line-strong);
+  stroke-dasharray: 4 3;
+}
+.lp-stairs__fill {
+  fill: var(--c-primary);
+  opacity: 0.9;
+}
+.lp-stairs__mark {
+  font-family: var(--font-ui);
+  font-size: 11px;
+  font-weight: 700;
+  fill: var(--c-ink-2);
+}
+.lp-stairs__mark.is-goal {
+  fill: var(--c-red-ink);
+}
+.lp-stairs__flag line {
+  stroke: var(--c-ink-2);
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+.lp-stairs__flag path {
+  fill: var(--c-red);
+}
+.lp-stairs__marker path {
+  fill: var(--c-navy);
+  stroke: var(--c-surface);
+  stroke-width: 1.5;
+}
+.lp-stairs__marker .lp-stairs__marker-dot {
+  fill: var(--c-surface);
+}
+.lp-stairs__legend {
+  display: flex;
+  gap: 12px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--c-ink-2);
+  white-space: nowrap;
+}
+.lp-stairs__here,
+.lp-stairs__goal-text {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+.lp-stairs__here {
+  color: var(--c-navy);
+}
+.lp-stairs__goal-text {
+  color: var(--c-red-ink);
+}
+.lp-stairs__pin,
+.lp-stairs__flag-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50% 50% 50% 0;
+  transform: rotate(-45deg);
+  background: var(--c-navy);
+}
+.lp-stairs__flag-dot {
+  border-radius: 1px;
+  transform: none;
+  clip-path: polygon(0 0, 100% 50%, 0 100%);
+  background: var(--c-red);
+}
+
+/* các bước của mốc kế tiếp (bài trong trạm đang học) */
+.lp-milestone {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 10px;
+}
+.lp-milestone__seg {
+  width: 30px;
+  height: 8px;
+  border-radius: var(--r-pill);
+  background: var(--c-surface-3);
+}
+.lp-milestone__seg.is-done {
+  background: var(--grad-gold);
+}
+.lp-milestone__seg.is-next {
+  background: var(--grad-primary);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--c-primary) 20%, transparent);
+}
+.lp-milestone__flag {
+  margin-left: 4px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--c-ink-2);
+}
+
+/* ---------- 2. ĐƯỜNG TUẦN TRA ---------- */
+.lp-path {
+  position: relative;
+  margin-top: var(--s-6);
+}
+.lp-empty {
+  padding: var(--s-6);
+  text-align: center;
+  color: var(--c-ink-2);
+}
+.lp-station {
+  position: relative;
+}
+
+/* dải đường thẳng chạy sau biển trạm / dòng trạm gọn / cổng cuối — nối các đoạn SVG */
+.lp-sign::before,
+.lp-station--compact::before,
+.lp-gate-wrap::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: var(--road-width);
+  transform: translateX(-50%);
+  background:
+    linear-gradient(to bottom, var(--lane) 50%, transparent 50%) center top / 3px 24px repeat-y,
+    var(--road);
+  box-shadow:
+    -4px 0 0 var(--road-edge),
+    4px 0 0 var(--road-edge);
+  z-index: 0;
+}
+.lp-station.is-complete .lp-sign::before,
+.lp-station--compact::before {
+  background:
+    linear-gradient(to bottom, var(--lane-traveled) 50%, transparent 50%) center top / 4px 24px repeat-y,
+    var(--road-traveled);
+}
+.lp-gate-wrap::before {
+  bottom: auto;
+  height: 40px;
+}
+
+.lp-route {
+  position: relative;
+}
+.lp-route__road {
+  position: absolute;
+  inset: 0 auto auto 0;
+  overflow: visible;
+  pointer-events: none;
+}
+.lp-route__road path {
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.lp-road__edge {
+  stroke: var(--road-edge);
+  stroke-width: 52;
+}
+.lp-road__surface {
+  stroke: var(--road);
+  stroke-width: 44;
+}
+.lp-road__traveled {
+  stroke: var(--road-traveled);
+  stroke-width: 44;
+}
+.lp-road__lane {
+  stroke: var(--lane);
+  stroke-width: 3;
+  stroke-dasharray: 12 12;
+}
+.lp-road__lane--traveled {
+  stroke: var(--lane-traveled);
+  stroke-width: 4;
+}
+.lp-route__decor {
+  position: absolute;
+  opacity: 0.6;
+  pointer-events: none;
+  user-select: none;
+  filter: saturate(0.92);
+}
+
+/* ---------- 3. BIỂN TRẠM ---------- */
+.lp-sign {
+  position: relative;
+  padding: 26px 0 18px;
+}
+.lp-sign__board {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--s-4);
+  padding: 18px 18px 18px 18px;
+  border-radius: var(--r-lg);
+  border: 1.5px solid color-mix(in srgb, var(--station) 30%, var(--c-line));
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--station) 13%, var(--c-surface)) 0%, var(--c-surface) 58%);
+  box-shadow:
+    inset 0 5px 0 var(--station),
+    var(--gloss-top),
+    var(--shadow-card);
+}
+.lp-sign.is-current .lp-sign__board {
+  border-color: color-mix(in srgb, var(--station) 55%, var(--c-line));
+  box-shadow:
+    inset 0 5px 0 var(--station),
+    var(--gloss-top),
+    0 0 0 4px color-mix(in srgb, var(--station) 12%, transparent),
+    var(--shadow-raised);
+}
+.lp-sign__icon {
+  display: grid;
+  place-items: center;
+  width: 76px;
+  height: 76px;
+  border-radius: 24px;
+  background:
+    radial-gradient(100% 100% at 30% 20%, rgba(255, 255, 255, calc(var(--gloss-strength) * 0.9)), transparent 60%),
+    color-mix(in srgb, var(--station) 22%, var(--c-surface));
+  box-shadow: inset 0 0 0 1.5px color-mix(in srgb, var(--station) 30%, transparent);
+}
+.lp-sign__text {
+  min-width: 0;
+}
+.lp-sign__eyebrow {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  color: color-mix(in srgb, var(--station) 55%, var(--c-ink));
+}
+.lp-sign__number {
+  padding: 1px 9px;
+  border-radius: var(--r-pill);
+  background: var(--station);
+  color: #fff;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.25);
+}
+.lp-sign__here {
+  padding: 1px 9px;
+  border-radius: var(--r-pill);
+  background: var(--c-primary-soft);
+  color: var(--c-primary-ink);
+}
+.lp-sign__title {
+  margin: 4px 0 2px;
+  font-size: var(--fs-xl);
+  line-height: var(--lh-tight);
+}
+.lp-sign__cando {
+  margin: 0;
+  font-size: var(--fs-sm);
+  line-height: 1.5;
+  color: var(--c-ink-2);
+}
+.lp-sign__progress {
+  display: grid;
+  justify-items: center;
+  gap: 6px;
+}
+.ds-ring__center .lp-sign__count {
+  display: inline-flex;
+  font-size: 15px;
+  color: var(--c-ink);
+}
+.lp-sign.is-complete .ds-ring__center .lp-sign__count {
+  color: var(--c-gold-ink);
+}
+.lp-sign__collapse {
+  border: 0;
+  background: none;
+  padding: 2px 6px;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--c-navy);
+  cursor: pointer;
+}
+
+/* trạm đã xong — 1 dòng gọn */
+.lp-station--compact {
+  padding: 8px 0;
+}
+.lp-compact {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  width: 100%;
+  padding: 10px 16px 10px 12px;
+  border: 1px solid var(--c-line);
+  border-radius: 18px;
+  background: color-mix(in srgb, var(--c-surface) 92%, transparent);
+  color: var(--c-ink);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  box-shadow: var(--gloss-top), 0 6px 16px -12px rgba(var(--shadow-rgb), 0.3);
+  transition: transform var(--dur-micro) var(--ease-out);
+}
+.lp-compact:hover {
+  transform: translateY(-1px);
+}
+.lp-compact:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+.lp-compact__check {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  flex: none;
+  border-radius: 50%;
+  background: var(--grad-gold);
+  color: #5a3a00;
+}
+.lp-compact__icons {
+  display: flex;
+  flex: none;
+}
+.lp-compact__icons > * + * {
+  margin-left: -6px;
+}
+.lp-compact--group {
+  background: linear-gradient(90deg, var(--c-gold-soft), color-mix(in srgb, var(--c-surface) 92%, transparent) 60%);
+}
+.lp-compact__text {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  flex: 1;
+  min-width: 0;
+}
+.lp-compact__number {
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  color: var(--c-ink-2);
+  white-space: nowrap;
+}
+.lp-compact__title {
+  font-weight: 650;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.lp-compact__count {
+  font-family: var(--font-display);
+  font-weight: 800;
+  color: var(--c-gold-ink);
+}
+.lp-compact__more {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  color: var(--c-navy);
+  white-space: nowrap;
+}
+
+/* ---------- 4. NÚT BÀI (KHIÊN) ---------- */
+.lp-node {
+  position: absolute;
+  z-index: 2;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  border-radius: 40%;
+  transition: transform var(--dur-micro) var(--ease-spring);
+  -webkit-tap-highlight-color: transparent;
+}
+.lp-node:hover {
+  transform: translateY(-2px) scale(1.04);
+}
+.lp-node:active {
+  transform: scale(0.96);
+  transition-duration: var(--dur-press);
+}
+.lp-node:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--c-navy) 55%, transparent);
+  outline-offset: 4px;
+}
+.lp-node.is-open {
+  transform: translateY(-2px) scale(1.04);
+}
+/* vầng sáng "thở" sau bài Học tiếp */
+.lp-node.is-next::before {
+  content: '';
+  position: absolute;
+  inset: -18px;
+  border-radius: 50%;
+  background: radial-gradient(circle, color-mix(in srgb, var(--c-primary) 34%, transparent) 0%, transparent 68%);
+  animation: lp-halo 2.6s var(--ease-in-out) infinite;
+  pointer-events: none;
+}
+@keyframes lp-halo {
+  0%,
+  100% {
+    transform: scale(0.88);
+    opacity: 0.75;
+  }
+  50% {
+    transform: scale(1.08);
+    opacity: 1;
+  }
+}
+
+.lp-shield {
+  position: relative;
+  display: block;
+}
+.lp-shield__svg {
+  display: block;
+  overflow: visible;
+}
+.lp-shield__floor {
+  fill: rgba(var(--shadow-rgb), 0.16);
+}
+.lp-shield__body {
+  stroke-width: 2.5;
+  stroke-linejoin: round;
+}
+.lp-shield__inner {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.6);
+  stroke-width: 2.5;
+}
+.lp-shield__gloss {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.7);
+  stroke-width: 4;
+  stroke-linecap: round;
+}
+.lp-shield__icon {
+  position: absolute;
+  inset: 0 0 8% 0;
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+}
+.lp-shield__img {
+  display: block;
+  filter: drop-shadow(0 2px 2px rgba(var(--shadow-rgb), 0.18));
+}
+.lp-shield__emoji {
+  line-height: 1;
+}
+.lp-shield__badge {
+  position: absolute;
+  right: -3px;
+  bottom: 6%;
+  display: grid;
+  place-items: center;
+  width: 28%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  border: 2.5px solid var(--c-surface);
+  box-shadow: 0 2px 6px rgba(var(--shadow-rgb), 0.2);
+}
+.lp-shield__badge--done {
+  background: var(--grad-success);
+  color: #fff;
+}
+.lp-shield__badge--locked {
+  background: var(--c-surface-2);
+  color: var(--c-ink-2);
+}
+
+/* màu khiên theo trạng thái (stop-color của gradient trong SVG) */
+.lp-shield.is-done .lp-shield__stop-top {
+  stop-color: color-mix(in srgb, var(--c-gold) 55%, #fff);
+}
+.lp-shield.is-done .lp-shield__stop-bottom {
+  stop-color: color-mix(in srgb, var(--c-gold) 88%, #c77800);
+}
+.lp-shield.is-done .lp-shield__body {
+  stroke: color-mix(in srgb, var(--c-gold) 70%, #a35f00);
+}
+.lp-shield.is-next .lp-shield__stop-top {
+  stop-color: color-mix(in srgb, var(--c-primary) 72%, #fff);
+}
+.lp-shield.is-next .lp-shield__stop-bottom {
+  stop-color: var(--c-primary-deep);
+}
+.lp-shield.is-next .lp-shield__body {
+  stroke: color-mix(in srgb, var(--c-primary-deep) 80%, #7a3300);
+}
+.lp-shield.is-next .lp-shield__svg {
+  animation: lp-shield-glow 2.6s var(--ease-in-out) infinite;
+}
+@keyframes lp-shield-glow {
+  0%,
+  100% {
+    filter: drop-shadow(0 4px 6px color-mix(in srgb, var(--c-primary-deep) 30%, transparent));
+  }
+  50% {
+    filter: drop-shadow(0 0 16px color-mix(in srgb, var(--c-primary) 70%, transparent));
+  }
+}
+.lp-shield.is-open .lp-shield__stop-top {
+  stop-color: var(--c-surface);
+}
+.lp-shield.is-open .lp-shield__stop-bottom {
+  stop-color: color-mix(in srgb, var(--skill-color) 14%, var(--c-surface));
+}
+.lp-shield.is-open .lp-shield__body {
+  stroke: var(--skill-color);
+  stroke-width: 4;
+}
+.lp-shield.is-open .lp-shield__inner {
+  stroke: color-mix(in srgb, var(--skill-color) 22%, transparent);
+}
+.lp-shield.is-open .lp-shield__gloss {
+  stroke: rgba(255, 255, 255, 0.85);
+  opacity: 0.6;
+}
+.lp-shield.is-locked .lp-shield__stop-top {
+  stop-color: var(--c-surface-2);
+}
+.lp-shield.is-locked .lp-shield__stop-bottom {
+  stop-color: var(--c-surface-3);
+}
+.lp-shield.is-locked .lp-shield__body {
+  stroke: var(--c-line-strong);
+}
+.lp-shield.is-locked .lp-shield__inner {
+  stroke: rgba(255, 255, 255, 0.35);
+}
+.lp-shield.is-locked .lp-shield__gloss {
+  opacity: 0.4;
+}
+.lp-shield.is-locked .lp-shield__icon {
+  filter: grayscale(1);
+  opacity: 0.5;
+}
+
+/* nhãn cạnh nút */
+.lp-node-label {
+  position: absolute;
+  z-index: 1;
+  width: 186px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+.lp-node-label.side-left {
+  align-items: flex-end;
+  text-align: right;
+}
+.lp-node-label__eyebrow {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--c-primary-ink);
+}
+.lp-node-label__title {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  font-size: var(--fs-sm);
+  font-weight: 650;
+  line-height: 1.3;
+  color: var(--c-ink);
+}
+.lp-node-label__meta {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12.5px;
+  color: var(--c-ink-2);
+}
+.lp-node-label__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--skill-color);
+  flex: none;
+}
+.lp-node-label.is-done .lp-node-label__title {
+  color: var(--c-ink-2);
+  font-weight: 600;
+}
+.lp-node-label.is-locked {
+  opacity: 0.72;
+}
+.lp-node-label.is-next .lp-node-label__title {
+  font-family: var(--font-display);
+  font-size: var(--fs-lg);
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+/* mascot dẫn đường cạnh bài Học tiếp: [bong bóng][mascot] (nút) [nhãn] — đứng ngang hàng với nút,
+   nên không đè lên nút phía trên / phía dưới */
+.lp-guide {
+  position: absolute;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transform: translate(-50%, -54%);
+  pointer-events: none;
+}
+.lp-guide[data-side='-1'] {
+  flex-direction: row-reverse;
+}
+.lp-guide__mascot {
+  flex: none;
+  pointer-events: none;
+}
+.lp-guide__bubble {
+  position: relative;
+  padding: 8px 16px 9px;
+  border: 0;
+  border-radius: var(--r-pill);
+  background: var(--grad-primary);
+  color: var(--c-on-primary);
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 16px;
+  line-height: 1.1;
+  white-space: nowrap;
+  cursor: pointer;
+  pointer-events: auto;
+  box-shadow:
+    var(--gloss-top),
+    0 10px 20px -10px color-mix(in srgb, var(--c-primary-deep) 80%, transparent);
+  animation: ds-float 3.2s var(--ease-in-out) infinite;
+}
+/* đuôi bong bóng chỉ về phía mascot */
+.lp-guide__bubble::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  right: -5px;
+  width: 12px;
+  height: 12px;
+  transform: translateY(-50%) rotate(45deg);
+  border-radius: 2px;
+  background: var(--c-primary-deep);
+  z-index: -1;
+}
+.lp-guide[data-side='-1'] .lp-guide__bubble::after {
+  right: auto;
+  left: -5px;
+}
+.lp-guide__bubble:hover {
+  filter: brightness(1.04);
+}
+.lp-guide__bubble:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
+/* khung xem trước bài */
+.lp-popover {
+  position: absolute;
+  z-index: 10;
+  padding: 16px;
+  border-radius: 22px;
+  border: 1px solid var(--c-line);
+  background: var(--c-surface);
+  box-shadow: var(--gloss-top), var(--shadow-pop);
+  animation: ds-rise-in var(--dur-panel) var(--ease-out) both;
+}
+.lp-popover::before {
+  content: '';
+  position: absolute;
+  top: -8px;
+  left: calc(var(--arrow-x) - 8px);
+  width: 16px;
+  height: 16px;
+  transform: rotate(45deg);
+  border-radius: 3px;
+  background: var(--c-surface);
+  border-left: 1px solid var(--c-line);
+  border-top: 1px solid var(--c-line);
+}
+.lp-popover__head {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+.lp-popover__icon {
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  flex: none;
+  border-radius: 16px;
+  background: color-mix(in srgb, var(--skill-color) 14%, var(--c-surface));
+}
+.lp-popover__titles {
+  min-width: 0;
+}
+.lp-popover__eyebrow {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--c-ink-2);
+}
+.lp-popover__title {
+  margin: 2px 0 0;
+  font-size: var(--fs-lg);
+  line-height: 1.25;
+}
+.lp-popover__subtitle {
+  font-size: 13px;
+  color: var(--c-ink-2);
+}
+.lp-popover__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 12px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.lp-popover__chip {
+  padding: 2px 10px;
+  border-radius: var(--r-pill);
+  background: var(--c-surface-2);
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--c-ink-2);
+}
+.lp-popover__chip--skill {
+  background: color-mix(in srgb, var(--skill-color) 16%, var(--c-surface));
+  color: var(--c-ink);
+}
+.lp-popover__status {
+  margin: 10px 0 12px;
+  font-size: 13.5px;
+  line-height: 1.45;
+  color: var(--c-ink-2);
+}
+.lp-popover.is-next .lp-popover__status {
+  color: var(--c-primary-ink);
+  font-weight: 600;
+}
+.lp-popover__actions {
+  display: flex;
+  gap: 8px;
+}
+
+/* ---------- 5. CỔNG BÀI KIỂM TRA LEVEL + LEVEL SAU ---------- */
+.lp-gate-wrap {
+  position: relative;
+  display: grid;
+  gap: var(--s-3);
+  padding: 34px 0 var(--s-6);
+}
+.lp-gate {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: var(--s-4);
+  padding: 16px 20px 16px 16px;
+  border-radius: var(--r-lg);
+  border: 2px dashed var(--c-line-strong);
+  background: var(--c-surface);
+}
+.lp-gate.is-ready {
+  border: 2px solid color-mix(in srgb, var(--c-gold) 75%, transparent);
+  background: linear-gradient(135deg, var(--c-gold-soft), var(--c-surface) 70%);
+  box-shadow: var(--gloss-top), 0 0 0 4px color-mix(in srgb, var(--c-gold) 18%, transparent), var(--shadow-card);
+}
+.lp-gate.is-passed {
+  border: 2px solid color-mix(in srgb, var(--c-gold) 55%, transparent);
+  background: var(--c-gold-soft);
+}
+.lp-gate__trophy {
+  display: grid;
+  place-items: center;
+  width: 76px;
+  height: 76px;
+  flex: none;
+  border-radius: 24px;
+  background: var(--c-gold-soft);
+}
+.lp-gate.is-locked .lp-gate__trophy {
+  background: var(--c-surface-2);
+  filter: grayscale(0.7);
+  opacity: 0.75;
+}
+.lp-gate__text {
+  flex: 1;
+  min-width: 0;
+}
+.lp-gate__title {
+  margin: 0;
+  font-size: var(--fs-lg);
+  line-height: var(--lh-tight);
+}
+.lp-gate__hint {
+  margin: 4px 0 0;
+  font-size: var(--fs-sm);
+  color: var(--c-ink-2);
+}
+.lp-next-level {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  width: 100%;
+  padding: 12px 18px 12px 12px;
+  border: 1px solid var(--c-line);
+  border-radius: 20px;
+  background: var(--c-surface-2);
+  color: var(--c-ink);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.lp-next-level:hover {
+  background: var(--c-surface-3);
+}
+.lp-next-level:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+.lp-next-level__text {
+  display: grid;
+  flex: 1;
+  min-width: 0;
+}
+.lp-next-level__title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: var(--fs-md);
+}
+.lp-next-level__band {
+  font-size: var(--fs-xs);
+  color: var(--c-ink-2);
+}
+.lp-next-level__cta {
+  font-size: var(--fs-sm);
+  font-weight: 700;
+  color: var(--c-navy);
+  white-space: nowrap;
+}
+
+/* ---------- 6. NÚT "HỌC TIẾP" NỔI ---------- */
+.lp-float {
+  position: sticky;
+  bottom: 22px;
+  /* chừa chỗ ở cuối trang để nút nổi không đè lên thẻ cuối cùng */
+  margin-top: 84px;
+  z-index: var(--z-sticky);
+  height: 0;
+  pointer-events: none;
+}
+.lp-float__bar {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  max-width: calc(100% - 16px);
+  transform: translate(-50%, 18px);
+  opacity: 0;
+  transition:
+    opacity var(--dur-panel) var(--ease-out),
+    transform var(--dur-panel) var(--ease-out);
+}
+.lp-float.is-visible .lp-float__bar {
+  transform: translate(-50%, 0);
+  opacity: 1;
+  pointer-events: auto;
+}
+.lp-float__go {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  height: 56px;
+  padding: 0 12px 0 8px;
+  border: 0;
+  border-radius: var(--r-pill);
+  background: var(--grad-primary);
+  color: var(--c-on-primary);
+  font: inherit;
+  cursor: pointer;
+  box-shadow:
+    var(--gloss-top),
+    0 16px 30px -12px color-mix(in srgb, var(--c-primary-deep) 85%, transparent);
+  transition: transform var(--dur-micro) var(--ease-out);
+}
+.lp-float__go:hover {
+  transform: translateY(-1px);
+}
+.lp-float__go:active {
+  transform: scale(0.97);
+}
+.lp-float__go:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring), 0 16px 30px -12px color-mix(in srgb, var(--c-primary-deep) 85%, transparent);
+}
+.lp-float__icon {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  flex: none;
+  border-radius: 50%;
+  background: var(--c-on-primary);
+  color: var(--c-primary);
+}
+.lp-float__label {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 18px;
+  white-space: nowrap;
+}
+.lp-float__title {
+  max-width: 230px;
+  font-size: 14px;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  opacity: 0.85;
+}
+.lp-float__kbd {
+  flex: none;
+}
+.lp-float__jump {
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  flex: none;
+  border: 1px solid var(--c-line);
+  border-radius: 50%;
+  background: var(--c-surface);
+  color: var(--c-ink);
+  cursor: pointer;
+  box-shadow: var(--shadow-raised);
+}
+.lp-float__jump .is-up {
+  transform: rotate(180deg);
+}
+.lp-float__jump:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring), var(--shadow-raised);
+}
+
+/* ---------- 7. MÀN HẸP + GIẢM CHUYỂN ĐỘNG ---------- */
+@media (max-width: 860px) {
+  .lp-levels {
+    grid-template-columns: 1fr;
+  }
+  .lp-status {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .lp-node-label {
+    width: 140px;
+  }
+  .lp-float__title {
+    display: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .lp-node.is-next::before,
+  .lp-shield.is-next .lp-shield__svg,
+  .lp-guide__bubble,
+  .lp-popover {
+    animation: none;
+  }
+  .lp-shield.is-next .lp-shield__svg {
+    filter: drop-shadow(0 0 10px color-mix(in srgb, var(--c-primary) 55%, transparent));
+  }
+  .lp-node,
+  .lp-float__bar {
+    transition: none;
+  }
+}

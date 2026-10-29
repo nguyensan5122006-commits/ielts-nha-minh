@@ -1,0 +1,315 @@
+/* =============================================================================
+ * Mascot.css — vị trí đặt mascot + bong bóng thoại + "cún tạm" vẽ bằng CSS
+ * ========================================================================== */
+
+.ds-mascot {
+  --mascot-size: 160px;
+  --mascot-peek: 0.62; /* peek-top: phần lộ ra trên mép */
+  --mascot-overlap: 6px; /* peek-top: "chân" đè lên mép khung vài px như đang bám vào */
+  --mascot-delay: 350ms;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-3);
+  vertical-align: middle;
+}
+.ds-mascot__frame {
+  position: relative;
+  flex: none;
+  width: var(--mascot-size);
+  height: var(--mascot-size);
+}
+.ds-mascot__body {
+  width: var(--mascot-size);
+  height: var(--mascot-size);
+}
+.ds-mascot__img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  user-select: none;
+  /* bóng đổ mềm theo đường viền hình (ảnh nền trong suốt) */
+  filter: drop-shadow(0 10px 14px rgba(var(--shadow-rgb), 0.18));
+}
+
+/* ---------- VỊ TRÍ ĐẶT ---------- */
+
+/* Ló đầu trên mép khung: khung cha cần position: relative */
+.ds-mascot--peek-top {
+  position: absolute;
+  bottom: calc(100% - var(--mascot-overlap));
+  left: var(--mascot-x, 28px);
+  z-index: 2;
+  align-items: flex-end;
+  pointer-events: none;
+}
+.ds-mascot--peek-top .ds-mascot__frame {
+  height: calc(var(--mascot-size) * var(--mascot-peek));
+  /* chỉ cắt ở MÉP DƯỚI: phần thân "nấp" sau mép khung, còn tai/mũ phía trên không bị cắt */
+  clip-path: inset(-60% -60% 0 -60%);
+}
+/* "cún tạm" chỉ có cái đầu -> đẩy lên một chút để lộ mắt + mõm trên mép khung */
+.ds-mascot--peek-top.is-placeholder .ds-mascot__placeholder,
+.ds-mascot--peek-top.is-head .ds-mascot__img {
+  transform: translateY(-16%);
+}
+.ds-mascot--peek-top .ds-mascot__body {
+  animation: ds-peek-in 560ms var(--ease-spring) var(--mascot-delay) both;
+}
+.ds-mascot--peek-top .ds-mascot__img {
+  filter: none;
+}
+
+/* Góc phải-dưới của thẻ, cao hơn thẻ thì tràn ra khỏi mép trên (thẻ CTA "Học tiếp") */
+.ds-mascot--corner {
+  position: absolute;
+  right: var(--mascot-x, 12px);
+  bottom: 0;
+  z-index: 1;
+  align-items: flex-start;
+  pointer-events: none;
+}
+.ds-mascot--corner .ds-mascot__body {
+  animation: ds-rise-in 420ms var(--ease-out) both;
+}
+
+/* Hero: to, ở giữa, có quầng sáng phía sau và bóng dưới chân, lơ lửng nhẹ */
+.ds-mascot--hero {
+  display: flex;
+  justify-content: center;
+}
+.ds-mascot--hero .ds-mascot__frame::before {
+  /* quầng sáng ấm sau lưng */
+  content: '';
+  position: absolute;
+  inset: 8%;
+  border-radius: 50%;
+  background: radial-gradient(circle, color-mix(in srgb, var(--c-primary) 22%, transparent) 0%, transparent 68%);
+  z-index: -1;
+}
+.ds-mascot--hero .ds-mascot__frame::after {
+  /* bóng dưới chân */
+  content: '';
+  position: absolute;
+  left: 24%;
+  right: 24%;
+  bottom: -2%;
+  height: 7%;
+  border-radius: 50%;
+  background: radial-gradient(ellipse, rgba(var(--shadow-rgb), 0.22), transparent 70%);
+  z-index: -1;
+}
+.ds-mascot--hero .ds-mascot__body {
+  animation: ds-float 3.6s var(--ease-in-out) infinite;
+}
+
+/* ---------- BONG BÓNG THOẠI ---------- */
+.ds-mascot__bubble {
+  position: relative;
+  max-width: 260px;
+  width: max-content;
+  padding: 10px 14px;
+  border-radius: 18px;
+  background: var(--c-surface);
+  color: var(--c-ink);
+  border: 1px solid var(--c-line);
+  box-shadow: var(--gloss-top), var(--shadow-raised);
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  line-height: 1.4;
+  text-align: left;
+  animation: ds-pop 320ms var(--ease-spring) calc(var(--mascot-delay) + 180ms) both;
+}
+/* đuôi bong bóng: hình vuông nhỏ xoay 45° */
+.ds-mascot__bubble::before {
+  content: '';
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  background: inherit;
+  border: inherit;
+  border-top: none;
+  border-right: none;
+}
+.ds-mascot__bubble--right::before {
+  left: -7px;
+  top: 50%;
+  margin-top: -6px;
+  transform: rotate(45deg);
+}
+.ds-mascot__bubble--left::before {
+  right: -7px;
+  top: 50%;
+  margin-top: -6px;
+  transform: rotate(-135deg);
+}
+.ds-mascot__bubble--top::before {
+  left: 50%;
+  bottom: -7px;
+  margin-left: -6px;
+  transform: rotate(-45deg);
+}
+/* bong bóng bên trái / trên: đảo thứ tự hiển thị */
+.ds-mascot.has-speech--left {
+  flex-direction: row-reverse;
+}
+.ds-mascot.has-speech--top {
+  flex-direction: column-reverse;
+}
+/* peek-top / corner: bong bóng nổi, không chiếm chỗ */
+.ds-mascot--peek-top .ds-mascot__bubble,
+.ds-mascot--corner .ds-mascot__bubble {
+  position: absolute;
+  top: 8%;
+}
+.ds-mascot--peek-top .ds-mascot__bubble--right,
+.ds-mascot--corner .ds-mascot__bubble--right {
+  left: calc(100% + 8px);
+}
+.ds-mascot--peek-top .ds-mascot__bubble--left,
+.ds-mascot--corner .ds-mascot__bubble--left {
+  right: calc(100% + 8px);
+}
+.ds-mascot--hero .ds-mascot__bubble {
+  font-size: var(--fs-md);
+  padding: 12px 18px;
+  max-width: 300px;
+}
+
+/* ---------- "CÚN TẠM" khi chưa có ảnh: đầu Corgi vinyl vẽ bằng CSS ----------
+ * Đơn vị em: 1em = 1/10 cỡ khung -> phóng to/thu nhỏ đều theo --mascot-size */
+.ds-mascot__placeholder {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+  font-size: calc(var(--mascot-size) / 10);
+  --fur-light: #ffd3a1;
+  --fur: #ff9a3d;
+  --fur-deep: #e2680c;
+  --cream: #fff4e4;
+  --ink-fixed: #1e2347;
+  filter: drop-shadow(0 0.5em 0.6em rgba(var(--shadow-rgb), 0.2));
+}
+.ds-mascot__ear {
+  position: absolute;
+  top: 6%;
+  width: 26%;
+  height: 34%;
+  border-radius: 50% 50% 40% 40% / 75% 75% 25% 25%;
+  background: linear-gradient(180deg, var(--fur) 0%, var(--fur-deep) 100%);
+}
+.ds-mascot__ear::after {
+  /* lòng tai màu kem */
+  content: '';
+  position: absolute;
+  inset: 22% 26% 18%;
+  border-radius: inherit;
+  background: linear-gradient(180deg, #ffe1c4, #ffc79a);
+}
+.ds-mascot__ear--left {
+  left: 13%;
+  transform: rotate(-22deg);
+}
+.ds-mascot__ear--right {
+  right: 13%;
+  transform: rotate(22deg);
+}
+.ds-mascot__head {
+  position: absolute;
+  left: 14%;
+  right: 14%;
+  top: 22%;
+  bottom: 6%;
+  border-radius: 50% 50% 46% 46% / 52% 52% 48% 48%;
+  /* bóng satin vinyl: đốm sáng phía trên-trái, tối dần xuống dưới */
+  background:
+    radial-gradient(circle at 32% 24%, rgba(255, 255, 255, 0.75) 0 6%, transparent 18%),
+    radial-gradient(circle at 40% 30%, var(--fur-light) 0%, var(--fur) 42%, var(--fur-deep) 100%);
+  box-shadow: inset 0 -0.35em 0.7em rgba(160, 60, 0, 0.25);
+}
+.ds-mascot__eye {
+  position: absolute;
+  top: 40%;
+  width: 0.72em;
+  height: 0.86em;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #fff 0 16%, var(--ink-fixed) 22%);
+}
+.ds-mascot__eye--left {
+  left: 27%;
+}
+.ds-mascot__eye--right {
+  right: 27%;
+}
+.ds-mascot__muzzle {
+  position: absolute;
+  left: 25%;
+  right: 25%;
+  bottom: 9%;
+  height: 34%;
+  border-radius: 50%;
+  background: radial-gradient(circle at 45% 30%, #fff 0%, var(--cream) 60%, #f7dfc0 100%);
+}
+.ds-mascot__nose {
+  position: absolute;
+  left: 50%;
+  top: 14%;
+  width: 0.8em;
+  height: 0.56em;
+  margin-left: -0.4em;
+  border-radius: 45% 45% 60% 60%;
+  background: radial-gradient(circle at 40% 30%, #4a5280 0 12%, var(--ink-fixed) 40%);
+}
+/* "mũ" ô-liu nhỏ có chữ viết tắt tên mascot — gợi đồng phục */
+.ds-mascot__initials {
+  position: absolute;
+  left: 50%;
+  top: -0.55em;
+  transform: translateX(-50%);
+  min-width: 2.6em;
+  padding: 0.12em 0.5em 0;
+  border-radius: 0.9em 0.9em 0.35em 0.35em;
+  background: linear-gradient(180deg, #93a560, #6c7c40);
+  color: #ffd677;
+  font-family: var(--font-display);
+  font-size: 1.05em;
+  font-weight: 800;
+  line-height: 1.25;
+  text-align: center;
+  box-shadow: inset 0 0.08em 0 rgba(255, 255, 255, 0.35), 0 0.12em 0.25em rgba(30, 35, 71, 0.25);
+}
+.ds-mascot__pose-hint {
+  position: absolute;
+  right: 0;
+  bottom: 2%;
+  display: grid;
+  place-items: center;
+  width: 2.5em;
+  height: 2.5em;
+  border-radius: 50%;
+  background: var(--c-surface);
+  font-size: 1.15em;
+  line-height: 1;
+  box-shadow: 0 0.15em 0.4em rgba(var(--shadow-rgb), 0.25), inset 0 0 0 1px var(--c-line);
+}
+.ds-mascot.is-small .ds-mascot__pose-hint,
+.ds-mascot--peek-top .ds-mascot__pose-hint {
+  display: none;
+}
+.ds-mascot.is-small .ds-mascot__initials {
+  display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ds-mascot__body,
+  .ds-mascot__bubble {
+    animation: none !important;
+  }
+}
+
+/* Chỉ đầu (logo): không hiện gợi ý pose */
+.ds-mascot.is-head-only .ds-mascot__pose-hint {
+  display: none;
+}

@@ -1,0 +1,1364 @@
+/* =============================================================================
+ * SpeakingTaskPlayer.css — trình Speaking: cột chính | cột phụ (cụm từ, âm cần chú ý),
+ * máy ghi âm đủ trạng thái, cue card "giấy kem", luyện âm 3 màu, bài mẫu Q/A.
+ * Màu nhấn: ngọc --skill-speaking. Thanh trên của trình học cao 72px.
+ * ========================================================================== */
+.speaking-task {
+  --task-accent: var(--skill-speaking);
+  --task-sticky-top: 88px;
+  --task-actions-h: 84px;
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 0 var(--s-7) calc(var(--task-actions-h) + var(--s-6));
+}
+
+/* ---------- đầu trang ---------- */
+.speaking-task__header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--s-4) var(--s-7);
+  flex-wrap: wrap;
+  margin-bottom: var(--s-6);
+  scroll-margin-top: var(--task-sticky-top);
+}
+.speaking-task__heading {
+  min-width: 0;
+  flex: 1 1 360px;
+}
+.speaking-task__eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font: 700 var(--fs-xs) / 1.4 var(--font-ui);
+  color: color-mix(in srgb, var(--task-accent) 60%, var(--c-ink));
+  margin-bottom: 4px;
+}
+.speaking-task__title {
+  margin: 0;
+  font-size: var(--fs-xl);
+  line-height: 1.25;
+}
+.speaking-task__stepper {
+  flex: 0 1 600px;
+}
+
+/* ---------- bố cục ---------- */
+.speaking-task__split {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 320px;
+  gap: var(--s-6);
+  align-items: start;
+}
+.speaking-task__split--wide-side {
+  grid-template-columns: minmax(320px, 5fr) minmax(0, 7fr);
+}
+.speaking-task__main {
+  min-width: 0;
+}
+.speaking-task__side {
+  position: sticky;
+  top: var(--task-sticky-top);
+  max-height: calc(100vh - var(--task-sticky-top) - var(--task-actions-h) - var(--s-4));
+  overflow: auto;
+  scrollbar-width: thin;
+  display: grid;
+  align-content: start;
+  gap: var(--s-4);
+}
+.speaking-task__sticky {
+  position: sticky;
+  top: var(--task-sticky-top);
+  max-height: calc(100vh - var(--task-sticky-top) - var(--task-actions-h) - var(--s-4));
+  overflow: auto;
+}
+.speaking-task__single {
+  max-width: 880px;
+  margin: 0 auto;
+}
+.speaking-task__panel {
+  background: var(--c-surface);
+  border: 1px solid var(--c-line);
+  border-radius: var(--r-xl);
+  padding: var(--s-5) var(--s-6);
+  box-shadow: var(--shadow-card);
+  min-width: 0;
+}
+.speaking-task__panel--soft {
+  padding: var(--s-4) var(--s-5);
+  box-shadow: none;
+}
+.speaking-task__panel--mine {
+  background: color-mix(in srgb, var(--task-accent) 5%, var(--c-surface));
+}
+.speaking-task__panel-title {
+  margin: 0 0 var(--s-4);
+  font-size: var(--fs-lg);
+}
+.speaking-task__section-title {
+  margin: 0 0 4px;
+  font-size: var(--fs-xl);
+}
+.speaking-task__lead {
+  margin: 0 0 var(--s-5);
+  color: var(--c-ink-2);
+  font-size: var(--fs-sm);
+  max-width: 62ch;
+}
+.speaking-task__side-title {
+  margin: 0 0 2px;
+  font: 700 var(--fs-sm) / 1.4 var(--font-ui);
+}
+.speaking-task__side-hint {
+  margin: 0 0 var(--s-3);
+  font-size: var(--fs-xs);
+  color: var(--c-ink-2);
+}
+.speaking-task__phrases {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-2);
+}
+.speaking-task__phrases {
+  display: grid;
+  gap: 6px;
+}
+.speaking-task__phrase {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--s-2);
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid var(--c-line);
+  border-radius: var(--r-md);
+  background: var(--c-surface);
+  color: var(--c-ink);
+  font: 500 var(--fs-sm) / 1.4 var(--font-ui);
+  text-align: left;
+  cursor: pointer;
+  transition: background var(--dur-micro), border-color var(--dur-micro);
+}
+.speaking-task__phrase .ds-icon {
+  margin-top: 3px;
+  color: color-mix(in srgb, var(--task-accent) 70%, var(--c-ink));
+}
+.speaking-task__phrase:hover {
+  border-color: color-mix(in srgb, var(--task-accent) 45%, var(--c-line));
+  background: color-mix(in srgb, var(--task-accent) 7%, var(--c-surface));
+}
+.speaking-task__phrase:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+.speaking-task__privacy--main {
+  margin-top: var(--s-4);
+}
+.speaking-task__sounds {
+  margin: var(--s-2) 0 0;
+  padding-left: var(--s-5);
+  display: grid;
+  gap: 4px;
+  font-size: var(--fs-sm);
+}
+.speaking-task__privacy,
+.speaking-task__note {
+  display: flex;
+  gap: 6px;
+  align-items: flex-start;
+  margin: 0;
+  font-size: var(--fs-xs);
+  line-height: 1.5;
+  color: var(--c-ink-2);
+}
+.speaking-task__privacy .ds-icon {
+  margin-top: 2px;
+}
+.speaking-task__note {
+  margin-top: var(--s-3);
+}
+.speaking-task__notice {
+  margin: 0 0 var(--s-4);
+  padding: var(--s-3) var(--s-4);
+  border-radius: var(--r-md);
+  background: var(--c-gold-soft);
+  font-size: var(--fs-sm);
+}
+.speaking-task__notes {
+  margin-top: var(--s-5);
+  padding: var(--s-4) var(--s-5);
+  border-radius: var(--r-lg);
+  background: var(--c-surface-2);
+}
+.speaking-task__notes h4 {
+  margin: 0 0 var(--s-3);
+  font: 700 var(--fs-sm) / 1.4 var(--font-ui);
+}
+.speaking-task__review-panel {
+  margin-top: var(--s-5);
+}
+.speaking-task__ai .ai-status,
+.speaking-task__ai .ai-result {
+  margin-bottom: var(--s-4);
+}
+.speaking-task__prev .ds-icon {
+  transform: rotate(180deg);
+}
+
+/* ---------- thanh đáy ---------- */
+.speaking-task__actions {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: var(--z-sheet);
+  background: color-mix(in srgb, var(--c-bg) 90%, transparent);
+  backdrop-filter: blur(12px);
+  border-top: 1px solid var(--c-line);
+}
+.speaking-task__actions-inner {
+  max-width: 1240px;
+  min-height: var(--task-actions-h);
+  margin: 0 auto;
+  padding: var(--s-3) var(--s-7);
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+}
+.speaking-task__actions-note {
+  flex: 1;
+  min-width: 0;
+  font-size: var(--fs-sm);
+  color: var(--c-ink-2);
+  text-align: right;
+  padding-right: var(--s-2);
+}
+.speaking-task__warn {
+  color: var(--c-oops-ink);
+  font-weight: 600;
+}
+
+/* ---------- xin quyền micro ---------- */
+.mic-gate {
+  display: flex;
+  gap: var(--s-5);
+  align-items: center;
+  padding: var(--s-6);
+  border-radius: var(--r-xl);
+  background: color-mix(in srgb, var(--task-accent) 8%, var(--c-surface));
+  border: 1px solid color-mix(in srgb, var(--task-accent) 25%, var(--c-line));
+}
+.mic-gate--warn {
+  background: var(--c-gold-soft);
+  border-color: color-mix(in srgb, var(--c-gold) 40%, var(--c-line));
+}
+.mic-gate--quiet {
+  justify-content: center;
+  gap: var(--s-2);
+  color: var(--c-ink-2);
+  font-size: var(--fs-sm);
+}
+.mic-gate__body {
+  display: grid;
+  gap: var(--s-2);
+}
+.mic-gate__title {
+  font: 700 var(--fs-xl) / 1.25 var(--font-display);
+}
+.mic-gate__text {
+  margin: 0;
+  max-width: 54ch;
+}
+.mic-gate__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-2);
+  margin-top: var(--s-2);
+}
+.mic-gate__privacy {
+  display: flex;
+  gap: 6px;
+  align-items: flex-start;
+  margin: var(--s-2) 0 0;
+  font-size: var(--fs-xs);
+  color: var(--c-ink-2);
+}
+
+/* ---------- máy ghi âm ---------- */
+.speaking-recorder {
+  display: grid;
+  gap: var(--s-3);
+  margin-top: var(--s-5);
+  padding: var(--s-5);
+  border-radius: var(--r-xl);
+  background: var(--c-surface);
+  border: 1px solid var(--c-line);
+  box-shadow: var(--shadow-card);
+  color: var(--task-accent); /* màu sóng âm canvas */
+  --wave-rest: color-mix(in srgb, var(--task-accent) 30%, var(--c-surface-2));
+}
+.speaking-recorder > * {
+  color: var(--c-ink);
+}
+.speaking-recorder.is-ready {
+  grid-template-columns: 1fr auto;
+  align-items: center;
+}
+.speaking-recorder.is-recording {
+  border-color: color-mix(in srgb, var(--c-red) 35%, var(--c-line));
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--c-red) 10%, transparent), var(--shadow-card);
+}
+.speaking-recorder.is-processing {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s-3);
+  min-height: 120px;
+  color: var(--c-ink-2);
+  font-size: var(--fs-sm);
+}
+.speaking-recorder.is-recorded {
+  grid-template-columns: 1fr auto;
+  align-items: center;
+}
+.speaking-recorder__record {
+  display: flex;
+  align-items: center;
+  gap: var(--s-4);
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--c-ink);
+  text-align: left;
+  cursor: pointer;
+  border-radius: var(--r-pill);
+}
+.speaking-recorder__record:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+.speaking-recorder__mic {
+  display: grid;
+  place-items: center;
+  width: 68px;
+  height: 68px;
+  border-radius: 50%;
+  flex: none;
+  color: #fff;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--task-accent) 75%, #fff) 0%, var(--task-accent) 55%, color-mix(in srgb, var(--task-accent) 80%, #000) 100%);
+  box-shadow: var(--gloss-top), 0 10px 22px -10px color-mix(in srgb, var(--task-accent) 70%, transparent);
+  transition: transform var(--dur-press) var(--ease-out), box-shadow var(--dur-micro);
+}
+.speaking-recorder__record:hover .speaking-recorder__mic {
+  transform: translateY(-1px) scale(1.03);
+}
+.speaking-recorder__record:active .speaking-recorder__mic {
+  transform: scale(0.96);
+}
+.speaking-recorder__record-text {
+  display: grid;
+  font: 700 var(--fs-lg) / 1.25 var(--font-display);
+}
+.speaking-recorder__record-sub {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-2);
+  font: 500 var(--fs-xs) / 1.6 var(--font-ui);
+  color: var(--c-ink-2);
+}
+.speaking-recorder__level {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-2);
+  color: var(--c-ink-2);
+}
+.speaking-recorder__level-track {
+  width: 96px;
+  height: 6px;
+  border-radius: 6px;
+  background: var(--c-surface-2);
+  overflow: hidden;
+}
+.speaking-recorder__level-fill {
+  display: block;
+  height: 100%;
+  width: 100%;
+  background: var(--task-accent);
+  transform-origin: left center;
+  transform: scaleX(0.04);
+  transition: transform 80ms linear;
+}
+.speaking-recorder__live {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+  font: 700 var(--fs-sm) / 1 var(--font-ui);
+}
+.speaking-recorder__rec-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--c-red);
+  box-shadow: 0 0 0 0 color-mix(in srgb, var(--c-red) 50%, transparent);
+  animation: rec-breathe 1.4s ease-in-out infinite;
+}
+.speaking-recorder__rec-label {
+  color: var(--c-red-ink);
+}
+.speaking-recorder__clock {
+  margin-left: auto;
+  font: 700 var(--fs-lg) / 1 var(--font-display);
+  font-variant-numeric: tabular-nums;
+}
+.speaking-recorder__wave {
+  display: block;
+  width: 100%;
+  height: 72px;
+  color: var(--task-accent);
+}
+.speaking-recorder--lg .speaking-recorder__wave {
+  height: 96px;
+}
+.speaking-recorder__timebar {
+  position: relative;
+  height: 28px;
+  border-radius: 14px;
+  background: var(--c-surface-2);
+  overflow: hidden;
+}
+.speaking-recorder__timebar-fill {
+  position: absolute;
+  inset: 0 auto 0 0;
+  background: color-mix(in srgb, var(--task-accent) 35%, var(--c-surface));
+  transition: width 250ms linear;
+}
+.speaking-recorder__target {
+  position: absolute;
+  top: 4px;
+  bottom: 4px;
+  width: 2px;
+  margin-left: -1px;
+  border-radius: 1px;
+  background: var(--c-ink-2);
+  opacity: 0.6;
+}
+.speaking-recorder__timebar-text {
+  position: relative;
+  display: grid;
+  place-items: center;
+  height: 100%;
+  font: 700 var(--fs-xs) / 1 var(--font-ui);
+  color: var(--c-ink);
+}
+.speaking-recorder__stop {
+  justify-self: center;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-2);
+  height: 52px;
+  padding: 0 var(--s-6) 0 var(--s-4);
+  border: 0;
+  border-radius: var(--r-pill);
+  background: var(--c-red-soft);
+  color: var(--c-red-ink);
+  font: 700 var(--fs-md) / 1 var(--font-display);
+  cursor: pointer;
+  transition: transform var(--dur-press);
+}
+.speaking-recorder__stop:active {
+  transform: scale(0.97);
+}
+.speaking-recorder__stop:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+.speaking-recorder__stop-square {
+  width: 18px;
+  height: 18px;
+  border-radius: 4px;
+  background: var(--c-red);
+}
+.speaking-recorder__again {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 40px;
+  padding: 0 var(--s-4);
+  border: 0;
+  border-radius: var(--r-pill);
+  background: var(--c-surface-2);
+  color: var(--c-ink);
+  font: 600 var(--fs-sm) / 1 var(--font-ui);
+  cursor: pointer;
+}
+.speaking-recorder__again:hover {
+  background: var(--c-surface-3);
+}
+.speaking-recorder__again:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+.speaking-recorder__error {
+  grid-column: 1 / -1;
+  margin: 0;
+  font-size: var(--fs-sm);
+  color: var(--c-oops-ink);
+}
+.speaking-recorder__no-mic {
+  margin: var(--s-5) 0 0;
+  padding: var(--s-4) var(--s-5);
+  border-radius: var(--r-lg);
+  background: var(--c-gold-soft);
+  font-size: var(--fs-sm);
+}
+.speaking-recorder__spinner,
+.mic-gate .speaking-recorder__spinner {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 2.5px solid color-mix(in srgb, var(--task-accent) 25%, transparent);
+  border-top-color: var(--task-accent);
+  animation: rec-spin 0.8s linear infinite;
+  display: inline-block;
+}
+
+/* nghe lại bản ghi */
+.take-player {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--s-3);
+  color: var(--task-accent);
+  --wave-rest: color-mix(in srgb, var(--task-accent) 30%, var(--c-surface-2));
+  min-width: 0;
+}
+.take-player__play {
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  border: 0;
+  border-radius: 50%;
+  color: #fff;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--task-accent) 75%, #fff), var(--task-accent));
+  box-shadow: var(--gloss-top);
+  cursor: pointer;
+}
+.take-player__play:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+.take-player__wave {
+  display: block;
+  width: 100%;
+  height: 44px;
+}
+.take-player__time {
+  font: 600 var(--fs-sm) / 1 var(--font-ui);
+  color: var(--c-ink-2);
+}
+.take-player--compact .take-player__play {
+  width: 36px;
+  height: 36px;
+}
+.take-player--compact .take-player__wave {
+  height: 30px;
+}
+
+/* ---------- Part 1 / 3 ---------- */
+.question-flow__top {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  margin-bottom: var(--s-3);
+}
+.question-flow__part {
+  padding: 3px 10px;
+  border-radius: var(--r-pill);
+  background: color-mix(in srgb, var(--task-accent) 16%, var(--c-surface));
+  font: 700 var(--fs-xs) / 1.5 var(--font-ui);
+}
+.question-flow__count {
+  font: 600 var(--fs-sm) / 1 var(--font-ui);
+  color: var(--c-ink-2);
+}
+.question-flow__dots {
+  list-style: none;
+  display: flex;
+  gap: 6px;
+  margin: 0 0 0 auto;
+  padding: 0;
+}
+.question-flow__dot {
+  width: 12px;
+  height: 12px;
+  padding: 0;
+  border-radius: 50%;
+  border: 2px solid var(--c-line-strong);
+  background: transparent;
+  cursor: pointer;
+}
+.question-flow__dot.is-done {
+  background: var(--task-accent);
+  border-color: var(--task-accent);
+}
+.question-flow__dot.is-current {
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--task-accent) 30%, transparent);
+}
+.question-flow__card {
+  padding: var(--s-6) var(--s-7);
+  border-radius: var(--r-xl);
+  background: var(--c-surface);
+  border: 1px solid var(--c-line);
+  box-shadow: var(--shadow-card);
+}
+.question-flow__question {
+  margin: 0;
+  font: 700 var(--fs-2xl) / 1.25 var(--font-display);
+  text-wrap: balance;
+}
+.question-flow__listen {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+  margin-top: var(--s-4);
+  font-size: var(--fs-sm);
+  color: var(--c-ink-2);
+}
+.question-flow__hint {
+  margin: var(--s-3) 0 0;
+  padding-top: var(--s-3);
+  border-top: 1px dashed var(--c-line);
+  font-size: var(--fs-sm);
+  color: var(--c-ink-2);
+}
+
+/* ---------- Part 2 cue card ---------- */
+.cue-stage__phases {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-2);
+  margin: 0 0 var(--s-4);
+  padding: 0;
+}
+.cue-stage__phase {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px 4px 4px;
+  border-radius: var(--r-pill);
+  background: var(--c-surface-2);
+  color: var(--c-ink-2);
+  font: 600 var(--fs-xs) / 1.4 var(--font-ui);
+}
+.cue-stage__phase-dot {
+  display: inline-grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--c-surface);
+  font-size: 11px;
+  font-weight: 700;
+}
+.cue-stage__phase.is-current {
+  background: color-mix(in srgb, var(--task-accent) 18%, var(--c-surface));
+  color: var(--c-ink);
+}
+.cue-stage__phase.is-current .cue-stage__phase-dot {
+  background: var(--task-accent);
+  color: #fff;
+}
+.cue-stage__phase.is-done .cue-stage__phase-dot {
+  background: color-mix(in srgb, var(--task-accent) 25%, var(--c-surface));
+  color: var(--c-ink);
+}
+.cue-stage__layout {
+  display: grid;
+  gap: var(--s-5);
+}
+.cue-stage__layout.has-notes {
+  grid-template-columns: minmax(0, 1.3fr) minmax(220px, 1fr);
+  align-items: stretch;
+}
+/* thẻ đề: giấy kem, viền ngọc */
+.cue-card {
+  position: relative;
+  padding: var(--s-6) var(--s-7) var(--s-5);
+  border-radius: var(--r-xl);
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--c-surface-2) 75%, var(--c-surface)), var(--c-surface-2));
+  border: 2px solid color-mix(in srgb, var(--task-accent) 45%, var(--c-line));
+  box-shadow: var(--shadow-card);
+  display: grid;
+  gap: var(--s-2);
+}
+.cue-card__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--s-3);
+  min-height: 28px;
+}
+.cue-card__eyebrow {
+  font: 700 var(--fs-xs) / 1.4 var(--font-ui);
+  letter-spacing: 0.02em;
+  color: color-mix(in srgb, var(--task-accent) 55%, var(--c-ink));
+}
+.cue-card__clock {
+  margin: -8px -8px 0 0;
+  padding: 4px 10px;
+  border: 0;
+  border-radius: var(--r-md);
+  background: transparent;
+  color: var(--c-navy);
+  font: 800 2.75rem / 1 ui-monospace, 'SFMono-Regular', Consolas, monospace;
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+  transition: font-size var(--dur-panel) var(--ease-out);
+}
+.cue-card__clock:hover {
+  background: color-mix(in srgb, var(--c-navy) 8%, transparent);
+}
+.cue-card__clock:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+.cue-card__clock.is-small {
+  font-size: var(--fs-lg);
+}
+.cue-card__clock.is-past-target {
+  color: var(--c-success-ink);
+}
+.cue-card__topic {
+  margin: var(--s-1) 0 0;
+  font-size: var(--fs-2xl);
+  line-height: 1.2;
+  color: var(--c-ink);
+}
+.cue-card__say {
+  margin: var(--s-2) 0 0;
+  font-size: var(--fs-sm);
+  color: var(--c-ink-2);
+}
+.cue-card__points {
+  margin: 0;
+  padding-left: var(--s-6);
+  display: grid;
+  gap: 4px;
+  font-size: var(--fs-lg);
+  line-height: 1.45;
+}
+.cue-card__points li::marker {
+  color: var(--task-accent);
+}
+.cue-card__progress {
+  position: relative;
+  height: 6px;
+  margin-top: var(--s-3);
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--task-accent) 15%, var(--c-surface));
+  overflow: hidden;
+}
+.cue-card__progress > span:first-child {
+  display: block;
+  height: 100%;
+  background: var(--task-accent);
+  border-radius: inherit;
+  transition: width 250ms linear;
+}
+.cue-card__target {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--c-ink-2);
+}
+.cue-card__foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-3);
+  margin-top: var(--s-2);
+}
+.cue-card__status {
+  font: 700 var(--fs-sm) / 1.4 var(--font-ui);
+  color: var(--c-ink);
+}
+.cue-stage__notes {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  gap: var(--s-2);
+}
+.cue-stage__notes label {
+  font: 700 var(--fs-sm) / 1.4 var(--font-ui);
+}
+.cue-stage__notes textarea {
+  width: 100%;
+  min-height: 200px;
+  padding: var(--s-4);
+  border: 1.5px dashed var(--c-line-strong);
+  border-radius: var(--r-lg);
+  resize: vertical;
+  /* giấy kẻ dòng */
+  background:
+    repeating-linear-gradient(180deg, transparent 0 31px, color-mix(in srgb, var(--c-line-strong) 70%, transparent) 31px 32px),
+    var(--c-surface);
+  background-attachment: local;
+  /* dời đường kẻ xuống đúng bằng lề trên -> mỗi dòng chữ nằm TRÊN 1 đường kẻ */
+  background-position: 0 var(--s-4), 0 0;
+  color: var(--c-ink);
+  font: 500 var(--fs-md) / 32px var(--font-ui);
+}
+.cue-stage__notes textarea:focus {
+  outline: none;
+  border-color: var(--task-accent);
+  box-shadow: var(--focus-ring);
+}
+.cue-stage__notes textarea[readonly] {
+  opacity: 0.85;
+}
+.cue-stage__hint {
+  margin: var(--s-4) 0 0;
+  color: var(--c-ink-2);
+  font-size: var(--fs-sm);
+}
+.cue-stage__done {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--s-4);
+  margin-top: var(--s-5);
+  align-items: start;
+}
+.cue-stage__aim {
+  font-size: var(--fs-xs);
+  color: var(--c-gold-ink);
+  font-weight: 600;
+}
+.cue-stage__playback {
+  display: grid;
+  gap: var(--s-3);
+  padding: var(--s-5);
+  border-radius: var(--r-xl);
+  background: var(--c-surface);
+  border: 1px solid var(--c-line);
+  box-shadow: var(--shadow-card);
+}
+.cue-stage__check {
+  margin: 0;
+  padding: var(--s-4) var(--s-5) var(--s-5);
+  border: 1px solid var(--c-line);
+  border-radius: var(--r-xl);
+  background: var(--c-surface);
+  display: grid;
+  gap: var(--s-2);
+}
+.cue-stage__check legend {
+  padding: 0 var(--s-2);
+  font: 700 var(--fs-sm) / 1.4 var(--font-ui);
+}
+.cue-stage__check-item {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  padding: var(--s-2) var(--s-3);
+  border-radius: var(--r-md);
+  cursor: pointer;
+  font-size: var(--fs-sm);
+}
+.cue-stage__check-item:hover {
+  background: var(--c-surface-2);
+}
+.cue-stage__check-item input {
+  width: 20px;
+  height: 20px;
+  accent-color: var(--task-accent);
+  flex: none;
+}
+
+/* ---------- màn mở đầu Part (thi thử) + tiến độ Part ---------- */
+.section-intro {
+  display: grid;
+  justify-items: center;
+  gap: var(--s-3);
+  padding: var(--s-9) var(--s-7);
+  border-radius: var(--r-xl);
+  background: var(--c-surface);
+  border: 1px solid var(--c-line);
+  box-shadow: var(--shadow-card);
+  text-align: center;
+}
+.section-intro__badge {
+  padding: 6px 18px;
+  border-radius: var(--r-pill);
+  background: color-mix(in srgb, var(--task-accent) 18%, var(--c-surface));
+  font: 800 var(--fs-lg) / 1.2 var(--font-display);
+}
+.section-intro__title {
+  margin: 0;
+  max-width: 28ch;
+  font-size: var(--fs-2xl);
+}
+.section-intro__count {
+  margin: 0;
+  color: var(--c-ink-2);
+}
+.parts-progress {
+  list-style: none;
+  margin: 0;
+  padding: var(--s-4) var(--s-5);
+  border-radius: var(--r-xl);
+  background: var(--c-surface);
+  border: 1px solid var(--c-line);
+  display: grid;
+  gap: var(--s-3);
+}
+.parts-progress__item {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  color: var(--c-ink-2);
+  font: 600 var(--fs-sm) / 1.3 var(--font-ui);
+}
+.parts-progress__item small {
+  display: block;
+  font-weight: 500;
+  font-size: var(--fs-xs);
+}
+.parts-progress__item.is-current {
+  color: var(--c-ink);
+}
+.parts-progress__dot {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--c-surface-2);
+  font-weight: 700;
+  flex: none;
+}
+.parts-progress__item.is-current .parts-progress__dot {
+  background: var(--task-accent);
+  color: #fff;
+}
+.parts-progress__item.is-done .parts-progress__dot {
+  background: color-mix(in srgb, var(--task-accent) 25%, var(--c-surface));
+  color: var(--c-ink);
+}
+
+/* ---------- bản ghi của mình ---------- */
+.my-recordings {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: var(--s-3);
+}
+.my-recordings__item {
+  display: grid;
+  gap: var(--s-2);
+  padding: var(--s-3) var(--s-4);
+  border-radius: var(--r-lg);
+  background: var(--c-surface);
+  border: 1px solid var(--c-line);
+}
+.my-recordings__meta {
+  font: 700 11px / 1.3 var(--font-ui);
+  color: color-mix(in srgb, var(--task-accent) 60%, var(--c-ink));
+}
+.my-recordings__question {
+  margin: 0;
+  font-size: var(--fs-sm);
+  line-height: 1.45;
+}
+.my-recordings__none {
+  font-size: var(--fs-xs);
+  color: var(--c-ink-2);
+}
+
+/* ---------- so bài mẫu ---------- */
+.speaking-compare {
+  display: grid;
+  grid-template-columns: minmax(300px, 5fr) minmax(0, 7fr);
+  gap: var(--s-6);
+  align-items: start;
+}
+.speaking-compare > .speaking-task__panel--mine {
+  position: sticky;
+  top: var(--task-sticky-top);
+  max-height: calc(100vh - var(--task-sticky-top) - var(--task-actions-h) - var(--s-4));
+  overflow: auto;
+}
+.speaking-compare__sample {
+  margin-top: var(--s-4);
+  display: grid;
+  gap: var(--s-4);
+}
+.sample-audio {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s-2);
+}
+.sample-audio__button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 40px;
+  padding: 0 var(--s-4);
+  border: 0;
+  border-radius: var(--r-pill);
+  background: color-mix(in srgb, var(--task-accent) 16%, var(--c-surface));
+  color: var(--c-ink);
+  font: 700 var(--fs-sm) / 1 var(--font-ui);
+  cursor: pointer;
+}
+.sample-audio__button--slow {
+  width: 40px;
+  padding: 0;
+  justify-content: center;
+}
+.sample-audio__button.is-playing {
+  background: var(--task-accent);
+  color: #fff;
+}
+.sample-audio__button:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+.sample-audio__note {
+  flex-basis: 100%;
+  font-size: var(--fs-xs);
+  color: var(--c-ink-2);
+}
+.sample-transcript {
+  display: grid;
+  gap: var(--s-2);
+  font-size: var(--fs-md);
+  line-height: 1.65;
+}
+.sample-transcript__heading {
+  margin: var(--s-3) 0 0;
+  font: 800 var(--fs-xs) / 1.4 var(--font-ui);
+  letter-spacing: 0.06em;
+  color: color-mix(in srgb, var(--task-accent) 55%, var(--c-ink));
+}
+.sample-transcript__heading:first-child {
+  margin-top: 0;
+}
+.sample-transcript__q,
+.sample-transcript__a {
+  display: grid;
+  grid-template-columns: 24px minmax(0, 1fr);
+  gap: var(--s-2);
+  margin: 0;
+}
+.sample-transcript__q {
+  color: var(--c-ink-2);
+  font-size: var(--fs-sm);
+}
+.sample-transcript__a {
+  font-family: var(--font-reading);
+  margin-bottom: var(--s-2);
+}
+.sample-transcript__tag {
+  display: inline-grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  margin-top: 2px;
+  border-radius: 6px;
+  background: var(--c-surface-2);
+  font: 700 11px / 1 var(--font-ui);
+  color: var(--c-ink-2);
+}
+.sample-transcript__tag--a {
+  background: color-mix(in srgb, var(--task-accent) 18%, var(--c-surface));
+  color: var(--c-ink);
+}
+.sample-transcript__talk {
+  margin: 0;
+  font-family: var(--font-reading);
+  line-height: var(--lh-reading);
+}
+
+/* ---------- luyện âm ---------- */
+.drill__head {
+  display: grid;
+  gap: var(--s-3);
+  margin-bottom: var(--s-5);
+}
+.drill__title {
+  margin: 0;
+  font-size: var(--fs-xl);
+}
+.drill__intro {
+  margin: 0;
+  color: var(--c-ink-2);
+  font-size: var(--fs-sm);
+}
+.drill__targets {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s-2);
+}
+.drill__targets-label {
+  font: 700 var(--fs-xs) / 1.4 var(--font-ui);
+}
+.drill__target-chip {
+  padding: 3px 10px;
+  border-radius: var(--r-pill);
+  background: color-mix(in srgb, var(--task-accent) 14%, var(--c-surface));
+  font-size: var(--fs-xs);
+}
+.drill__legend {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-2) var(--s-4);
+  margin: 0;
+  padding: 0;
+  font-size: var(--fs-xs);
+  color: var(--c-ink-2);
+}
+.drill__legend li {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.drill__swatch {
+  width: 12px;
+  height: 12px;
+  border-radius: 4px;
+}
+.drill__swatch--good {
+  background: var(--c-success);
+}
+.drill__swatch--close {
+  background: var(--c-gold);
+}
+.drill__swatch--missed {
+  background: var(--c-oops);
+}
+.drill__swatch--skip {
+  background: var(--c-line-strong);
+}
+.drill__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: var(--s-4);
+}
+.drill__item {
+  display: grid;
+  grid-template-columns: 36px minmax(0, 1fr);
+  gap: var(--s-4);
+  padding: var(--s-5);
+  border-radius: var(--r-xl);
+  background: var(--c-surface);
+  border: 1px solid var(--c-line);
+  box-shadow: var(--shadow-card);
+}
+.drill__number {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--task-accent) 16%, var(--c-surface));
+  font: 800 var(--fs-md) / 1 var(--font-display);
+}
+.drill__body {
+  display: grid;
+  gap: var(--s-3);
+  min-width: 0;
+}
+.drill__sentence {
+  margin: 0;
+  font-family: var(--font-reading);
+  font-size: 1.25rem;
+  line-height: 1.7;
+}
+.drill__word.is-target {
+  font-weight: 700;
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, var(--task-accent) 70%, transparent);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 5px;
+}
+.drill__word.is-good {
+  color: var(--c-success-ink);
+}
+.drill__word.is-close {
+  color: var(--c-gold-ink);
+  text-decoration: underline dotted;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 5px;
+}
+.drill__word.is-missed {
+  color: var(--c-oops-ink);
+  text-decoration: underline wavy;
+  text-decoration-thickness: 1.5px;
+  text-underline-offset: 5px;
+}
+.drill__word.is-skip {
+  color: var(--c-ink-2);
+}
+.drill__item.is-idle .drill__word.is-skip,
+.drill__item.is-listening .drill__word.is-skip,
+.drill__item.is-unclear .drill__word.is-skip {
+  color: var(--c-ink);
+}
+.drill__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s-2);
+}
+.drill__mine {
+  flex: 1 1 220px;
+  min-width: 200px;
+}
+.drill__listening-dot {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--c-red);
+  animation: rec-breathe 1.4s ease-in-out infinite;
+}
+.drill__result {
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px var(--s-3);
+  font: 600 var(--fs-sm) / 1.4 var(--font-ui);
+  color: var(--c-success-ink);
+}
+.drill__heard {
+  font-weight: 400;
+  color: var(--c-ink-2);
+  font-size: var(--fs-xs);
+}
+.drill__notice {
+  margin: 0;
+  padding: var(--s-3) var(--s-4);
+  border-radius: var(--r-md);
+  font-size: var(--fs-sm);
+  line-height: 1.5;
+}
+.drill__notice--unclear {
+  background: var(--c-gold-soft);
+  color: var(--c-ink);
+}
+.drill__empty {
+  color: var(--c-ink-2);
+}
+
+@keyframes rec-breathe {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--c-red) 45%, transparent);
+  }
+  50% {
+    box-shadow: 0 0 0 6px color-mix(in srgb, var(--c-red) 0%, transparent);
+  }
+}
+@keyframes rec-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .speaking-recorder__rec-dot,
+  .drill__listening-dot {
+    animation: none;
+  }
+  .speaking-recorder__spinner {
+    animation-duration: 2s;
+  }
+}
+
+/* ---------- màn vừa / hẹp ---------- */
+@media (max-width: 1240px) {
+  .speaking-task {
+    padding-inline: var(--s-6);
+  }
+  .speaking-task__split {
+    grid-template-columns: minmax(0, 1fr) 280px;
+    gap: var(--s-5);
+  }
+  .speaking-task__split--wide-side {
+    grid-template-columns: minmax(300px, 5fr) minmax(0, 6fr);
+  }
+  .speaking-task__actions-inner {
+    padding-inline: var(--s-6);
+  }
+}
+@media (max-width: 960px) {
+  .speaking-task__split,
+  .speaking-task__split--wide-side,
+  .speaking-compare,
+  .cue-stage__done,
+  .cue-stage__layout.has-notes {
+    grid-template-columns: 1fr;
+  }
+  .speaking-task__side,
+  .speaking-task__sticky,
+  .speaking-compare > .speaking-task__panel--mine {
+    position: static;
+    max-height: none;
+  }
+  .speaking-task__actions-note {
+    display: none;
+  }
+  .speaking-task__actions-inner {
+    justify-content: flex-end;
+  }
+}
+@media (max-width: 600px) {
+  .speaking-task {
+    padding-inline: var(--s-3);
+  }
+  .cue-card,
+  .question-flow__card {
+    padding: var(--s-5);
+  }
+  .mic-gate {
+    flex-direction: column;
+    text-align: center;
+  }
+}
+
+/* ---------- cue card pha Nói: máy ghi ở cột phải ---------- */
+.cue-stage__speak-side {
+  display: grid;
+  gap: var(--s-4);
+  align-content: start;
+  min-width: 0;
+}
+.cue-stage__speak-side .speaking-recorder {
+  margin-top: 0;
+}
+.cue-stage__notes--compact {
+  display: grid;
+  gap: 4px;
+  padding: var(--s-3) var(--s-4);
+  border-radius: var(--r-lg);
+  border: 1.5px dashed var(--c-line-strong);
+  background: var(--c-surface);
+}
+.cue-stage__notes-label {
+  font: 700 var(--fs-xs) / 1.4 var(--font-ui);
+  color: var(--c-ink-2);
+}
+.cue-stage__notes--compact p {
+  margin: 0;
+  white-space: pre-line;
+  font-size: var(--fs-sm);
+  line-height: 1.6;
+}

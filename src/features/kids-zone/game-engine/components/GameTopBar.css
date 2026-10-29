@@ -1,0 +1,69 @@
+/* GameTopBar.css — thanh trên cùng khi chơi: thoát | tiến độ | công cụ */
+.kz-topbar {
+  position: relative;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  width: min(1180px, 100% - 48px);
+  margin: 0 auto;
+  padding: 20px 0 8px;
+}
+.kz-topbar__progress {
+  flex: 1;
+  min-width: 0;
+  padding: 0 8px;
+}
+/* thanh tiến độ to, dày hơn bản người lớn; nhãn số đậm */
+.kz-topbar__progress .ds-progress__value {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--kz-ink);
+  min-width: 3.2em;
+  text-align: right;
+}
+.kz-topbar__progress .ds-progress__track {
+  background: var(--kz-glass);
+  box-shadow: inset 0 2px 4px rgba(var(--shadow-rgb), 0.12);
+}
+.kz-topbar__tools {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* nút bật/tắt dạng viên thuốc có chữ (VD "Ẩn chữ") */
+.kz-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 56px;
+  padding: 0 18px 0 14px;
+  border: 1px solid var(--kz-glass-line);
+  border-radius: var(--r-pill);
+  background: var(--kz-glass);
+  color: var(--kz-ink);
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  font-weight: 700;
+  cursor: pointer;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  transition:
+    background-color var(--dur-micro) var(--ease-out),
+    color var(--dur-micro) var(--ease-out),
+    transform var(--dur-press) var(--ease-out);
+}
+.kz-toggle:active {
+  transform: scale(0.96);
+}
+.kz-toggle:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+.kz-toggle[aria-pressed='true'] {
+  background: var(--c-navy);
+  border-color: var(--c-navy);
+  color: var(--c-on-navy);
+}

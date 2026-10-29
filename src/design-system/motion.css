@@ -1,0 +1,222 @@
+/* =============================================================================
+ * motion.css — CÁC "ĐIỆU NHẢY" (keyframes) DÙNG CHUNG
+ * -----------------------------------------------------------------------------
+ * Tên đều bắt đầu bằng ds- để không trùng keyframes cũ trong global.css.
+ * Dùng trực tiếp trong CSS component:  animation: ds-pop 260ms var(--ease-spring);
+ * hoặc gắn class tiện ích bên dưới:      <div className="ds-anim-pop">
+ *
+ * Quy tắc chuyển động (spec mục 4):
+ *   - vi mô 120–180ms · panel 220–280ms · ăn mừng <= 1.5s
+ *   - giảm chuyển động (prefers-reduced-motion): base.css tự tắt hết animation.
+ * ========================================================================== */
+
+/* Khung trượt lên từ đáy (khung phản hồi, sheet) */
+@keyframes ds-slide-up {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+/* Mờ dần hiện ra (nền mờ modal, tooltip) */
+@keyframes ds-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Hiện lên + hơi trồi lên (thẻ, toast) */
+@keyframes ds-rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Mascot "ló đầu" lên khỏi mép khung: trồi từ dưới, hơi nảy quá rồi về chỗ */
+@keyframes ds-peek-in {
+  0% {
+    transform: translateY(70%) rotate(-6deg);
+    opacity: 0;
+  }
+  55% {
+    opacity: 1;
+  }
+  75% {
+    transform: translateY(-6%) rotate(2deg);
+  }
+  100% {
+    transform: translateY(0) rotate(0);
+    opacity: 1;
+  }
+}
+
+/* Bật nảy (chọn đáp án, huy hiệu xuất hiện) */
+@keyframes ds-pop {
+  0% {
+    transform: scale(0.6);
+    opacity: 0;
+  }
+  60% {
+    transform: scale(1.08);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* Nhún nhẹ khi bấm chọn thẻ: 0.98 -> 1 */
+@keyframes ds-squish {
+  0% {
+    transform: scale(1);
+  }
+  40% {
+    transform: scale(0.98);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* Phát sáng "thở" chậm (bài hiện tại trên lộ trình) */
+@keyframes ds-glow-breathe {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--glow-color, var(--c-primary)) 45%, transparent),
+      0 0 18px 2px color-mix(in srgb, var(--glow-color, var(--c-primary)) 25%, transparent);
+  }
+  50% {
+    box-shadow: 0 0 0 10px color-mix(in srgb, var(--glow-color, var(--c-primary)) 0%, transparent),
+      0 0 28px 8px color-mix(in srgb, var(--glow-color, var(--c-primary)) 35%, transparent);
+  }
+}
+
+/* Phát sáng "thở" theo ĐÚNG viền hình (ảnh trong suốt, SVG) — dùng filter thay box-shadow */
+@keyframes ds-glow-drop {
+  0%,
+  100% {
+    filter: drop-shadow(0 6px 8px rgba(var(--shadow-rgb), 0.25)) drop-shadow(0 0 4px color-mix(in srgb, var(--glow-color, var(--c-primary)) 45%, transparent));
+  }
+  50% {
+    filter: drop-shadow(0 6px 8px rgba(var(--shadow-rgb), 0.25)) drop-shadow(0 0 16px color-mix(in srgb, var(--glow-color, var(--c-primary)) 75%, transparent));
+  }
+}
+
+/* Lấp lánh chạy ngang (khung xương đang tải, thanh XP đầy) */
+@keyframes ds-shimmer {
+  from {
+    background-position: -200% 0;
+  }
+  to {
+    background-position: 200% 0;
+  }
+}
+
+/* Ngôi sao lấp lánh nhỏ (thay pháo giấy ở mốc 50%/100%): to ra, xoay, mờ đi */
+@keyframes ds-sparkle {
+  0% {
+    transform: scale(0) rotate(0deg);
+    opacity: 0;
+  }
+  35% {
+    transform: scale(1.15) rotate(70deg);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(0.2) rotate(160deg);
+    opacity: 0;
+  }
+}
+
+/* Lơ lửng nhẹ (mascot hero) */
+@keyframes ds-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+/* Ngọn lửa chuỗi ngày "bùng" 1 lần */
+@keyframes ds-flame-burst {
+  0% {
+    transform: scale(1);
+  }
+  30% {
+    transform: scale(1.35) rotate(-6deg);
+  }
+  55% {
+    transform: scale(0.94) rotate(3deg);
+  }
+  100% {
+    transform: scale(1) rotate(0);
+  }
+}
+
+/* Con số lật (chuỗi ngày tăng) */
+@keyframes ds-number-flip {
+  0% {
+    transform: rotateX(90deg);
+    opacity: 0;
+  }
+  100% {
+    transform: rotateX(0);
+    opacity: 1;
+  }
+}
+
+/* Lắc nhẹ (gợi ý chưa đúng — rất nhẹ, không gây cảm giác bị phạt) */
+@keyframes ds-nudge {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-4px);
+  }
+  75% {
+    transform: translateX(4px);
+  }
+}
+
+/* Vòng quay chờ */
+@keyframes ds-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ---------- Lớp tiện ích: gắn là chạy 1 lần ---------- */
+.ds-anim-pop {
+  animation: ds-pop 320ms var(--ease-spring) both;
+}
+.ds-anim-rise {
+  animation: ds-rise-in var(--dur-panel) var(--ease-out) both;
+}
+.ds-anim-fade {
+  animation: ds-fade-in var(--dur-panel) var(--ease-out) both;
+}
+.ds-anim-float {
+  animation: ds-float 3.2s var(--ease-in-out) infinite;
+}
+.ds-anim-glow {
+  animation: ds-glow-breathe 2.6s var(--ease-in-out) infinite;
+}
+.ds-anim-squish {
+  animation: ds-squish 180ms var(--ease-out);
+}
+.ds-anim-nudge {
+  animation: ds-nudge 260ms var(--ease-out);
+}

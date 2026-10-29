@@ -1,0 +1,45 @@
+/* =============================================================================
+ * CalmExamTimer.css — đồng hồ dạng chữ, đổi màu nhẹ, không nhấp nháy
+ * ========================================================================== */
+
+.xtimer {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-2);
+  min-height: 36px;
+  padding: 0 var(--s-2) 0 var(--s-3);
+  border-radius: var(--r-pill);
+  background: var(--c-surface-2);
+  color: var(--c-ink-2);
+  font: 600 var(--fs-sm) / 1 var(--font-ui);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  transition: background-color var(--dur-panel) var(--ease-out), color var(--dur-panel) var(--ease-out);
+}
+.xtimer--soon {
+  background: var(--c-primary-soft);
+  color: var(--c-primary-ink);
+}
+.xtimer--final {
+  background: var(--c-oops-soft);
+  color: var(--c-oops-ink);
+  padding-right: var(--s-3);
+}
+.xtimer__toggle {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+}
+.xtimer__toggle:hover {
+  background: color-mix(in srgb, currentColor 12%, transparent);
+}
+.xtimer__toggle:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}

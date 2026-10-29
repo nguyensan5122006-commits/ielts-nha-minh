@@ -1,0 +1,27 @@
+/* =============================================================================
+ * Skeleton.css — khối chờ tải lấp lánh
+ * ========================================================================== */
+.ds-skeleton {
+  display: block;
+  border-radius: var(--r-md);
+  background: linear-gradient(
+    90deg,
+    var(--c-surface-2) 0%,
+    color-mix(in srgb, var(--c-surface-2) 40%, var(--c-surface)) 50%,
+    var(--c-surface-2) 100%
+  );
+  background-size: 200% 100%;
+  animation: ds-shimmer 1.4s linear infinite;
+}
+.ds-skeleton--text {
+  height: 0.9em;
+  border-radius: var(--r-pill);
+}
+.ds-skeleton--circle {
+  border-radius: 50%;
+}
+.ds-skeleton-lines {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6em;
+}

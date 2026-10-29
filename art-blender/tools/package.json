@@ -1,0 +1,14 @@
+{
+  "name": "art-blender-tools",
+  "private": true,
+  "description": "Cong cu Node de toi uu file 3D (.glb) va anh render truoc khi dua len web. Doc art-blender/README.md.",
+  "scripts": {
+    "gltf:version": "gltf-transform --version",
+    "gltf:inspect": "gltf-transform inspect",
+    "gltf:optimize": "gltf-transform optimize"
+  },
+  "dependencies": {
+    "@gltf-transform/cli": "^4.5.1",
+    "sharp": "^0.35.5"
+  }
+}

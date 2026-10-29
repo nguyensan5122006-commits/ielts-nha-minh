@@ -1,0 +1,124 @@
+/* =============================================================================
+ * Sheet.css — khung phản hồi trượt lên từ đáy (đúng: xanh ngọc · chưa đúng: cam san hô)
+ * ========================================================================== */
+.ds-sheet {
+  --sheet-bg: var(--c-surface);
+  --sheet-ink: var(--c-ink);
+  --sheet-accent: var(--c-navy);
+  z-index: var(--z-sheet);
+  color: var(--c-ink);
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--sheet-bg) 100%, transparent) 0%, color-mix(in srgb, var(--sheet-bg) 70%, var(--c-surface)) 100%);
+  border-radius: var(--r-xl) var(--r-xl) 0 0;
+  /* vạch màu dày 3px uốn theo bo góc trên + bóng hắt lên trên */
+  box-shadow:
+    inset 0 3px 0 var(--sheet-accent),
+    0 -18px 40px -24px rgba(var(--shadow-rgb), 0.35);
+}
+.ds-sheet--fixed {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  animation: ds-slide-up 180ms var(--ease-out) both;
+  padding-bottom: env(safe-area-inset-bottom, 0);
+}
+.ds-sheet--static {
+  position: relative;
+  border-radius: var(--r-xl);
+  margin-top: 70px; /* chỗ cho đầu mascot */
+}
+
+.ds-sheet--success {
+  --sheet-bg: var(--c-success-soft);
+  --sheet-ink: var(--c-success-ink);
+  --sheet-accent: var(--c-success);
+}
+.ds-sheet--oops {
+  --sheet-bg: var(--c-oops-soft);
+  --sheet-ink: var(--c-oops-ink);
+  --sheet-accent: var(--c-oops);
+}
+.ds-sheet--hint {
+  --sheet-bg: var(--c-gold-soft);
+  --sheet-ink: var(--c-gold-ink);
+  --sheet-accent: var(--c-gold);
+}
+
+/* Khung tự xếp dọc khi CHÍNH NÓ hẹp (không phụ thuộc độ rộng màn hình) */
+.ds-sheet {
+  container-type: inline-size;
+}
+.ds-sheet__inner {
+  position: relative;
+  /* khung chứa có thể đặt --sheet-max để thẳng hàng với cột nội dung (FocusLayout làm vậy) */
+  max-width: var(--sheet-max, 980px);
+  margin: 0 auto;
+  padding: var(--s-6) var(--s-7) var(--s-6);
+  display: flex;
+  align-items: center;
+  gap: var(--s-6);
+}
+.ds-sheet__inner > .ds-mascot--peek-top {
+  --mascot-x: var(--s-6);
+}
+.ds-sheet__content {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+.ds-sheet__heading {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+}
+.ds-sheet__tone-icon {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--sheet-accent);
+  color: var(--c-surface);
+  box-shadow: inset 0 1.5px 0 rgba(255, 255, 255, 0.45), 0 4px 10px -4px var(--sheet-accent);
+  animation: ds-pop 300ms var(--ease-spring) 80ms both;
+}
+.ds-sheet__title {
+  margin: 0;
+  font-size: var(--fs-xl);
+  font-weight: 800;
+  line-height: 1.2;
+  color: var(--sheet-ink);
+  padding-top: 3px;
+}
+.ds-sheet__body {
+  margin-top: var(--s-2);
+  margin-left: 44px; /* thẳng hàng với chữ tiêu đề (sau icon 32px + khoảng 12px) */
+  color: var(--c-ink);
+  font-size: var(--fs-md);
+  line-height: 1.55;
+}
+.ds-sheet__body p {
+  margin: 0 0 4px;
+}
+.ds-sheet__actions {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  color: var(--sheet-ink);
+}
+
+@container (max-width: 700px) {
+  .ds-sheet__inner {
+    flex-direction: column;
+    align-items: stretch;
+    padding: var(--s-6) var(--s-5) var(--s-5);
+  }
+  .ds-sheet__body {
+    margin-left: 0;
+  }
+  .ds-sheet__actions {
+    justify-content: flex-end;
+  }
+}

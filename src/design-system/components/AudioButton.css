@@ -1,0 +1,126 @@
+/* =============================================================================
+ * AudioButton.css — nút loa vinyl màu navy/xanh trời + nút rùa đọc chậm
+ * ========================================================================== */
+.ds-audio {
+  --audio-size: 52px;
+  display: inline-flex;
+  align-items: flex-end;
+  gap: 8px;
+  vertical-align: middle;
+}
+.ds-audio--sm {
+  --audio-size: 36px;
+}
+.ds-audio--lg {
+  --audio-size: 72px;
+}
+.ds-audio--xl {
+  --audio-size: 88px;
+}
+
+.ds-audio__main,
+.ds-audio__slow {
+  display: grid;
+  place-items: center;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  transition:
+    transform var(--dur-press) var(--ease-out),
+    filter var(--dur-micro) var(--ease-out),
+    box-shadow var(--dur-micro) var(--ease-out);
+}
+.ds-audio__main {
+  width: var(--audio-size);
+  height: var(--audio-size);
+  border-radius: 32%;
+  /* loa dùng màu kỹ năng Nghe (xanh trời) để người học nhận ra "đây là để nghe" */
+  background:
+    radial-gradient(circle at 30% 22%, rgba(255, 255, 255, 0.45) 0 10%, transparent 34%),
+    linear-gradient(180deg, color-mix(in srgb, var(--skill-listening) 78%, #fff) 0%, var(--skill-listening) 55%, color-mix(in srgb, var(--skill-listening) 80%, #0b3a6e) 100%);
+  color: #fff;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.5),
+    0 8px 16px -8px color-mix(in srgb, var(--skill-listening) 75%, transparent);
+}
+.ds-audio__main .ds-icon {
+  filter: drop-shadow(0 1px 0 rgba(0, 40, 90, 0.35));
+}
+.ds-audio--sm .ds-audio__main {
+  border-radius: 50%;
+}
+.ds-audio__main:hover {
+  filter: brightness(1.05);
+}
+.ds-audio__main:active,
+.ds-audio__slow:active {
+  transform: scale(0.93);
+}
+.ds-audio__main.is-playing {
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.5),
+    0 0 0 5px color-mix(in srgb, var(--skill-listening) 22%, transparent),
+    0 8px 16px -8px color-mix(in srgb, var(--skill-listening) 75%, transparent);
+}
+
+.ds-audio__slow {
+  width: calc(var(--audio-size) * 0.66);
+  height: calc(var(--audio-size) * 0.66);
+  min-width: 32px;
+  min-height: 32px;
+  border-radius: 50%;
+  background: var(--c-surface-2);
+  color: var(--c-ink-2);
+  box-shadow: var(--gloss-top), inset 0 0 0 1px var(--c-line);
+}
+.ds-audio__slow:hover {
+  color: var(--c-ink);
+  background: var(--c-surface-3);
+}
+.ds-audio__slow.is-playing {
+  color: var(--skill-listening);
+  box-shadow: var(--gloss-top), inset 0 0 0 2px var(--skill-listening);
+}
+
+/* sóng âm 4 vạch nhảy khi đang phát */
+.ds-audio__wave {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  height: 40%;
+}
+.ds-audio__wave i {
+  width: 4px;
+  height: 100%;
+  border-radius: 4px;
+  background: #fff;
+  transform-origin: center;
+  animation: ds-audio-bar 0.9s var(--ease-in-out) infinite;
+}
+.ds-audio__wave i:nth-child(2) {
+  animation-delay: -0.3s;
+}
+.ds-audio__wave i:nth-child(3) {
+  animation-delay: -0.6s;
+}
+.ds-audio__wave i:nth-child(4) {
+  animation-delay: -0.15s;
+}
+@keyframes ds-audio-bar {
+  0%,
+  100% {
+    transform: scaleY(0.35);
+  }
+  50% {
+    transform: scaleY(1);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ds-audio__wave i {
+    transform: scaleY(0.7);
+  }
+  .ds-audio__main:active,
+  .ds-audio__slow:active {
+    transform: none;
+  }
+}

@@ -1,0 +1,107 @@
+/* =============================================================================
+ * public-shell.css — "vỏ" chung của các trang khách: thanh đầu trang + nền trang.
+ * Dùng cho landing, /start, /start/result, /login, /signup.
+ * Font Baloo 2 (tiêu đề) do index.html nạp sẵn.
+ * ========================================================================== */
+
+/* nền trang khách: kem ấm + 2 quầng sáng rất nhẹ (ban đêm: navy + sao mờ) */
+.ob-page {
+  min-height: 100vh;
+  background:
+    radial-gradient(1200px 600px at 85% -10%, color-mix(in srgb, var(--c-primary) 14%, transparent), transparent 60%),
+    radial-gradient(900px 500px at -10% 30%, color-mix(in srgb, var(--c-gold) 12%, transparent), transparent 60%),
+    var(--c-bg);
+  color: var(--c-ink);
+}
+:root[data-theme='dark'] .ob-page {
+  background:
+    radial-gradient(1200px 600px at 85% -10%, color-mix(in srgb, var(--c-navy) 30%, transparent), transparent 60%),
+    radial-gradient(900px 500px at -10% 30%, color-mix(in srgb, var(--c-primary) 10%, transparent), transparent 60%),
+    var(--c-bg);
+}
+
+/* ---------- thanh đầu trang ---------- */
+.ob-header {
+  position: sticky;
+  top: 0;
+  z-index: var(--z-nav);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-4);
+  height: 68px;
+  padding: 0 clamp(16px, 4vw, 48px);
+  background: color-mix(in srgb, var(--c-bg) 82%, transparent);
+  backdrop-filter: blur(12px) saturate(1.2);
+  -webkit-backdrop-filter: blur(12px) saturate(1.2);
+  border-bottom: 1px solid color-mix(in srgb, var(--c-line) 70%, transparent);
+}
+.ob-header--transparent {
+  background: transparent;
+  border-bottom-color: transparent;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+.ob-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-2);
+  color: var(--c-ink);
+  text-decoration: none;
+  border-radius: var(--r-pill);
+}
+.ob-brand:hover {
+  text-decoration: none;
+}
+.ob-brand__name {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: var(--fs-lg);
+  letter-spacing: -0.01em;
+}
+
+.ob-header__tools {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+}
+
+/* khung nội dung giữa trang */
+.ob-container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 clamp(16px, 4vw, 48px);
+}
+
+/* tiêu đề lớn tiếng Việt: line-height đủ để dấu chồng (ẫ, ậ) không bị cắt */
+.ob-display {
+  font-family: var(--font-display);
+  font-weight: 800;
+  line-height: 1.15;
+  letter-spacing: -0.015em;
+  text-wrap: balance;
+}
+
+/* link dạng chữ (nút phụ dạng liên kết) */
+.ob-text-link {
+  display: inline;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--c-navy);
+  font: inherit;
+  font-weight: 600;
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, var(--c-navy) 35%, transparent);
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+.ob-text-link:hover {
+  text-decoration-color: currentColor;
+}
+.ob-text-link:disabled {
+  color: var(--c-ink-2);
+  cursor: not-allowed;
+}

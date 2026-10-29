@@ -1,0 +1,283 @@
+/* =============================================================================
+ * ExamFrame.css — khung toàn màn: header 60px · thân · thanh câu hỏi
+ * Cỡ chữ nội dung nhân với --exam-text-scale (ExamDisplaySettings).
+ * ========================================================================== */
+
+.xf {
+  --exam-text-scale: 1;
+  --xf-accent: var(--c-navy);
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  height: var(--exam-frame-height, 100dvh);
+  min-height: 0;
+  background: var(--c-bg);
+  color: var(--c-ink);
+}
+.xf--listening {
+  --xf-accent: var(--skill-listening);
+}
+.xf--reading {
+  --xf-accent: var(--skill-reading);
+}
+.xf--writing {
+  --xf-accent: var(--skill-writing);
+}
+.xf--speaking {
+  --xf-accent: var(--skill-speaking);
+}
+
+/* ---------- header ---------- */
+.xf-header {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: center;
+  gap: var(--s-3);
+  min-height: 60px;
+  padding: var(--s-2) var(--s-4);
+  border-bottom: 1px solid var(--c-line);
+  background: var(--c-surface);
+  transition: background-color var(--dur-panel) var(--ease-out);
+}
+/* 5 phút cuối: header ấm lên nhẹ; phút cuối: cam san hô nhạt — không nhấp nháy */
+.xf-header--soon {
+  background: color-mix(in srgb, var(--c-primary-soft) 70%, var(--c-surface));
+}
+.xf-header--final {
+  background: var(--c-oops-soft);
+}
+.xf-header__start,
+.xf-header__end {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+  min-width: 0;
+}
+.xf-header__end {
+  justify-content: flex-end;
+}
+.xf-header__center {
+  display: flex;
+  justify-content: center;
+}
+.xf-header__divider {
+  width: 1px;
+  height: 24px;
+  margin: 0 var(--s-1);
+  background: var(--c-line);
+}
+.xf-header__skill-dot {
+  flex: none;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--xf-accent);
+}
+.xf-header__title {
+  margin: 0;
+  min-width: 0;
+  font: 700 var(--fs-md) / 1.3 var(--font-ui);
+  letter-spacing: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.xf-header__status {
+  font-size: var(--fs-xs);
+  color: var(--c-ink-2);
+  white-space: nowrap;
+}
+
+/* nút công cụ dạng viên (icon + nhãn) */
+.xf-tool {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 36px;
+  padding: 0 var(--s-3);
+  border: 1px solid transparent;
+  border-radius: var(--r-pill);
+  background: transparent;
+  color: var(--c-ink);
+  font: 600 var(--fs-sm) / 1 var(--font-ui);
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background-color var(--dur-micro) var(--ease-out);
+}
+.xf-tool:hover {
+  background: var(--c-surface-2);
+}
+.xf-tool:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+.xf-tool[aria-pressed='true'],
+.xf-tool[aria-expanded='true'] {
+  background: var(--c-navy-soft);
+  border-color: color-mix(in srgb, var(--c-navy) 35%, transparent);
+}
+.xf-tool--exit {
+  color: var(--c-ink-2);
+  padding-left: var(--s-2);
+}
+.xf-tool__count {
+  display: grid;
+  place-items: center;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 5px;
+  border-radius: var(--r-pill);
+  background: var(--c-navy);
+  color: var(--c-on-navy);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+/* nhãn chế độ */
+.xf-mode {
+  flex: none;
+  padding: 3px 10px;
+  border-radius: var(--r-pill);
+  font: 700 var(--fs-xs) / 1.4 var(--font-ui);
+  white-space: nowrap;
+}
+.xf-mode--practice {
+  background: var(--c-surface-2);
+  color: var(--c-ink-2);
+  border: 1px solid var(--c-line);
+}
+.xf-mode--exam {
+  background: var(--c-navy);
+  color: var(--c-on-navy);
+}
+
+/* ---------- thân ---------- */
+.xf-body {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  min-height: 0;
+}
+.xf-body.has-aside {
+  grid-template-columns: minmax(0, 1fr) 320px;
+}
+.xf-main {
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+}
+
+@media (max-width: 1180px) {
+  .xf-tool__label {
+    display: none;
+  }
+  .xf-tool--exit .xf-tool__label {
+    display: inline;
+  }
+  .xf-body.has-aside {
+    grid-template-columns: minmax(0, 1fr) 280px;
+  }
+}
+@media (max-width: 860px) {
+  .xf {
+    height: auto;
+    min-height: 100dvh;
+  }
+  .xf-header {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+  .xf-header__center {
+    grid-column: 1 / -1;
+    order: 3;
+  }
+  .xf-main {
+    overflow: visible;
+  }
+  .xf-body.has-aside {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .xf > .xnav {
+    position: sticky;
+    bottom: 0;
+  }
+}
+
+/* ---------- 'embedded': nằm trong FocusLayout của trình học ----------
+ * FocusLayout có thanh trên 72px + vùng nội dung có padding (cho trang bài tập thường).
+ * Khi task 2 cột đang hiện, ta cần khung cao đúng phần còn lại để 2 cột cuộn riêng:
+ * dùng :has() để chỉ đổi khi có task (không ảnh hưởng các bước khác của trình học). */
+.focus-layout:has(.xf--embedded) {
+  height: 100dvh;
+  min-height: 0;
+  overflow: hidden;
+}
+.focus-layout__content:has(> * .xf--embedded),
+.focus-layout__content:has(> .xf--embedded) {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  padding: 0;
+  overflow: hidden;
+}
+/* trình học có thể bọc task trong vài lớp div (VD .lp-content) -> mọi lớp nằm giữa cũng phải giãn đủ cao */
+.focus-layout__content :has(.xf--embedded) {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+  width: 100%;
+}
+.xf--embedded {
+  flex: 1 1 auto;
+  height: auto;
+  min-height: 0;
+  background: transparent;
+}
+.xf--embedded .xf-header {
+  min-height: 52px;
+  margin: 0 var(--s-5);
+  padding: var(--s-1) var(--s-2) var(--s-1) var(--s-4);
+  border: 1px solid var(--c-line);
+  border-radius: var(--r-md);
+  background: var(--c-surface);
+  box-shadow: var(--shadow-card);
+}
+.xf--embedded .xf-header--soon {
+  background: color-mix(in srgb, var(--c-primary-soft) 70%, var(--c-surface));
+}
+.xf--embedded .xf-header--final {
+  background: var(--c-oops-soft);
+}
+.xf--embedded .xf-body {
+  margin-top: var(--s-3);
+  border-top: 1px solid var(--c-line);
+  background: var(--c-bg);
+}
+.xf--embedded > .xnav {
+  border-top: 1px solid var(--c-line);
+}
+/* chế độ tương phản: nền khung phải đặc để thấy rõ đen/trắng */
+.xf--embedded[data-exam-contrast]:not([data-exam-contrast='theme']) {
+  background: var(--c-bg);
+  padding-top: var(--s-2);
+}
+@media (max-width: 860px) {
+  .focus-layout:has(.xf--embedded) {
+    height: auto;
+    min-height: 100dvh;
+    overflow: visible;
+  }
+  .focus-layout__content:has(> * .xf--embedded),
+  .focus-layout__content:has(> .xf--embedded),
+  .focus-layout__content :has(.xf--embedded) {
+    overflow: visible;
+  }
+  .xf--embedded .xf-header {
+    margin: 0 var(--s-3);
+  }
+}
+
+/* bong bóng chat nổi đè lên nút "Nộp bài" ở góc phải dưới -> ẩn khi đang làm task/thi
+ * (ChatWidget đã ẩn ở /lesson/ và /exam/; route /listening/, /reading/ thì ẩn bằng CSS này) */
+body:has(.xf) .chat-widget,
+body:has(.xf) .chat-fab {
+  display: none;
+}

@@ -1,0 +1,44 @@
+{
+  "name": "ielts-thienthao",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "npm run content:index && tsc --noEmit -p . && tsc --noEmit -p functions && vite build",
+    "api": "wrangler pages dev dist --port 8788",
+    "tts": "esbuild scripts/generate-listening-audio.ts --bundle --platform=node --format=esm --packages=external --outfile=node_modules/.cache/tts.mjs --log-level=warning && node node_modules/.cache/tts.mjs",
+    "tts:v3": "esbuild scripts/generate-audio-v3.ts --bundle --platform=node --format=esm --packages=external --outfile=node_modules/.cache/tts-v3.mjs --log-level=warning && node node_modules/.cache/tts-v3.mjs",
+    "deploy": "npm run build && wrangler pages deploy dist --project-name ielts-thienthao --branch main --commit-dirty=true",
+    "validate": "esbuild scripts/validate-content.ts --bundle --platform=node --format=esm --outfile=node_modules/.cache/validate.mjs --log-level=warning && node node_modules/.cache/validate.mjs",
+    "content:index": "esbuild scripts/generate-lesson-index.ts --bundle --platform=node --format=esm --outfile=node_modules/.cache/lesson-index.mjs --log-level=warning && node node_modules/.cache/lesson-index.mjs",
+    "test:progress": "esbuild scripts/test-progress-migration.ts --bundle --platform=node --format=esm --outfile=node_modules/.cache/test-progress.mjs --log-level=warning && node node_modules/.cache/test-progress.mjs",
+    "db:migrate": "wrangler d1 migrations apply ielts-db --local",
+    "db:migrate:remote": "wrangler d1 migrations apply ielts-db --remote",
+    "realtime": "cd realtime-worker && wrangler dev --port 8787 --persist-to ../.wrangler/state",
+    "deploy:realtime": "cd realtime-worker && wrangler deploy"
+  },
+  "dependencies": {
+    "@google/model-viewer": "^4.4.0",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0",
+    "react-router-dom": "^7.18.4",
+    "three": "^0.183.2",
+    "ts-fsrs": "^6.0.0"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^5.20261005.1",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "@vitejs/plugin-react": "^6.1.2",
+    "esbuild": "^0.28.1",
+    "msedge-tts": "^2.0.9",
+    "typescript": "~5.9.0",
+    "vite": "^8.3.2",
+    "wrangler": "^4.147.0"
+  },
+  "allowScripts": {
+    "esbuild@0.28.1": true,
+    "workerd@1.20261001.1": true
+  }
+}

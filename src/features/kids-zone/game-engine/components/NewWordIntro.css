@@ -1,0 +1,229 @@
+/* NewWordIntro.css — thẻ giới thiệu từ mới: ảnh nảy, chữ bay vào khuôn, nghĩa hiện ra */
+.kz-intro {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  width: min(620px, 100%);
+  padding: 22px 32px 26px;
+  border-radius: 36px;
+  animation: kz-intro-in 380ms var(--ease-spring) both;
+}
+.kz-intro__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+.kz-intro__skip {
+  min-height: 48px;
+  padding: 0 16px;
+  border: none;
+  border-radius: var(--r-pill);
+  background: transparent;
+  color: var(--kz-ink-2);
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+.kz-intro__skip:hover {
+  background: var(--c-surface-2);
+  color: var(--kz-ink);
+}
+.kz-intro__skip:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
+/* ảnh 3D nảy ra + quầng sáng tròn phía sau */
+.kz-intro__picture {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 210px;
+  height: 190px;
+}
+.kz-intro__picture .kz-picture {
+  position: relative;
+  animation: kz-intro-picture 560ms var(--ease-spring) 80ms both;
+  filter: drop-shadow(0 14px 16px rgba(var(--shadow-rgb), 0.22));
+}
+.kz-intro__glow {
+  position: absolute;
+  inset: 4px 14px;
+  border-radius: 50%;
+  background: radial-gradient(circle, color-mix(in srgb, var(--c-gold) 38%, transparent) 0%, transparent 70%);
+  animation: ds-fade-in 600ms var(--ease-out) both;
+}
+
+/* khuôn chữ */
+.kz-intro__mold {
+  --slot: 58px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  min-height: calc(var(--slot) * 1.18);
+}
+.kz-intro__slot {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: var(--slot);
+  height: calc(var(--slot) * 1.18);
+  border: 2.5px dashed color-mix(in srgb, var(--c-navy) 28%, transparent);
+  border-radius: 16px;
+  background: color-mix(in srgb, var(--c-navy) 4%, transparent);
+  transition:
+    background-color 260ms var(--ease-out),
+    border-color 260ms var(--ease-out);
+}
+.kz-intro__space {
+  width: calc(var(--slot) * 0.4);
+}
+.kz-intro__letter {
+  font-family: var(--font-display);
+  font-size: calc(var(--slot) * 0.78);
+  font-weight: 800;
+  line-height: 1;
+  padding-top: 0.12em;
+  color: var(--kz-ink);
+  opacity: 0;
+  transform: translate(var(--from-x), var(--from-y)) rotate(var(--from-r)) scale(0.6);
+  transition:
+    transform 440ms var(--ease-spring),
+    opacity 160ms var(--ease-out);
+}
+.kz-intro__letter.is-landed {
+  opacity: 1;
+  transform: none;
+}
+/* đủ chữ: khuôn thành ô đặc màu cam nhạt */
+.kz-intro__mold.is-complete .kz-intro__slot {
+  border-style: solid;
+  border-color: color-mix(in srgb, var(--c-primary) 55%, transparent);
+  background: var(--c-primary-soft);
+}
+/* lúc giọng đọc cả từ: cả hàng chữ nảy 1 lần */
+.kz-intro__mold.is-speaking {
+  animation: kz-intro-bounce 520ms var(--ease-spring);
+}
+
+.kz-intro__meaning {
+  margin: 2px 0 0;
+  min-height: 1.4em;
+  font-family: var(--font-display);
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--c-primary-ink);
+  opacity: 0;
+  transform: translateY(8px);
+  transition:
+    opacity 260ms var(--ease-out),
+    transform 260ms var(--ease-out);
+}
+.kz-intro__meaning.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+.kz-intro__example {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  max-width: 100%;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 16px;
+  background: var(--c-surface-2);
+  color: var(--kz-ink);
+  text-align: left;
+  font: inherit;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 300ms var(--ease-out);
+}
+.kz-intro__example.is-visible {
+  opacity: 1;
+}
+.kz-intro__example svg {
+  flex: none;
+  margin-top: 4px;
+  color: var(--kz-listen);
+}
+.kz-intro__example:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+.kz-intro__example-en {
+  display: block;
+  font-size: 1.05rem;
+  font-weight: 600;
+}
+.kz-intro__example-vi {
+  display: block;
+  font-size: 0.95rem;
+  color: var(--kz-ink-2);
+}
+
+.kz-intro__actions {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-top: 6px;
+}
+.kz-intro__replay:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+.kz-intro__next {
+  min-width: 220px;
+}
+/* nút Tiếp "bật sáng" khi đã nghe xong */
+.kz-intro__next.is-lit {
+  animation: kz-intro-lit 600ms var(--ease-spring);
+}
+
+@keyframes kz-intro-in {
+  from {
+    opacity: 0;
+    transform: translateY(24px) scale(0.94);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes kz-intro-picture {
+  0% {
+    opacity: 0;
+    transform: scale(0.3) rotate(-12deg);
+  }
+  100% {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes kz-intro-bounce {
+  40% {
+    transform: translateY(-8px) scale(1.04);
+  }
+}
+@keyframes kz-intro-lit {
+  40% {
+    transform: scale(1.06);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .kz-intro,
+  .kz-intro__picture .kz-picture,
+  .kz-intro__mold.is-speaking,
+  .kz-intro__next.is-lit {
+    animation: none;
+  }
+  .kz-intro__letter {
+    transform: none;
+  }
+}

@@ -1,0 +1,555 @@
+/* =============================================================================
+ * kids-hub.css — SẢNH KHU VUI CHƠI
+ * Mục lục: 1. khung + đầu trang · 2. tem tuần · 3. Ki + "Chơi tiếp" · 4. mục tiêu lượt
+ *          5. chọn 1 trong 3 · 6. ô sổ sticker / tủ đồ… · 7. tất cả trò chơi
+ * ========================================================================== */
+
+/* ---------- 1. KHUNG + ĐẦU TRANG ---------- */
+.kz-hub {
+  position: relative;
+  width: min(1180px, 100% - 48px);
+  margin: 0 auto;
+  padding: 18px 0 clamp(140px, 20vh, 220px);
+}
+.kz-hub__header {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 20px;
+}
+.kz-hub__me {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.kz-hub__name {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 800;
+  line-height: 1.1;
+}
+/* "thời gian hôm nay": mờ, nhỏ, không đếm ngược, không nhấp nháy (luật 7) */
+.kz-hub__time {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 2px 0 0;
+  font-size: 0.9rem;
+  color: var(--kz-ink-2);
+  opacity: 0.75;
+}
+.kz-hub__time-bar {
+  position: relative;
+  width: 64px;
+  height: 6px;
+  border-radius: 3px;
+  background: color-mix(in srgb, var(--kz-ink) 12%, transparent);
+  overflow: hidden;
+}
+.kz-hub__time-bar::after {
+  content: '';
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: var(--fill);
+  border-radius: inherit;
+  background: color-mix(in srgb, var(--kz-ink) 40%, transparent);
+}
+.kz-hub__tools {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+}
+.kz-hub__main-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 48px;
+  padding: 0 16px;
+  border-radius: var(--r-pill);
+  color: var(--kz-ink-2);
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1rem;
+}
+.kz-hub__main-link:hover {
+  background: var(--kz-glass);
+  text-decoration: none;
+  color: var(--kz-ink);
+}
+
+/* ---------- 2. TEM TUẦN ---------- */
+.kz-stamps {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 8px 16px;
+}
+.kz-stamps__title {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 1.05rem;
+}
+.kz-stamps__days {
+  display: flex;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.kz-stamps__day {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+.kz-stamps__mark {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: 2px dashed color-mix(in srgb, var(--kz-ink) 20%, transparent);
+  background: color-mix(in srgb, #fff 40%, transparent);
+}
+.kz-stamps__day.is-stamped .kz-stamps__mark {
+  border: 2px solid color-mix(in srgb, var(--c-primary) 60%, transparent);
+  background: var(--c-primary-soft);
+  transform: rotate(-8deg);
+}
+.kz-stamps__day.is-today .kz-stamps__mark {
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--c-navy) 30%, transparent);
+}
+.kz-stamps__label {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--kz-ink-2);
+}
+.kz-stamps__count {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--kz-ink-2);
+  white-space: nowrap;
+}
+.kz-stamps__count.is-done {
+  color: var(--c-success-ink);
+}
+
+/* ---------- 3. KI + "CHƠI TIẾP" ---------- */
+.kz-hub__hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(380px, 0.95fr);
+  align-items: center;
+  gap: 28px;
+  margin-top: 14px;
+}
+.kz-hub__greeting .kz-bubble {
+  max-width: 300px;
+  font-size: 1.45rem;
+}
+.kz-continue {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.kz-continue__card {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  min-height: 150px;
+  padding: 20px 28px 20px 20px;
+  border: none;
+  border-radius: 32px;
+  background:
+    radial-gradient(circle at 18% 10%, rgba(255, 255, 255, 0.35), transparent 40%),
+    var(--grad-primary);
+  color: var(--c-on-primary);
+  text-align: left;
+  cursor: pointer;
+  box-shadow:
+    var(--gloss-top),
+    inset 0 -4px 0 rgba(0, 0, 0, 0.08),
+    0 22px 36px -18px color-mix(in srgb, var(--c-primary-deep) 80%, transparent);
+  transition:
+    transform var(--dur-press) var(--ease-out),
+    box-shadow var(--dur-micro) var(--ease-out);
+  animation: ds-rise-in 420ms var(--ease-out) both;
+}
+.kz-continue__card:hover {
+  transform: translateY(-3px);
+  box-shadow:
+    var(--gloss-top),
+    0 28px 40px -18px color-mix(in srgb, var(--c-primary-deep) 85%, transparent);
+}
+.kz-continue__card:active {
+  transform: scale(0.98);
+}
+.kz-continue__card:focus-visible {
+  outline: none;
+  box-shadow:
+    var(--gloss-top),
+    0 0 0 5px color-mix(in srgb, var(--c-navy) 40%, transparent);
+}
+.kz-continue__art {
+  position: relative;
+  flex: none;
+  width: 130px;
+  height: 110px;
+}
+.kz-continue__art {
+  width: 196px;
+}
+.kz-continue__art .kz-picture {
+  position: absolute;
+  filter: drop-shadow(0 8px 10px rgba(120, 50, 0, 0.3));
+  transition: transform 260ms var(--ease-spring);
+}
+.kz-continue__art-0 {
+  left: -6px;
+  top: 32px;
+  transform: rotate(-14deg);
+}
+.kz-continue__art-1 {
+  left: 50px;
+  top: 2px;
+  z-index: 2;
+}
+.kz-continue__art-2 {
+  left: 124px;
+  top: 34px;
+  transform: rotate(13deg);
+}
+.kz-continue__card:hover .kz-continue__art-1 {
+  transform: translateY(-6px) scale(1.05);
+}
+.kz-continue__text {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.kz-continue__title {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-display);
+  font-size: clamp(2.2rem, 3.4vw, 2.9rem);
+  font-weight: 800;
+  line-height: 1;
+  padding-top: 0.1em;
+}
+.kz-continue__hint {
+  font-size: 1.1rem;
+  font-weight: 600;
+  opacity: 0.85;
+}
+
+/* ---------- 4. MỤC TIÊU LƯỢT ---------- */
+.kz-goal {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 14px;
+  padding: 12px 16px;
+}
+.kz-goal__title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+.kz-goal__options {
+  display: flex;
+  gap: 6px;
+  padding: 4px;
+  border-radius: var(--r-pill);
+  background: color-mix(in srgb, var(--kz-ink) 7%, transparent);
+}
+.kz-goal__option {
+  min-height: 48px;
+  padding: 0 16px;
+  border: none;
+  border-radius: var(--r-pill);
+  background: transparent;
+  color: var(--kz-ink);
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color var(--dur-micro) var(--ease-out);
+}
+.kz-goal__option:hover {
+  background: color-mix(in srgb, #fff 60%, transparent);
+}
+.kz-goal__option[aria-checked='true'] {
+  background: var(--kz-card-bg);
+  box-shadow: 0 4px 10px -4px rgba(var(--shadow-rgb), 0.35);
+}
+.kz-goal__option:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+.kz-goal__progress {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: auto;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--kz-ink-2);
+}
+.kz-goal__progress.is-done {
+  color: var(--c-success-ink);
+}
+
+/* ---------- 5. CHỌN 1 TRONG 3 ---------- */
+.kz-hub__section {
+  margin-top: 28px;
+}
+.kz-hub__section-title {
+  margin: 0 0 12px;
+  font-size: 1.6rem;
+  font-weight: 800;
+}
+.kz-picks {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
+}
+.kz-pick {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  color: var(--kz-ink);
+  text-decoration: none;
+  transition:
+    transform 160ms var(--ease-out),
+    box-shadow 160ms var(--ease-out);
+  animation: ds-rise-in 420ms var(--ease-out) calc(120ms + var(--i) * 70ms) both;
+}
+.kz-pick:hover {
+  text-decoration: none;
+  transform: translateY(-4px);
+  box-shadow:
+    var(--gloss-top),
+    0 30px 40px -22px rgba(var(--shadow-rgb), 0.45);
+}
+.kz-pick:active {
+  transform: scale(0.98);
+}
+.kz-pick:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+/* "bìa" thẻ: nền màu nhấn của trò, 3 ảnh 3D xếp chồng */
+.kz-pick__art {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  height: 128px;
+  background:
+    radial-gradient(circle at 50% 120%, color-mix(in srgb, #fff 70%, transparent) 0%, transparent 60%),
+    linear-gradient(160deg, color-mix(in srgb, var(--accent) 30%, var(--kz-art-base)), color-mix(in srgb, var(--accent) 55%, var(--kz-art-base)));
+}
+.kz-pick__img {
+  position: relative;
+  margin: 0 -14px 8px;
+  filter: drop-shadow(0 8px 8px rgba(var(--shadow-rgb), 0.22));
+  transition: transform 260ms var(--ease-spring);
+}
+.kz-pick__img--0 {
+  transform: rotate(-10deg) translateY(4px);
+}
+.kz-pick__img--1 {
+  z-index: 1;
+  margin-bottom: 14px;
+}
+.kz-pick__img--2 {
+  transform: rotate(10deg) translateY(4px);
+}
+.kz-pick:hover .kz-pick__img--1 {
+  transform: translateY(-6px) scale(1.06);
+}
+.kz-pick__body {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 14px 64px 16px 18px;
+}
+.kz-pick__title {
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  font-weight: 800;
+  line-height: 1.15;
+}
+.kz-pick__meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+.kz-pick__meta .kz-chip {
+  font-size: 0.85rem;
+}
+.kz-pick__time {
+  font-size: 0.9rem;
+  color: var(--kz-ink-2);
+}
+.kz-pick__play {
+  position: absolute;
+  right: 14px;
+  bottom: 18px;
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  background: var(--grad-primary);
+  color: var(--c-on-primary);
+  box-shadow: var(--gloss-top), 0 8px 14px -6px color-mix(in srgb, var(--c-primary-deep) 70%, transparent);
+}
+
+/* ---------- 6. Ô SỔ STICKER / TỦ ĐỒ / HỌC BÀI / CẢ NHÀ ---------- */
+.kz-tiles {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+  margin-top: 24px;
+}
+.kz-tile {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-height: 150px;
+  padding: 14px 16px 16px;
+  color: var(--kz-ink);
+  text-decoration: none;
+  transition: transform 160ms var(--ease-out);
+}
+a.kz-tile:hover {
+  text-decoration: none;
+  transform: translateY(-3px);
+}
+a.kz-tile:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+.kz-tile__art {
+  position: relative;
+  display: flex;
+  align-items: center;
+  height: 60px;
+  margin-bottom: 4px;
+}
+.kz-tile__art .kz-picture {
+  filter: drop-shadow(0 6px 6px rgba(var(--shadow-rgb), 0.2));
+}
+.kz-tile__art--album .kz-tile__sticker {
+  margin-right: -10px;
+  filter: drop-shadow(2px 0 0 #fff) drop-shadow(-2px 0 0 #fff) drop-shadow(0 2px 0 #fff) drop-shadow(0 -2px 0 #fff)
+    drop-shadow(0 6px 6px rgba(var(--shadow-rgb), 0.2));
+}
+.kz-tile__sticker--0 {
+  transform: rotate(-9deg);
+}
+.kz-tile__sticker--2 {
+  transform: rotate(8deg);
+}
+.kz-tile__title {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 800;
+  line-height: 1.15;
+}
+.kz-tile__hint {
+  font-size: 0.95rem;
+  color: var(--kz-ink-2);
+}
+.kz-tile__bar {
+  position: relative;
+  height: 8px;
+  margin-top: auto;
+  border-radius: 4px;
+  background: var(--c-surface-2);
+  overflow: hidden;
+}
+.kz-tile__bar::after {
+  content: '';
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: var(--fill);
+  border-radius: inherit;
+  background: var(--grad-gold);
+}
+
+/* ---------- 7. TẤT CẢ TRÒ CHƠI ---------- */
+.kz-all-games {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+.kz-game-tile {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 78px;
+  padding: 10px 14px;
+  border-radius: 22px;
+  color: var(--kz-ink);
+  text-decoration: none;
+  transition: transform 160ms var(--ease-out);
+}
+a.kz-game-tile:hover {
+  text-decoration: none;
+  transform: translateY(-2px);
+}
+a.kz-game-tile:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+.kz-game-tile__title {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  font-weight: 700;
+  line-height: 1.15;
+}
+.kz-game-tile.is-soon {
+  opacity: 0.72;
+}
+.kz-game-tile.is-soon .kz-picture {
+  filter: grayscale(0.5);
+}
+.kz-game-tile__soon {
+  margin-left: auto;
+  font-size: 0.75rem;
+}
+
+/* ---------- màn hẹp ---------- */
+@media (max-width: 1180px) {
+  .kz-hub__header {
+    grid-template-columns: 1fr auto;
+  }
+  .kz-stamps {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    justify-self: start;
+  }
+  .kz-all-games {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 900px) {
+  .kz-hub__hero,
+  .kz-picks {
+    grid-template-columns: 1fr;
+  }
+  .kz-tiles {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .kz-continue__card,
+  .kz-pick {
+    animation: none;
+  }
+}

@@ -1,0 +1,438 @@
+/* =============================================================================
+ * kids-zone.css — "THẾ GIỚI" CỦA KHU TRẺ EM: bầu trời, mây, đồi cỏ + các mảnh dùng chung
+ * -----------------------------------------------------------------------------
+ * 04-DESIGN-SYSTEM mục 12: cùng hệ màu nhưng sáng hơn — trời gradient #BDE7FF → #FFF3D6,
+ * mây, đồi cỏ; nút ≥ 56–64px; chữ thân 20px; mascot luôn có mặt.
+ * Chế độ tối = "trời đêm tuần tra" (navy, sao nhỏ, đồi xanh thẫm) — cùng bố cục.
+ *
+ * Mọi class bắt đầu bằng "kz-" (kids zone) để không đụng CSS cũ.
+ * Mục lục: 1. biến màu thế giới · 2. nền trời/mây/đồi · 3. thẻ, chip, nút lựa chọn
+ *          4. bong bóng thoại · 5. lớp phủ (overlay) · 6. giảm chuyển động
+ * ========================================================================== */
+
+/* Font tiêu đề Baloo 2 (có tiếng Việt). Khi index.html nạp sẵn thì dòng này vô hại (trình duyệt dùng bộ nhớ đệm). */
+@import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&display=swap');
+
+/* ---------- 1. BIẾN MÀU THẾ GIỚI ---------- */
+.kz-world {
+  --kz-sky-top: #a9dcff;
+  --kz-sky-mid: #d4efff;
+  --kz-sky-bottom: #fff3d6;
+  --kz-sun: rgba(255, 214, 120, 0.55);
+  --kz-cloud: #ffffff;
+  --kz-hill-back: #bfe6a0;
+  --kz-hill-mid: #9bd77c;
+  --kz-hill-front: #7cc65f;
+  --kz-hill-light: rgba(255, 255, 255, 0.35);
+  --kz-card-bg: #ffffff;
+  --kz-card-line: rgba(30, 35, 71, 0.07);
+  --kz-card-shadow: 0 2px 0 rgba(var(--shadow-rgb), 0.05), 0 22px 40px -20px rgba(var(--shadow-rgb), 0.38);
+  --kz-glass: rgba(255, 255, 255, 0.72);
+  --kz-glass-line: rgba(255, 255, 255, 0.9);
+  --kz-ink: var(--c-ink);
+  --kz-ink-2: var(--c-ink-2);
+  --kz-listen: var(--skill-listening);
+  --kz-art-base: #ffffff; /* nền pha màu cho "bìa" thẻ trò */
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) .kz-world {
+    --kz-sky-top: #0a0f2e;
+    --kz-sky-mid: #18215a;
+    --kz-sky-bottom: #2d2f6e;
+    --kz-sun: rgba(160, 175, 255, 0.28);
+    --kz-cloud: #3a4380;
+    --kz-hill-back: #20484a;
+    --kz-hill-mid: #1c3d3c;
+    --kz-hill-front: #163231;
+    --kz-hill-light: rgba(255, 255, 255, 0.06);
+    --kz-card-bg: #1b2250;
+    --kz-card-line: rgba(255, 255, 255, 0.08);
+    --kz-card-shadow: 0 2px 0 rgba(0, 0, 0, 0.2), 0 22px 40px -18px rgba(0, 0, 0, 0.6);
+    --kz-glass: rgba(27, 34, 80, 0.72);
+    --kz-glass-line: rgba(255, 255, 255, 0.12);
+    --kz-art-base: #222a63;
+  }
+}
+[data-theme='dark'] .kz-world,
+.kz-world[data-theme='dark'] {
+  --kz-sky-top: #0a0f2e;
+  --kz-sky-mid: #18215a;
+  --kz-sky-bottom: #2d2f6e;
+  --kz-sun: rgba(160, 175, 255, 0.28);
+  --kz-cloud: #3a4380;
+  --kz-hill-back: #20484a;
+  --kz-hill-mid: #1c3d3c;
+  --kz-hill-front: #163231;
+  --kz-hill-light: rgba(255, 255, 255, 0.06);
+  --kz-card-bg: #1b2250;
+  --kz-card-line: rgba(255, 255, 255, 0.08);
+  --kz-card-shadow: 0 2px 0 rgba(0, 0, 0, 0.2), 0 22px 40px -18px rgba(0, 0, 0, 0.6);
+  --kz-glass: rgba(27, 34, 80, 0.72);
+  --kz-glass-line: rgba(255, 255, 255, 0.12);
+  --kz-art-base: #222a63;
+}
+
+/* Trang web chừa sẵn 1 dải cho thanh cuộn (scrollbar-gutter ở base.css). Khi đang ở khu trẻ em,
+ * tô dải đó cùng màu trời để không lộ 1 vạch kem ở mép phải. */
+html:has(.kz-world) {
+  background: linear-gradient(180deg, #a9dcff 0%, #d4efff 42%, #fff3d6 100%) fixed;
+}
+@media (prefers-color-scheme: dark) {
+  html:not([data-theme='light']):has(.kz-world) {
+    background: linear-gradient(180deg, #0a0f2e 0%, #18215a 42%, #2d2f6e 100%) fixed;
+  }
+}
+html[data-theme='dark']:has(.kz-world) {
+  background: linear-gradient(180deg, #0a0f2e 0%, #18215a 42%, #2d2f6e 100%) fixed;
+}
+
+/* ---------- 2. NỀN TRỜI / MÂY / ĐỒI ---------- */
+.kz-world {
+  position: relative;
+  isolation: isolate;
+  min-height: 100vh;
+  min-height: 100dvh;
+  color: var(--kz-ink);
+  font-family: var(--font-ui);
+  font-size: 1.25rem; /* chữ thân 20px cho bé */
+  line-height: 1.5;
+  background: linear-gradient(180deg, var(--kz-sky-top) 0%, var(--kz-sky-mid) 42%, var(--kz-sky-bottom) 100%);
+  overflow-x: hidden;
+}
+.kz-world h1,
+.kz-world h2,
+.kz-world h3 {
+  font-family: var(--font-display);
+}
+
+.kz-sky {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  overflow: hidden;
+}
+/* quầng nắng (ban đêm là ánh trăng) góc phải trên */
+.kz-sky__sun {
+  position: absolute;
+  top: -160px;
+  right: -120px;
+  width: 520px;
+  height: 520px;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--kz-sun) 0%, transparent 65%);
+}
+/* sao — chỉ hiện ban đêm */
+.kz-sky__stars {
+  position: absolute;
+  inset: 0 0 45% 0;
+  opacity: 0;
+  background-image:
+    radial-gradient(1.5px 1.5px at 12% 18%, #fff 60%, transparent),
+    radial-gradient(1px 1px at 28% 8%, #fff 60%, transparent),
+    radial-gradient(1.5px 1.5px at 44% 26%, #fff 60%, transparent),
+    radial-gradient(1px 1px at 63% 12%, #fff 60%, transparent),
+    radial-gradient(2px 2px at 78% 30%, #fff 60%, transparent),
+    radial-gradient(1px 1px at 90% 10%, #fff 60%, transparent),
+    radial-gradient(1.5px 1.5px at 6% 40%, #fff 60%, transparent),
+    radial-gradient(1px 1px at 52% 44%, #fff 60%, transparent);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) .kz-sky__stars {
+    opacity: 0.8;
+  }
+}
+[data-theme='dark'] .kz-sky__stars {
+  opacity: 0.8;
+}
+
+.kz-cloud {
+  position: absolute;
+  fill: var(--kz-cloud);
+  opacity: 0.92;
+  filter: drop-shadow(0 8px 12px rgba(var(--shadow-rgb), 0.06));
+  animation: kz-cloud-drift linear infinite;
+}
+.kz-cloud--1 {
+  top: 9%;
+  left: 6%;
+  width: 190px;
+  animation-duration: 95s;
+}
+.kz-cloud--2 {
+  top: 20%;
+  left: 62%;
+  width: 140px;
+  opacity: 0.75;
+  animation-duration: 120s;
+  animation-delay: -40s;
+}
+.kz-cloud--3 {
+  top: 5%;
+  left: 38%;
+  width: 110px;
+  opacity: 0.6;
+  animation-duration: 140s;
+  animation-delay: -80s;
+}
+@keyframes kz-cloud-drift {
+  from {
+    transform: translateX(-12vw);
+  }
+  to {
+    transform: translateX(12vw);
+  }
+}
+
+.kz-hills {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: min(26vh, 230px);
+}
+.kz-hills__back {
+  fill: var(--kz-hill-back);
+}
+.kz-hills__mid {
+  fill: var(--kz-hill-mid);
+}
+.kz-hills__front {
+  fill: var(--kz-hill-front);
+}
+.kz-hills__shine {
+  fill: var(--kz-hill-light);
+}
+
+/* ---------- 3. THẺ, CHIP, NÚT LỰA CHỌN ---------- */
+
+/* Thẻ "vinyl" của khu trẻ em: trắng, bo 28px, bóng mềm + vệt sáng mép trên */
+.kz-card {
+  position: relative;
+  background: var(--kz-card-bg);
+  border: 1px solid var(--kz-card-line);
+  border-radius: 28px;
+  box-shadow: var(--gloss-top), var(--kz-card-shadow);
+}
+/* Khối "kính mờ" nổi trên nền trời (thanh trên cùng, thẻ tem tuần) */
+.kz-glass {
+  background: var(--kz-glass);
+  border: 1px solid var(--kz-glass-line);
+  border-radius: 22px;
+  backdrop-filter: blur(10px) saturate(1.2);
+  -webkit-backdrop-filter: blur(10px) saturate(1.2);
+  box-shadow: 0 10px 30px -18px rgba(var(--shadow-rgb), 0.35);
+}
+
+.kz-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border-radius: var(--r-pill);
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.95rem;
+  line-height: 1.4;
+  background: var(--c-surface-2);
+  color: var(--kz-ink);
+  white-space: nowrap;
+}
+.kz-chip--new {
+  background: var(--c-red);
+  color: #fff;
+}
+.kz-chip--up {
+  background: var(--c-success-soft);
+  color: var(--c-success-ink);
+}
+.kz-chip--gold {
+  background: var(--c-gold-soft);
+  color: var(--c-gold-ink);
+}
+.kz-chip--listen {
+  background: color-mix(in srgb, var(--kz-listen) 14%, transparent);
+  color: color-mix(in srgb, var(--kz-listen) 70%, var(--kz-ink));
+}
+
+/*
+ * Cặp nút lựa chọn NGANG HÀNG (psych-kids luật 3): "Chơi thêm 1 lượt" / "Xong hôm nay",
+ * "Nghỉ thôi" / "Chơi thêm"… Hai nút giống hệt nhau về cỡ, màu, độ nổi; không nút nào được chọn sẵn.
+ */
+.kz-choice-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  width: 100%;
+}
+.kz-choice {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  min-height: 68px;
+  padding: 0 24px;
+  border: 2px solid color-mix(in srgb, var(--c-navy) 18%, transparent);
+  border-radius: 22px;
+  background: var(--kz-card-bg);
+  color: var(--kz-ink);
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  font-weight: 700;
+  line-height: 1;
+  cursor: pointer;
+  box-shadow: var(--gloss-top), 0 10px 22px -14px rgba(var(--shadow-rgb), 0.5);
+  transition:
+    transform var(--dur-press) var(--ease-out),
+    box-shadow var(--dur-micro) var(--ease-out),
+    border-color var(--dur-micro) var(--ease-out);
+}
+.kz-choice:hover {
+  transform: translateY(-2px);
+  border-color: color-mix(in srgb, var(--c-primary) 60%, transparent);
+  box-shadow: var(--gloss-top), 0 16px 26px -14px rgba(var(--shadow-rgb), 0.5);
+}
+.kz-choice:active {
+  transform: scale(0.97);
+}
+.kz-choice:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+.kz-choice__icon {
+  width: 36px;
+  height: 36px;
+}
+
+/* Nút tròn trên nền trời (thoát, loa, tắt tiếng) */
+.kz-round-btn {
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  width: 56px;
+  height: 56px;
+  border: 1px solid var(--kz-glass-line);
+  border-radius: 50%;
+  background: var(--kz-glass);
+  color: var(--kz-ink);
+  cursor: pointer;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  box-shadow: 0 8px 18px -12px rgba(var(--shadow-rgb), 0.5);
+  transition:
+    transform var(--dur-press) var(--ease-out),
+    background-color var(--dur-micro) var(--ease-out);
+}
+.kz-round-btn:hover {
+  transform: translateY(-1px);
+  background: var(--kz-card-bg);
+}
+.kz-round-btn:active {
+  transform: scale(0.94);
+}
+.kz-round-btn:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+.kz-round-btn[aria-pressed='true'] {
+  background: var(--c-navy);
+  color: var(--c-on-navy);
+}
+
+/* ---------- 4. BONG BÓNG THOẠI CỦA MASCOT ---------- */
+.kz-bubble {
+  position: relative;
+  max-width: 360px;
+  padding: 14px 18px;
+  border-radius: 22px;
+  background: var(--kz-card-bg);
+  color: var(--kz-ink);
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  font-weight: 600;
+  line-height: 1.3;
+  box-shadow: var(--kz-card-shadow);
+  animation: kz-bubble-in 220ms var(--ease-spring) both;
+}
+/* đuôi bong bóng chỉ về phía mascot (bên trái) */
+.kz-bubble::before {
+  content: '';
+  position: absolute;
+  left: -10px;
+  bottom: 22px;
+  width: 22px;
+  height: 22px;
+  border-radius: 4px;
+  background: inherit;
+  transform: rotate(45deg);
+}
+.kz-bubble--tail-bottom::before {
+  left: 36px;
+  bottom: -9px;
+}
+@keyframes kz-bubble-in {
+  from {
+    opacity: 0;
+    transform: scale(0.85) translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ---------- 5. LỚP PHỦ (sticker, nhắc nghỉ, giới thiệu từ) ---------- */
+.kz-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-modal);
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: color-mix(in srgb, #0e1330 55%, transparent);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  animation: ds-fade-in 200ms var(--ease-out) both;
+}
+.kz-overlay--light {
+  background: color-mix(in srgb, var(--kz-sky-mid) 55%, transparent);
+}
+
+/* ---------- 6. GIẢM CHUYỂN ĐỘNG ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .kz-cloud {
+    animation: none;
+  }
+  .kz-bubble,
+  .kz-overlay {
+    animation: none;
+  }
+}
+
+/* Mũi tên "quay lại" = mũi tên phải lật ngang (bộ icon chỉ có arrow-right) */
+.kz-flip {
+  transform: scaleX(-1);
+}
+
+/* Khung 1 màn chơi cho mọi trò: cao đúng 1 màn hình, không cuộn; phần giữa giãn ra,
+ * chừa đáy cho Ki + đồi cỏ. Trò mới dùng: <div className="kz-game-screen"> … <main className="kz-game-stage"> */
+.kz-game-screen {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  height: 100dvh;
+  min-height: 600px;
+  overflow: hidden;
+}
+.kz-game-stage {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: min(1180px, 100% - 48px);
+  margin: 0 auto;
+  padding-bottom: clamp(120px, 17vh, 170px);
+}

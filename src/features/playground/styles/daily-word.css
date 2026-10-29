@@ -1,0 +1,333 @@
+/* =============================================================================
+ * daily-word.css — THỬ THÁCH TỪ HÔM NAY (/daily-word, kiểu Wordle). Tiền tố: wordle-.
+ * Màu ô: xanh (đúng chỗ) = --c-success · vàng (sai chỗ) = --c-gold · xám (không có).
+ * ========================================================================== */
+
+.wordle__layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 320px;
+  gap: var(--s-5);
+  align-items: start;
+}
+.wordle__board {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--s-4);
+}
+.wordle__side {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-4);
+}
+
+/* lưới 6 × 5 */
+.wordle-grid2 {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.wordle-row2 {
+  display: flex;
+  gap: 8px;
+}
+.wordle-row2.is-shake {
+  animation: gq-shake 320ms var(--ease-out);
+}
+.wordle-cell2 {
+  display: grid;
+  place-items: center;
+  width: 62px;
+  height: 62px;
+  border-radius: 14px;
+  border: 2px solid var(--c-line-strong);
+  background: var(--c-surface);
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 2rem;
+  line-height: 1;
+  padding-top: 0.08em;
+  text-transform: uppercase;
+  color: var(--c-ink);
+  transition: border-color var(--dur-micro) var(--ease-out);
+}
+.wordle-row2.is-current .wordle-cell2 {
+  border-color: color-mix(in srgb, var(--c-primary) 35%, var(--c-line-strong));
+}
+.wordle-cell2.is-filled {
+  border-color: var(--c-ink-2);
+  animation: ds-pop 160ms var(--ease-spring);
+}
+.wordle-cell2.is-correct,
+.wordle-cell2.is-present,
+.wordle-cell2.is-absent {
+  border-color: transparent;
+  color: #fff;
+  animation: wordle-flip 420ms var(--ease-out) both;
+  box-shadow: var(--gloss-top);
+}
+.wordle-cell2.is-correct {
+  background: var(--grad-success);
+}
+.wordle-cell2.is-present {
+  background: var(--grad-gold);
+  color: #3b2a00;
+}
+.wordle-cell2.is-absent {
+  background: color-mix(in srgb, var(--c-ink-2) 55%, var(--c-surface));
+}
+@keyframes wordle-flip {
+  0% {
+    transform: rotateX(0);
+  }
+  50% {
+    transform: rotateX(90deg);
+  }
+  100% {
+    transform: rotateX(0);
+  }
+}
+.wordle__message {
+  min-height: 1.6em;
+  margin: 0;
+  padding: 0 14px;
+  border-radius: var(--r-pill);
+  font-weight: 700;
+  font-size: var(--fs-sm);
+  color: var(--c-oops-ink);
+  opacity: 0;
+}
+.wordle__message.is-visible {
+  opacity: 1;
+  background: var(--c-oops-soft);
+  padding: 4px 14px;
+}
+
+/* bàn phím ảo */
+.wordle-keys {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 100%;
+  max-width: 560px;
+}
+.wordle-keys__row {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+}
+.wordle-key2 {
+  flex: 1 1 0;
+  max-width: 48px;
+  height: 54px;
+  display: grid;
+  place-items: center;
+  border: none;
+  border-radius: 12px;
+  background: var(--c-surface-2);
+  color: var(--c-ink);
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: var(--fs-lg);
+  text-transform: uppercase;
+  box-shadow: inset 0 -2px 0 var(--c-line-strong);
+  transition: transform var(--dur-press) var(--ease-out), background-color var(--dur-micro) var(--ease-out);
+}
+.wordle-key2:active {
+  transform: scale(0.94);
+}
+.wordle-key2.is-wide {
+  flex: 1.6 1 0;
+  max-width: 76px;
+  font-size: var(--fs-md);
+}
+.wordle-key2.is-wide:first-child {
+  background: var(--grad-primary);
+  color: var(--c-on-primary);
+  box-shadow: var(--gloss-top);
+}
+.wordle-key2.is-correct {
+  background: var(--c-success);
+  color: #fff;
+  box-shadow: none;
+}
+.wordle-key2.is-present {
+  background: var(--c-gold);
+  color: #3b2a00;
+  box-shadow: none;
+}
+.wordle-key2.is-absent {
+  background: color-mix(in srgb, var(--c-ink-2) 30%, var(--c-surface));
+  color: color-mix(in srgb, var(--c-ink) 55%, transparent);
+  box-shadow: none;
+}
+
+/* kết quả cuối */
+.wordle-result {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: var(--s-4);
+  width: 100%;
+  max-width: 560px;
+  padding: var(--s-4) var(--s-5);
+  border-radius: var(--r-lg);
+  background: var(--c-surface-2);
+  animation: ds-rise-in 280ms var(--ease-out);
+}
+.wordle-result.is-solved {
+  background: linear-gradient(135deg, var(--c-success-soft), var(--c-gold-soft));
+}
+.wordle-result__text {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+}
+.wordle-result__status {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: var(--fs-lg);
+}
+.wordle-result__word {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+}
+.wordle-result__word strong {
+  font-family: var(--font-display);
+  font-size: var(--fs-2xl);
+  letter-spacing: 0.08em;
+  line-height: 1;
+}
+.wordle-result__meaning {
+  margin: 0;
+  color: var(--c-ink-2);
+}
+.wordle-result__actions {
+  grid-column: 1 / -1;
+  justify-content: flex-end;
+}
+
+/* cột phải: cả nhà hôm nay */
+.wordle__nobody {
+  margin: 0;
+  color: var(--c-ink-2);
+  font-size: var(--fs-sm);
+}
+.wordle-family {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-2);
+}
+.wordle-family li {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  padding: 8px 10px;
+  border-radius: var(--r-md);
+  background: var(--c-surface-2);
+}
+.wordle-family__who {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.3;
+}
+.wordle-family__who span {
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  color: var(--c-ink-2);
+}
+.wordle-family__who span.is-solved {
+  color: var(--c-success-ink);
+}
+.wordle-legend {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+}
+.wordle-legend p {
+  margin: 0;
+  font-size: var(--fs-xs);
+  color: var(--c-ink-2);
+}
+.wordle-legend__cells {
+  display: flex;
+  gap: 4px;
+  flex: none;
+}
+.wordle-legend__cells i {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 7px;
+  font-style: normal;
+  font-family: var(--font-display);
+  font-weight: 800;
+  color: #fff;
+}
+.wordle-legend__cells .is-correct {
+  background: var(--c-success);
+}
+.wordle-legend__cells .is-present {
+  background: var(--c-gold);
+  color: #3b2a00;
+}
+.wordle-legend__cells .is-absent {
+  background: color-mix(in srgb, var(--c-ink-2) 55%, var(--c-surface));
+}
+
+/* dùng lại lớp mini của trang /play */
+.pg-wordle-mini {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: none;
+}
+.pg-wordle-mini__row {
+  display: flex;
+  gap: 2px;
+}
+.pg-wordle-mini i {
+  width: 9px;
+  height: 9px;
+  border-radius: 3px;
+  background: var(--c-line-strong);
+}
+.pg-wordle-mini i.is-correct {
+  background: var(--c-success);
+}
+.pg-wordle-mini i.is-present {
+  background: var(--c-gold);
+}
+
+@keyframes gq-shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-6px);
+  }
+  60% {
+    transform: translateX(5px);
+  }
+}
+
+@container pg-page (max-width: 860px) {
+  .wordle__layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+@container pg-page (max-width: 480px) {
+  .wordle-cell2 {
+    width: 50px;
+    height: 50px;
+    font-size: 1.6rem;
+  }
+}

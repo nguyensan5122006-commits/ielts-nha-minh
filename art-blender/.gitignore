@@ -1,0 +1,7 @@
+# File backup Blender tự tạo mỗi lần lưu đè (.blend1, .blend2...) và file tạm khi đang lưu
+*.blend[0-9]
+*.blend@
+# Cache bytecode Python (Blender tự tạo khi import các module trong scripts/_common)
+__pycache__/
+# Thư viện Node của tools/ (cài lại bằng: cd tools && npm install)
+tools/node_modules/

@@ -1,0 +1,69 @@
+/* =============================================================================
+ * mistake-practice.css — lượt "Ôn lại câu sai" (toàn màn hình) + màn tổng kết
+ * ========================================================================== */
+.practice-fixed {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-1);
+  padding: var(--s-1) var(--s-3);
+  border-radius: var(--r-pill);
+  background: var(--c-success-soft);
+  color: var(--c-success-ink);
+  font-weight: 700;
+  white-space: nowrap;
+}
+.practice-again {
+  padding: 2px var(--s-2);
+  border-radius: var(--r-pill);
+  background: var(--c-oops-soft);
+  color: var(--c-oops-ink);
+  font-weight: 700;
+  font-size: var(--fs-xs);
+}
+
+.practice-end {
+  width: 100%;
+  max-width: 960px;
+  margin: 0 auto;
+  padding: var(--s-6) var(--s-6) var(--s-9);
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-6);
+}
+.practice-end__hero {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--s-6);
+}
+.practice-end__hero h1 {
+  margin: 0;
+  font-size: var(--fs-3xl);
+}
+.practice-end__hero p {
+  margin: var(--s-2) 0 0;
+  color: var(--c-ink-2);
+}
+.practice-end__ring-value {
+  font-family: var(--font-ui);
+  font-size: var(--fs-xl);
+}
+.practice-end__total {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+  padding: var(--s-3) var(--s-5);
+  border-radius: var(--r-pill);
+  background: var(--c-success-soft);
+  color: var(--c-success-ink);
+  font-weight: 700;
+  align-self: flex-start;
+}
+@media (max-width: 860px) {
+  .practice-end__hero {
+    grid-template-columns: 1fr;
+    justify-items: center;
+    text-align: center;
+  }
+}

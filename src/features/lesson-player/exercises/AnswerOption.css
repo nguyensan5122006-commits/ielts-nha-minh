@@ -1,0 +1,150 @@
+/* =============================================================================
+ * AnswerOption.css — thẻ đáp án (theo mẫu .sg-answer của hệ thiết kế)
+ * ========================================================================== */
+.lp-answer {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  width: 100%;
+  min-height: 62px;
+  padding: 10px var(--s-4) 10px 14px;
+  border: 1.5px solid var(--c-line-strong);
+  border-radius: var(--r-md);
+  background: var(--c-surface);
+  color: var(--c-ink);
+  font-size: 1.0625rem;
+  font-weight: 600;
+  line-height: 1.35;
+  text-align: left;
+  box-shadow:
+    var(--gloss-top),
+    0 4px 10px -8px rgba(var(--shadow-rgb), 0.35);
+  cursor: pointer;
+  transition:
+    border-color var(--dur-micro) var(--ease-out),
+    background-color var(--dur-micro) var(--ease-out),
+    box-shadow var(--dur-micro) var(--ease-out),
+    transform var(--dur-press) var(--ease-out),
+    opacity var(--dur-panel) var(--ease-out);
+  animation: lp-answer-in 260ms var(--ease-out) var(--answer-delay, 0ms) both;
+}
+.lp-answer:hover:not(:disabled):not(.is-selected) {
+  border-color: color-mix(in srgb, var(--c-primary) 45%, var(--c-line-strong));
+  transform: translateY(-1px);
+}
+.lp-answer:active:not(:disabled) {
+  transform: scale(0.98);
+}
+.lp-answer:disabled {
+  cursor: default;
+}
+.lp-answer__key {
+  flex: none;
+  min-width: 28px;
+  justify-content: center;
+}
+.lp-answer__text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  padding-top: 1px;
+}
+.lp-answer__sub {
+  color: var(--c-ink-2);
+  font-size: var(--fs-xs);
+  font-weight: 600;
+}
+.lp-answer__mark {
+  margin-left: auto;
+  flex: none;
+}
+
+/* đang chọn: viền cam + nền cam nhạt + vòng sáng, nhún nhẹ 0.98 -> 1 */
+.lp-answer.is-selected {
+  border-color: var(--c-primary);
+  background: var(--c-primary-soft);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--c-primary) 18%, transparent);
+  /* giữ hiệu ứng xuất hiện ở vị trí đầu danh sách -> đổi chọn không làm thẻ "trồi" lại */
+  animation:
+    lp-answer-in 260ms var(--ease-out) var(--answer-delay, 0ms) both,
+    ds-squish 180ms var(--ease-out);
+}
+/* đáp án đúng (kể cả khi người học chọn sai): xanh ngay trong danh sách */
+.lp-answer.is-correct {
+  border-color: var(--c-success);
+  background: var(--c-success-soft);
+  color: var(--c-success-ink);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--c-success) 16%, transparent);
+  animation:
+    lp-answer-in 260ms var(--ease-out) var(--answer-delay, 0ms) both,
+    ds-squish 220ms var(--ease-spring);
+}
+.lp-answer.is-oops {
+  border-color: var(--c-oops);
+  background: var(--c-oops-soft);
+  color: var(--c-oops-ink);
+  animation:
+    lp-answer-in 260ms var(--ease-out) var(--answer-delay, 0ms) both,
+    ds-nudge 320ms var(--ease-out);
+}
+.lp-answer.is-correct .lp-answer__sub,
+.lp-answer.is-oops .lp-answer__sub {
+  color: inherit;
+  opacity: 0.85;
+}
+.lp-answer.is-dim {
+  opacity: 0.6;
+}
+/* gợi ý đã loại đáp án này */
+.lp-answer.is-eliminated {
+  opacity: 0.4;
+  border-style: dashed;
+  box-shadow: none;
+  cursor: not-allowed;
+}
+.lp-answer.is-eliminated .lp-answer__label {
+  text-decoration: line-through;
+  text-decoration-thickness: 2px;
+}
+
+/* ô to căn giữa (TRUE / FALSE / NOT GIVEN) */
+.lp-answer--tile {
+  flex-direction: column;
+  justify-content: center;
+  gap: 6px;
+  min-height: 96px;
+  padding: 16px 12px;
+  text-align: center;
+}
+.lp-answer--tile .lp-answer__text {
+  align-items: center;
+}
+.lp-answer--tile .lp-answer__label {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+}
+.lp-answer--tile .lp-answer__key {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+}
+.lp-answer--tile .lp-answer__mark {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  margin: 0;
+}
+
+@keyframes lp-answer-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}

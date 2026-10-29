@@ -1,0 +1,73 @@
+/* =============================================================================
+ * Modal.css — hộp thoại: nền mờ navy + khung trắng bo 32px, mascot ló đầu
+ * ========================================================================== */
+.ds-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-modal);
+  display: grid;
+  place-items: center;
+  padding: var(--s-6);
+  /* chừa chỗ phía trên cho đầu mascot */
+  padding-top: calc(var(--s-6) + 60px);
+  background: var(--backdrop);
+  backdrop-filter: blur(3px);
+  animation: ds-fade-in var(--dur-panel) var(--ease-out) both;
+  overflow-y: auto;
+}
+.ds-modal {
+  position: relative;
+  width: 100%;
+  max-width: 520px;
+  max-height: calc(100vh - 120px);
+  display: flex;
+  flex-direction: column;
+  background: var(--c-surface);
+  color: var(--c-ink);
+  border-radius: var(--r-xl);
+  border: 1px solid var(--c-line);
+  box-shadow: var(--gloss-top), var(--shadow-pop);
+  animation: ds-rise-in 260ms var(--ease-spring) both;
+}
+.ds-modal:focus {
+  outline: none;
+}
+.ds-modal--sm {
+  max-width: 400px;
+}
+.ds-modal--lg {
+  max-width: 720px;
+}
+.ds-modal__header {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--s-3);
+  padding: var(--s-6) var(--s-6) var(--s-2) var(--s-7);
+}
+.ds-modal.has-mascot .ds-modal__header {
+  padding-top: var(--s-7);
+}
+.ds-modal__title {
+  flex: 1;
+  margin: 0;
+  font-size: var(--fs-xl);
+  line-height: 1.25;
+  padding-top: 4px;
+}
+.ds-modal__body {
+  padding: 0 var(--s-7) var(--s-5);
+  color: var(--c-ink-2);
+  overflow-y: auto;
+}
+.ds-modal__footer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: var(--s-3);
+  padding: var(--s-4) var(--s-6) var(--s-6);
+}
+@media (max-width: 560px) {
+  .ds-modal__footer > * {
+    flex: 1 1 auto;
+  }
+}

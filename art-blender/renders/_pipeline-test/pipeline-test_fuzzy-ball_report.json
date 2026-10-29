@@ -1,0 +1,107 @@
+{
+  "blender": "5.2.3 LTS",
+  "python": "3.13.13",
+  "gpu": {
+    "device": "GPU",
+    "backend": "OPTIX",
+    "active_devices": [
+      "NVIDIA GeForce RTX 4060 Laptop GPU"
+    ],
+    "all_devices": [
+      [
+        "NVIDIA GeForce RTX 4060 Laptop GPU",
+        "CUDA"
+      ],
+      [
+        "AMD Ryzen 7 7435HS",
+        "CPU"
+      ],
+      [
+        "NVIDIA GeForce RTX 4060 Laptop GPU",
+        "OPTIX"
+      ]
+    ]
+  },
+  "settings": {
+    "samples": 128,
+    "size": 512,
+    "denoiser": "OPENIMAGEDENOISE",
+    "denoise_on_gpu": true,
+    "view_transform": "AgX",
+    "look": "AgX - Punchy",
+    "film_transparent": true
+  },
+  "render_seconds": {
+    "GPU_OPTIX_cold": 5.09,
+    "GPU_OPTIX_warm": 4.48,
+    "CPU": 33.97
+  },
+  "outputs": {
+    "pipeline-test_fuzzy-ball.png": {
+      "size_kb": 179.7,
+      "alpha": {
+        "channels": 4,
+        "size": [
+          512,
+          512
+        ],
+        "alpha_corner": 0.003921568859368563,
+        "alpha_center": 1.0,
+        "fully_transparent_pct": 70.1,
+        "fully_opaque_pct": 20.2,
+        "partial_alpha_pct": 9.7
+      }
+    },
+    "pipeline-test_fuzzy-ball.webp": {
+      "size_kb": 13.7,
+      "alpha": {
+        "channels": 4,
+        "size": [
+          512,
+          512
+        ],
+        "alpha_corner": 0.003921568859368563,
+        "alpha_center": 1.0,
+        "fully_transparent_pct": 70.1,
+        "fully_opaque_pct": 20.2,
+        "partial_alpha_pct": 9.7
+      }
+    },
+    "pipeline-test_fuzzy-ball_cpu.png": {
+      "size_kb": 179.2
+    }
+  },
+  "glb_draco": {
+    "path": "E:\\IELTS_ThienThao\\art-blender\\renders\\_pipeline-test\\pipeline-test_fuzzy-ball.glb",
+    "size_kb": 34.4,
+    "objects": [
+      "Body",
+      "Eye_L",
+      "Eye_R"
+    ],
+    "vertices": 5766,
+    "triangles": 11520,
+    "draco": true,
+    "warnings": [
+      "Vật liệu 'Mat_Fur_Peach': 'Base Color' nối từ node 'ShaderNodeValToRGB' → sẽ bị BỎ khi xuất glTF (cần bake ra ảnh).",
+      "Vật liệu 'Mat_Fur_Peach': 'Normal' nối từ node 'ShaderNodeBump' → sẽ bị BỎ khi xuất glTF (cần bake ra ảnh)."
+    ]
+  },
+  "glb_no_draco": {
+    "path": "E:\\IELTS_ThienThao\\art-blender\\renders\\_pipeline-test\\pipeline-test_fuzzy-ball_no-draco.glb",
+    "size_kb": 194.4,
+    "objects": [
+      "Body",
+      "Eye_L",
+      "Eye_R"
+    ],
+    "vertices": 5766,
+    "triangles": 11520,
+    "draco": false,
+    "warnings": [
+      "Vật liệu 'Mat_Fur_Peach': 'Base Color' nối từ node 'ShaderNodeValToRGB' → sẽ bị BỎ khi xuất glTF (cần bake ra ảnh).",
+      "Vật liệu 'Mat_Fur_Peach': 'Normal' nối từ node 'ShaderNodeBump' → sẽ bị BỎ khi xuất glTF (cần bake ra ảnh)."
+    ]
+  },
+  "blend_file": "E:\\IELTS_ThienThao\\art-blender\\blend-files\\_pipeline-test_fuzzy-ball.blend"
+}

@@ -1,0 +1,151 @@
+/* =============================================================================
+ * ListeningTaskPlayer.css — 2 cột của bài nghe: trình phát (trái) · câu hỏi (phải)
+ * ========================================================================== */
+
+.xlis-left {
+  padding: var(--s-5) var(--s-5) var(--s-8);
+}
+.xlis-right {
+  min-height: 100%;
+}
+
+/* thẻ "lời thoại mở sau khi nộp" */
+.xlis-locked {
+  display: flex;
+  gap: var(--s-3);
+  margin-top: var(--s-4);
+  padding: var(--s-4);
+  border-radius: var(--r-lg);
+  border: 1.5px dashed var(--c-line-strong);
+  color: var(--c-ink-2);
+}
+.xlis-locked__icon {
+  font-size: 22px;
+  line-height: 1.2;
+}
+.xlis-locked strong {
+  display: block;
+  color: var(--c-ink);
+  font-size: var(--fs-sm);
+}
+.xlis-locked p {
+  margin: 2px 0 0;
+  font-size: var(--fs-xs);
+}
+.xlis-tip {
+  margin-top: var(--s-4);
+  padding: var(--s-3) var(--s-4);
+  border-radius: var(--r-md);
+  background: var(--c-gold-soft);
+}
+.xlis-tip strong {
+  font-size: var(--fs-xs);
+  color: var(--c-gold-ink);
+}
+.xlis-tip p {
+  margin: 2px 0 0;
+  font-size: var(--fs-sm);
+}
+.xlis-shortcuts {
+  margin: var(--s-4) 0 0;
+  font-size: var(--fs-xs);
+  color: var(--c-ink-2);
+}
+.xlis-retry-note {
+  margin: var(--s-5) var(--s-7) 0;
+  padding: var(--s-3) var(--s-4);
+  border-radius: var(--r-md);
+  background: var(--c-navy-soft);
+  font-size: var(--fs-sm);
+  font-weight: 600;
+}
+
+/* vạch chia đoạn trong cột câu hỏi */
+.xlis-divider {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  margin: 0 0 var(--s-3);
+}
+.xq-group + .xq-group .xlis-divider {
+  margin-top: var(--s-2);
+}
+.xlis-divider__label {
+  font: 700 var(--fs-sm) / 1.2 var(--font-ui);
+  color: var(--skill-listening);
+  white-space: nowrap;
+}
+[data-exam-contrast]:not([data-exam-contrast='theme']) .xlis-divider__label {
+  color: var(--c-ink);
+}
+.xlis-divider__label span {
+  color: var(--c-ink-2);
+  font-weight: 600;
+}
+.xlis-divider__line {
+  flex: 1;
+  height: 1px;
+  background: var(--c-line-strong);
+}
+.xlis-divider__btn {
+  min-height: 30px;
+  padding: 0 var(--s-3);
+  border-radius: var(--r-pill);
+  border: 1px solid var(--c-line-strong);
+  background: var(--c-surface);
+  color: var(--c-ink);
+  font: 600 var(--fs-xs) / 1 var(--font-ui);
+  white-space: nowrap;
+  cursor: pointer;
+}
+.xlis-divider__btn:hover {
+  border-color: var(--skill-listening);
+}
+.xlis-divider__btn:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+.xlis-divider__state {
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  color: var(--c-ink-2);
+  white-space: nowrap;
+}
+.xlis-divider.is-playing .xlis-divider__line {
+  background: var(--skill-listening);
+}
+.xlis-divider.is-playing .xlis-divider__state {
+  color: var(--skill-listening);
+}
+
+/* trạng thái "đang phát" trên dải task (thi thật) */
+.xlis-onair {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-2);
+  padding: 4px 12px;
+  border-radius: var(--r-pill);
+  background: color-mix(in srgb, var(--skill-listening) 14%, var(--c-surface));
+  font: 600 var(--fs-sm) / 1.3 var(--font-ui);
+  white-space: nowrap;
+}
+.xlis-onair__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--skill-listening);
+  animation: xaudio-pulse 1.6s var(--ease-in-out) infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .xlis-onair__dot {
+    animation: none;
+  }
+}
+@media (max-width: 1180px) {
+  .xlis-left {
+    padding: var(--s-4) var(--s-4) var(--s-7);
+  }
+  .xlis-retry-note {
+    margin: var(--s-4) var(--s-5) 0;
+  }
+}

@@ -1,0 +1,498 @@
+/* =============================================================================
+ * AppShell.css — khung trang 3 cột, sidebar dạng "tấm vinyl" nổi, thanh tab dưới
+ *
+ *  ≥ 1280px    : sidebar | nội dung | cột phải
+ *  1024–1279px : sidebar | nội dung (cột phải xếp xuống dưới nội dung)
+ *  < 1024px    : thanh trên + nội dung + thanh tab dưới (sidebar ẩn)
+ * ========================================================================== */
+
+.app-shell {
+  display: grid;
+  grid-template-columns: var(--sidebar-w) minmax(0, 1fr) var(--rail-w);
+  grid-template-areas: 'sidebar main rail';
+  align-items: start;
+  min-height: 100vh;
+  background:
+    radial-gradient(900px 500px at 100% -10%, color-mix(in srgb, var(--c-primary) 7%, transparent), transparent 70%),
+    var(--c-bg);
+}
+/* Trang không đặt gì vào cột phải -> bỏ cột phải, nội dung rộng ra */
+.app-shell:has(> .app-shell__rail:empty) {
+  grid-template-columns: var(--sidebar-w) minmax(0, 1fr);
+  grid-template-areas: 'sidebar main';
+}
+.app-shell__rail:empty {
+  display: none;
+}
+
+/* Link "Bỏ qua menu" chỉ hiện khi dùng phím Tab */
+.app-shell__skip {
+  position: fixed;
+  left: 16px;
+  top: -60px;
+  z-index: var(--z-toast);
+  padding: 10px 16px;
+  border-radius: var(--r-pill);
+  background: var(--c-ink);
+  color: var(--c-bg);
+  font-weight: 700;
+  transition: top var(--dur-micro) var(--ease-out);
+}
+.app-shell__skip:focus {
+  top: 16px;
+}
+
+/* ---------------- SIDEBAR ---------------- */
+.app-sidebar {
+  grid-area: sidebar;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  padding: var(--s-4) 0 var(--s-4) var(--s-4);
+  display: flex;
+}
+/* tấm sidebar: nền trắng bo tròn 32px, bóng mềm — như 1 món đồ chơi vinyl đặt trên bàn */
+.app-sidebar > * {
+  flex: none;
+}
+.app-sidebar {
+  flex-direction: column;
+}
+.app-sidebar::before {
+  content: '';
+  position: absolute;
+  inset: var(--s-4) 0 var(--s-4) var(--s-4);
+  border-radius: var(--r-xl);
+  background: var(--c-surface);
+  border: 1px solid var(--c-line);
+  box-shadow: var(--gloss-top), var(--shadow-card);
+  z-index: 0;
+}
+.app-sidebar > * {
+  position: relative;
+  z-index: 1;
+}
+
+.app-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: var(--s-5) var(--s-4) var(--s-6);
+  color: var(--c-ink);
+  text-decoration: none;
+}
+.app-brand:hover {
+  text-decoration: none;
+}
+.app-brand__name {
+  font-family: var(--font-display);
+  font-size: 1.1875rem;
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+  padding-top: 0.15em;
+}
+
+.app-nav {
+  padding: 0 var(--s-3);
+}
+.app-nav ul {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.app-nav__link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  height: 50px;
+  padding: 0 12px 0 7px;
+  border-radius: var(--r-md);
+  color: var(--c-ink-2);
+  font-family: var(--font-display);
+  font-size: var(--fs-md);
+  font-weight: 700;
+  text-decoration: none;
+  transition:
+    background-color var(--dur-micro) var(--ease-out),
+    color var(--dur-micro) var(--ease-out);
+}
+.app-nav__link:hover {
+  text-decoration: none;
+  background: var(--c-surface-2);
+  color: var(--c-ink);
+}
+.app-nav__icon {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 36px;
+  height: 36px;
+  border-radius: 12px;
+  transition:
+    background var(--dur-micro) var(--ease-out),
+    color var(--dur-micro) var(--ease-out),
+    transform var(--dur-micro) var(--ease-spring);
+}
+.app-nav__label {
+  flex: 1;
+  padding-top: 0.15em;
+}
+/* mục đang mở: nền cam nhạt, icon nằm trong "viên kẹo" cam bóng */
+.app-nav__link.is-active {
+  background: var(--c-primary-soft);
+  color: var(--c-ink);
+}
+.app-nav__link.is-active .app-nav__icon {
+  background: var(--grad-primary);
+  color: var(--c-on-primary);
+  box-shadow:
+    var(--gloss-top),
+    0 6px 12px -6px color-mix(in srgb, var(--c-primary-deep) 70%, transparent);
+}
+.app-nav__link:hover .app-nav__icon {
+  transform: scale(1.06);
+}
+.app-nav__badge {
+  display: inline-grid;
+  place-items: center;
+  min-width: 22px;
+  height: 22px;
+  padding: 0 6px;
+  border-radius: var(--r-pill);
+  background: var(--c-red);
+  color: var(--c-on-red);
+  font-family: var(--font-ui);
+  font-size: 0.72rem;
+  font-weight: 800;
+  box-shadow: var(--gloss-top);
+}
+
+.app-sidebar__bottom {
+  margin-top: auto;
+  padding: 0 var(--s-3) var(--s-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-3);
+}
+
+/* hàng số liệu: lửa · chuối · cấp */
+.app-stats {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  padding: 8px 10px;
+  border-radius: var(--r-md);
+  background: var(--c-surface-2);
+}
+.app-stats__item {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-family: var(--font-display);
+  font-size: var(--fs-sm);
+  font-weight: 800;
+  color: var(--c-ink);
+  text-decoration: none;
+  line-height: 1;
+}
+.app-stats__item:hover {
+  text-decoration: none;
+}
+.app-stats__item--banana {
+  color: var(--c-gold-ink);
+}
+.app-stats__item--banana span:last-child,
+.app-stats__item--level {
+  padding-top: 0.12em;
+}
+.app-stats__item--level {
+  padding: 5px 8px 3px;
+  border-radius: var(--r-pill);
+  background: var(--c-olive-soft);
+  color: var(--c-olive-ink);
+  font-size: var(--fs-xs);
+}
+
+/* tài khoản */
+.app-account {
+  position: relative;
+}
+.app-account__button {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 6px 8px 6px 6px;
+  border: none;
+  border-radius: var(--r-md);
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color var(--dur-micro) var(--ease-out);
+}
+.app-account__button:hover,
+.app-account__button[aria-expanded='true'] {
+  background: var(--c-surface-2);
+}
+.app-account__avatar {
+  display: grid;
+  place-items: center;
+  flex: none;
+}
+.app-account__text {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+}
+.app-account__name {
+  font-weight: 700;
+  font-size: var(--fs-sm);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.app-account__save {
+  font-size: 0.75rem;
+  color: var(--c-ink-2);
+}
+.app-account__save.is-error {
+  color: var(--c-oops-ink);
+  font-weight: 600;
+}
+.app-account__chevron {
+  color: var(--c-ink-2);
+}
+.app-account__menu {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: calc(100% + 6px);
+  z-index: var(--z-nav);
+  display: flex;
+  flex-direction: column;
+  padding: 6px;
+  border-radius: var(--r-md);
+  background: var(--c-surface);
+  border: 1px solid var(--c-line);
+  box-shadow: var(--shadow-pop);
+  animation: ds-rise-in 180ms var(--ease-out) both;
+}
+.app-account__menu a,
+.app-account__menu button {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 10px;
+  border: none;
+  border-radius: var(--r-sm);
+  background: none;
+  color: var(--c-ink);
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  text-align: left;
+  text-decoration: none;
+  cursor: pointer;
+}
+.app-account__menu a:hover,
+.app-account__menu button:hover {
+  background: var(--c-surface-2);
+  text-decoration: none;
+}
+
+.app-sidebar__toggles {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  padding-top: var(--s-3);
+  border-top: 1px solid var(--c-line);
+}
+
+/* ---------------- NỘI DUNG + CỘT PHẢI ---------------- */
+.app-shell__main {
+  grid-area: main;
+  min-width: 0;
+  padding: var(--s-7) var(--s-8) var(--s-10);
+}
+.app-shell__main:focus {
+  outline: none;
+}
+.app-shell__rail {
+  grid-area: rail;
+  position: sticky;
+  top: 0;
+  max-height: 100vh;
+  overflow-y: auto;
+  padding: var(--s-7) var(--s-6) var(--s-7) 0;
+  scrollbar-width: none;
+}
+.right-rail__stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-4);
+}
+
+/* ---------------- THANH TRÊN + THANH TAB DƯỚI (ẩn trên desktop) ---------------- */
+.app-topbar,
+.app-tabbar {
+  display: none;
+}
+
+/* =================== 1024–1279px: cột phải xuống dưới =================== */
+@media (max-width: 1279px) {
+  .app-shell,
+  .app-shell:has(> .app-shell__rail:empty) {
+    grid-template-columns: var(--sidebar-w) minmax(0, 1fr);
+    grid-template-areas:
+      'sidebar main'
+      'sidebar rail';
+  }
+  .app-sidebar {
+    grid-row: 1 / span 2;
+  }
+  .app-shell__main {
+    padding: var(--s-7) var(--s-7) var(--s-7);
+  }
+  .app-shell__rail {
+    position: static;
+    max-height: none;
+    overflow: visible;
+    padding: 0 var(--s-7) var(--s-10);
+  }
+  /* các widget cột phải xếp thành lưới 2 cột khi nằm dưới, rộng bằng cột nội dung chuẩn */
+  .right-rail__stack {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    align-items: start;
+    max-width: var(--content-max);
+    margin: 0 auto;
+  }
+}
+
+/* =================== < 1024px: thanh dưới (chuẩn bị cho mobile) =================== */
+@media (max-width: 1023px) {
+  .app-shell,
+  .app-shell:has(> .app-shell__rail:empty) {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      'topbar'
+      'main'
+      'rail';
+  }
+  .app-sidebar {
+    display: none;
+  }
+  .app-topbar {
+    grid-area: topbar;
+    position: sticky;
+    top: 0;
+    z-index: var(--z-nav);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--s-3);
+    height: 64px;
+    padding: 0 var(--s-4);
+    background: color-mix(in srgb, var(--c-bg) 86%, transparent);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--c-line);
+  }
+  .app-brand--compact {
+    margin: 0;
+    gap: 8px;
+  }
+  .app-brand--compact .app-brand__name {
+    font-size: var(--fs-md);
+  }
+  .app-topbar__actions {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .app-topbar__actions .ds-streak {
+    margin-right: 6px;
+  }
+  .app-shell__main {
+    padding: var(--s-5) var(--s-4) var(--s-6);
+  }
+  .app-shell__rail {
+    padding: 0 var(--s-4) 120px;
+  }
+  .app-shell:has(> .app-shell__rail:empty) .app-shell__main {
+    padding-bottom: 120px; /* chừa chỗ cho thanh tab dưới */
+  }
+
+  .app-tabbar {
+    position: fixed;
+    left: var(--s-3);
+    right: var(--s-3);
+    bottom: calc(var(--s-3) + env(safe-area-inset-bottom, 0px));
+    z-index: var(--z-nav);
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: 1fr;
+    height: 68px;
+    padding: 6px;
+    border-radius: var(--r-lg);
+    background: var(--c-surface);
+    border: 1px solid var(--c-line);
+    box-shadow: var(--gloss-top), var(--shadow-pop);
+  }
+  .app-tabbar__link {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    min-width: 0;
+    border-radius: var(--r-md);
+    color: var(--c-ink-2);
+    text-decoration: none;
+    font-size: 0.6875rem;
+    font-weight: 700;
+  }
+  .app-tabbar__link:hover {
+    text-decoration: none;
+    color: var(--c-ink);
+  }
+  .app-tabbar__icon {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 30px;
+    border-radius: var(--r-pill);
+    transition: background var(--dur-micro) var(--ease-out);
+  }
+  .app-tabbar__label {
+    max-width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .app-tabbar__link.is-active {
+    color: var(--c-ink);
+  }
+  .app-tabbar__link.is-active .app-tabbar__icon {
+    background: var(--grad-primary);
+    color: var(--c-on-primary);
+    box-shadow: var(--gloss-top);
+  }
+  .app-tabbar__dot {
+    position: absolute;
+    top: 2px;
+    right: 8px;
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: var(--c-red);
+    box-shadow: 0 0 0 2px var(--c-surface);
+  }
+}

@@ -1,0 +1,408 @@
+/* =============================================================================
+ * events.css — SỰ KIỆN: Giải đấu tuần (/tournament) + Boss cả nhà (/boss)
+ * + trang chơi một mình (/games/*). Tiền tố: ev-.
+ * ========================================================================== */
+
+.events {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-5);
+}
+.events .pg-header {
+  margin-bottom: 0;
+}
+
+/* thẻ lớn đầu trang (chủ đề tuần / boss) */
+.ev-hero {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--s-6);
+  flex-wrap: wrap;
+  padding: var(--s-6) var(--s-7);
+  border-radius: var(--r-xl);
+  border: 1px solid var(--c-line);
+  box-shadow: var(--gloss-top), var(--shadow-card);
+}
+.ev-hero--tournament {
+  background:
+    radial-gradient(70% 140% at 100% 0%, color-mix(in srgb, var(--c-gold) 30%, transparent), transparent 60%),
+    linear-gradient(135deg, var(--c-primary-soft), var(--c-surface));
+}
+.ev-hero__text {
+  flex: 1 1 280px;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-2);
+}
+.ev-hero__eyebrow {
+  font-size: var(--fs-sm);
+  font-weight: 700;
+  color: var(--c-ink-2);
+}
+.ev-hero__title {
+  margin: 0;
+  font-size: var(--fs-2xl);
+}
+.ev-hero__facts {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.ev-hero__facts li {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border-radius: var(--r-pill);
+  background: var(--c-surface);
+  font-size: var(--fs-sm);
+  font-weight: 600;
+}
+.ev-hero__cta {
+  flex: none;
+}
+.ev-lastrun {
+  margin: 0;
+  align-items: center;
+}
+.ev-columns {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--s-5);
+  align-items: start;
+}
+.ev-empty {
+  margin: 0;
+  color: var(--c-ink-2);
+}
+.ev-playing-head {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  margin-bottom: var(--s-4);
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: var(--fs-xl);
+}
+.ev-playing-head__topic {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: auto;
+  padding: 4px 14px 4px 8px;
+  border-radius: var(--r-pill);
+  background: var(--c-surface-2);
+  font-size: var(--fs-sm);
+}
+
+/* ---------- boss ---------- */
+.ev-hero--boss {
+  align-items: stretch;
+  background:
+    radial-gradient(60% 120% at 0% 50%, color-mix(in srgb, var(--c-red) 20%, transparent), transparent 65%),
+    linear-gradient(135deg, var(--c-red-soft), var(--c-surface) 70%);
+}
+.ev-boss {
+  flex: 1 1 420px;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--s-6);
+}
+.ev-boss__lair {
+  position: relative;
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 176px;
+  height: 176px;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 50% 40%, color-mix(in srgb, var(--c-red) 26%, var(--c-surface)), color-mix(in srgb, var(--c-red) 8%, var(--c-surface)) 70%);
+  box-shadow: inset 0 -10px 24px color-mix(in srgb, var(--c-red) 22%, transparent), 0 16px 30px -18px var(--c-red);
+}
+.ev-boss__lair .pg-art {
+  animation: ev-boss-idle 3.2s ease-in-out infinite;
+}
+.ev-boss.is-hit .ev-boss__lair .pg-art {
+  animation: ev-boss-hit 380ms var(--ease-out);
+}
+.ev-boss.is-defeated .ev-boss__lair .pg-art {
+  animation: none;
+  filter: grayscale(0.8);
+}
+@keyframes ev-boss-idle {
+  0%,
+  100% {
+    transform: translateY(0) rotate(-2deg);
+  }
+  50% {
+    transform: translateY(-6px) rotate(2deg);
+  }
+}
+@keyframes ev-boss-hit {
+  0% {
+    transform: translateX(0) scale(1);
+    filter: brightness(1);
+  }
+  20% {
+    transform: translateX(-10px) scale(0.94);
+    filter: brightness(1.8) saturate(0.4);
+  }
+  50% {
+    transform: translateX(8px);
+  }
+  100% {
+    transform: translateX(0) scale(1);
+    filter: brightness(1);
+  }
+}
+.ev-boss__damage {
+  position: absolute;
+  top: 6px;
+  right: -6px;
+  padding: 2px 12px;
+  border-radius: var(--r-pill);
+  background: var(--c-red);
+  color: var(--c-on-red);
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: var(--fs-xl);
+  animation: ev-damage 700ms var(--ease-out) both;
+}
+@keyframes ev-damage {
+  0% {
+    transform: translateY(10px) scale(0.6);
+    opacity: 0;
+  }
+  25% {
+    transform: translateY(-4px) scale(1.15);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-26px) scale(1);
+    opacity: 0;
+  }
+}
+.ev-boss__info {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-2);
+}
+.ev-boss__name {
+  margin: 0;
+  font-size: var(--fs-2xl);
+}
+.ev-boss__taunt {
+  margin: 0;
+  padding: 8px 14px;
+  border-radius: 16px 16px 16px 4px;
+  background: var(--c-surface);
+  font-style: italic;
+  color: var(--c-ink-2);
+  align-self: flex-start;
+  box-shadow: 0 1px 0 var(--c-line);
+}
+/* thanh máu boss: dày, đỏ -> cam san hô, có vạch chia */
+.ev-hp {
+  position: relative;
+  height: 26px;
+  border-radius: var(--r-pill);
+  background: var(--c-surface);
+  box-shadow: inset 0 1px 3px rgba(var(--shadow-rgb), 0.15), 0 0 0 1.5px color-mix(in srgb, var(--c-red) 30%, transparent);
+  overflow: hidden;
+}
+.ev-hp__fill {
+  position: absolute;
+  inset: 0 auto 0 0;
+  border-radius: inherit;
+  background:
+    repeating-linear-gradient(90deg, transparent 0 38px, rgba(255, 255, 255, 0.28) 38px 40px),
+    linear-gradient(180deg, color-mix(in srgb, var(--c-red) 75%, #fff), var(--c-red));
+  transition: width 700ms var(--ease-out);
+  box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.35);
+}
+.ev-hp__label {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: var(--fs-sm);
+  color: var(--c-ink);
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.7);
+}
+.ev-boss__side {
+  flex: 0 1 280px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: var(--s-3);
+  padding-left: var(--s-6);
+  border-left: 1px dashed color-mix(in srgb, var(--c-red) 30%, var(--c-line));
+}
+.ev-boss__today {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: var(--fs-sm);
+  font-weight: 700;
+}
+.ev-boss__hint {
+  font-size: var(--fs-xs);
+  color: var(--c-ink-2);
+  text-align: center;
+}
+.ev-boss__win {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+  font-family: var(--font-display);
+  font-size: var(--fs-lg);
+}
+
+/* boss bản nhỏ trên câu hỏi khi đang đánh */
+.ev-boss.is-compact {
+  gap: var(--s-4);
+  margin-bottom: var(--s-2);
+  padding: var(--s-3) var(--s-5);
+  border-radius: var(--r-lg);
+  background: linear-gradient(135deg, var(--c-red-soft), var(--c-surface));
+  border: 1px solid var(--c-line);
+}
+.ev-boss.is-compact .ev-boss__lair {
+  width: 84px;
+  height: 84px;
+}
+.ev-boss.is-compact .ev-boss__name {
+  font-size: var(--fs-lg);
+}
+.ev-boss.is-compact .ev-boss__damage {
+  font-size: var(--fs-md);
+}
+
+/* ---------- chơi một mình: màn chọn ván ---------- */
+.ev-setup {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-5);
+}
+.ev-setup__row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: var(--s-4);
+  align-items: end;
+}
+.ev-setup__footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--s-3);
+  padding-top: var(--s-4);
+  border-top: 1px solid var(--c-line);
+}
+.ev-result {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--s-3);
+  text-align: center;
+}
+.ev-result h2 {
+  margin: 0;
+  font-size: var(--fs-3xl);
+}
+.ev-result__score {
+  display: flex;
+  align-items: center;
+  gap: var(--s-4);
+  flex-wrap: wrap;
+  justify-content: center;
+  font-size: var(--fs-lg);
+}
+.ev-result__score strong {
+  font-family: var(--font-display);
+  font-size: var(--fs-4xl);
+  line-height: 1;
+  color: var(--c-primary-ink);
+}
+.ev-record {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 16px 6px 8px;
+  border-radius: var(--r-pill);
+  background: var(--grad-gold);
+  color: #3b2a00;
+  font-family: var(--font-display);
+  font-weight: 800;
+  box-shadow: var(--gloss-top);
+  animation: ds-pop 420ms var(--ease-spring) 200ms both;
+}
+.ev-solo-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 320px;
+  gap: var(--s-5);
+  align-items: start;
+}
+
+/* ---------- nối từ với máy ---------- */
+.ev-chain-start {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0;
+}
+.ev-chain-start span {
+  padding: 4px 14px;
+  border-radius: var(--r-pill);
+  background: var(--c-surface-2);
+  font-weight: 700;
+}
+.ev-chain-start i {
+  font-style: normal;
+  color: var(--c-ink-2);
+}
+
+@container pg-page (max-width: 900px) {
+  .ev-columns,
+  .ev-solo-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .ev-boss__side {
+    flex: 1 1 100%;
+    padding-left: 0;
+    border-left: none;
+  }
+}
+@container pg-page (max-width: 620px) {
+  .ev-boss {
+    flex-direction: column;
+    text-align: center;
+  }
+  .ev-boss__taunt {
+    align-self: center;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ev-boss__lair .pg-art {
+    animation: none;
+  }
+}
+
+/* máy đang nghĩ (nối từ) */
+.ev-chain-thinking {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-2);
+  color: var(--c-ink-2);
+}

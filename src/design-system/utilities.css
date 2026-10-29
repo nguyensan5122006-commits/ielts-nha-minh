@@ -1,0 +1,105 @@
+/* =============================================================================
+ * utilities.css — LỚP TIỆN ÍCH NHỎ (bố cục nhanh, khoảng cách, chữ)
+ * -----------------------------------------------------------------------------
+ * Dùng khi cần xếp vài phần tử mà không đáng viết CSS riêng.
+ *   <div className="ds-stack ds-gap-4">  -> xếp dọc, cách nhau 16px
+ *   <div className="ds-row ds-gap-2">    -> xếp ngang, căn giữa theo chiều dọc
+ * Đặt tên theo thang khoảng cách trong tokens.css (--s-1 = 4px ... --s-10 = 64px).
+ * ========================================================================== */
+
+.ds-stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-4);
+}
+.ds-row {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+}
+.ds-row--wrap {
+  flex-wrap: wrap;
+}
+.ds-row--between {
+  justify-content: space-between;
+}
+.ds-row--end {
+  justify-content: flex-end;
+}
+.ds-center {
+  display: grid;
+  place-items: center;
+  text-align: center;
+}
+.ds-grow {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.ds-gap-1 {
+  gap: var(--s-1);
+}
+.ds-gap-2 {
+  gap: var(--s-2);
+}
+.ds-gap-3 {
+  gap: var(--s-3);
+}
+.ds-gap-4 {
+  gap: var(--s-4);
+}
+.ds-gap-5 {
+  gap: var(--s-5);
+}
+.ds-gap-6 {
+  gap: var(--s-6);
+}
+.ds-gap-7 {
+  gap: var(--s-7);
+}
+
+/* Lưới tự co: mỗi ô rộng tối thiểu --min (mặc định 220px) */
+.ds-auto-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(var(--min, 220px), 1fr));
+  gap: var(--s-4);
+}
+
+/* Chữ */
+.ds-text-xs {
+  font-size: var(--fs-xs);
+}
+.ds-text-sm {
+  font-size: var(--fs-sm);
+}
+.ds-text-lg {
+  font-size: var(--fs-lg);
+}
+.ds-text-xl {
+  font-size: var(--fs-xl);
+}
+.ds-bold {
+  font-weight: 700;
+}
+.ds-eyebrow {
+  /* dòng chữ nhỏ in hoa phía trên tiêu đề */
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--c-ink-2);
+}
+
+/* Bề mặt nhanh */
+.ds-surface {
+  background: var(--c-surface);
+  border: 1px solid var(--c-line);
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow-card);
+}
+
+/* Khối có theme riêng (trang /design so sánh sáng/tối cạnh nhau) */
+.ds-theme-scope {
+  background: var(--c-bg);
+  color: var(--c-ink);
+}

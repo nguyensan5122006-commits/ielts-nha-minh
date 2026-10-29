@@ -1,0 +1,66 @@
+/* =============================================================================
+ * Timer.css — đồng hồ dạng viên thuốc; cảnh báo = đổi màu nhẹ, KHÔNG nhấp nháy
+ * ========================================================================== */
+.ds-timer {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 40px;
+  padding: 0 6px 0 14px;
+  border-radius: var(--r-pill);
+  background: var(--c-surface-2);
+  color: var(--c-ink);
+  box-shadow: var(--gloss-top), inset 0 0 0 1px var(--c-line);
+  transition:
+    background-color 600ms var(--ease-out),
+    color 600ms var(--ease-out),
+    box-shadow 600ms var(--ease-out);
+}
+.ds-timer__clock {
+  min-width: 4ch;
+  font-family: var(--font-display);
+  font-size: var(--fs-lg);
+  font-weight: 800;
+  line-height: 1;
+  padding-top: 0.12em;
+}
+.ds-timer__hidden-text {
+  color: var(--c-ink-2);
+  font-size: var(--fs-xs);
+  font-weight: 600;
+}
+.ds-timer__toggle {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--c-ink-2);
+  cursor: pointer;
+}
+.ds-timer__toggle:hover {
+  background: color-mix(in srgb, var(--c-ink) 8%, transparent);
+  color: var(--c-ink);
+}
+/* sắp hết giờ: nền cam san hô nhạt, chữ đậm hơn — chuyển màu chậm 600ms cho êm */
+.ds-timer.is-warning {
+  background: var(--c-oops-soft);
+  color: var(--c-oops-ink);
+  box-shadow: var(--gloss-top), inset 0 0 0 1.5px color-mix(in srgb, var(--c-oops) 45%, transparent);
+}
+/* trên header tối (phòng thi) */
+.ds-timer.is-on-dark {
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.18);
+}
+.ds-timer.is-on-dark .ds-timer__toggle,
+.ds-timer.is-on-dark .ds-timer__hidden-text {
+  color: rgba(255, 255, 255, 0.8);
+}
+.ds-timer.is-on-dark.is-warning {
+  background: color-mix(in srgb, var(--c-oops) 30%, transparent);
+  color: #fff;
+}

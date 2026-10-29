@@ -1,0 +1,87 @@
+/* =============================================================================
+ * FocusLayout.css — màn học/thi toàn màn hình: thanh trên mảnh + nội dung giữa
+ * ========================================================================== */
+.focus-layout {
+  --focus-width: var(--content-max);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background:
+    radial-gradient(1000px 420px at 50% -120px, color-mix(in srgb, var(--c-primary) 9%, transparent), transparent 70%),
+    var(--c-bg);
+}
+.focus-layout--wide {
+  --focus-width: 1080px;
+}
+.focus-layout--full {
+  --focus-width: 100%;
+}
+
+.focus-layout__bar {
+  position: sticky;
+  top: 0;
+  z-index: var(--z-sticky);
+  display: grid;
+  grid-template-columns: minmax(150px, 1fr) minmax(0, 640px) minmax(150px, 1fr);
+  align-items: center;
+  gap: var(--s-5);
+  height: 72px;
+  padding: 0 var(--s-6);
+  background: color-mix(in srgb, var(--c-bg) 88%, transparent);
+  backdrop-filter: blur(10px);
+}
+.focus-layout__exit {
+  justify-self: start;
+}
+.focus-layout__progress {
+  min-width: 0;
+}
+.focus-layout__trailing {
+  justify-self: end;
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+}
+
+.focus-layout__content {
+  flex: 1;
+  width: 100%;
+  max-width: var(--focus-width);
+  margin: 0 auto;
+  padding: var(--s-7) var(--s-6) 160px; /* chừa chỗ cho thanh đáy / khung phản hồi */
+}
+.focus-layout--full .focus-layout__content {
+  padding-inline: 0;
+}
+.focus-layout__content:focus {
+  outline: none;
+}
+
+/* thanh đáy cố định (Bỏ qua / Gợi ý … Kiểm tra) — rộng thẳng hàng với cột nội dung */
+.focus-layout__footer {
+  --sheet-max: calc(var(--focus-width) + 2 * var(--s-6));
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: var(--z-sheet);
+}
+
+@media (max-width: 760px) {
+  .focus-layout__bar {
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    gap: var(--s-3);
+    padding: 0 var(--s-3);
+  }
+  .focus-layout__exit .ds-btn__label {
+    /* màn hẹp: chỉ còn icon thoát */
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+  }
+  .focus-layout__content {
+    padding: var(--s-5) var(--s-4) 180px;
+  }
+}

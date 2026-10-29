@@ -1,0 +1,33 @@
+/* SkillTaskPage.css — trang luyện riêng task: màn trống + màn xong */
+.skill-task-page__empty,
+.skill-task-page__done {
+  display: grid;
+  justify-items: center;
+  text-align: center;
+  gap: var(--s-3);
+  padding: var(--s-8) var(--s-4);
+}
+.skill-task-page__done h1 {
+  margin: var(--s-2) 0 0;
+}
+.skill-task-page__lesson {
+  margin: 0;
+  color: var(--c-ink-2);
+}
+.skill-task-page__summary {
+  margin: 0;
+  font-size: var(--fs-lg);
+  max-width: 48ch;
+}
+.skill-task-page__actions {
+  display: flex;
+  gap: var(--s-3);
+  margin-top: var(--s-4);
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.skill-task-page__loading {
+  text-align: center;
+  color: var(--c-ink-2);
+  padding: var(--s-8);
+}

@@ -1,0 +1,324 @@
+/* =============================================================================
+ * auth.css — /login, /signup và form tạo tài khoản dùng chung (SignupForm)
+ * Tiền tố lớp: au- (auth). Ô nhập cao 48px, chữ 17px, viền 1.5px, focus vòng navy.
+ * ========================================================================== */
+
+/* ---------- bố cục 2 cột ---------- */
+.au-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 480px);
+  gap: var(--s-8);
+  align-items: center;
+  align-content: center;
+  min-height: calc(100vh - 68px);
+  padding-top: var(--s-6);
+  padding-bottom: var(--s-8);
+}
+
+/* tấm biển thương hiệu bên trái */
+.au-panel {
+  /* form đăng ký dài -> tấm biển đứng yên ở trên khi cuộn */
+  position: sticky;
+  top: calc(68px + var(--s-5));
+  align-self: start;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--s-4);
+  padding: var(--s-7);
+  border-radius: var(--r-xl);
+  background:
+    radial-gradient(420px 260px at 50% 30%, color-mix(in srgb, var(--c-gold) 30%, transparent), transparent 70%),
+    linear-gradient(160deg, color-mix(in srgb, var(--c-primary) 18%, var(--c-surface)) 0%, var(--c-surface) 70%);
+  border: 1px solid var(--c-line);
+  box-shadow: var(--gloss-top), var(--shadow-card);
+  overflow: hidden;
+  text-align: center;
+}
+:root[data-theme='dark'] .au-panel {
+  background:
+    radial-gradient(420px 260px at 50% 30%, color-mix(in srgb, var(--c-navy) 40%, transparent), transparent 70%),
+    linear-gradient(160deg, #1a2160 0%, var(--c-surface) 75%);
+}
+.au-panel__glow {
+  position: absolute;
+  inset: auto -20% -40% -20%;
+  height: 60%;
+  background: radial-gradient(ellipse at 50% 0%, color-mix(in srgb, var(--c-primary) 18%, transparent), transparent 70%);
+  pointer-events: none;
+}
+.au-panel__words {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.au-panel__word {
+  position: absolute;
+  display: grid;
+  place-items: center;
+  width: 60px;
+  height: 60px;
+  border-radius: 20px;
+  background: var(--c-surface);
+  box-shadow: var(--gloss-top), var(--shadow-raised);
+  animation: au-bob 3.6s var(--ease-in-out) infinite;
+}
+.au-panel__word:nth-child(1) {
+  left: 9%;
+  top: 14%;
+}
+.au-panel__word:nth-child(2) {
+  right: 10%;
+  top: 10%;
+  animation-delay: -1.2s;
+}
+.au-panel__word:nth-child(3) {
+  left: 12%;
+  top: 46%;
+  animation-delay: -2.1s;
+}
+.au-panel__word:nth-child(4) {
+  right: 12%;
+  top: 42%;
+  animation-delay: -0.6s;
+}
+.au-panel__copy {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--s-2);
+}
+.au-panel__title {
+  font-size: var(--fs-2xl);
+  line-height: 1.2;
+}
+.au-panel__line {
+  color: var(--c-ink-2);
+}
+.au-panel__points {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--s-2);
+  margin: var(--s-2) 0 0;
+  padding: 0;
+  list-style: none;
+}
+.au-panel__points li {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border-radius: var(--r-pill);
+  background: var(--c-surface);
+  border: 1px solid var(--c-line);
+  font-size: var(--fs-sm);
+  font-weight: 600;
+}
+.au-panel__points svg {
+  color: var(--c-success);
+}
+
+/* thẻ form bên phải */
+.au-card {
+  padding: var(--s-7);
+  border-radius: var(--r-xl);
+  background: var(--c-surface);
+  border: 1px solid var(--c-line);
+  box-shadow: var(--gloss-top), var(--shadow-raised);
+}
+.au-card__title {
+  margin: 0;
+  font-size: var(--fs-2xl);
+}
+.au-card__sub {
+  margin: var(--s-1) 0 var(--s-5);
+  color: var(--c-ink-2);
+  font-size: var(--fs-sm);
+}
+.au-card__footer {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-3);
+  margin-top: var(--s-6);
+  padding-top: var(--s-5);
+  border-top: 1px solid var(--c-line);
+  font-size: var(--fs-sm);
+}
+.au-card__footer-title {
+  color: var(--c-ink-2);
+  font-weight: 600;
+}
+.au-card__footer-links {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s-4);
+}
+
+/* thông báo nhỏ trên form (kết quả xếp lớp sẽ được lưu) */
+.au-notice {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--s-2);
+  margin: 0 0 var(--s-5);
+  padding: var(--s-3) var(--s-4);
+  border-radius: var(--r-md);
+  background: var(--c-gold-soft);
+  color: var(--c-gold-ink);
+  font-size: var(--fs-sm);
+  font-weight: 600;
+}
+.au-notice svg {
+  flex: none;
+  margin-top: 2px;
+}
+.au-test-prompt {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: var(--s-2) var(--s-3);
+  align-items: center;
+  margin: 0 0 var(--s-5);
+  padding: var(--s-4);
+  border-radius: var(--r-lg);
+  background: var(--c-navy-soft);
+}
+.au-test-prompt__copy {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: var(--fs-sm);
+}
+.au-test-prompt__copy span {
+  color: var(--c-ink-2);
+}
+.au-test-prompt .ds-btn {
+  grid-column: 2;
+  justify-self: start;
+}
+
+/* ---------- form + ô nhập ---------- */
+.au-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-4);
+}
+.au-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+.au-field-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--s-3);
+}
+.au-label {
+  font-size: var(--fs-sm);
+  font-weight: 700;
+}
+.au-input {
+  width: 100%;
+  height: 48px;
+  padding: 0 var(--s-4);
+  border-radius: var(--r-md);
+  border: 1.5px solid var(--c-line-strong);
+  background: var(--c-surface);
+  color: var(--c-ink);
+  font-size: var(--fs-md);
+  transition: border-color var(--dur-micro) var(--ease-out), box-shadow var(--dur-micro) var(--ease-out);
+}
+.au-input::placeholder {
+  color: color-mix(in srgb, var(--c-ink-2) 70%, transparent);
+}
+.au-input:hover {
+  border-color: color-mix(in srgb, var(--c-navy) 35%, var(--c-line-strong));
+}
+.au-input:focus-visible,
+.au-input:focus {
+  outline: none;
+  border-color: var(--c-navy);
+  box-shadow: var(--focus-ring);
+}
+.au-input.is-invalid {
+  border-color: var(--c-oops);
+  background: color-mix(in srgb, var(--c-oops) 6%, var(--c-surface));
+}
+.au-hint {
+  font-size: var(--fs-xs);
+  color: var(--c-ink-2);
+}
+.au-error-text {
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  color: var(--c-oops-ink);
+}
+.au-password {
+  position: relative;
+}
+.au-password .au-input {
+  padding-right: 48px;
+}
+.au-password__toggle {
+  position: absolute;
+  right: 6px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border: 0;
+  border-radius: var(--r-sm);
+  background: transparent;
+  color: var(--c-ink-2);
+}
+.au-password__toggle:hover {
+  background: var(--c-surface-2);
+  color: var(--c-ink);
+}
+.au-segmented {
+  width: 100%;
+}
+.au-segmented > * {
+  flex: 1;
+}
+.au-alert {
+  padding: var(--s-3) var(--s-4);
+  border-radius: var(--r-md);
+  background: var(--c-oops-soft);
+  color: var(--c-oops-ink);
+  font-size: var(--fs-sm);
+  font-weight: 600;
+}
+
+@keyframes au-bob {
+  0%,
+  100% {
+    transform: translateY(0) rotate(-3deg);
+  }
+  50% {
+    transform: translateY(-6px) rotate(3deg);
+  }
+}
+
+@media (max-width: 960px) {
+  .au-layout {
+    grid-template-columns: minmax(0, 520px);
+    justify-content: center;
+    min-height: 0;
+  }
+  .au-panel {
+    display: none;
+  }
+}
+@media (max-width: 520px) {
+  .au-field-row {
+    grid-template-columns: 1fr;
+  }
+  .au-card {
+    padding: var(--s-5);
+  }
+}

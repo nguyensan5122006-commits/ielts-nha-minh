@@ -1,0 +1,170 @@
+/* RewardScreens.css — thẻ nhận sticker / trang phục / nhắc nghỉ (nổi giữa lớp phủ tối) */
+.kz-award {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  width: min(560px, 100%);
+  padding: 26px 32px 30px;
+  border-radius: 36px;
+  background: var(--kz-card-bg);
+  color: var(--kz-ink);
+  text-align: center;
+  box-shadow: var(--gloss-top), var(--shadow-pop);
+  animation: kz-award-in 460ms var(--ease-spring) both;
+}
+/* tia sáng xoay chậm phía sau sticker */
+.kz-award__rays {
+  position: absolute;
+  top: 40px;
+  left: 50%;
+  z-index: -1;
+  width: 420px;
+  height: 420px;
+  margin-left: -210px;
+  border-radius: 50%;
+  background: repeating-conic-gradient(from 0deg, color-mix(in srgb, var(--c-gold) 26%, transparent) 0deg 12deg, transparent 12deg 30deg);
+  mask-image: radial-gradient(circle, #000 30%, transparent 68%);
+  -webkit-mask-image: radial-gradient(circle, #000 30%, transparent 68%);
+  animation: kz-award-rays 18s linear infinite;
+}
+.kz-award__eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  padding: 6px 16px;
+  border-radius: var(--r-pill);
+  background: var(--grad-gold);
+  color: #4a2f00;
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: 800;
+}
+.kz-award__title {
+  margin: 0;
+  font-size: 2.2rem;
+}
+
+/* sticker bóc dán: viền trắng dày theo đường viền hình + bóng đổ, hơi nghiêng */
+.kz-sticker {
+  display: grid;
+  place-items: center;
+  margin: 6px 0 2px;
+  padding: 0;
+  border: none;
+  background: none;
+  cursor: pointer;
+  animation: kz-sticker-pop 720ms var(--ease-spring) 120ms both;
+}
+.kz-sticker .kz-picture,
+.kz-album-sticker .kz-picture {
+  filter: drop-shadow(4px 0 0 #fff) drop-shadow(-4px 0 0 #fff) drop-shadow(0 4px 0 #fff) drop-shadow(0 -4px 0 #fff)
+    drop-shadow(0 12px 14px rgba(var(--shadow-rgb), 0.3));
+}
+.kz-sticker:focus-visible {
+  outline: none;
+  border-radius: 24px;
+  box-shadow: var(--focus-ring);
+}
+.kz-award__word {
+  margin: 0;
+  font-size: 2.6rem;
+  font-weight: 800;
+  line-height: 1.05;
+}
+.kz-award__meaning {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+  font-size: 1.3rem;
+  color: var(--kz-ink-2);
+}
+.kz-award__says {
+  justify-content: center;
+  margin: 4px 0 8px;
+}
+.kz-award__says .kz-says__bubble {
+  margin-bottom: 18px;
+  text-align: left;
+}
+.kz-award__says--big {
+  margin-top: 6px;
+}
+.kz-award__stage {
+  position: relative;
+  padding: 6px 0 0;
+}
+.kz-award__stage::after {
+  /* bóng tròn dưới chân Ki (bục trình diễn) */
+  content: '';
+  position: absolute;
+  left: 18%;
+  right: 18%;
+  bottom: 6px;
+  height: 18px;
+  border-radius: 50%;
+  background: radial-gradient(ellipse, rgba(var(--shadow-rgb), 0.25), transparent 70%);
+  z-index: -1;
+}
+.kz-award__tip {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  font-size: 1.05rem;
+  color: var(--kz-ink-2);
+}
+.kz-award__summary {
+  margin: 0 0 10px;
+  padding: 8px 16px;
+  border-radius: 14px;
+  background: var(--c-surface-2);
+  font-weight: 600;
+  font-size: 1.05rem;
+}
+.kz-award .kz-choice-row {
+  margin-top: 6px;
+}
+
+@keyframes kz-award-in {
+  from {
+    opacity: 0;
+    transform: translateY(30px) scale(0.92);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes kz-award-rays {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes kz-sticker-pop {
+  0% {
+    opacity: 0;
+    transform: scale(0.2) rotate(-25deg);
+  }
+  60% {
+    opacity: 1;
+    transform: scale(1.14) rotate(-3deg);
+  }
+  100% {
+    transform: scale(1) rotate(-6deg);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .kz-award,
+  .kz-award__rays,
+  .kz-sticker {
+    animation: none;
+  }
+  .kz-sticker {
+    transform: rotate(-6deg);
+  }
+}

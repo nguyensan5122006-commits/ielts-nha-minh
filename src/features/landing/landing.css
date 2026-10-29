@@ -1,0 +1,707 @@
+/* =============================================================================
+ * landing.css — TRANG GIỚI THIỆU "/" (LandingPage.tsx + HeroStage.tsx)
+ * Tiền tố lớp: lp- (landing page). Màu/chữ/bóng lấy từ tokens.css — không viết mã màu
+ * trực tiếp, trừ vài màu "bầu trời" của thẻ khu trẻ em (đúng spec mục 12 của design system).
+ * ========================================================================== */
+
+.lp-page {
+  overflow-x: clip;
+}
+
+/* ============================== 1. HERO ============================== */
+.lp-hero {
+  /* hero rộng hơn khung thường một chút để dòng tiêu đề đầu không bị gãy */
+  max-width: 1320px;
+  display: grid;
+  grid-template-columns: minmax(0, 1.12fr) minmax(0, 1fr);
+  align-items: center;
+  gap: var(--s-5);
+  /* thấp hơn 1 màn hình 1 chút -> mép phần dưới ló lên, gợi ý cuộn xuống */
+  min-height: min(690px, calc(100vh - 68px - 90px));
+  padding-top: var(--s-2);
+  padding-bottom: var(--s-6);
+}
+
+.lp-hero__copy {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--s-5);
+  animation: lp-rise 600ms var(--ease-out) both;
+}
+
+.lp-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-2);
+  padding: 6px 14px 6px 8px;
+  border-radius: var(--r-pill);
+  background: var(--c-surface);
+  border: 1px solid var(--c-line);
+  box-shadow: var(--gloss-top), var(--shadow-card);
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  color: var(--c-ink-2);
+}
+
+.lp-hero__title {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  font-size: clamp(2.5rem, 4.2vw, 4rem);
+  line-height: 1.12;
+}
+.lp-hero__title > span {
+  white-space: nowrap; /* mỗi vế 1 dòng (màn hẹp có luật riêng ở cuối file) */
+}
+.lp-hero__accent {
+  position: relative;
+  width: fit-content;
+  /* chữ cam gradient: dùng sắc cam ĐẬM trên nền sáng để đạt tương phản chữ lớn (≥ 3:1) */
+  background: linear-gradient(90deg, var(--c-primary-ink) 0%, var(--c-primary-deep) 70%, color-mix(in srgb, var(--c-primary-deep) 70%, var(--c-red)) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  padding-bottom: 0.12em;
+}
+/* nét gạch chân "vẽ tay" màu vàng cầu vai */
+.lp-hero__accent::after {
+  content: '';
+  position: absolute;
+  left: 2%;
+  right: 4%;
+  bottom: -0.04em;
+  height: 0.22em;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 16' preserveAspectRatio='none'%3E%3Cpath d='M3 11c40-7 92-9 148-6 52 3 98 4 146-3' fill='none' stroke='%23F5B82E' stroke-width='5' stroke-linecap='round'/%3E%3C/svg%3E")
+    center / 100% 100% no-repeat;
+  opacity: 0.9;
+}
+:root[data-theme='dark'] .lp-hero__accent {
+  background-image: linear-gradient(90deg, var(--c-primary) 0%, var(--c-gold) 100%);
+}
+
+.lp-hero__lead {
+  max-width: 36ch;
+  text-wrap: pretty;
+  margin: 0;
+  font-size: var(--fs-lg);
+  line-height: 1.55;
+  color: var(--c-ink-2);
+}
+
+.lp-hero__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s-3);
+  margin-top: var(--s-1);
+}
+.lp-cta-main {
+  min-width: 240px;
+}
+
+.lp-hero__facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-2) var(--s-5);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: var(--fs-sm);
+  color: var(--c-ink-2);
+}
+.lp-hero__facts li {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.lp-hero__facts svg {
+  color: var(--c-success);
+}
+
+/* ---------- sân khấu: cún + quỹ đạo thẻ từ ---------- */
+.lp-stage {
+  position: relative;
+  height: clamp(440px, 62vh, 580px);
+  isolation: isolate;
+}
+.lp-stage__glow {
+  position: absolute;
+  left: 50%;
+  top: 48%;
+  width: 78%;
+  aspect-ratio: 1;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 50% 45%, color-mix(in srgb, var(--c-gold) 38%, transparent) 0%, transparent 62%),
+    radial-gradient(circle at 50% 50%, color-mix(in srgb, var(--c-primary) 22%, transparent) 0%, transparent 70%);
+  filter: blur(6px);
+  z-index: 0;
+}
+/* vòng quỹ đạo vẽ mờ (elip khớp bán kính trong HeroStage: ngang 46%, dọc 20%, tâm 52%) */
+.lp-stage__orbit-line {
+  position: absolute;
+  left: 4%;
+  right: 4%;
+  top: 32%;
+  height: 40%;
+  border-radius: 50%;
+  border: 2px dashed color-mix(in srgb, var(--c-primary) 30%, transparent);
+  z-index: 0;
+}
+.lp-stage__mascot {
+  position: absolute;
+  left: 50%;
+  top: 47%;
+  transform: translate(-50%, -50%);
+  z-index: 2;
+}
+
+.lp-chip {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 16px 5px 6px;
+  border-radius: var(--r-pill);
+  border: 1px solid var(--c-line);
+  background: var(--c-surface);
+  box-shadow: var(--gloss-top), var(--shadow-raised);
+  color: var(--c-ink);
+  font-family: var(--font-display);
+  font-size: var(--fs-md);
+  font-weight: 700;
+  line-height: 1;
+  white-space: nowrap;
+  cursor: pointer;
+  will-change: transform, opacity;
+  transform: translate(-50%, -50%);
+}
+.lp-chip .ds-word-image {
+  flex: none;
+}
+.lp-chip:hover {
+  border-color: color-mix(in srgb, var(--c-primary) 60%, var(--c-line));
+  box-shadow: var(--gloss-top), var(--shadow-raised), 0 0 0 4px color-mix(in srgb, var(--c-primary) 18%, transparent);
+}
+.lp-chip[data-side='back'] {
+  box-shadow: var(--gloss-top), var(--shadow-card);
+}
+.lp-chip__word {
+  padding-top: 2px; /* Baloo 2 hơi lệch lên — cân lại cho giữa */
+}
+
+/* ============================== KHUNG SECTION ============================== */
+.lp-section {
+  padding-top: var(--s-9);
+  padding-bottom: var(--s-9);
+}
+.lp-kicker {
+  display: inline-block;
+  margin-bottom: var(--s-2);
+  font-size: var(--fs-sm);
+  font-weight: 700;
+  color: var(--c-primary-ink);
+  letter-spacing: 0.01em;
+}
+.lp-h2 {
+  margin: 0 0 var(--s-3);
+  font-size: clamp(2rem, 3vw, 2.75rem);
+}
+.lp-h2--center {
+  text-align: center;
+  margin-bottom: var(--s-7);
+}
+.lp-h3 {
+  margin: 0 0 var(--s-2);
+  font-size: var(--fs-2xl);
+}
+.lp-lead {
+  color: var(--c-ink-2);
+  font-size: var(--fs-md);
+  margin-bottom: var(--s-5);
+}
+.lp-note {
+  margin: var(--s-5) 0 0;
+  text-align: center;
+  color: var(--c-ink-2);
+  font-size: var(--fs-sm);
+}
+
+/* ============================== 2. BẬC THANG ============================== */
+.lp-stairs-card {
+  display: grid;
+  grid-template-columns: minmax(260px, 340px) minmax(0, 1fr);
+  gap: var(--s-8);
+  align-items: end;
+  padding: var(--s-8);
+  border-radius: var(--r-xl);
+  background: var(--c-surface);
+  border: 1px solid var(--c-line);
+  box-shadow: var(--shadow-card);
+}
+.lp-stairs-card__intro {
+  align-self: center;
+}
+
+/* ============================== 3. 2 LỘ TRÌNH ============================== */
+.lp-tracks {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--s-6);
+}
+.lp-track {
+  --track-tone: var(--c-navy);
+  position: relative;
+  overflow: hidden;
+  padding: var(--s-7);
+  border-radius: var(--r-xl);
+  background: var(--c-surface);
+  border: 1px solid var(--c-line);
+  box-shadow: var(--gloss-top), var(--shadow-card);
+  transition: transform var(--dur-panel) var(--ease-out), box-shadow var(--dur-panel) var(--ease-out);
+}
+.lp-track--ielts {
+  --track-tone: var(--c-primary);
+}
+.lp-track::before {
+  /* quầng màu ở góc phải-trên */
+  content: '';
+  position: absolute;
+  right: -80px;
+  top: -80px;
+  width: 260px;
+  height: 260px;
+  border-radius: 50%;
+  background: radial-gradient(circle, color-mix(in srgb, var(--track-tone) 22%, transparent), transparent 70%);
+  pointer-events: none;
+}
+.lp-track:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--gloss-top), var(--shadow-raised);
+}
+.lp-track__art {
+  margin-bottom: var(--s-3);
+  filter: drop-shadow(0 10px 14px rgba(var(--shadow-rgb), 0.18));
+}
+.lp-track__title {
+  margin: 0 0 var(--s-2);
+  font-size: var(--fs-2xl);
+}
+.lp-track p {
+  color: var(--c-ink-2);
+  max-width: 40ch;
+}
+.lp-track__points {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-2);
+  margin: var(--s-4) 0 0;
+  padding: 0;
+  list-style: none;
+}
+.lp-track__points li {
+  padding: 4px 12px;
+  border-radius: var(--r-pill);
+  background: color-mix(in srgb, var(--track-tone) 12%, var(--c-surface));
+  color: var(--c-ink);
+  font-size: var(--fs-sm);
+  font-weight: 600;
+}
+
+/* ============================== 4. 5 KỸ NĂNG ============================== */
+.lp-skills {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: var(--s-4);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.lp-skill {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--s-2);
+  padding: var(--s-6) var(--s-4) var(--s-5);
+  border-radius: var(--r-lg);
+  background: var(--c-surface);
+  border: 1px solid var(--c-line);
+  box-shadow: var(--gloss-top), var(--shadow-card);
+  text-align: center;
+  overflow: hidden;
+  transition: transform var(--dur-panel) var(--ease-out);
+}
+.lp-skill::after {
+  /* vạch màu kỹ năng ở đáy thẻ */
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 5px;
+  background: var(--skill-color);
+}
+.lp-skill:hover {
+  transform: translateY(-3px);
+}
+.lp-skill__name {
+  font-size: var(--fs-lg);
+  line-height: 1.2;
+}
+.lp-skill__line {
+  font-size: var(--fs-sm);
+  color: var(--c-ink-2);
+  line-height: 1.45;
+}
+
+/* ===================== 5. KHU TRẺ EM + BẢNG XẾP HẠNG ===================== */
+.lp-duo {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+  gap: var(--s-6);
+  align-items: stretch;
+}
+
+.lp-kids {
+  position: relative;
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: var(--s-4);
+  padding: var(--s-7);
+  border-radius: var(--r-xl);
+  /* bầu trời khu trẻ em (design system mục 12) */
+  background: linear-gradient(180deg, #bde7ff 0%, #e4f4ff 55%, #fff3d6 100%);
+  color: #1e2347;
+  border: 1px solid rgba(30, 35, 71, 0.08);
+  box-shadow: var(--shadow-card);
+}
+:root[data-theme='dark'] .lp-kids {
+  background: linear-gradient(180deg, #1b3768 0%, #253a78 55%, #3a2f5c 100%);
+  color: #f4f1ff;
+  border-color: rgba(255, 255, 255, 0.08);
+}
+.lp-kids__sky {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.lp-cloud {
+  position: absolute;
+  height: 34px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.85);
+  box-shadow: 22px -14px 0 4px rgba(255, 255, 255, 0.85);
+}
+:root[data-theme='dark'] .lp-cloud {
+  background: rgba(255, 255, 255, 0.12);
+  box-shadow: 22px -14px 0 4px rgba(255, 255, 255, 0.12);
+}
+.lp-cloud--1 {
+  width: 96px;
+  right: 32%;
+  top: 22px;
+  animation: lp-drift 18s var(--ease-in-out) infinite alternate;
+}
+.lp-cloud--2 {
+  width: 70px;
+  right: 6%;
+  top: 70px;
+  animation: lp-drift 22s var(--ease-in-out) -6s infinite alternate;
+}
+.lp-kids__copy {
+  position: relative;
+}
+.lp-kids__copy p {
+  max-width: 36ch;
+  opacity: 0.86;
+}
+.lp-kicker--kids {
+  color: #2b3a8f;
+}
+:root[data-theme='dark'] .lp-kicker--kids {
+  color: #ffd677;
+}
+.lp-kids__points {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: var(--s-3) 0 0;
+  padding: 0;
+  list-style: none;
+  font-size: var(--fs-sm);
+  font-weight: 600;
+}
+.lp-kids__points li {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-2);
+}
+.lp-kids__points svg {
+  color: #f5b82e;
+}
+.lp-kids__art {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--s-2);
+}
+.lp-kids__words {
+  display: grid;
+  grid-template-columns: repeat(3, auto);
+  gap: 6px;
+}
+.lp-kids__word {
+  display: grid;
+  place-items: center;
+  width: 58px;
+  height: 58px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.78);
+  box-shadow: 0 6px 14px -8px rgba(30, 35, 71, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  animation: lp-bob 3.2s var(--ease-in-out) infinite;
+}
+.lp-kids__word:nth-child(2n) {
+  animation-delay: -1.1s;
+}
+.lp-kids__word:nth-child(3n) {
+  animation-delay: -2s;
+}
+:root[data-theme='dark'] .lp-kids__word {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.lp-family {
+  display: flex;
+  flex-direction: column;
+  padding: var(--s-7);
+  border-radius: var(--r-xl);
+  background: var(--c-surface);
+  border: 1px solid var(--c-line);
+  box-shadow: var(--gloss-top), var(--shadow-card);
+}
+.lp-family > p {
+  color: var(--c-ink-2);
+}
+.lp-board {
+  margin-top: auto;
+  padding: var(--s-4);
+  border-radius: var(--r-lg);
+  background: var(--c-surface-2);
+  border: 1px solid var(--c-line);
+}
+.lp-board__head {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: var(--s-2);
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  color: var(--c-ink-2);
+}
+.lp-board__sample {
+  font-weight: 500;
+  font-style: italic;
+}
+.lp-board__rows {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.lp-board__row {
+  display: grid;
+  grid-template-columns: 28px 36px minmax(70px, auto) 1fr auto;
+  align-items: center;
+  gap: var(--s-2);
+  padding: 6px 10px;
+  border-radius: var(--r-md);
+  background: var(--c-surface);
+}
+.lp-board__rank {
+  display: grid;
+  place-items: center;
+  font-weight: 700;
+  color: var(--c-ink-2);
+}
+.lp-board__name {
+  font-weight: 700;
+  white-space: nowrap;
+}
+.lp-board__bar {
+  height: 8px;
+  border-radius: var(--r-pill);
+  background: var(--c-surface-2);
+  overflow: hidden;
+}
+.lp-board__bar span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--grad-gold);
+}
+.lp-board__xp {
+  font-size: var(--fs-sm);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--c-gold-ink);
+}
+.lp-board__goal {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: var(--s-3);
+  font-size: var(--fs-sm);
+  font-weight: 600;
+}
+
+/* ============================== 6. KÊU GỌI CUỐI ============================== */
+.lp-final {
+  position: relative;
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--s-6);
+  padding: var(--s-7) var(--s-8);
+  border-radius: var(--r-xl);
+  /* khối "trời đêm tuần tra" — data-theme="dark" để chữ/nút bên trong dùng màu tối */
+  background:
+    radial-gradient(600px 300px at 10% 0%, rgba(125, 140, 255, 0.35), transparent 70%),
+    radial-gradient(500px 260px at 100% 100%, rgba(255, 157, 71, 0.28), transparent 70%),
+    linear-gradient(135deg, #1a2160 0%, #0e1330 100%);
+  color: var(--c-ink);
+  box-shadow: var(--shadow-raised);
+}
+.lp-final__stars {
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(1.5px 1.5px at 20% 30%, rgba(255, 255, 255, 0.8), transparent),
+    radial-gradient(1.5px 1.5px at 60% 18%, rgba(255, 255, 255, 0.6), transparent),
+    radial-gradient(1px 1px at 78% 62%, rgba(255, 255, 255, 0.7), transparent),
+    radial-gradient(1.5px 1.5px at 40% 80%, rgba(255, 255, 255, 0.5), transparent),
+    radial-gradient(1px 1px at 88% 24%, rgba(255, 255, 255, 0.8), transparent),
+    radial-gradient(1px 1px at 8% 70%, rgba(255, 255, 255, 0.6), transparent);
+  pointer-events: none;
+}
+.lp-final__mascot {
+  position: relative;
+  margin: calc(var(--s-4) * -1) 0;
+}
+.lp-final__copy {
+  position: relative;
+}
+.lp-final__copy p {
+  margin: 0;
+  color: var(--c-ink-2);
+  font-size: var(--fs-md);
+}
+.lp-final .lp-h2 {
+  margin-bottom: var(--s-2);
+}
+
+.lp-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--s-4);
+  padding-top: var(--s-4);
+  padding-bottom: var(--s-8);
+  font-size: var(--fs-sm);
+  color: var(--c-ink-2);
+}
+
+/* ============================== CHUYỂN ĐỘNG ============================== */
+@keyframes lp-rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes lp-bob {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+}
+@keyframes lp-drift {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-28px);
+  }
+}
+
+/* ============================== MÀN NHỎ HƠN ============================== */
+@media (max-width: 1180px) {
+  .lp-hero {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 0.95fr);
+  }
+  .lp-stairs-card {
+    grid-template-columns: 1fr;
+    gap: var(--s-6);
+    padding: var(--s-7);
+  }
+  .lp-kids {
+    grid-template-columns: 1fr;
+  }
+  .lp-kids__art {
+    flex-direction: row;
+    justify-content: flex-start;
+  }
+}
+
+@media (max-width: 900px) {
+  .lp-hero {
+    grid-template-columns: 1fr;
+    min-height: 0;
+    padding-top: var(--s-5);
+  }
+  .lp-stage {
+    height: 420px;
+  }
+  .lp-tracks,
+  .lp-duo {
+    grid-template-columns: 1fr;
+  }
+  .lp-skills {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .lp-final {
+    grid-template-columns: 1fr;
+    text-align: center;
+    justify-items: center;
+  }
+}
+
+@media (max-width: 600px) {
+  .lp-skills {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .lp-stage {
+    height: 360px;
+  }
+}
+
+@media (max-width: 520px) {
+  .lp-hero__title > span {
+    white-space: normal;
+  }
+}

@@ -1,0 +1,215 @@
+/* =============================================================================
+ * TaskChart.css — biểu đồ Writing Task 1 theo hệ màu, sáng + tối
+ * Bảng màu --chart-1..6: đã kiểm tra (dataviz validate_palette.js) — độ sáng trong
+ * dải, tách biệt cho người mù màu (ΔE ≥ 11), tương phản ≥ 3:1 với nền thẻ.
+ * ========================================================================== */
+.task-chart {
+  --chart-1: #2b7fd4;
+  --chart-2: #e0701a;
+  --chart-3: #0e9688;
+  --chart-4: #7c4ddb;
+  --chart-5: #d63c78;
+  --chart-6: #b88400;
+  margin: 0;
+  position: relative;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) .task-chart {
+    --chart-1: #3b8fe0;
+    --chart-2: #d9701f;
+    --chart-3: #139c8e;
+    --chart-4: #8f6ef0;
+    --chart-5: #e0588a;
+    --chart-6: #b38a12;
+  }
+}
+[data-theme='dark'] .task-chart {
+  --chart-1: #3b8fe0;
+  --chart-2: #d9701f;
+  --chart-3: #139c8e;
+  --chart-4: #8f6ef0;
+  --chart-5: #e0588a;
+  --chart-6: #b38a12;
+}
+
+.task-chart__title {
+  font-weight: 700;
+  font-size: var(--fs-sm);
+  line-height: 1.4;
+  color: var(--c-ink);
+  margin-bottom: var(--s-3);
+}
+.task-chart__unit {
+  display: block;
+  font-weight: 500;
+  font-size: var(--fs-xs);
+  color: var(--c-ink-2);
+  margin-top: 2px;
+}
+
+.task-chart__plot {
+  position: relative;
+}
+.task-chart svg {
+  display: block;
+  overflow: visible;
+}
+.task-chart__grid line {
+  stroke: var(--c-line);
+  stroke-width: 1;
+}
+.task-chart__grid text,
+.task-chart__axis-label {
+  font-family: var(--font-ui);
+  font-size: 13px;
+  fill: var(--c-ink-2);
+  font-variant-numeric: tabular-nums;
+}
+.task-chart__line {
+  fill: none;
+  stroke-width: 2;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+.task-chart__dot {
+  stroke: var(--c-surface);
+  stroke-width: 2; /* vòng 2px màu nền quanh chấm: chấm chồng nhau vẫn tách được */
+}
+.task-chart__end-label {
+  font-family: var(--font-ui);
+  font-size: 13.5px;
+  font-weight: 600;
+  fill: var(--c-ink);
+}
+.task-chart__crosshair {
+  stroke: var(--c-ink-2);
+  stroke-width: 1;
+  stroke-dasharray: 3 3;
+  pointer-events: none;
+}
+.task-chart__bar,
+.task-chart__slice {
+  transition: opacity var(--dur-micro) var(--ease-out);
+}
+.task-chart__slice {
+  stroke: var(--c-surface);
+  stroke-width: 2;
+}
+.task-chart__slice:hover {
+  opacity: 0.85;
+}
+.task-chart__pie-center {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 18px;
+  fill: var(--c-ink);
+}
+.task-chart__pies {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: var(--s-4);
+  max-width: 460px;
+  margin: 0 auto;
+}
+
+.task-chart__legend {
+  list-style: none;
+  margin: var(--s-3) 0 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--s-2) var(--s-4);
+  font-size: var(--fs-xs);
+  color: var(--c-ink);
+}
+.task-chart__legend li {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.task-chart__swatch {
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+  flex: none;
+}
+
+.task-chart__tooltip {
+  position: absolute;
+  transform: translate(-50%, -100%);
+  margin-top: -6px;
+  min-width: 140px;
+  padding: var(--s-2) var(--s-3);
+  background: var(--c-surface);
+  border: 1px solid var(--c-line);
+  border-radius: var(--r-sm);
+  box-shadow: var(--shadow-raised);
+  font-size: var(--fs-xs);
+  color: var(--c-ink);
+  pointer-events: none;
+  z-index: 2;
+  white-space: nowrap;
+}
+.task-chart__tooltip-row {
+  display: grid;
+  grid-template-columns: 10px 1fr auto;
+  align-items: center;
+  gap: 6px;
+  margin-top: 2px;
+}
+.task-chart__tooltip-value {
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+.task-chart__tooltip-unit {
+  display: block;
+  color: var(--c-ink-2);
+  margin-top: 2px;
+}
+
+.task-chart__toggle {
+  display: block;
+  margin: var(--s-3) auto 0;
+  padding: 4px 12px;
+  border: 0;
+  border-radius: var(--r-pill);
+  background: transparent;
+  color: var(--c-navy);
+  font: 600 var(--fs-xs) / 1.4 var(--font-ui);
+  cursor: pointer;
+}
+.task-chart__toggle:hover {
+  background: var(--c-navy-soft);
+}
+.task-chart__toggle:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
+.task-chart__table-wrap {
+  overflow-x: auto;
+}
+.task-chart__table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--fs-sm);
+  font-variant-numeric: tabular-nums;
+}
+.task-chart__table th,
+.task-chart__table td {
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--c-line);
+  text-align: right;
+}
+.task-chart__table thead th {
+  color: var(--c-ink-2);
+  font-weight: 600;
+  font-size: var(--fs-xs);
+  border-bottom-color: var(--c-line-strong);
+}
+.task-chart__table tbody th {
+  text-align: left;
+  font-weight: 600;
+  color: var(--c-ink);
+}

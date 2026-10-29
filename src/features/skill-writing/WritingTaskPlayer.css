@@ -1,0 +1,563 @@
+/* =============================================================================
+ * WritingTaskPlayer.css — trình Writing: 2 cột (đề | bài), editor "trang giấy" yên tĩnh,
+ * thanh đáy cố định 1 nút chính + 1 nút phụ.
+ * Nằm trong FocusLayout của trình học (thanh trên cao 72px) -> cột dính (sticky) cách đỉnh 88px.
+ * ========================================================================== */
+.writing-task {
+  --task-accent: var(--skill-writing);
+  --task-sticky-top: 88px;
+  --task-actions-h: 84px;
+  max-width: 1360px;
+  margin: 0 auto;
+  padding: 0 var(--s-7) calc(var(--task-actions-h) + var(--s-6));
+}
+
+/* ---------- đầu trang: tên bài + các bước ---------- */
+.writing-task__header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--s-4) var(--s-7);
+  flex-wrap: wrap;
+  margin-bottom: var(--s-6);
+  scroll-margin-top: var(--task-sticky-top);
+}
+.writing-task__heading {
+  min-width: 0;
+  flex: 1 1 360px;
+}
+.writing-task__eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font: 700 var(--fs-xs) / 1.4 var(--font-ui);
+  color: color-mix(in srgb, var(--task-accent) 75%, var(--c-ink));
+  margin-bottom: 4px;
+}
+.writing-task__title {
+  margin: 0;
+  font-size: var(--fs-xl);
+  line-height: 1.25;
+  text-wrap: balance;
+}
+.writing-task__stepper {
+  flex: 0 1 600px;
+}
+
+/* ---------- bố cục 2 cột ---------- */
+.writing-task__split {
+  display: grid;
+  grid-template-columns: minmax(340px, 5fr) minmax(0, 7fr);
+  gap: var(--s-6);
+  align-items: start;
+}
+.writing-task__split--ai {
+  grid-template-columns: minmax(0, 7fr) minmax(380px, 5fr);
+}
+.writing-task__split--even {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+.writing-task__single {
+  max-width: 920px;
+  margin: 0 auto;
+}
+/* cột phụ dính khi cuộn, tự cuộn bên trong nếu dài hơn màn hình */
+.writing-task__side {
+  position: sticky;
+  top: var(--task-sticky-top);
+  max-height: calc(100vh - var(--task-sticky-top) - var(--task-actions-h) - var(--s-4));
+  overflow: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+}
+.writing-task__main {
+  min-width: 0;
+}
+
+.writing-task__panel {
+  background: var(--c-surface);
+  border: 1px solid var(--c-line);
+  border-radius: var(--r-xl);
+  padding: var(--s-6);
+  box-shadow: var(--shadow-card);
+}
+.writing-task__panel--mine {
+  background: color-mix(in srgb, var(--task-accent) 4%, var(--c-surface));
+}
+.writing-task__panel-title {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--s-2);
+  margin: 0 0 var(--s-4);
+  font-size: var(--fs-lg);
+}
+.writing-task__panel-badge {
+  padding: 3px 10px;
+  border-radius: var(--r-pill);
+  background: var(--c-navy-soft);
+  color: var(--c-navy);
+  font: 700 var(--fs-xs) / 1.4 var(--font-ui);
+}
+.writing-task__section-title {
+  margin: 0 0 4px;
+  font-size: var(--fs-xl);
+}
+.writing-task__lead {
+  margin: 0 0 var(--s-5);
+  color: var(--c-ink-2);
+  font-size: var(--fs-sm);
+  max-width: 62ch;
+}
+.writing-task__note {
+  margin: var(--s-3) 0 0;
+  font-size: var(--fs-xs);
+  color: var(--c-ink-2);
+}
+
+/* "trang giấy" chứa editor: nền trắng, không viền, bóng rất nhẹ */
+.writing-task__paper {
+  background: var(--c-surface);
+  border-radius: var(--r-xl);
+  padding: var(--s-6) var(--s-8) 0;
+  box-shadow: 0 1px 0 rgba(var(--shadow-rgb), 0.04), 0 24px 60px -30px rgba(var(--shadow-rgb), 0.25);
+}
+
+/* ---------- so bài mẫu ---------- */
+.writing-task__compare-intro {
+  margin-bottom: var(--s-4);
+}
+.writing-task__sample {
+  margin-top: var(--s-5);
+}
+.writing-task__notes {
+  margin-top: var(--s-5);
+  padding: var(--s-4) var(--s-5);
+  border-radius: var(--r-lg);
+  background: var(--c-surface-2);
+}
+.writing-task__notes h4 {
+  margin: 0 0 var(--s-3);
+  font: 700 var(--fs-sm) / 1.4 var(--font-ui);
+}
+
+/* ---------- AI: lịch sử các lần chấm + tab ---------- */
+.writing-task__checks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-2);
+  margin-bottom: var(--s-3);
+}
+.writing-task__check {
+  padding: 3px 10px;
+  border-radius: var(--r-pill);
+  background: var(--c-surface-2);
+  color: var(--c-ink-2);
+  font: 600 var(--fs-xs) / 1.5 var(--font-ui);
+  font-variant-numeric: tabular-nums;
+}
+.writing-task__check.is-current {
+  background: color-mix(in srgb, var(--task-accent) 16%, var(--c-surface));
+  color: var(--c-ink);
+}
+.writing-task__tab-panel {
+  margin-top: var(--s-4);
+}
+.writing-task__diff-count {
+  margin-left: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--c-success-ink);
+}
+
+/* ---------- thanh đáy cố định ---------- */
+.writing-task__actions {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: var(--z-sheet);
+  background: color-mix(in srgb, var(--c-bg) 90%, transparent);
+  backdrop-filter: blur(12px);
+  border-top: 1px solid var(--c-line);
+}
+.writing-task__actions-inner {
+  max-width: 1360px;
+  min-height: var(--task-actions-h);
+  margin: 0 auto;
+  padding: var(--s-3) var(--s-7);
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+}
+.writing-task__actions-note {
+  flex: 1;
+  min-width: 0;
+  font-size: var(--fs-sm);
+  color: var(--c-ink-2);
+  text-align: right;
+  padding-right: var(--s-2);
+}
+.writing-task__actions-inner > .ds-btn:first-child + .writing-task__actions-note {
+  text-align: center;
+}
+.writing-task__warn {
+  color: var(--c-oops-ink);
+  font-weight: 600;
+}
+
+/* ---------- đề bài (cột trái) ---------- */
+.task-brief {
+  display: grid;
+  gap: var(--s-4);
+}
+.task-brief__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-2);
+}
+.task-brief__chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 12px;
+  border-radius: var(--r-pill);
+  background: var(--c-surface-2);
+  color: var(--c-ink-2);
+  font: 600 var(--fs-xs) / 1.5 var(--font-ui);
+}
+.task-brief__chip--accent {
+  background: color-mix(in srgb, var(--task-accent) 16%, var(--c-surface));
+  color: var(--c-ink);
+}
+.task-brief__prompt {
+  font-size: var(--fs-md);
+  line-height: 1.6;
+}
+.task-brief__prompt p {
+  margin: 0 0 var(--s-3);
+}
+.task-brief__prompt p:last-child {
+  margin-bottom: 0;
+}
+/* câu cuối "Write at least 150 words." nhạt hơn */
+.task-brief__prompt p:last-child:not(:first-child) {
+  color: var(--c-ink-2);
+  font-size: var(--fs-sm);
+}
+.task-brief__prompt ul,
+.task-brief__prompt ol {
+  margin: 0 0 var(--s-3);
+  padding-left: var(--s-6);
+  display: grid;
+  gap: 4px;
+}
+.task-brief__chart {
+  padding: var(--s-4);
+  border: 1px solid var(--c-line);
+  border-radius: var(--r-lg);
+  background: var(--c-surface);
+}
+.task-brief__fold {
+  border-top: 1px solid var(--c-line);
+  padding-top: var(--s-3);
+}
+.task-brief__fold summary {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+  font: 700 var(--fs-sm) / 1.4 var(--font-ui);
+  cursor: pointer;
+  list-style: none;
+  padding: 4px 0;
+  border-radius: var(--r-xs);
+}
+.task-brief__fold summary::-webkit-details-marker {
+  display: none;
+}
+.task-brief__fold summary:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+.task-brief__fold-chevron {
+  margin-left: auto;
+  color: var(--c-ink-2);
+  transition: transform var(--dur-micro) var(--ease-out);
+}
+.task-brief__fold[open] .task-brief__fold-chevron {
+  transform: rotate(180deg);
+}
+.task-brief__fold-hint {
+  margin: var(--s-2) 0;
+  font-size: var(--fs-xs);
+  color: var(--c-ink-2);
+}
+.task-brief__hints {
+  margin: var(--s-3) 0 var(--s-1);
+  padding-left: var(--s-6);
+  display: grid;
+  gap: var(--s-2);
+  font-size: var(--fs-sm);
+  line-height: 1.55;
+}
+.task-brief__annotated {
+  list-style: none;
+  margin: var(--s-3) 0 0;
+  padding: 0;
+  display: grid;
+  gap: var(--s-3);
+}
+.task-brief__annotated li {
+  padding: var(--s-3) var(--s-4);
+  border-radius: var(--r-md);
+  background: var(--c-surface-2);
+}
+.task-brief__role {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: var(--r-xs);
+  background: color-mix(in srgb, var(--task-accent) 16%, var(--c-surface));
+  font: 700 11px / 1.5 var(--font-ui);
+  letter-spacing: 0.02em;
+}
+.task-brief__model-sentence {
+  margin: 6px 0 4px;
+  font-family: var(--font-reading);
+  line-height: 1.6;
+}
+.task-brief__model-note {
+  margin: 0;
+  font-size: var(--fs-xs);
+  color: var(--c-ink-2);
+  line-height: 1.5;
+}
+.task-brief__gapped {
+  margin-top: var(--s-3);
+  padding: var(--s-4);
+  border-radius: var(--r-md);
+  background: var(--c-surface-2);
+}
+
+/* ---------- editor ---------- */
+.writing-editor {
+  display: flex;
+  flex-direction: column;
+}
+.writing-editor__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--s-2) var(--s-4);
+  margin-bottom: var(--s-4);
+  min-height: 40px;
+}
+.writing-editor__title {
+  display: grid;
+}
+.writing-editor__title label {
+  font: 700 var(--fs-sm) / 1.4 var(--font-ui);
+  color: var(--c-ink-2);
+}
+.writing-editor__hint {
+  font-size: var(--fs-xs);
+  color: var(--c-ink-2);
+}
+.writing-editor__tools {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  flex-wrap: wrap;
+}
+.writing-editor__save {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font: 600 var(--fs-xs) / 1 var(--font-ui);
+  color: var(--c-ink-2);
+}
+.writing-editor__save.is-saved {
+  color: var(--c-success-ink);
+}
+.writing-editor__save-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--c-gold);
+  animation: writing-pulse 1s ease-in-out infinite;
+}
+.writing-editor__timer {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-2);
+}
+.writing-editor__timer-up {
+  font-size: var(--fs-xs);
+  color: var(--c-ink-2);
+}
+.writing-editor__input {
+  display: block;
+  width: 100%;
+  border: 0;
+  outline: none;
+  resize: none;
+  overflow: hidden;
+  padding: 0;
+  background: transparent;
+  color: var(--c-ink);
+  caret-color: var(--c-primary);
+  font-family: var(--font-reading);
+  font-size: 1.1875rem; /* 19px */
+  line-height: 1.85;
+}
+.writing-editor__input::placeholder {
+  color: var(--c-ink-2);
+  opacity: 0.55;
+}
+.writing-editor__input::selection {
+  background: color-mix(in srgb, var(--task-accent) 25%, transparent);
+}
+.writing-editor__tip {
+  margin: var(--s-2) 0 0;
+  font-size: var(--fs-xs);
+  color: var(--c-ink-2);
+}
+/* thước đo dính ở đáy trang giấy (ngay trên thanh đáy) khi bài dài */
+.writing-editor__meter {
+  position: sticky;
+  bottom: var(--task-actions-h);
+  margin: var(--s-5) calc(-1 * var(--s-8)) 0;
+  padding: var(--s-3) var(--s-8) var(--s-4);
+  background: color-mix(in srgb, var(--c-surface) 94%, transparent);
+  backdrop-filter: blur(6px);
+  border-top: 1px solid var(--c-line);
+  border-radius: 0 0 var(--r-xl) var(--r-xl);
+  display: grid;
+  gap: var(--s-2);
+}
+.writing-editor__words {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  flex-wrap: wrap;
+}
+.writing-editor__bar {
+  flex: 1 1 160px;
+  height: 8px;
+  border-radius: 8px;
+  background: var(--c-surface-2);
+  overflow: hidden;
+}
+.writing-editor__bar span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--c-primary);
+  transition: width var(--dur-progress) var(--ease-out), background-color var(--dur-panel);
+}
+.writing-editor__bar.is-enough span {
+  background: var(--c-success);
+}
+.writing-editor__bar.is-long span {
+  background: var(--c-gold);
+}
+.writing-editor__count {
+  font: 700 var(--fs-sm) / 1 var(--font-ui);
+  min-width: 96px;
+}
+.writing-editor__word-message {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font: 600 var(--fs-xs) / 1 var(--font-ui);
+  color: var(--c-ink-2);
+}
+.writing-editor__word-message.is-enough {
+  color: var(--c-success-ink);
+}
+.writing-editor__word-message.is-long {
+  color: var(--c-gold-ink);
+}
+.writing-editor__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-2);
+}
+.writing-editor__chip {
+  padding: 3px 10px;
+  border-radius: var(--r-pill);
+  background: var(--c-surface-2);
+  font: 500 var(--fs-xs) / 1.5 var(--font-ui);
+  color: var(--c-ink);
+}
+.writing-editor__chip--repeat {
+  background: var(--c-gold-soft);
+}
+.writing-editor__chip--quiet {
+  color: var(--c-ink-2);
+}
+
+@keyframes writing-pulse {
+  50% {
+    opacity: 0.35;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .writing-editor__save-dot {
+    animation: none;
+  }
+}
+
+/* ---------- màn vừa (1100px) và hẹp ---------- */
+@media (max-width: 1240px) {
+  .writing-task {
+    padding-inline: var(--s-6);
+  }
+  .writing-task__split {
+    grid-template-columns: minmax(320px, 5fr) minmax(0, 6fr);
+    gap: var(--s-5);
+  }
+  .writing-task__split--ai {
+    grid-template-columns: minmax(0, 6fr) minmax(340px, 5fr);
+  }
+  .writing-task__paper {
+    padding-inline: var(--s-6);
+  }
+  .writing-editor__meter {
+    margin-inline: calc(-1 * var(--s-6));
+    padding-inline: var(--s-6);
+  }
+  .writing-task__actions-inner {
+    padding-inline: var(--s-6);
+  }
+}
+@media (max-width: 900px) {
+  .writing-task__split,
+  .writing-task__split--ai,
+  .writing-task__split--even {
+    grid-template-columns: 1fr;
+  }
+  .writing-task__side {
+    position: static;
+    max-height: none;
+  }
+  .writing-task__actions-note {
+    display: none;
+  }
+  .writing-task__actions-inner {
+    justify-content: flex-end;
+  }
+}
+@media (max-width: 600px) {
+  .writing-task {
+    padding-inline: var(--s-3);
+  }
+  .writing-task__panel,
+  .writing-task__paper {
+    padding: var(--s-4);
+  }
+  .writing-editor__meter {
+    margin-inline: calc(-1 * var(--s-4));
+    padding-inline: var(--s-4);
+  }
+}

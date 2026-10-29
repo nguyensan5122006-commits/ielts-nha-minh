@@ -1,0 +1,156 @@
+// Chủ đề Học vui: Nhạc cụ — từ vựng cơ bản cho người mới bắt đầu.
+import type { FunTopic } from '../content-types'
+
+export const musicalInstrumentsTopic: FunTopic = {
+  id: 'musical-instruments',
+  title: { vi: 'Nhạc cụ', en: 'Musical instruments' },
+  icon: '🎸',
+  group: { vi: 'Giải trí', en: 'Leisure' },
+  cards: [
+    {
+      id: 'fun-musical-instruments-guitar',
+      word: 'guitar',
+      ipa: '/ɡɪˈtɑː/',
+      partOfSpeech: 'noun',
+      meaningVi: 'đàn ghi-ta',
+      image: { kind: 'emoji', value: '🎸' },
+      examples: [
+        { en: 'My brother plays the guitar.', vi: 'Anh trai tôi chơi đàn ghi-ta.' },
+        { en: 'I want to learn the guitar.', vi: 'Tôi muốn học đàn ghi-ta.' },
+      ],
+      extraInfo: { vi: 'Dùng "play the + nhạc cụ": play the guitar.', en: 'Use "play the + instrument": play the guitar.' },
+    },
+    {
+      id: 'fun-musical-instruments-piano',
+      word: 'piano',
+      ipa: '/piˈæn.əʊ/',
+      partOfSpeech: 'noun',
+      meaningVi: 'đàn piano, dương cầm',
+      image: { kind: 'emoji', value: '🎹' },
+      examples: [
+        { en: 'She plays the piano very well.', vi: 'Cô ấy chơi piano rất hay.' },
+        { en: 'We have a piano at home.', vi: 'Nhà chúng tôi có một cây đàn piano.' },
+      ],
+    },
+    {
+      id: 'fun-musical-instruments-violin',
+      word: 'violin',
+      ipa: '/ˌvaɪəˈlɪn/',
+      partOfSpeech: 'noun',
+      meaningVi: 'đàn vi-ô-lông',
+      image: { kind: 'emoji', value: '🎻' },
+      examples: [
+        { en: 'The violin sounds beautiful.', vi: 'Tiếng đàn vi-ô-lông thật hay.' },
+        { en: 'He practises the violin every day.', vi: 'Cậu ấy luyện vi-ô-lông mỗi ngày.' },
+      ],
+    },
+    {
+      id: 'fun-musical-instruments-drum',
+      word: 'drum',
+      ipa: '/drʌm/',
+      partOfSpeech: 'noun',
+      meaningVi: 'cái trống',
+      image: { kind: 'emoji', value: '🥁' },
+      examples: [
+        { en: 'The drum is very loud.', vi: 'Tiếng trống rất to.' },
+        { en: 'He plays the drums in a band.', vi: 'Anh ấy chơi trống trong một ban nhạc.' },
+      ],
+    },
+    {
+      id: 'fun-musical-instruments-long-drum',
+      word: 'long drum',
+      ipa: '/ˈlɒŋ ˌdrʌm/',
+      partOfSpeech: 'noun',
+      meaningVi: 'trống dài, trống tay',
+      image: { kind: 'emoji', value: '🪘' },
+      examples: [
+        { en: 'You play a long drum with your hands.', vi: 'Bạn chơi trống dài bằng tay.' },
+        { en: 'The long drum is popular in Africa.', vi: 'Trống dài rất phổ biến ở châu Phi.' },
+      ],
+    },
+    {
+      id: 'fun-musical-instruments-trumpet',
+      word: 'trumpet',
+      ipa: '/ˈtrʌm.pɪt/',
+      partOfSpeech: 'noun',
+      meaningVi: 'kèn trumpet',
+      image: { kind: 'emoji', value: '🎺' },
+      examples: [
+        { en: 'He blows the trumpet loudly.', vi: 'Anh ấy thổi kèn trumpet rất to.' },
+        { en: 'The trumpet is made of metal.', vi: 'Kèn trumpet được làm bằng kim loại.' },
+      ],
+    },
+    {
+      id: 'fun-musical-instruments-saxophone',
+      word: 'saxophone',
+      ipa: '/ˈsæk.sə.fəʊn/',
+      partOfSpeech: 'noun',
+      meaningVi: 'kèn saxophone',
+      image: { kind: 'emoji', value: '🎷' },
+      examples: [
+        { en: 'I love the sound of the saxophone.', vi: 'Tôi yêu tiếng kèn saxophone.' },
+        { en: 'My uncle plays the saxophone in a jazz band.', vi: 'Chú tôi chơi saxophone trong một ban nhạc jazz.' },
+      ],
+    },
+    {
+      id: 'fun-musical-instruments-flute',
+      word: 'flute',
+      ipa: '/fluːt/',
+      partOfSpeech: 'noun',
+      meaningVi: 'cây sáo',
+      image: { kind: 'emoji', value: '🪈' },
+      examples: [
+        { en: 'She plays the flute in the school band.', vi: 'Cô ấy thổi sáo trong ban nhạc của trường.' },
+        { en: 'The flute has a soft sound.', vi: 'Cây sáo có âm thanh nhẹ nhàng.' },
+      ],
+    },
+    {
+      id: 'fun-musical-instruments-accordion',
+      word: 'accordion',
+      ipa: '/əˈkɔː.di.ən/',
+      partOfSpeech: 'noun',
+      meaningVi: 'đàn ắc-coóc-đê-ông',
+      image: { kind: 'emoji', value: '🪗' },
+      examples: [
+        { en: 'Grandpa can play the accordion.', vi: 'Ông có thể chơi đàn ắc-coóc-đê-ông.' },
+        { en: 'The accordion is quite heavy.', vi: 'Cây đàn ắc-coóc-đê-ông khá nặng.' },
+      ],
+    },
+    {
+      id: 'fun-musical-instruments-banjo',
+      word: 'banjo',
+      ipa: '/ˈbæn.dʒəʊ/',
+      partOfSpeech: 'noun',
+      meaningVi: 'đàn banjo',
+      image: { kind: 'emoji', value: '🪕' },
+      examples: [
+        { en: 'A banjo has a round body.', vi: 'Đàn banjo có thân tròn.' },
+        { en: 'He played a happy song on the banjo.', vi: 'Anh ấy chơi một bài hát vui bằng đàn banjo.' },
+      ],
+    },
+    {
+      id: 'fun-musical-instruments-maracas',
+      word: 'maracas',
+      ipa: '/məˈræk.əz/',
+      partOfSpeech: 'noun',
+      meaningVi: 'cặp lắc maracas',
+      image: { kind: 'emoji', value: '🪇' },
+      examples: [
+        { en: 'Shake the maracas to the music!', vi: 'Hãy lắc maracas theo điệu nhạc!' },
+        { en: 'Little kids love maracas.', vi: 'Trẻ nhỏ rất thích cặp lắc maracas.' },
+      ],
+    },
+    {
+      id: 'fun-musical-instruments-bell',
+      word: 'bell',
+      ipa: '/bel/',
+      partOfSpeech: 'noun',
+      meaningVi: 'cái chuông',
+      image: { kind: 'emoji', value: '🔔' },
+      examples: [
+        { en: 'The school bell rings at 7 o’clock.', vi: 'Chuông trường reo lúc 7 giờ.' },
+        { en: 'I can hear a bell.', vi: 'Tôi nghe thấy tiếng chuông.' },
+      ],
+    },
+  ],
+}

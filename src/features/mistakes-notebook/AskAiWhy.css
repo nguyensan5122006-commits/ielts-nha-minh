@@ -1,0 +1,37 @@
+/* =============================================================================
+ * AskAiWhy.css — nút "Hỏi AI vì sao" + khung lời giải thích
+ * ========================================================================== */
+.mn-ai-trigger {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--s-2);
+  margin-left: calc(var(--s-3) * -1); /* nút ghost có đệm trái -> kéo thẳng hàng với chữ */
+}
+.mn-ai-trigger__error {
+  font-size: var(--fs-sm);
+  color: var(--c-oops-ink);
+}
+.mn-ai {
+  margin-top: var(--s-2);
+  padding: var(--s-3) var(--s-4);
+  border-radius: var(--r-md);
+  background: var(--c-surface);
+  border: 1px solid var(--c-line);
+  font-size: var(--fs-sm);
+  line-height: 1.6;
+}
+.mn-ai__text {
+  margin: 0 0 var(--s-2);
+}
+.mn-ai__examples {
+  margin: 0 0 var(--s-2);
+  padding-left: var(--s-5);
+}
+.mn-ai__vi {
+  color: var(--c-ink-2);
+}
+.mn-ai__tip {
+  margin: 0;
+  color: var(--c-ink-2);
+}

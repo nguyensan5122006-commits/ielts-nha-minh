@@ -1,0 +1,167 @@
+/* =============================================================================
+ * base.css — NỀN TẢNG: xoá style mặc định của trình duyệt + kiểu chữ chung
+ * -----------------------------------------------------------------------------
+ * Nạp SAU tokens.css. Chỉ đặt style cho thẻ HTML gốc (body, h1, a, button...)
+ * và vài lớp chữ dùng chung. Component riêng có file CSS riêng.
+ * ========================================================================== */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+html,
+body {
+  margin: 0;
+}
+
+body {
+  min-height: 100vh;
+  background: var(--c-bg);
+  color: var(--c-ink);
+  font-family: var(--font-ui);
+  font-size: var(--fs-md);
+  line-height: var(--lh-body);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  /* chuyển màu mượt khi đổi sáng/tối */
+  transition: background-color var(--dur-panel) var(--ease-out), color var(--dur-panel) var(--ease-out);
+}
+
+/* Tiêu đề dùng Baloo 2 — tròn, dày, vui. letter-spacing âm nhẹ cho gọn */
+h1,
+h2,
+h3,
+h4,
+h5 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  line-height: var(--lh-tight);
+  letter-spacing: -0.01em;
+  margin: 0 0 0.5em;
+  color: inherit;
+  text-wrap: balance;
+}
+h1 {
+  font-size: var(--fs-2xl);
+  font-weight: 800;
+}
+h2 {
+  font-size: var(--fs-xl);
+}
+h3 {
+  font-size: var(--fs-lg);
+}
+h4 {
+  font-size: var(--fs-md);
+}
+
+p {
+  margin: 0 0 0.75em;
+  text-wrap: pretty;
+}
+
+a {
+  color: var(--c-navy);
+  text-decoration: none;
+  text-underline-offset: 3px;
+}
+a:hover {
+  text-decoration: underline;
+}
+
+/* Ảnh không bao giờ tràn khỏi khung chứa (giữ inline để không làm vỡ trang cũ) */
+img,
+video,
+canvas {
+  max-width: 100%;
+}
+
+input,
+textarea,
+select,
+button {
+  font: inherit;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+/* Vòng focus: chỉ hiện khi dùng BÀN PHÍM (focus-visible), chuột thì không */
+/* (outline tự uốn theo bo góc của phần tử ở trình duyệt hiện đại -> nút pill vẫn có vòng tròn đẹp) */
+:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--c-navy) 45%, transparent);
+  outline-offset: 2px;
+}
+
+::selection {
+  background: color-mix(in srgb, var(--c-primary) 35%, transparent);
+  color: var(--c-ink);
+}
+
+/* Thanh cuộn mảnh, bo tròn, màu theo theme */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--c-line-strong) transparent;
+}
+
+hr {
+  border: none;
+  border-top: 1px solid var(--c-line);
+  margin: var(--s-6) 0;
+}
+
+/* ---------- Lớp chữ dùng chung ---------- */
+.ds-display {
+  font-family: var(--font-display);
+}
+/* Bài đọc dài (Reading passage, bài mẫu Writing): serif 18px, dòng thoáng */
+.ds-reading {
+  font-family: var(--font-reading);
+  font-size: 1.125rem;
+  line-height: var(--lh-reading);
+}
+.ds-muted {
+  color: var(--c-ink-2);
+}
+.ds-num {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Chữ chỉ dành cho trình đọc màn hình (người khiếm thị), mắt không thấy */
+.ds-visually-hidden {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Khu trẻ em: chữ to hơn (body 20px) — đặt class này lên khung ngoài cùng */
+.ds-kids {
+  font-size: var(--fs-lg);
+}
+
+/* Người dùng bật "giảm chuyển động" trong máy: tắt nảy/bay/pháo giấy,
+ * vẫn giữ chuyển màu (transition màu vẫn chạy). */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+  }
+}

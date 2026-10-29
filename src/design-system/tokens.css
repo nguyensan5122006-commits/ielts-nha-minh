@@ -1,0 +1,267 @@
+/* =============================================================================
+ * tokens.css — "BIẾN THIẾT KẾ" (design tokens) CỦA CẢ WEBSITE
+ * -----------------------------------------------------------------------------
+ * Mọi màu, cỡ chữ, bo góc, bóng đổ, thời lượng chuyển động đều khai báo ở đây
+ * dưới dạng biến CSS (custom properties). Component chỉ dùng biến, KHÔNG viết
+ * mã màu trực tiếp -> đổi 1 chỗ là đổi cả web, và chế độ tối chạy tự động.
+ *
+ * Phong cách "Vinyl Toy UI": mềm, tròn, bóng satin như đồ chơi vinyl.
+ * Màu lấy cảm hứng từ chú Corgi cảnh sát: cam mật ong + kem, đồng phục ô-liu,
+ * ve áo đỏ, cầu vai vàng, bầu trời đêm tuần tra navy.
+ *
+ * Chế độ sáng / tối:
+ *   - <html data-theme="light|dark"> do theme.ts đặt (người dùng chọn hoặc theo máy).
+ *   - Chưa có JS (lúc vừa tải trang) thì theo cài đặt máy: prefers-color-scheme.
+ *   - Có thể lồng: <div data-theme="dark"> bên trong trang sáng (trang /design dùng).
+ *
+ * Mục lục:
+ *   1. Màu nền tảng — sáng
+ *   2. Màu nền tảng — tối
+ *   3. Biến "phái sinh" (tính từ biến màu) — khai báo lại ở mọi phạm vi theme
+ *   4. Chữ, khoảng cách, bo góc, chuyển động, lớp (z-index), bố cục
+ * ========================================================================== */
+
+/* ---------- 1. MÀU — CHẾ ĐỘ SÁNG (mặc định) ---------- */
+:root,
+[data-theme='light'] {
+  color-scheme: light;
+
+  --c-bg: #fff8ee; /* nền trang: kem ấm */
+  --c-surface: #ffffff; /* thẻ, khung */
+  --c-surface-2: #fff1dd; /* khối phụ, ô nhập */
+  --c-surface-3: #ffe9cc; /* hover của khối phụ */
+  --c-ink: #1e2347; /* chữ chính: navy mực */
+  --c-ink-2: #5b6187; /* chữ phụ (tương phản 5.7:1 trên nền kem) */
+  --c-line: #f0e2cc; /* viền mảnh */
+  --c-line-strong: #e4d0b2; /* viền đậm hơn (ô nhập, đường kẻ bảng) */
+
+  --c-primary: #ff8a2a; /* cam Corgi — nút chính, điểm nhấn */
+  --c-primary-deep: #e66a0a; /* đáy gradient nút, hover */
+  --c-primary-soft: #ffe7cf; /* nền chip, highlight */
+  --c-primary-ink: #a34a06; /* CHỮ màu cam trên nền sáng (đạt 4.5:1) */
+  --c-on-primary: #1e2347; /* chữ TRÊN nút cam: navy (6.4:1). Chữ trắng chỉ đạt 2.4:1 */
+
+  --c-navy: #2b3a8f; /* nút phụ đậm, link, header phòng thi */
+  --c-navy-soft: #e6e9f8;
+  --c-on-navy: #ffffff;
+
+  --c-olive: #7e8f4e; /* đồng phục — huy hiệu cấp */
+  --c-olive-soft: #eef2e1;
+  --c-olive-ink: #5e6b35;
+
+  --c-red: #e2453c; /* ve áo — lửa chuỗi ngày, nhãn "Mới" */
+  --c-red-soft: #ffe4e1;
+  --c-red-ink: #c0322a;
+  --c-on-red: #ffffff; /* chữ trên nút đỏ (nút đỏ dùng gradient đậm -> 4.8:1) */
+
+  --c-gold: #f5b82e; /* cầu vai — XP, sao, phần thưởng */
+  --c-gold-soft: #fff4d6;
+  --c-gold-ink: #8a5a00;
+
+  --c-success: #1fb57a; /* trả lời đúng */
+  --c-success-soft: #e2f8ee;
+  --c-success-ink: #0e7a50;
+
+  --c-oops: #f2724b; /* trả lời chưa đúng: cam san hô, KHÔNG đỏ chói */
+  --c-oops-soft: #ffe9e0;
+  --c-oops-ink: #a63a1f;
+
+  /* màu 5 kỹ năng (icon 3D, viền thẻ, thanh tiến độ kỹ năng) */
+  --skill-listening: #2e9bf0;
+  --skill-reading: #8b5cf6;
+  --skill-writing: #f0568c;
+  --skill-speaking: #13b5a5;
+  --skill-vocabulary: #f5a623;
+
+  /* "chất liệu" bóng đổ: màu bóng navy rất nhạt cho cảm giác ấm, không xám lạnh */
+  --shadow-rgb: 30, 35, 71;
+  --gloss-strength: 0.55; /* độ sáng vệt bóng phía trên nút/thẻ vinyl */
+  --backdrop: rgba(30, 35, 71, 0.42); /* lớp mờ phía sau modal */
+}
+
+/* ---------- 2. MÀU — CHẾ ĐỘ TỐI ---------- */
+/* Khai báo 1 lần trong "mixin" bằng cách lặp lại cho 2 trường hợp:
+ *   a) máy đang tối và người dùng chưa ép "sáng"
+ *   b) người dùng / khối lồng ép data-theme="dark" */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    color-scheme: dark;
+    --c-bg: #0e1330;
+    --c-surface: #171d40;
+    --c-surface-2: #20285a;
+    --c-surface-3: #283169;
+    --c-ink: #f4f1ff;
+    --c-ink-2: #b7bce0;
+    --c-line: #2c3570;
+    --c-line-strong: #3a4486;
+    --c-primary: #ff9d47;
+    --c-primary-deep: #ff8a2a;
+    --c-primary-soft: #3a2a2a;
+    --c-primary-ink: #ffad66;
+    --c-on-primary: #1e2347;
+    --c-navy: #7d8cff;
+    --c-navy-soft: #252f6b;
+    --c-on-navy: #0e1330;
+    --c-olive: #a9bc72;
+    --c-olive-soft: #263020;
+    --c-olive-ink: #bfd08a;
+    --c-red: #ff6b62;
+    --c-red-soft: #3d2228;
+    --c-red-ink: #ff8f88;
+    --c-on-red: #1e2347;
+    --c-gold: #ffcc55;
+    --c-gold-soft: #3a3220;
+    --c-gold-ink: #ffd677;
+    --c-success: #3ddc97;
+    --c-success-soft: #123a2e;
+    --c-success-ink: #5fe6ab;
+    --c-oops: #ff8f6b;
+    --c-oops-soft: #3d2320;
+    --c-oops-ink: #ffa98c;
+    --skill-listening: #5cb4ff;
+    --skill-reading: #a685ff;
+    --skill-writing: #ff7aa6;
+    --skill-speaking: #34d1c0;
+    --skill-vocabulary: #ffbd4a;
+    --shadow-rgb: 3, 5, 18;
+    --gloss-strength: 0.22;
+    --backdrop: rgba(4, 6, 20, 0.62);
+  }
+}
+:root[data-theme='dark'],
+[data-theme='dark'] {
+  color-scheme: dark;
+  --c-bg: #0e1330;
+  --c-surface: #171d40;
+  --c-surface-2: #20285a;
+  --c-surface-3: #283169;
+  --c-ink: #f4f1ff;
+  --c-ink-2: #b7bce0;
+  --c-line: #2c3570;
+  --c-line-strong: #3a4486;
+  --c-primary: #ff9d47;
+  --c-primary-deep: #ff8a2a;
+  --c-primary-soft: #3a2a2a;
+  --c-primary-ink: #ffad66;
+  --c-on-primary: #1e2347;
+  --c-navy: #7d8cff;
+  --c-navy-soft: #252f6b;
+  --c-on-navy: #0e1330;
+  --c-olive: #a9bc72;
+  --c-olive-soft: #263020;
+  --c-olive-ink: #bfd08a;
+  --c-red: #ff6b62;
+  --c-red-soft: #3d2228;
+  --c-red-ink: #ff8f88;
+  --c-on-red: #1e2347;
+  --c-gold: #ffcc55;
+  --c-gold-soft: #3a3220;
+  --c-gold-ink: #ffd677;
+  --c-success: #3ddc97;
+  --c-success-soft: #123a2e;
+  --c-success-ink: #5fe6ab;
+  --c-oops: #ff8f6b;
+  --c-oops-soft: #3d2320;
+  --c-oops-ink: #ffa98c;
+  --skill-listening: #5cb4ff;
+  --skill-reading: #a685ff;
+  --skill-writing: #ff7aa6;
+  --skill-speaking: #34d1c0;
+  --skill-vocabulary: #ffbd4a;
+  --shadow-rgb: 3, 5, 18;
+  --gloss-strength: 0.22;
+  --backdrop: rgba(4, 6, 20, 0.62);
+}
+
+/* ---------- 3. BIẾN PHÁI SINH ----------
+ * Biến dùng var() của biến khác được "tính xong" ngay tại phần tử khai báo nó.
+ * Vì vậy phải khai báo lại ở MỌI phạm vi theme ([data-theme]) để khối lồng
+ * (VD <div data-theme="dark">) tính lại bóng đổ theo màu tối. */
+:root,
+[data-theme] {
+  /* bóng mềm 2 lớp cho thẻ (đúng spec) */
+  --shadow-card: 0 1px 0 rgba(var(--shadow-rgb), 0.04), 0 10px 30px -12px rgba(var(--shadow-rgb), 0.18);
+  /* thẻ nổi hơn (hover, popover) */
+  --shadow-raised: 0 2px 4px rgba(var(--shadow-rgb), 0.05), 0 18px 40px -14px rgba(var(--shadow-rgb), 0.28);
+  /* modal, sheet */
+  --shadow-pop: 0 4px 10px rgba(var(--shadow-rgb), 0.08), 0 30px 70px -20px rgba(var(--shadow-rgb), 0.45);
+  /* vệt bóng satin ở mép trên (như đồ chơi vinyl phản chiếu đèn) */
+  --gloss-top: inset 0 1px 0 rgba(255, 255, 255, var(--gloss-strength));
+  /* vòng focus khi dùng bàn phím: 3px navy 40% */
+  --focus-ring: 0 0 0 3px color-mix(in srgb, var(--c-navy) 40%, transparent);
+  /* gradient nút cam: sáng trên -> đậm dưới */
+  --grad-primary: linear-gradient(180deg, color-mix(in srgb, var(--c-primary) 82%, #fff) 0%, var(--c-primary) 45%, var(--c-primary-deep) 100%);
+  --grad-navy: linear-gradient(180deg, color-mix(in srgb, var(--c-navy) 80%, #fff) 0%, var(--c-navy) 55%, color-mix(in srgb, var(--c-navy) 85%, #000) 100%);
+  --grad-gold: linear-gradient(180deg, color-mix(in srgb, var(--c-gold) 70%, #fff) 0%, var(--c-gold) 60%, color-mix(in srgb, var(--c-gold) 85%, #b06a00) 100%);
+  --grad-success: linear-gradient(180deg, color-mix(in srgb, var(--c-success) 80%, #fff) 0%, var(--c-success) 100%);
+  --grad-oops: linear-gradient(180deg, color-mix(in srgb, var(--c-oops) 80%, #fff) 0%, var(--c-oops) 100%);
+}
+
+/* ---------- 4. CHỮ, KHOẢNG CÁCH, HÌNH KHỐI, CHUYỂN ĐỘNG ---------- */
+:root {
+  /* Font: Baloo 2 = tiêu đề/số/nút (tròn, vui) · Be Vietnam Pro = giao diện · Source Serif 4 = bài đọc dài */
+  --font-display: 'Baloo 2', 'Be Vietnam Pro', system-ui, sans-serif;
+  --font-ui: 'Be Vietnam Pro', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-reading: 'Source Serif 4', Georgia, 'Times New Roman', serif;
+
+  /* Thang cỡ chữ desktop: 13 / 15 / 17 (body) / 20 / 24 / 32 / 44 / 60 */
+  --fs-xs: 0.8125rem; /* 13 */
+  --fs-sm: 0.9375rem; /* 15 */
+  --fs-md: 1.0625rem; /* 17 — chữ thường */
+  --fs-lg: 1.25rem; /* 20 */
+  --fs-xl: 1.5rem; /* 24 — câu hỏi trong bài */
+  --fs-2xl: 2rem; /* 32 */
+  --fs-3xl: 2.75rem; /* 44 */
+  --fs-4xl: 3.75rem; /* 60 — số lớn, hero */
+  --lh-body: 1.6;
+  --lh-reading: 1.75;
+  --lh-tight: 1.2;
+
+  /* Khoảng cách theo bước 4px — dùng nhất quán để có "nhịp" đều */
+  --s-1: 4px;
+  --s-2: 8px;
+  --s-3: 12px;
+  --s-4: 16px;
+  --s-5: 20px;
+  --s-6: 24px;
+  --s-7: 32px;
+  --s-8: 40px;
+  --s-9: 48px;
+  --s-10: 64px;
+
+  /* Bo góc */
+  --r-xs: 6px;
+  --r-sm: 10px;
+  --r-md: 16px;
+  --r-lg: 24px;
+  --r-xl: 32px;
+  --r-pill: 999px;
+
+  /* Chiều cao nút: lg = CTA chính, md = thường, sm = phụ. Khu trẻ em >= 56px */
+  --btn-h-lg: 56px;
+  --btn-h-md: 44px;
+  --btn-h-sm: 36px;
+
+  /* Chuyển động: vi mô 120–180ms; panel 220–280ms; ăn mừng <= 1.5s */
+  --dur-micro: 150ms;
+  --dur-press: 80ms;
+  --dur-panel: 240ms;
+  --dur-progress: 400ms;
+  --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+
+  /* Lớp chồng (z-index) — số to nằm trên */
+  --z-sticky: 20;
+  --z-nav: 30;
+  --z-sheet: 40;
+  --z-modal: 50;
+  --z-toast: 60;
+  --z-confetti: 70;
+
+  /* Bố cục khung trang */
+  --sidebar-w: 240px;
+  --rail-w: 340px;
+  --content-max: 760px;
+  --page-gutter: var(--s-7);
+}

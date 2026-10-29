@@ -1,0 +1,77 @@
+/* =============================================================================
+ * ReviewBeforeSubmit.css — lưới số câu: xanh = đã làm, viền đứt = trống, chấm đỏ = cờ
+ * ========================================================================== */
+
+.xreview {
+  color: var(--c-ink);
+}
+.xreview__badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-2);
+  margin-bottom: var(--s-4);
+}
+.xreview__part + .xreview__part {
+  margin-top: var(--s-3);
+}
+.xreview__part-label {
+  margin: 0 0 var(--s-2);
+  font-weight: 700;
+  font-size: var(--fs-sm);
+}
+.xreview__grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-2);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.xreview__num {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  border-radius: var(--r-sm);
+  font: 700 var(--fs-sm) / 1 var(--font-ui);
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+  transition: transform var(--dur-press) var(--ease-out);
+}
+.xreview__num.is-answered {
+  border: 1.5px solid color-mix(in srgb, var(--c-success) 55%, transparent);
+  background: var(--c-success-soft);
+  color: var(--c-success-ink);
+}
+.xreview__num.is-blank {
+  border: 1.5px dashed var(--c-oops);
+  background: var(--c-surface);
+  color: var(--c-oops-ink);
+}
+.xreview__num.is-flagged::after {
+  content: '';
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--c-red);
+}
+.xreview__num:hover {
+  transform: translateY(-1px);
+}
+.xreview__num:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+.xreview__notes {
+  margin: var(--s-4) 0 0;
+  padding-left: 1.2em;
+  color: var(--c-ink-2);
+  font-size: var(--fs-sm);
+}
+.xreview__notes li + li {
+  margin-top: 4px;
+}

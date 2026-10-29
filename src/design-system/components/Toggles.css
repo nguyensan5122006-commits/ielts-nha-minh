@@ -1,0 +1,40 @@
+/* =============================================================================
+ * Toggles.css — nút tròn nhỏ dùng chung cho LanguageToggle / ThemeToggle / SoundToggle
+ * ========================================================================== */
+.ds-toggle-compact {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-width: 40px;
+  height: 40px;
+  padding: 0 10px;
+  border: none;
+  border-radius: var(--r-pill);
+  background: var(--c-surface-2);
+  color: var(--c-ink);
+  font-size: var(--fs-xs);
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  box-shadow: var(--gloss-top), inset 0 0 0 1px var(--c-line);
+  transition:
+    background-color var(--dur-micro) var(--ease-out),
+    transform var(--dur-press) var(--ease-out),
+    color var(--dur-micro) var(--ease-out);
+}
+.ds-toggle-compact:hover {
+  background: var(--c-surface-3);
+}
+.ds-toggle-compact:active {
+  transform: scale(0.94);
+}
+.ds-toggle-compact.is-off {
+  color: var(--c-ink-2);
+}
+.ds-toggle-compact.has-label {
+  padding: 0 14px 0 12px;
+  font-size: var(--fs-sm);
+  font-weight: 700;
+  letter-spacing: 0;
+}

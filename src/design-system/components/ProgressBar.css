@@ -1,0 +1,138 @@
+/* =============================================================================
+ * ProgressBar.css — rãnh lõm mềm + phần đầy bóng satin + huy hiệu ngôi sao
+ * ========================================================================== */
+.ds-progress {
+  --pb-color: var(--grad-primary);
+  --pb-h: 14px;
+  --pb-head: 26px;
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  width: 100%;
+}
+.ds-progress--sm {
+  --pb-h: 8px;
+  --pb-head: 18px;
+}
+.ds-progress--lg {
+  --pb-h: 18px;
+  --pb-head: 30px;
+}
+
+/* rãnh: lõm nhẹ vào trong (bóng trong ở trên) */
+.ds-progress__track {
+  position: relative;
+  flex: 1 1 auto;
+  height: var(--pb-h);
+  border-radius: var(--r-pill);
+  background: var(--c-surface-2);
+  box-shadow: inset 0 1.5px 2px rgba(var(--shadow-rgb), 0.12), inset 0 0 0 1px color-mix(in srgb, var(--c-line) 70%, transparent);
+}
+/* có đầu thanh -> chừa chỗ 2 bên để huy hiệu không tràn khỏi khung */
+.ds-progress.has-head .ds-progress__track {
+  margin-inline: calc(var(--pb-head) / 2 - var(--pb-h) / 2);
+}
+
+.ds-progress__fill {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: var(--pb-pct);
+  min-width: 0;
+  border-radius: inherit;
+  background: var(--pb-color);
+  box-shadow: inset 0 1.5px 0 rgba(255, 255, 255, calc(var(--gloss-strength) * 0.9));
+  transition: width var(--dur-progress) var(--ease-out);
+}
+/* vệt sáng chạy ngang nhè nhẹ khi đầy 100% */
+.ds-progress__fill::after {
+  content: '';
+  position: absolute;
+  inset: 2px 6px auto;
+  height: 35%;
+  border-radius: var(--r-pill);
+  background: rgba(255, 255, 255, calc(var(--gloss-strength) * 0.6));
+}
+
+/* huy hiệu ngôi sao ở đầu thanh — đi theo phần đầy */
+.ds-progress__head {
+  position: absolute;
+  top: 50%;
+  left: var(--pb-pct);
+  width: var(--pb-head);
+  height: var(--pb-head);
+  transform: translate(-50%, -50%);
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--grad-gold);
+  color: #fff;
+  box-shadow:
+    inset 0 1.5px 0 rgba(255, 255, 255, 0.6),
+    0 0 0 2.5px var(--c-surface),
+    0 4px 10px -3px rgba(var(--shadow-rgb), 0.45);
+  transition: left var(--dur-progress) var(--ease-out);
+}
+.ds-progress__head .ds-icon {
+  filter: drop-shadow(0 1px 0 rgba(138, 90, 0, 0.55));
+}
+
+/* 3 ngôi sao lấp lánh quanh đầu thanh khi vượt mốc */
+.ds-progress__sparkles i {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  background: var(--c-gold);
+  clip-path: polygon(50% 0, 62% 38%, 100% 50%, 62% 62%, 50% 100%, 38% 62%, 0 50%, 38% 38%);
+  animation: ds-sparkle 700ms var(--ease-out) both;
+}
+.ds-progress__sparkles i:nth-child(1) {
+  top: -12px;
+  left: -6px;
+}
+.ds-progress__sparkles i:nth-child(2) {
+  top: -14px;
+  right: -8px;
+  width: 8px;
+  height: 8px;
+  animation-delay: 90ms;
+}
+.ds-progress__sparkles i:nth-child(3) {
+  bottom: -10px;
+  right: -12px;
+  animation-delay: 160ms;
+}
+
+/* nhãn "3 câu đúng liền!" nảy lên trên đầu thanh */
+.ds-progress__streak {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 4px 10px;
+  border-radius: var(--r-pill);
+  background: var(--c-ink);
+  color: var(--c-bg);
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  white-space: nowrap;
+  box-shadow: var(--shadow-raised);
+  animation: ds-pop 320ms var(--ease-spring) both;
+}
+.ds-progress__streak::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border: 5px solid transparent;
+  border-top-color: var(--c-ink);
+}
+
+.ds-progress__value {
+  flex: none;
+  min-width: 3ch;
+  color: var(--c-ink-2);
+  font-size: var(--fs-sm);
+  font-weight: 700;
+  text-align: right;
+}

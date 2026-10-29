@@ -1,0 +1,190 @@
+/* =============================================================================
+ * Button.css — nút "vinyl": pill, gradient dọc, vệt sáng mép trên, bóng cùng tông
+ * ========================================================================== */
+
+.ds-btn {
+  /* biến nội bộ: mỗi biến thể chỉ cần đổi mấy biến này */
+  --btn-bg: var(--grad-primary);
+  --btn-fg: var(--c-on-primary);
+  --btn-glow: var(--c-primary-deep); /* màu bóng đổ phía dưới */
+  --btn-h: var(--btn-h-md);
+  --btn-px: 22px;
+  --btn-fs: 1.0625rem;
+
+  position: relative;
+  isolation: isolate;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: var(--btn-h);
+  padding: 0 var(--btn-px);
+  border: none;
+  border-radius: var(--r-pill);
+  background: var(--btn-bg);
+  color: var(--btn-fg);
+  font-family: var(--font-display);
+  font-size: var(--btn-fs);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+  text-decoration: none;
+  cursor: pointer;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  box-shadow:
+    var(--gloss-top),
+    inset 0 -2px 0 rgba(0, 0, 0, 0.06),
+    0 8px 18px -8px color-mix(in srgb, var(--btn-glow) 60%, transparent);
+  transition:
+    transform var(--dur-press) var(--ease-out),
+    box-shadow var(--dur-micro) var(--ease-out),
+    filter var(--dur-micro) var(--ease-out),
+    background-color var(--dur-micro) var(--ease-out),
+    color var(--dur-micro) var(--ease-out);
+}
+
+/* Vệt bóng satin: dải sáng mờ ở nửa trên — như đèn phản chiếu trên đồ chơi vinyl */
+.ds-btn::before {
+  content: '';
+  position: absolute;
+  inset: 2px 10% auto;
+  height: 45%;
+  border-radius: var(--r-pill);
+  background: linear-gradient(180deg, rgba(255, 255, 255, calc(var(--gloss-strength) * 0.7)), rgba(255, 255, 255, 0));
+  pointer-events: none;
+  z-index: -1;
+}
+
+.ds-btn:hover {
+  text-decoration: none;
+  filter: brightness(1.04);
+  transform: translateY(-1px);
+  box-shadow:
+    var(--gloss-top),
+    inset 0 -2px 0 rgba(0, 0, 0, 0.06),
+    0 12px 22px -10px color-mix(in srgb, var(--btn-glow) 70%, transparent);
+}
+.ds-btn:active:not(:disabled) {
+  transform: scale(0.97);
+  box-shadow:
+    var(--gloss-top),
+    0 3px 8px -4px color-mix(in srgb, var(--btn-glow) 60%, transparent);
+}
+.ds-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.48;
+  filter: saturate(0.6);
+  transform: none;
+  box-shadow: var(--gloss-top);
+}
+
+/* Chữ Baloo 2 có phần dưới dòng sâu -> đẩy nhẹ lên để trông căn giữa */
+.ds-btn__label {
+  padding-top: 0.12em;
+}
+.ds-btn__icon {
+  display: inline-grid;
+  place-items: center;
+  line-height: 1;
+}
+
+/* ---------- Kích thước ---------- */
+.ds-btn--sm {
+  --btn-h: var(--btn-h-sm);
+  --btn-px: 14px;
+  --btn-fs: 0.9375rem;
+  gap: 6px;
+}
+.ds-btn--md {
+  --btn-h: var(--btn-h-md);
+}
+.ds-btn--lg {
+  --btn-h: var(--btn-h-lg);
+  --btn-px: 30px;
+  --btn-fs: 1.1875rem;
+  gap: 10px;
+}
+.ds-btn--xl {
+  --btn-h: 64px;
+  --btn-px: 36px;
+  --btn-fs: 1.375rem;
+  gap: 12px;
+}
+.ds-btn--full {
+  display: flex;
+  width: 100%;
+}
+
+/* ---------- Biến thể ---------- */
+.ds-btn--secondary {
+  --btn-bg: linear-gradient(180deg, color-mix(in srgb, var(--c-surface-2) 60%, var(--c-surface)) 0%, var(--c-surface-2) 100%);
+  --btn-fg: var(--c-ink);
+  --btn-glow: var(--c-ink);
+  box-shadow:
+    var(--gloss-top),
+    inset 0 0 0 1px var(--c-line),
+    0 6px 14px -10px rgba(var(--shadow-rgb), 0.5);
+}
+.ds-btn--secondary:hover {
+  box-shadow:
+    var(--gloss-top),
+    inset 0 0 0 1px var(--c-line-strong),
+    0 10px 18px -12px rgba(var(--shadow-rgb), 0.55);
+}
+
+.ds-btn--ghost {
+  --btn-bg: transparent;
+  --btn-fg: var(--c-ink-2);
+  box-shadow: none;
+}
+.ds-btn--ghost::before {
+  display: none;
+}
+.ds-btn--ghost:hover {
+  --btn-bg: var(--c-surface-2);
+  --btn-fg: var(--c-ink);
+  transform: none;
+  filter: none;
+  box-shadow: none;
+}
+.ds-btn--ghost:active:not(:disabled) {
+  box-shadow: none;
+}
+
+.ds-btn--danger {
+  /* gradient đỏ ve áo -> đỏ đậm: chữ trắng đạt 4.8:1 */
+  --btn-bg: linear-gradient(180deg, var(--c-red) 0%, color-mix(in srgb, var(--c-red) 55%, var(--c-red-ink)) 55%, var(--c-red-ink) 100%);
+  --btn-fg: var(--c-on-red);
+  --btn-glow: var(--c-red);
+}
+[data-theme='dark'] .ds-btn--danger {
+  --btn-bg: linear-gradient(180deg, color-mix(in srgb, var(--c-red) 80%, #fff) 0%, var(--c-red) 100%);
+}
+
+.ds-btn--navy {
+  --btn-bg: var(--grad-navy);
+  --btn-fg: var(--c-on-navy);
+  --btn-glow: var(--c-navy);
+}
+
+/* ---------- Đang tải ---------- */
+.ds-btn.is-loading {
+  cursor: progress;
+}
+.ds-btn__spinner {
+  width: 1.05em;
+  height: 1.05em;
+  border-radius: 50%;
+  border: 2.5px solid currentColor;
+  border-right-color: transparent;
+  animation: ds-spin 0.8s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ds-btn:hover,
+  .ds-btn:active:not(:disabled) {
+    transform: none;
+  }
+}

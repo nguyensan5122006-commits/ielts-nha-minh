@@ -1,0 +1,74 @@
+/* =============================================================================
+ * LevelBadge.css — huy hiệu level (khiên vinyl)
+ * ========================================================================== */
+.ds-level-badge {
+  --badge-light: #a9bc72;
+  --badge-deep: #5e6b35;
+  --badge-star: #ffd677;
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  vertical-align: middle;
+  border-radius: 30%;
+}
+.ds-level-badge--2 {
+  --badge-light: #6f80e8;
+  --badge-deep: #24307a;
+}
+.ds-level-badge--3 {
+  --badge-light: #ffd677;
+  --badge-deep: #d58a00;
+  --badge-star: #fff7dc;
+}
+.ds-level-badge__shield,
+.ds-level-badge__img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  filter: drop-shadow(0 6px 8px rgba(var(--shadow-rgb), 0.25));
+}
+.ds-level-badge__number {
+  font-family: var(--font-display);
+  font-size: 34px;
+  font-weight: 800;
+  fill: #fff;
+  paint-order: stroke;
+  stroke: rgba(0, 0, 0, 0.18);
+  stroke-width: 3px;
+}
+.ds-level-badge--3 .ds-level-badge__number {
+  fill: #5a3a00;
+  stroke: rgba(255, 255, 255, 0.4);
+}
+
+/* Đang học: phát sáng thở chậm quanh khiên */
+.ds-level-badge.is-current .ds-level-badge__shield,
+.ds-level-badge.is-current .ds-level-badge__img {
+  animation: ds-glow-drop 2.6s var(--ease-in-out) infinite;
+}
+/* Chưa mở: xám mờ, vẫn nhìn ra hình */
+.ds-level-badge.is-locked .ds-level-badge__shield,
+.ds-level-badge.is-locked .ds-level-badge__img {
+  filter: grayscale(1) opacity(0.45);
+}
+.ds-level-badge__lock,
+.ds-level-badge__done {
+  position: absolute;
+  right: 2%;
+  bottom: 4%;
+  display: grid;
+  place-items: center;
+  width: 34%;
+  height: 34%;
+  border-radius: 50%;
+  box-shadow: 0 0 0 3px var(--c-surface), 0 4px 8px -2px rgba(var(--shadow-rgb), 0.35);
+}
+.ds-level-badge__lock {
+  background: var(--c-surface-2);
+  color: var(--c-ink-2);
+}
+.ds-level-badge__done {
+  background: var(--grad-success);
+  color: #fff;
+}

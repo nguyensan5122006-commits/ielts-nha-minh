@@ -1,0 +1,179 @@
+/* =============================================================================
+ * ReadingPassageView.css — bài đọc kiểu "trang sách": serif, nhãn đoạn ở lề trái,
+ * nghĩa tiếng Việt hiện NGAY TRÊN từ được bấm (Readlang), không popup che chữ.
+ * ========================================================================== */
+
+.xpassage {
+  --xpassage-fs: calc(1.125rem * var(--exam-text-scale, 1));
+  max-width: 76ch;
+  margin: 0 auto;
+  padding: var(--s-6) var(--s-7) var(--s-9) calc(var(--s-7) + 28px);
+  font: 400 var(--xpassage-fs) / var(--lh-reading) var(--font-reading);
+  color: var(--c-ink);
+}
+.xpassage__hint {
+  display: inline-flex;
+  margin: 0 0 var(--s-4);
+  padding: 4px 12px;
+  border-radius: var(--r-pill);
+  background: color-mix(in srgb, var(--skill-reading) 12%, var(--c-surface));
+  color: var(--c-ink-2);
+  font: 600 var(--fs-xs) / 1.4 var(--font-ui);
+}
+.xpassage__title {
+  margin: 0 0 var(--s-5);
+  font: 600 calc(1.625rem * var(--exam-text-scale, 1)) / 1.25 var(--font-reading);
+  letter-spacing: -0.01em;
+}
+.xpassage__para {
+  position: relative;
+  scroll-margin: var(--s-7);
+}
+.xpassage__para + .xpassage__para {
+  margin-top: 1em;
+}
+.xpassage__label {
+  position: absolute;
+  left: -36px;
+  top: 0.3em;
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border-radius: var(--r-xs);
+  background: color-mix(in srgb, var(--skill-reading) 14%, var(--c-surface));
+  color: color-mix(in srgb, var(--skill-reading) 70%, var(--c-ink));
+  font: 700 var(--fs-sm) / 1 var(--font-ui);
+  user-select: none;
+}
+[data-exam-contrast]:not([data-exam-contrast='theme']) .xpassage__label {
+  background: var(--c-surface-2);
+  color: var(--c-ink);
+  border: 1px solid var(--c-line-strong);
+}
+.xpassage__text {
+  margin: 0;
+  border-radius: var(--r-xs);
+}
+.xpassage.is-tappable .xpassage__text {
+  cursor: text;
+}
+.xpassage__text::selection,
+.xpassage__text ::selection {
+  background: color-mix(in srgb, var(--c-navy) 28%, transparent);
+}
+
+/* ---------- từ đang tra nghĩa ---------- */
+.xlookup {
+  position: relative;
+  display: inline-block;
+  /* chừa chỗ phía trên cho bong bóng nghĩa -> dòng tự giãn, không che chữ dòng trên */
+  padding-top: 1.85em;
+  line-height: 1.3;
+  vertical-align: baseline;
+}
+.xlookup__word {
+  display: inline-block;
+  padding: 0 0.3em;
+  border-radius: 6px;
+  background: var(--skill-reading);
+  color: #fff;
+}
+.xlookup__word .xm {
+  background: transparent;
+  color: inherit;
+  text-decoration: none;
+}
+.xlookup__bubble {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(calc(-50% + var(--bubble-shift, 0px)));
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 4px 2px 10px;
+  border-radius: var(--r-pill);
+  border: 1px solid color-mix(in srgb, var(--skill-reading) 40%, var(--c-line));
+  background: var(--c-surface);
+  box-shadow: var(--shadow-card);
+  font: 600 var(--fs-sm) / 1.6 var(--font-ui);
+  white-space: nowrap;
+  color: color-mix(in srgb, var(--skill-reading) 65%, var(--c-ink));
+  z-index: 2;
+  animation: xlookup-in var(--dur-micro) var(--ease-out);
+}
+/* mũi tên nhỏ chỉ xuống từ */
+.xlookup__bubble::after {
+  content: '';
+  position: absolute;
+  left: calc(50% + var(--arrow-shift, 0px));
+  bottom: -5px;
+  width: 8px;
+  height: 8px;
+  background: inherit;
+  border-right: inherit;
+  border-bottom: inherit;
+  transform: translateX(-50%) rotate(45deg);
+}
+@keyframes xlookup-in {
+  from {
+    opacity: 0;
+  }
+}
+.xlookup__meaning.is-unknown {
+  color: var(--c-ink-2);
+  font-weight: 500;
+}
+.xlookup__ipa {
+  color: var(--c-ink-2);
+  font-weight: 500;
+  font-size: var(--fs-xs);
+}
+.xlookup__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 26px;
+  padding: 0 8px;
+  border: 0;
+  border-radius: var(--r-pill);
+  background: var(--c-surface-2);
+  color: var(--c-ink);
+  font: 600 var(--fs-xs) / 1 var(--font-ui);
+  cursor: pointer;
+}
+.xlookup__btn:hover {
+  background: var(--c-surface-3);
+}
+.xlookup__btn:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+.xlookup__btn.is-saved {
+  background: var(--c-success-soft);
+  color: var(--c-success-ink);
+}
+.xlookup__btn--icon {
+  width: 26px;
+  padding: 0;
+  justify-content: center;
+}
+[data-exam-contrast]:not([data-exam-contrast='theme']) .xlookup__word {
+  background: var(--c-navy);
+  color: var(--c-on-navy);
+}
+[data-exam-contrast]:not([data-exam-contrast='theme']) .xlookup__bubble {
+  color: var(--c-ink);
+}
+
+@media (max-width: 1180px) {
+  .xpassage {
+    padding: var(--s-5) var(--s-5) var(--s-8) calc(var(--s-5) + 28px);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .xlookup__bubble {
+    animation: none;
+  }
+}

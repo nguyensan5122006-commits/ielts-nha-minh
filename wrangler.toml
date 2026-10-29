@@ -1,0 +1,33 @@
+# =============================================================================
+# wrangler.toml — CẤU HÌNH CLOUDFLARE
+# - pages_build_output_dir: thư mục web đã build (vite build -> dist)
+# - d1_databases: database D1. Sau khi chạy "npx wrangler d1 create ielts-db",
+#   Cloudflare trả về database_id -> dán vào dòng database_id bên dưới.
+# - Bí mật (GEMINI_API_KEY, INVITE_CODE) KHÔNG để ở đây:
+#     + chạy local: ghi vào file .dev.vars
+#     + trên Cloudflare: Settings -> Variables and Secrets
+# =============================================================================
+name = "ielts-thienthao"
+compatibility_date = "2026-09-01"
+pages_build_output_dir = "dist"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "ielts-db"
+database_id = "d4017116-8fbd-48a9-aac5-6e3007ceb85b"
+migrations_dir = "database/migrations"
+
+[vars]
+# Model Gemini dùng để chấm bài. "gemini-flash-latest" = luôn dùng bản Flash mới nhất.
+GEMINI_MODEL = "gemini-flash-latest"
+# Model dự phòng: tự dùng khi model chính đang quá tải (503)
+GEMINI_FALLBACK_MODEL = "gemini-flash-lite-latest"
+# Mỗi người được gọi AI tối đa bao nhiêu lần / ngày (bảo vệ quota miễn phí)
+AI_DAILY_LIMIT = "40"
+
+# Durable Object realtime (chat, online, thi đấu) nằm trong worker riêng "ielts-realtime"
+# (thư mục realtime-worker). Phải deploy worker đó TRƯỚC khi deploy trang web.
+[[durable_objects.bindings]]
+name = "FAMILY_HUB"
+class_name = "FamilyHub"
+script_name = "ielts-realtime"

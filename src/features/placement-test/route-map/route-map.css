@@ -1,0 +1,244 @@
+/* =============================================================================
+ * route-map.css — bậc thang 3 level + thước band (LevelStaircase.tsx)
+ * Màu mỗi level khớp huy hiệu LevelBadge: 1 ô-liu · 2 navy · 3 vàng cầu vai.
+ * Bậc của người học = gradient cam (màu hành động chính) để mắt thấy ngay "mình ở đây".
+ * ========================================================================== */
+
+.rm-stairs {
+  position: relative;
+}
+
+.rm-stairs__steps {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--s-3);
+  align-items: end;
+}
+
+.rm-step {
+  --tone: var(--c-olive);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  min-width: 0;
+}
+.rm-step--navy {
+  --tone: var(--c-navy);
+}
+.rm-step--gold {
+  --tone: var(--c-gold);
+}
+
+/* vùng phía trên khối: cún / cờ mục tiêu */
+.rm-step__marker {
+  position: relative;
+  min-height: 128px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding-bottom: var(--s-2);
+}
+
+/* khối bậc thang: 3 chiều cao tăng dần */
+.rm-step__block {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--s-2);
+  min-height: 132px;
+  padding: var(--s-3) var(--s-4) var(--s-4);
+  border-radius: var(--r-lg) var(--r-lg) var(--r-md) var(--r-md);
+  border: 1px solid color-mix(in srgb, var(--tone) 32%, var(--c-line));
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--tone) 16%, var(--c-surface)) 0%, color-mix(in srgb, var(--tone) 8%, var(--c-surface)) 100%);
+  box-shadow: var(--gloss-top), var(--shadow-card);
+  transition: transform var(--dur-panel) var(--ease-out), box-shadow var(--dur-panel) var(--ease-out);
+}
+.rm-step:nth-child(2) .rm-step__block {
+  min-height: 172px;
+}
+.rm-step:nth-child(3) .rm-step__block {
+  min-height: 212px;
+}
+.rm-step__head {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+}
+
+.rm-step__text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.rm-step__level {
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  color: var(--c-ink-2);
+}
+.rm-step__title {
+  font-family: var(--font-display);
+  font-size: var(--fs-lg);
+  line-height: var(--lh-tight);
+  font-weight: 800;
+}
+.rm-step__band {
+  font-size: var(--fs-xs);
+  color: var(--c-ink-2);
+  font-variant-numeric: tabular-nums;
+}
+.rm-step__note {
+  margin-top: var(--s-1);
+  font-size: var(--fs-xs);
+  font-weight: 700;
+}
+
+/* bậc của người học: nổi lên, gradient cam, chữ navy (đạt tương phản) */
+.rm-step.is-current .rm-step__block {
+  border-color: transparent;
+  background: var(--grad-primary);
+  color: var(--c-on-primary);
+  box-shadow:
+    var(--gloss-top),
+    0 16px 32px -14px color-mix(in srgb, var(--c-primary-deep) 75%, transparent);
+  transform: translateY(-2px);
+}
+.rm-step.is-current .rm-step__level,
+.rm-step.is-current .rm-step__band {
+  color: color-mix(in srgb, var(--c-on-primary) 78%, transparent);
+}
+/* bậc đã qua: nhạt hơn một chút */
+.rm-step.is-passed .rm-step__block {
+  opacity: 0.82;
+}
+
+/* viên nhãn "Bạn ở đây" / "Mục tiêu 6.5" */
+.rm-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-1);
+  padding: 3px 12px;
+  border-radius: var(--r-pill);
+  font-family: var(--font-display);
+  font-size: var(--fs-sm);
+  font-weight: 700;
+  line-height: 1.4;
+  white-space: nowrap;
+}
+.rm-pill--here {
+  background: var(--c-ink);
+  color: var(--c-bg);
+  box-shadow: var(--shadow-card);
+}
+.rm-pill--goal {
+  background: var(--c-gold-soft);
+  color: var(--c-gold-ink);
+  border: 1px solid color-mix(in srgb, var(--c-gold) 45%, transparent);
+}
+
+.rm-here {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+.rm-here .ds-mascot__body {
+  animation: rm-hop 2.8s var(--ease-in-out) infinite;
+}
+.rm-here--unknown .rm-pill--here {
+  background: var(--c-surface);
+  color: var(--c-ink);
+  border: 1px dashed var(--c-line-strong);
+}
+
+.rm-goal {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--s-1);
+}
+/* level-3 vừa là bậc hiện tại vừa là mục tiêu: cờ nằm trong khối, dưới tên level */
+.rm-goal--inside {
+  margin-top: auto;
+  padding-left: 4px;
+  background: color-mix(in srgb, var(--c-surface) 88%, transparent);
+  color: var(--c-gold-ink);
+}
+
+@keyframes rm-hop {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
+/* ---------- thước band 0 → 6.5 ---------- */
+.rm-ruler {
+  margin-top: var(--s-4);
+}
+.rm-ruler__track {
+  position: relative;
+  height: 10px;
+  border-radius: var(--r-pill);
+  background: var(--c-surface-2);
+  border: 1px solid var(--c-line);
+}
+/* khoảng band của người học (VD 2.5–3.5) */
+.rm-ruler__range {
+  position: absolute;
+  top: -1px;
+  bottom: -1px;
+  left: calc(var(--range-start) * 100%);
+  right: calc((1 - var(--range-end)) * 100%);
+  min-width: 10px;
+  border-radius: var(--r-pill);
+  background: var(--grad-primary);
+  box-shadow: 0 4px 10px -4px color-mix(in srgb, var(--c-primary-deep) 70%, transparent);
+}
+/* nét đứt từ khoảng band tới mục tiêu */
+.rm-ruler__dash {
+  position: absolute;
+  top: 50%;
+  left: calc(var(--range-end) * 100% + 8px);
+  right: 2px;
+  border-top: 2px dashed color-mix(in srgb, var(--c-primary) 70%, var(--c-ink-2));
+  transform: translateY(-50%);
+}
+.rm-ruler__ticks {
+  position: relative;
+  height: 22px;
+  margin-top: var(--s-1);
+}
+.rm-ruler__tick {
+  position: absolute;
+  top: 0;
+  transform: translateX(-50%);
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  color: var(--c-ink-2);
+  font-variant-numeric: tabular-nums;
+}
+.rm-ruler__tick:first-child {
+  transform: none;
+}
+.rm-ruler__tick:last-child {
+  transform: translateX(-100%);
+}
+
+@media (max-width: 760px) {
+  .rm-step__block {
+    flex-direction: column;
+    padding: var(--s-3);
+  }
+  .rm-step__title {
+    font-size: var(--fs-md);
+  }
+}

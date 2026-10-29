@@ -1,0 +1,98 @@
+/* =============================================================================
+ * Badge.css — nhãn nhỏ dạng viên thuốc
+ * ========================================================================== */
+.ds-badge {
+  --badge-bg: var(--c-surface-2);
+  --badge-fg: var(--c-ink-2);
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  height: 26px;
+  padding: 0 10px;
+  border-radius: var(--r-pill);
+  background: var(--badge-bg);
+  color: var(--badge-fg);
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+  vertical-align: middle;
+}
+.ds-badge--sm {
+  height: 22px;
+  padding: 0 8px;
+  font-size: 0.75rem;
+  gap: 4px;
+}
+
+/* Nền nhạt: chữ dùng màu "-ink" (đậm hơn) để đủ tương phản */
+.ds-badge--primary {
+  --badge-bg: var(--c-primary-soft);
+  --badge-fg: var(--c-primary-ink);
+}
+.ds-badge--navy {
+  --badge-bg: var(--c-navy-soft);
+  --badge-fg: var(--c-navy);
+}
+.ds-badge--olive {
+  --badge-bg: var(--c-olive-soft);
+  --badge-fg: var(--c-olive-ink);
+}
+.ds-badge--red {
+  --badge-bg: var(--c-red-soft);
+  --badge-fg: var(--c-red-ink);
+}
+.ds-badge--gold {
+  --badge-bg: var(--c-gold-soft);
+  --badge-fg: var(--c-gold-ink);
+}
+.ds-badge--success {
+  --badge-bg: var(--c-success-soft);
+  --badge-fg: var(--c-success-ink);
+}
+.ds-badge--oops {
+  --badge-bg: var(--c-oops-soft);
+  --badge-fg: var(--c-oops-ink);
+}
+
+/* Nền đậm, có vệt bóng vinyl */
+.ds-badge--solid {
+  box-shadow: var(--gloss-top);
+}
+.ds-badge--solid.ds-badge--neutral {
+  --badge-bg: var(--c-ink);
+  --badge-fg: var(--c-bg);
+}
+.ds-badge--solid.ds-badge--primary {
+  --badge-bg: var(--grad-primary);
+  --badge-fg: var(--c-on-primary);
+}
+.ds-badge--solid.ds-badge--navy {
+  --badge-bg: var(--grad-navy);
+  --badge-fg: var(--c-on-navy);
+}
+.ds-badge--solid.ds-badge--olive {
+  --badge-bg: linear-gradient(180deg, color-mix(in srgb, var(--c-olive) 80%, #fff), var(--c-olive-ink));
+  --badge-fg: #fff;
+}
+[data-theme='dark'] .ds-badge--solid.ds-badge--olive {
+  --badge-bg: linear-gradient(180deg, color-mix(in srgb, var(--c-olive) 80%, #fff), var(--c-olive));
+  --badge-fg: #1e2347;
+}
+.ds-badge--solid.ds-badge--red {
+  --badge-bg: linear-gradient(180deg, var(--c-red), color-mix(in srgb, var(--c-red) 50%, var(--c-red-ink)));
+  --badge-fg: var(--c-on-red);
+}
+.ds-badge--solid.ds-badge--gold {
+  --badge-bg: var(--grad-gold);
+  --badge-fg: #1e2347;
+}
+.ds-badge--solid.ds-badge--success {
+  --badge-bg: var(--grad-success);
+  --badge-fg: #1e2347;
+}
+.ds-badge--solid.ds-badge--oops {
+  --badge-bg: var(--grad-oops);
+  --badge-fg: #1e2347;
+}

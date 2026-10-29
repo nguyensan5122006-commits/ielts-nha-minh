@@ -1,0 +1,12 @@
+/* =============================================================================
+ * index.css — CỔNG NẠP CSS CỦA HỆ THIẾT KẾ
+ * -----------------------------------------------------------------------------
+ * Thứ tự quan trọng: biến (tokens) -> nền tảng (base) -> chuyển động -> tiện ích.
+ * File này được nạp ở đầu src/styles/global.css (@import), nên mọi trang — cả
+ * trang cũ — đều có biến mới. CSS của từng component nằm cạnh file .tsx của nó
+ * và tự được nạp khi component được dùng.
+ * ========================================================================== */
+@import './tokens.css';
+@import './base.css';
+@import './motion.css';
+@import './utilities.css';

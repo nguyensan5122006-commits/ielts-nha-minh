@@ -1,0 +1,97 @@
+/* =============================================================================
+ * SplitPane.css — 2 cột cuộn riêng + tay nắm ↔ (vuông 36px, nằm giữa chiều cao)
+ * ========================================================================== */
+
+.xsplit {
+  --split-ratio: 0.5;
+  --split-handle: 18px;
+  display: flex;
+  min-height: 0;
+  height: 100%;
+}
+.xsplit__pane {
+  min-width: 0;
+  min-height: 0;
+  overflow: auto;
+  overscroll-behavior: contain;
+  scroll-padding: var(--s-7);
+}
+.xsplit__pane:focus {
+  outline: none;
+}
+.xsplit__pane--start {
+  flex: 0 0 calc(var(--split-ratio) * 100% - var(--split-handle) / 2);
+}
+.xsplit__pane--end {
+  flex: 1 1 0;
+}
+
+/* tay nắm: đường kẻ mảnh + ô vuông có mũi tên ↔ */
+.xsplit__handle {
+  position: relative;
+  flex: 0 0 var(--split-handle);
+  cursor: col-resize;
+  touch-action: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.xsplit__handle::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 2px;
+  transform: translateX(-50%);
+  background: var(--c-line-strong);
+  transition: background-color var(--dur-micro) var(--ease-out), width var(--dur-micro) var(--ease-out);
+}
+.xsplit__grip {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 36px;
+  border-radius: var(--r-sm);
+  border: 1.5px solid var(--c-line-strong);
+  background: var(--c-surface);
+  color: var(--c-ink-2);
+  box-shadow: var(--shadow-card);
+  transition: border-color var(--dur-micro) var(--ease-out), color var(--dur-micro) var(--ease-out), transform var(--dur-micro) var(--ease-out);
+}
+.xsplit__handle:hover::before,
+.xsplit__handle:focus-visible::before,
+.xsplit.is-dragging .xsplit__handle::before {
+  width: 4px;
+  background: color-mix(in srgb, var(--c-navy) 55%, transparent);
+}
+.xsplit__handle:hover .xsplit__grip,
+.xsplit__handle:focus-visible .xsplit__grip,
+.xsplit.is-dragging .xsplit__grip {
+  border-color: var(--c-navy);
+  color: var(--c-navy);
+}
+.xsplit__handle:focus-visible {
+  outline: none;
+}
+.xsplit__handle:focus-visible .xsplit__grip {
+  box-shadow: var(--focus-ring);
+}
+.xsplit.is-dragging {
+  cursor: col-resize;
+  user-select: none;
+}
+
+/* khung hẹp: xếp dọc, cả trang cuộn chung */
+.xsplit.is-stacked {
+  flex-direction: column;
+  height: auto;
+}
+.xsplit.is-stacked .xsplit__pane {
+  flex: none;
+  overflow: visible;
+}
+.xsplit.is-stacked .xsplit__pane--start {
+  border-bottom: 1px solid var(--c-line);
+}

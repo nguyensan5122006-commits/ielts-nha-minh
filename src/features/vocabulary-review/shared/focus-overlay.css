@@ -1,0 +1,74 @@
+/* =============================================================================
+ * focus-overlay.css — màn tập trung toàn màn hình (phiên ôn, lượt sửa câu sai)
+ * -----------------------------------------------------------------------------
+ * Phủ cả trang (kể cả menu + bong bóng chat) để người học chỉ thấy 1 việc.
+ * z-index cao hơn modal của trang (--z-modal = 50) nhưng thấp hơn toast.
+ * ========================================================================== */
+.focus-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 55;
+  display: flex;
+  flex-direction: column;
+  background: var(--c-bg);
+  animation: focus-overlay-in var(--dur-panel) var(--ease-out);
+}
+@keyframes focus-overlay-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .focus-overlay {
+    animation: none;
+  }
+}
+
+.focus-overlay__bar {
+  flex: none;
+  display: grid;
+  grid-template-columns: minmax(160px, 1fr) minmax(240px, 640px) minmax(160px, 1fr);
+  align-items: center;
+  gap: var(--s-5);
+  height: 72px;
+  padding: 0 var(--s-6);
+}
+.focus-overlay__exit {
+  justify-self: start;
+}
+.focus-overlay__exit .ds-btn__label {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-2);
+}
+.focus-overlay__progress {
+  min-width: 0;
+}
+.focus-overlay__right {
+  justify-self: end;
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  font-size: var(--fs-sm);
+  color: var(--c-ink-2);
+}
+
+.focus-overlay__content {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+.focus-overlay__content > * {
+  flex: 1 0 auto;
+}
+
+@media (max-width: 860px) {
+  .focus-overlay__bar {
+    grid-template-columns: auto 1fr auto;
+    gap: var(--s-3);
+    padding: 0 var(--s-4);
+  }
+}

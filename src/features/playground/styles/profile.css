@@ -1,0 +1,161 @@
+/* =============================================================================
+ * profile.css — TRANG CÁ NHÂN (/profile/:id). Tiền tố: profile-.
+ * ========================================================================== */
+
+.profile {
+  display: flex;
+  flex-direction: column;
+}
+.profile-hero {
+  display: flex;
+  align-items: center;
+  gap: var(--s-5);
+  flex-wrap: wrap;
+  margin-bottom: var(--s-7);
+  padding: var(--s-6) var(--s-7);
+  border-radius: var(--r-xl);
+  background:
+    radial-gradient(60% 120% at 0% 0%, color-mix(in srgb, var(--c-primary) 22%, transparent), transparent 60%),
+    radial-gradient(50% 100% at 100% 100%, color-mix(in srgb, var(--c-navy) 14%, transparent), transparent 60%),
+    var(--c-surface);
+  border: 1px solid var(--c-line);
+  box-shadow: var(--gloss-top), var(--shadow-card);
+}
+.profile-hero__text {
+  flex: 1 1 280px;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-2);
+}
+.profile-hero__name {
+  margin: 0;
+  font-size: var(--fs-2xl);
+}
+.profile-hero__name .player-name__title {
+  font-family: var(--font-ui);
+  font-size: var(--fs-sm);
+  font-weight: 600;
+}
+.profile-hero__level {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+  flex-wrap: wrap;
+  font-size: var(--fs-sm);
+  color: var(--c-ink-2);
+}
+.profile-hero__bar {
+  max-width: 360px;
+}
+.profile-hero__actions {
+  display: flex;
+  gap: var(--s-2);
+  flex-wrap: wrap;
+}
+
+.profile-stats {
+  list-style: none;
+  margin: 0 0 var(--s-7);
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--s-3);
+}
+.profile-stat {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  grid-template-rows: auto auto;
+  column-gap: var(--s-3);
+  align-items: center;
+  padding: var(--s-4);
+  border-radius: var(--r-lg);
+  background: var(--c-surface);
+  border: 1px solid var(--c-line);
+  box-shadow: var(--gloss-top);
+}
+.profile-stat .pg-art {
+  grid-row: 1 / 3;
+}
+.profile-stat__value {
+  font-family: var(--font-display);
+  font-size: var(--fs-xl);
+  line-height: 1.1;
+}
+.profile-stat__label {
+  font-size: var(--fs-xs);
+  color: var(--c-ink-2);
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.profile-columns {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--s-5);
+  align-items: start;
+}
+.profile-empty {
+  margin: 0;
+  color: var(--c-ink-2);
+}
+.profile-records {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-2);
+}
+.profile-records li {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  padding: 8px 12px;
+  border-radius: var(--r-md);
+  background: var(--c-surface-2);
+  font-weight: 600;
+}
+.profile-records li strong {
+  margin-left: auto;
+  font-family: var(--font-display);
+  font-size: var(--fs-lg);
+}
+.profile-badges {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(96px, 1fr));
+  gap: var(--s-2);
+}
+.profile-badges li {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: var(--s-2);
+  text-align: center;
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  line-height: 1.3;
+}
+.profile-badges__art {
+  display: grid;
+  place-items: center;
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  background: var(--grad-gold);
+  box-shadow: var(--gloss-top), 0 6px 14px -8px var(--c-gold);
+}
+
+@container pg-page (max-width: 900px) {
+  .profile-stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .profile-columns {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

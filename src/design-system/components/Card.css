@@ -1,0 +1,136 @@
+/* =============================================================================
+ * Card.css — thẻ: nền trắng, viền 1px, bóng mềm 2 lớp; thẻ "feature" màu cam
+ * ========================================================================== */
+.ds-card {
+  position: relative;
+  display: block;
+  background: var(--c-surface);
+  color: var(--c-ink);
+  border: 1px solid var(--c-line);
+  border-radius: var(--r-lg);
+  box-shadow: var(--gloss-top), var(--shadow-card);
+  text-decoration: none;
+  transition:
+    transform var(--dur-micro) var(--ease-out),
+    box-shadow var(--dur-micro) var(--ease-out),
+    border-color var(--dur-micro) var(--ease-out),
+    background-color var(--dur-panel) var(--ease-out);
+}
+.ds-card--pad-none {
+  padding: 0;
+}
+.ds-card--pad-sm {
+  padding: var(--s-4);
+}
+.ds-card--pad-md {
+  padding: var(--s-6);
+}
+.ds-card--pad-lg {
+  padding: var(--s-7);
+}
+
+.ds-card--soft {
+  background: var(--c-surface-2);
+  border-color: transparent;
+  box-shadow: none;
+}
+.ds-card--outline {
+  background: transparent;
+  border: 1.5px dashed var(--c-line-strong);
+  box-shadow: none;
+}
+
+/* Thẻ nổi bật (CTA "Học tiếp"): gradient cam satin, chữ navy (đạt 6.4:1) */
+.ds-card--feature {
+  background:
+    radial-gradient(120% 90% at 0% 0%, rgba(255, 255, 255, calc(var(--gloss-strength) * 0.55)), transparent 55%),
+    linear-gradient(160deg, var(--c-primary) 0%, var(--c-primary-deep) 100%);
+  color: var(--c-on-primary);
+  border-color: transparent;
+  box-shadow:
+    var(--gloss-top),
+    inset 0 -3px 0 rgba(0, 0, 0, 0.05),
+    0 18px 36px -18px color-mix(in srgb, var(--c-primary-deep) 75%, transparent);
+}
+.ds-card--feature .ds-eyebrow,
+.ds-card--feature .ds-card-header__subtitle {
+  color: color-mix(in srgb, var(--c-on-primary) 78%, transparent);
+}
+
+/* mascot đứng góc thẻ cam: quầng sáng kem phía sau để không "chìm" vào nền cam */
+.ds-card--feature > .ds-mascot--corner .ds-mascot__frame::before {
+  content: '';
+  position: absolute;
+  inset: 12% 2% -6%;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 246, 232, 0.55) 0%, rgba(255, 246, 232, 0) 68%);
+}
+
+/* Vạch nhấn màu ở mép trái (màu kỹ năng…) — vạch mềm, nằm bên trong viền */
+.ds-card--accent::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 18px;
+  bottom: 18px;
+  width: 4px;
+  border-radius: 0 var(--r-pill) var(--r-pill) 0;
+  background: var(--card-accent);
+}
+
+/* Thẻ bấm được */
+.ds-card--interactive {
+  cursor: pointer;
+}
+.ds-card--interactive:hover {
+  text-decoration: none;
+  transform: translateY(-2px);
+  border-color: var(--c-line-strong);
+  box-shadow: var(--gloss-top), var(--shadow-raised);
+}
+.ds-card--interactive:active {
+  transform: translateY(0) scale(0.99);
+}
+.ds-card--feature.ds-card--interactive:hover {
+  filter: brightness(1.03);
+  box-shadow:
+    var(--gloss-top),
+    0 22px 40px -18px color-mix(in srgb, var(--c-primary-deep) 85%, transparent);
+}
+
+/* ---------- Đầu thẻ ---------- */
+.ds-card-header {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  margin-bottom: var(--s-4);
+}
+.ds-card-header__icon {
+  flex: none;
+  display: grid;
+  place-items: center;
+}
+.ds-card-header__text {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+.ds-card-header__title {
+  margin: 0;
+  font-size: var(--fs-lg);
+  line-height: 1.25;
+}
+.ds-card-header__subtitle {
+  color: var(--c-ink-2);
+  font-size: var(--fs-sm);
+  margin-top: 2px;
+}
+.ds-card-header__action {
+  flex: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ds-card--interactive:hover,
+  .ds-card--interactive:active {
+    transform: none;
+  }
+}

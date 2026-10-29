@@ -1,0 +1,56 @@
+/* =============================================================================
+ * GappedModelPassage.css — bài mẫu đục lỗ / đã điền (font đọc dài Source Serif 4)
+ * ========================================================================== */
+.gapped-model {
+  font-family: var(--font-reading);
+  font-size: var(--fs-md);
+  line-height: var(--lh-reading);
+  color: var(--c-ink);
+}
+.gapped-model__title {
+  font-family: var(--font-ui);
+  font-size: var(--fs-sm);
+  font-weight: 700;
+  color: var(--c-ink-2);
+  margin: 0 0 var(--s-3);
+}
+.gapped-model__paragraph {
+  margin: 0 0 var(--s-3);
+}
+.gapped-model__paragraph:last-child {
+  margin-bottom: 0;
+}
+.gapped-model__gap {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 4px;
+  padding: 0 8px 0 4px;
+  margin: 0 2px;
+  border-radius: var(--r-xs);
+  border-bottom: 2px dashed var(--c-line-strong);
+  background: var(--c-surface-2);
+  font-family: var(--font-ui);
+  font-size: 0.92em;
+  font-weight: 600;
+}
+.gapped-model__gap.is-filled {
+  border-bottom: 2px solid color-mix(in srgb, var(--skill-writing) 55%, transparent);
+  background: color-mix(in srgb, var(--skill-writing) 12%, var(--c-surface));
+}
+.gapped-model__gap.is-active {
+  border-bottom-color: var(--c-primary);
+  background: var(--c-primary-soft);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--c-primary) 35%, transparent);
+}
+.gapped-model__gap-number {
+  display: inline-grid;
+  place-items: center;
+  min-width: 18px;
+  height: 18px;
+  border-radius: 999px;
+  background: var(--c-surface);
+  color: var(--c-ink-2);
+  font-size: 11px;
+  font-weight: 700;
+  transform: translateY(-1px);
+}

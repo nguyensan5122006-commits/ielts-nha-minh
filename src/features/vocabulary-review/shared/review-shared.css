@@ -1,0 +1,314 @@
+/* =============================================================================
+ * review-shared.css — phần dùng chung của khu Ôn tập (/review, /words, /mistakes)
+ * -----------------------------------------------------------------------------
+ * 1. Thang màu 5 cấp độ nhớ (--memory-1 … --memory-5)
+ *    Thang "tuần tự": 1 màu (chàm, họ hàng của navy thương hiệu), nhạt -> đậm.
+ *    Đã kiểm bằng dataviz validate_palette.js --ordinal: đơn sắc, độ sáng giảm đều,
+ *    nấc nhạt nhất vẫn đạt ≥ 2:1 so với nền thẻ — ở cả nền sáng (#fff) và tối (#171d40).
+ *    Chế độ tối có bộ riêng (nấc cao = sáng hơn, nổi trên nền tối), không lật tự động.
+ * 2. Khung trang chung (.review-page) + thanh chuyển 3 trang (.review-nav)
+ * 3. Biểu đồ 5 cột, đồng hồ độ bền, thẻ bước tiếp theo
+ * ========================================================================== */
+
+/* ---------- 1. thang màu cấp độ nhớ ---------- */
+:root,
+[data-theme='light'] {
+  --memory-1: #a9b4ec;
+  --memory-2: #8291e3;
+  --memory-3: #5d6fd6;
+  --memory-4: #3b4dbd;
+  --memory-5: #24318a;
+  --memory-track: #e8ebf8; /* phần chưa tới của đồng hồ: nấc nhạt hơn cùng màu */
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    --memory-1: #46519a;
+    --memory-2: #5a68be;
+    --memory-3: #7584dd;
+    --memory-4: #99a5f2;
+    --memory-5: #c6cdff;
+    --memory-track: #262e63;
+  }
+}
+:root[data-theme='dark'],
+[data-theme='dark'] {
+  --memory-1: #46519a;
+  --memory-2: #5a68be;
+  --memory-3: #7584dd;
+  --memory-4: #99a5f2;
+  --memory-5: #c6cdff;
+  --memory-track: #262e63;
+}
+
+/* ---------- 2. khung trang ---------- */
+.review-page {
+  width: 100%;
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: var(--s-6) var(--page-gutter) var(--s-10);
+}
+.review-page__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--s-4) var(--s-6);
+  margin-bottom: var(--s-6);
+}
+.review-page__eyebrow {
+  display: block;
+  margin-bottom: var(--s-1);
+  font-size: var(--fs-sm);
+  font-weight: 700;
+  color: var(--c-primary-ink);
+}
+.review-page__title {
+  margin: 0;
+  font-size: var(--fs-2xl);
+  line-height: 1.25;
+}
+.review-page__intro {
+  margin: var(--s-2) 0 0;
+  max-width: 62ch;
+  color: var(--c-ink-2);
+}
+
+.review-nav {
+  display: inline-flex;
+  gap: var(--s-1);
+  padding: var(--s-1);
+  border-radius: var(--r-pill);
+  background: var(--c-surface-2);
+}
+.review-nav__item {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-2);
+  min-height: 40px;
+  padding: 0 var(--s-4);
+  border-radius: var(--r-pill);
+  color: var(--c-ink-2);
+  font-weight: 600;
+  font-size: var(--fs-sm);
+  white-space: nowrap;
+  transition:
+    background-color var(--dur-micro) var(--ease-out),
+    color var(--dur-micro) var(--ease-out);
+}
+.review-nav__item:hover {
+  color: var(--c-ink);
+  text-decoration: none;
+}
+.review-nav__item.is-active {
+  background: var(--c-surface);
+  color: var(--c-ink);
+  box-shadow: var(--shadow-card);
+}
+.review-nav__count {
+  min-width: 22px;
+  height: 22px;
+  padding: 0 6px;
+  display: inline-grid;
+  place-items: center;
+  border-radius: var(--r-pill);
+  background: var(--c-primary-soft);
+  color: var(--c-primary-ink);
+  font-size: var(--fs-xs);
+  font-weight: 700;
+}
+
+/* ---------- 3a. biểu đồ 5 cột ---------- */
+.memory-columns {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: var(--s-2);
+}
+.memory-columns__col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--s-2);
+  padding: var(--s-2) var(--s-1) var(--s-3);
+  border: none;
+  border-radius: var(--r-md);
+  background: transparent;
+  color: var(--c-ink);
+  text-align: center;
+}
+.memory-columns__col.is-clickable {
+  cursor: pointer;
+  transition: background-color var(--dur-micro) var(--ease-out);
+}
+.memory-columns__col.is-clickable:hover {
+  background: var(--c-surface-2);
+}
+.memory-columns__col.is-selected {
+  background: var(--c-navy-soft);
+}
+.memory-columns__plot {
+  height: calc(var(--columns-h) + 28px);
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+  gap: var(--s-1);
+  border-bottom: 1px solid var(--c-line-strong); /* đường chân chung */
+}
+.memory-columns__value {
+  font-family: var(--font-ui);
+  font-size: var(--fs-md);
+  font-weight: 700;
+  line-height: 1.2;
+}
+.memory-columns__bar {
+  width: 24px; /* dataviz: cột ≤ 24px, phần còn lại là khoảng thở */
+  border-radius: 4px 4px 0 0; /* bo 4px ở đầu dữ liệu, vuông ở chân */
+  transition: height var(--dur-progress) var(--ease-out);
+}
+.memory-columns__label {
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  color: var(--c-ink-2);
+  line-height: 1.3;
+}
+
+/* ---------- 3b. đồng hồ độ bền trí nhớ ---------- */
+.strength-meter {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-3);
+}
+.strength-meter__segments {
+  display: inline-flex;
+  gap: 3px; /* khe 2–3px cùng màu nền tách các khúc (dataviz "surface gap") */
+}
+.strength-meter__segment {
+  width: 28px;
+  height: 10px;
+  border-radius: 3px;
+  background: var(--memory-track);
+}
+.strength-meter--sm .strength-meter__segment {
+  width: 12px;
+  height: 6px;
+  border-radius: 2px;
+}
+.strength-meter--sm .strength-meter__segments {
+  gap: 2px;
+}
+.strength-meter--lg .strength-meter__segment {
+  width: 48px;
+  height: 14px;
+  border-radius: 4px;
+}
+.strength-meter__label {
+  font-size: var(--fs-sm);
+  color: var(--c-ink-2);
+  white-space: nowrap;
+}
+.strength-meter__label strong {
+  color: var(--c-ink);
+}
+
+/* ---------- 3c. thẻ bước tiếp theo ---------- */
+.next-steps__title {
+  margin: 0 0 var(--s-4);
+  font-size: var(--fs-lg);
+}
+.next-steps__grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--s-4);
+}
+.next-step {
+  --step-accent: var(--c-navy);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--s-3);
+  min-height: 148px;
+  padding: var(--s-5) var(--s-5) var(--s-4);
+  border: 1px solid var(--c-line);
+  border-radius: var(--r-lg);
+  background: var(--c-surface);
+  box-shadow: var(--shadow-card);
+  text-align: left;
+  overflow: hidden;
+  transition:
+    transform var(--dur-micro) var(--ease-out),
+    box-shadow var(--dur-micro) var(--ease-out);
+}
+.next-step::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto;
+  height: 4px;
+  background: var(--step-accent);
+}
+.next-step.is-primary {
+  --step-accent: var(--c-primary);
+  border-color: color-mix(in srgb, var(--c-primary) 45%, var(--c-line));
+}
+.next-step:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-raised);
+}
+.next-step:active {
+  transform: scale(0.98);
+}
+.next-step__icon {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  border-radius: var(--r-md);
+  background: color-mix(in srgb, var(--step-accent) 14%, var(--c-surface));
+  color: var(--c-ink);
+}
+.next-step__text {
+  width: 100%;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.next-step__title {
+  font-family: var(--font-display);
+  font-size: var(--fs-lg);
+  font-weight: 700;
+  line-height: 1.25;
+}
+.next-step__meta {
+  font-size: var(--fs-sm);
+  color: var(--c-ink-2);
+  line-height: 1.4;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+.next-step__go {
+  position: absolute;
+  top: var(--s-5);
+  right: var(--s-4);
+  color: var(--c-ink-2);
+}
+
+@media (max-width: 860px) {
+  .next-steps__grid {
+    grid-template-columns: 1fr;
+  }
+  .review-page__head {
+    align-items: flex-start;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .next-step,
+  .memory-columns__bar {
+    transition: none;
+  }
+}

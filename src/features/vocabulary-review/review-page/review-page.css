@@ -1,0 +1,228 @@
+/* =============================================================================
+ * review-page.css — trang /review (màn tổng quan "Thời điểm vàng")
+ * ========================================================================== */
+
+/* ---------- thẻ chính ---------- */
+.golden-hero {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 240px;
+  align-items: center;
+  gap: var(--s-6);
+  padding: var(--s-7) var(--s-8);
+  border-radius: var(--r-xl);
+  border: 1px solid var(--c-line);
+  background:
+    radial-gradient(120% 140% at 100% 0%, color-mix(in srgb, var(--c-gold) 22%, transparent) 0%, transparent 55%),
+    var(--c-surface);
+  box-shadow: var(--shadow-card);
+  overflow: hidden;
+}
+.golden-hero.is-due {
+  border-color: color-mix(in srgb, var(--c-primary) 40%, var(--c-line));
+  background:
+    radial-gradient(120% 140% at 100% 0%, color-mix(in srgb, var(--c-primary) 26%, transparent) 0%, transparent 58%),
+    var(--c-surface);
+}
+.golden-hero__title {
+  margin: 0;
+  font-size: var(--fs-3xl);
+  line-height: 1.15;
+}
+.golden-hero__size {
+  margin: var(--s-2) 0 0;
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+  font-size: var(--fs-lg);
+  font-weight: 600;
+  color: var(--c-ink-2);
+}
+.golden-hero__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-2);
+  margin-top: var(--s-4);
+}
+.golden-hero__text {
+  margin: var(--s-2) 0 0;
+  max-width: 54ch;
+  color: var(--c-ink-2);
+}
+.golden-hero__countdown {
+  margin: var(--s-4) 0 0;
+  display: inline-flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: var(--s-2);
+  padding: var(--s-2) var(--s-4);
+  border-radius: var(--r-pill);
+  background: var(--c-surface-2);
+  color: var(--c-ink-2);
+}
+.golden-hero__countdown strong {
+  font-family: var(--font-ui);
+  font-size: var(--fs-lg);
+  color: var(--c-ink);
+}
+.golden-hero__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-3);
+  margin-top: var(--s-6);
+}
+.golden-hero__art {
+  display: grid;
+  place-items: center;
+}
+
+.review-empty {
+  padding: var(--s-8) var(--s-6);
+}
+
+/* ---------- thông báo ---------- */
+.review-notice {
+  display: flex;
+  gap: var(--s-3);
+  margin-top: var(--s-4);
+  padding: var(--s-4) var(--s-5);
+  border-radius: var(--r-lg);
+  background: var(--c-gold-soft);
+  border: 1px solid color-mix(in srgb, var(--c-gold) 45%, transparent);
+  color: var(--c-ink);
+}
+.review-notice > svg {
+  flex: none;
+  margin-top: 2px;
+  color: var(--c-gold-ink);
+}
+.review-notice p {
+  margin: var(--s-1) 0 0;
+  color: var(--c-ink-2);
+}
+
+/* ---------- lưới biểu đồ ---------- */
+.review-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+  gap: var(--s-5);
+  margin-top: var(--s-5);
+}
+.review-card__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--s-1) var(--s-4);
+  margin-bottom: var(--s-4);
+}
+.review-card__head h2 {
+  margin: 0;
+  font-size: var(--fs-lg);
+}
+.review-card__hint {
+  font-size: var(--fs-xs);
+  color: var(--c-ink-2);
+}
+
+/* lịch ôn 7 ngày — cột đơn sắc (1 chuỗi số liệu -> 1 màu), hôm nay đậm hơn */
+.forecast {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: var(--s-1);
+}
+.forecast__day {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--s-2);
+}
+.forecast__plot {
+  width: 100%;
+  height: 124px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+  gap: var(--s-1);
+  border-bottom: 1px solid var(--c-line-strong);
+}
+.forecast__value {
+  font-size: var(--fs-sm);
+  font-weight: 700;
+  min-height: 1.3em;
+}
+.forecast__bar {
+  width: 20px;
+  border-radius: 4px 4px 0 0;
+  background: var(--memory-2);
+}
+.forecast__day.is-today .forecast__bar {
+  background: var(--memory-4);
+}
+.forecast__label {
+  white-space: nowrap;
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  color: var(--c-ink-2);
+}
+.forecast__day.is-today .forecast__label {
+  color: var(--c-ink);
+}
+
+/* ---------- cài đặt ---------- */
+.review-settings {
+  margin-top: var(--s-5);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: var(--s-6);
+}
+.review-settings__control {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--s-4);
+}
+.review-settings__control .ds-segmented {
+  flex: none;
+}
+.review-settings p {
+  margin: 0;
+  font-size: var(--fs-sm);
+  color: var(--c-ink-2);
+}
+.review-settings__why strong {
+  display: block;
+  margin-bottom: var(--s-1);
+  font-size: var(--fs-sm);
+}
+
+@media (max-width: 1180px) {
+  .review-grid,
+  .review-settings {
+    grid-template-columns: 1fr;
+  }
+  /* màn vừa: thu mascot lại để 2 nút vẫn nằm trên 1 hàng */
+  .golden-hero {
+    grid-template-columns: minmax(0, 1fr) 150px;
+    padding: var(--s-6) var(--s-7);
+  }
+  .golden-hero__art {
+    transform: scale(0.78);
+    transform-origin: center right;
+  }
+}
+@media (max-width: 860px) {
+  .golden-hero {
+    grid-template-columns: 1fr;
+    padding: var(--s-6);
+  }
+  .golden-hero__art {
+    display: none;
+  }
+  .golden-hero__title {
+    font-size: var(--fs-2xl);
+  }
+  .review-settings__control {
+    flex-direction: column;
+  }
+}

@@ -1,0 +1,57 @@
+/* =============================================================================
+ * StreakFlame.css — ngọn lửa chuỗi ngày (đỏ ve áo -> cam Corgi)
+ * ========================================================================== */
+.ds-streak {
+  --flame-top: #ffb547;
+  --flame-bottom: var(--c-red);
+  --flame-core: #fff1c2;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-family: var(--font-display);
+  font-weight: 800;
+  line-height: 1;
+  color: var(--c-red-ink);
+  perspective: 300px; /* để con số "lật" có chiều sâu */
+}
+.ds-streak.is-idle {
+  --flame-top: color-mix(in srgb, var(--c-ink-2) 45%, var(--c-surface));
+  --flame-bottom: color-mix(in srgb, var(--c-ink-2) 70%, var(--c-surface));
+  --flame-core: var(--c-surface);
+  color: var(--c-ink-2);
+}
+.ds-streak__flame {
+  flex: none;
+  transform-origin: 50% 90%;
+  filter: drop-shadow(0 3px 4px color-mix(in srgb, var(--c-red) 30%, transparent));
+}
+.ds-streak.is-idle .ds-streak__flame {
+  filter: none;
+}
+.ds-streak__flame.is-burst {
+  animation: ds-flame-burst 600ms var(--ease-spring);
+}
+.ds-streak__count {
+  display: inline-block;
+  padding-top: 0.12em; /* Baloo 2 căn giữa thị giác */
+}
+.ds-streak__count.is-flip {
+  animation: ds-number-flip 420ms var(--ease-out) 120ms both;
+}
+.ds-streak__label {
+  font-family: var(--font-ui);
+  font-size: 0.7em;
+  font-weight: 600;
+  color: var(--c-ink-2);
+  margin-left: 2px;
+}
+.ds-streak--sm {
+  font-size: var(--fs-sm);
+}
+.ds-streak--md {
+  font-size: var(--fs-lg);
+}
+.ds-streak--lg {
+  font-size: var(--fs-2xl);
+  gap: 6px;
+}

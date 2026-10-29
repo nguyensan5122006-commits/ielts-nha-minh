@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="light dark" />
+    <title>IELTS Nhà Mình</title>
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <!--
+      Chống "nháy trắng" khi dùng chế độ tối: đặt data-theme lên <html> NGAY khi
+      trang bắt đầu tải (trước khi React chạy). Khoá 'ielts-theme' phải khớp với
+      src/design-system/theme.ts.
+    -->
+    <script>
+      ;(function () {
+        try {
+          var saved = localStorage.getItem('ielts-theme')
+          var dark = saved === 'dark' || (saved !== 'light' && window.matchMedia('(prefers-color-scheme: dark)').matches)
+          document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light')
+        } catch (e) {}
+      })()
+    </script>
+    <!--
+      Font (đều có tiếng Việt — Google Fonts tự gửi phần chữ Việt qua unicode-range):
+        Baloo 2        : tiêu đề, số lớn, nút (tròn, dày, vui)
+        Be Vietnam Pro : giao diện
+        Source Serif 4 : bài đọc dài
+    -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap&subset=vietnamese"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
