@@ -20,7 +20,7 @@
 import type { CSSProperties } from 'react'
 import { Link } from 'react-router-dom'
 import type { SkillName } from '../../content/content-types'
-import { Button, Icon, Mascot, ProgressBar, SkillIcon, WordImage } from '../../design-system'
+import { Button, Icon, Mascot, SkillIcon, WordImage } from '../../design-system'
 import { LevelStaircase } from '../placement-test/route-map/LevelStaircase'
 import { loadDraft, loadResult } from '../placement-test/placement-storage'
 import { HeroStage } from './HeroStage'
@@ -29,15 +29,6 @@ import { useLandingText } from './landing-text'
 import './landing.css'
 
 const SKILLS: SkillName[] = ['listening', 'reading', 'writing', 'speaking', 'vocabulary']
-
-/** Bảng xếp hạng MẪU (minh hoạ, không phải người thật): ảnh đại diện + XP tuần */
-const SAMPLE_FAMILY = [
-  { avatar: 'woman', xp: 420 },
-  { avatar: 'girl', xp: 365 },
-  { avatar: 'man', xp: 290 },
-  { avatar: 'boy', xp: 210 },
-]
-const MEDALS = ['1st-place-medal', '2nd-place-medal', '3rd-place-medal']
 
 export function LandingPage() {
   const text = useLandingText()
@@ -164,33 +155,15 @@ export function LandingPage() {
           <span className="lp-kicker">{text.familyEyebrow}</span>
           <h2 className="lp-h3 ob-display">{text.familyTitle}</h2>
           <p>{text.familyBody}</p>
-          <div className="lp-board" aria-label={text.familySample}>
-            <div className="lp-board__head">
-              <span>{text.familyWeek}</span>
-              <span className="lp-board__sample">{text.familySample}</span>
-            </div>
-            <ol className="lp-board__rows">
-              {SAMPLE_FAMILY.map((member, index) => (
-                <li key={member.avatar} className="lp-board__row">
-                  <span className="lp-board__rank">
-                    {MEDALS[index] ? <WordImage slug={MEDALS[index]} word={`#${index + 1}`} size={26} decorative /> : index + 1}
-                  </span>
-                  <WordImage slug={member.avatar} word={text.familyMembers[index]} size={36} decorative />
-                  <span className="lp-board__name">{text.familyMembers[index]}</span>
-                  <span className="lp-board__bar">
-                    <span style={{ width: `${Math.round((member.xp / SAMPLE_FAMILY[0].xp) * 100)}%` }} />
-                  </span>
-                  <span className="lp-board__xp">
-                    {member.xp} {text.xp}
-                  </span>
-                </li>
-              ))}
-            </ol>
-            <div className="lp-board__goal">
-              <span>{text.familyGoal(18, 21)}</span>
-              <ProgressBar value={18} max={21} size="sm" showHead={false} label={text.familyGoal(18, 21)} />
-            </div>
-          </div>
+          {/* (29/10) bỏ bảng xếp hạng "ví dụ minh hoạ" có tên + XP giả — chủ nhà muốn chỉ hiện dữ liệu thật.
+              Bảng xếp hạng thật (tên tài khoản, XP thật) nằm ở cột phải sau khi đăng nhập. */}
+          <ul className="lp-family-points">
+            {text.familyPoints.map((point) => (
+              <li key={point}>
+                <Icon name="check" size={18} strokeWidth={3} /> {point}
+              </li>
+            ))}
+          </ul>
         </article>
       </section>
 

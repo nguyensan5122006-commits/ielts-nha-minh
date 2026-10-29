@@ -16,9 +16,10 @@ import { fillMascotName } from './mascot-name'
 export const DS_TEXT = {
   /* ---------- khung trang (sidebar, thanh dưới) ---------- */
   brandName: { vi: 'IELTS Nhà Mình', en: 'Family IELTS' },
-  navLearn: { vi: 'Học', en: 'Learn' },
+  navLearn: { vi: 'Tiếng Anh', en: 'English' },
+  navIelts: { vi: 'Luyện IELTS', en: 'IELTS prep' },
   navReview: { vi: 'Ôn tập', en: 'Review' },
-  navExams: { vi: 'Luyện thi', en: 'Practice tests' },
+  navExams: { vi: 'Thi thử IELTS', en: 'IELTS mock tests' },
   navGrammar: { vi: 'Ngữ pháp', en: 'Grammar' },
   navPlay: { vi: 'Trò chơi chữ', en: 'Word games' },
   navChat: { vi: 'Chat', en: 'Chat' },

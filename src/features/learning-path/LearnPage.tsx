@@ -2,7 +2,7 @@
  * LearnPage.tsx — TRANG LỘ TRÌNH "TUYẾN TUẦN TRA" (/learn, cũng là trang chủ khi đã đăng nhập)
  * ----------------------------------------------------------------------------
  * Bố cục cột giữa (tối đa 720px):
- *   1. Tiêu đề + tab track (Tiếng Anh tổng quát | Luyện thi IELTS)
+ *   1. Tiêu đề + nút sang khu Luyện thi IELTS (/ielts) — trang này luôn là track general (29/10)
  *   2. Chọn level: 3 huy hiệu có band + CEFR + tiến độ
  *   3. Dòng trạng thái "Bạn ở Trạm 3 · còn 2 bài tới mốc" + bậc thang band mini
  *   4. Banner mascot ngủ gật (chỉ khi hôm nay chưa học)
@@ -20,7 +20,7 @@ import { useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import { LEVEL_ORDER } from '../../content/all-levels'
 import type { LevelId, TrackId } from '../../content/content-types'
 import { levelProgress } from '../../content/path-selectors'
-import { Tabs } from '../../design-system/components/Tabs'
+import { Button } from '../../design-system/components/Button'
 import { useProgress } from '../../learning-progress/progress-store'
 import { useLanguage } from '../../translations/language-context'
 import { LearnerRightRail } from '../right-rail/LearnerRightRail'
@@ -37,8 +37,6 @@ import { buildPathView, defaultLevelFor, type PathLevelView, type PathStation } 
 import { useElementWidth } from './use-element-width'
 import './learning-path.css'
 
-const TRACKS: TrackId[] = ['general', 'ielts']
-
 function isLevelId(value: string | null | undefined): value is LevelId {
   return !!value && (LEVEL_ORDER as string[]).includes(value)
 }
@@ -47,7 +45,7 @@ export function LearnPage() {
   const text = useLearningPathText()
   const { pick } = useLanguage()
   const navigate = useNavigate()
-  const { progress, setTrack } = useProgress()
+  const { progress } = useProgress()
   const params = useParams<{ levelId?: string }>()
   const [searchParams, setSearchParams] = useSearchParams()
 
@@ -79,21 +77,6 @@ export function LearnPage() {
       window.scrollTo({ top: 0, behavior: 'auto' })
     },
     [setSearchParams],
-  )
-
-  const changeTrack = useCallback(
-    (nextTrack: TrackId) => {
-      if (nextTrack === track) return
-      setOpenNodeId(null)
-      setTrack(nextTrack)
-      // bỏ level trên URL -> trang tự mở level đang học của track mới
-      setSearchParams((current) => {
-        const updated = new URLSearchParams(current)
-        updated.delete('level')
-        return updated
-      })
-    },
-    [track, setTrack, setSearchParams],
   )
 
   // Phím Enter = Học tiếp (khi không đứng trên ô nhập / nút / link khác)
@@ -129,7 +112,7 @@ export function LearnPage() {
 
   return (
     <div className="lp-page" data-track={track}>
-      <PathHeader view={view} track={track} onTrackChange={changeTrack} onLevelChange={changeLevel} currentStationNumber={currentStationNumber} />
+      <PathHeader view={view} track={track} onLevelChange={changeLevel} currentStationNumber={currentStationNumber} />
       {/* màn < 1280px: cột phải nằm tận cuối trang -> tóm tắt chuỗi ngày, cả nhà, thẻ đến hạn ở đây */}
       <RailSummaryStrip />
 
@@ -197,13 +180,11 @@ export function LearnPage() {
 function PathHeader({
   view,
   track,
-  onTrackChange,
   onLevelChange,
   currentStationNumber,
 }: {
   view: PathLevelView
   track: TrackId
-  onTrackChange: (track: TrackId) => void
   onLevelChange: (levelId: LevelId) => void
   currentStationNumber: number | null
 }) {
@@ -240,15 +221,10 @@ function PathHeader({
           <h1 className="lp-header__title">{text.pageTitle}</h1>
           <p className="lp-header__subtitle">{text.pageSubtitle(`${text.levelN(levelNumber)} · ${text.areaNames[levelNumber - 1]}`)}</p>
         </div>
-        <Tabs<TrackId>
-          items={TRACKS.map((id) => ({ id, label: text.tracks[id] }))}
-          value={track}
-          onChange={onTrackChange}
-          label={text.trackLabel}
-          idPrefix="lp-track"
-          variant="pill"
-          className="lp-header__tabs"
-        />
+        {/* (29/10) 2 khu học tách hẳn nhau: trang này luôn là Tiếng Anh tổng quát; IELTS ở /ielts */}
+        <Button to="/ielts" variant="secondary" size="sm" iconRight="arrow-right" className="lp-header__tabs">
+          {text.switchToIelts}
+        </Button>
       </div>
 
       <LevelSelector track={track} value={view.levelId} currentLevel={learningLevel} progress={progress} onChange={onLevelChange} />

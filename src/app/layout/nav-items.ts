@@ -21,11 +21,13 @@ export interface NavItem {
 }
 
 export const NAV_ITEMS: NavItem[] = [
-  { id: 'learn', to: '/learn', labelKey: 'navLearn', icon: 'learn', matchPrefixes: ['/learn', '/lesson', '/level', '/roadmap', '/progress'] },
+  // (29/10) 2 khu học tách hẳn nhau: Tiếng Anh tổng quát (/english) và Luyện thi IELTS (/ielts — giao diện xanh, kế hoạch dạng bảng)
+  { id: 'learn', to: '/english', labelKey: 'navLearn', icon: 'learn', matchPrefixes: ['/english', '/learn', '/lesson', '/level', '/roadmap', '/progress'] },
+  { id: 'ielts', to: '/ielts', labelKey: 'navIelts', icon: 'ielts', matchPrefixes: ['/ielts'] },
+  { id: 'exams', to: '/exams', labelKey: 'navExams', icon: 'exam', matchPrefixes: ['/exams', '/exam-result'] },
   { id: 'review', to: '/review', labelKey: 'navReview', icon: 'review', matchPrefixes: ['/review', '/words', '/mistakes', '/fun'] },
   // khu Ngữ pháp (src/features/grammar): danh sách điểm ngữ pháp theo 3 level + bài luyện riêng
   { id: 'grammar', to: '/grammar', labelKey: 'navGrammar', icon: 'grammar', matchPrefixes: ['/grammar'] },
-  { id: 'exams', to: '/exams', labelKey: 'navExams', icon: 'exam', matchPrefixes: ['/exams', '/exam-result'] },
   {
     id: 'play',
     to: '/play',

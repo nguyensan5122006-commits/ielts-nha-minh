@@ -62,10 +62,7 @@ const VI = {
   familyEyebrow: 'Cả nhà cùng học',
   familyTitle: 'Bảng xếp hạng nhà mình',
   familyBody: 'Mỗi người một tài khoản. Cùng giữ chuỗi ngày, cùng lên bảng tuần.',
-  familyWeek: 'Tuần này',
-  familyGoal: (done: number, total: number) => `Cả nhà ${done}/${total} lượt học`,
-  familySample: 'Ví dụ minh hoạ',
-  familyMembers: ['Mẹ', 'Bé Na', 'Bố', 'Anh Minh'],
+  familyPoints: ['Mỗi người 1 tài khoản, tiến độ lưu riêng', 'Bảng xếp hạng XP thật của cả nhà mỗi tuần', 'Xem ai đang online và nhắn tin cho nhau'],
   xp: 'XP',
 
   /* ---------- kêu gọi cuối ---------- */
@@ -119,10 +116,7 @@ const EN: LandingText = {
   familyEyebrow: 'Learning together',
   familyTitle: 'Our family leaderboard',
   familyBody: 'One account per person. Keep your streaks and climb the weekly board together.',
-  familyWeek: 'This week',
-  familyGoal: (done: number, total: number) => `Family: ${done}/${total} study sessions`,
-  familySample: 'Example',
-  familyMembers: ['Mum', 'Little Na', 'Dad', 'Minh'],
+  familyPoints: ['One account each, progress saved separately', "The family's real weekly XP leaderboard", 'See who is online and chat'],
   xp: 'XP',
 
   finalTitle: 'Five minutes to find your starting point',

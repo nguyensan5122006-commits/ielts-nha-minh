@@ -1,0 +1,53 @@
+/* =============================================================================
+ * track-theme.css — GIAO DIỆN RIÊNG CHO CHẾ ĐỘ "LUYỆN THI IELTS"
+ * -----------------------------------------------------------------------------
+ * Khi người học đang ở track IELTS, <TrackThemeSync /> đặt data-track="ielts" lên <html>.
+ * File này đổi các biến màu chính: cam Corgi vui nhộn -> xanh "phòng thi" điềm tĩnh,
+ * nền kem -> nền xám xanh mát. Mọi nút, thẻ, thanh tiến độ tự đổi theo (vì đều dùng biến).
+ * Track "Tiếng Anh tổng quát" giữ nguyên màu gốc trong tokens.css.
+ * Có đủ 3 trường hợp: sáng, tối theo máy, tối do người dùng chọn.
+ * ========================================================================== */
+
+:root[data-track='ielts'] {
+  --c-bg: #f2f5fb;
+  --c-surface: #ffffff;
+  --c-surface-2: #e8eef8;
+  --c-surface-3: #dce5f4;
+  --c-line: #dce3f0;
+  --c-line-strong: #c5d0e4;
+  --c-primary: #2b5bd7; /* xanh phòng thi — nút chính */
+  --c-primary-deep: #1e44aa;
+  --c-primary-soft: #e3ebfd;
+  --c-primary-ink: #1e44aa; /* chữ xanh trên nền sáng (≥ 4.5:1) */
+  --c-on-primary: #ffffff; /* chữ trắng trên nút xanh (5.9:1) */
+}
+
+@media (prefers-color-scheme: dark) {
+  :root[data-track='ielts']:not([data-theme='light']) {
+    --c-bg: #0b1220;
+    --c-surface: #121b2e;
+    --c-surface-2: #1a2540;
+    --c-surface-3: #22304f;
+    --c-line: #26324f;
+    --c-line-strong: #34436a;
+    --c-primary: #6e9bff;
+    --c-primary-deep: #4f7ff0;
+    --c-primary-soft: #1c2a4d;
+    --c-primary-ink: #9dbcff;
+    --c-on-primary: #0b1220;
+  }
+}
+
+:root[data-track='ielts'][data-theme='dark'] {
+  --c-bg: #0b1220;
+  --c-surface: #121b2e;
+  --c-surface-2: #1a2540;
+  --c-surface-3: #22304f;
+  --c-line: #26324f;
+  --c-line-strong: #34436a;
+  --c-primary: #6e9bff;
+  --c-primary-deep: #4f7ff0;
+  --c-primary-soft: #1c2a4d;
+  --c-primary-ink: #9dbcff;
+  --c-on-primary: #0b1220;
+}

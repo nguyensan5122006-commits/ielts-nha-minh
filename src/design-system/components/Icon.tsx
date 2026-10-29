@@ -34,6 +34,14 @@ const ICON_PATHS = {
       <path d="m9 13.2 2.2 2.2L15.5 11" />
     </>
   ),
+  // khu Luyện thi IELTS: mũ tốt nghiệp
+  ielts: (
+    <>
+      <path d="M12 5 2.5 9.5 12 14l9.5-4.5z" />
+      <path d="M6.5 11.5v4c0 1.4 2.5 3 5.5 3s5.5-1.6 5.5-3v-4" />
+      <path d="M21.5 9.5V15" />
+    </>
+  ),
   // khu Ngữ pháp: cuốn sách mở + chữ "Aa" giản lược
   grammar: (
     <>

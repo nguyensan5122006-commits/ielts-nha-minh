@@ -576,3 +576,22 @@
     white-space: normal;
   }
 }
+
+/* (29/10) 3 ý ngắn thay cho bảng xếp hạng minh hoạ (không còn tên / XP giả) */
+.lp-family-points {
+  display: grid;
+  gap: var(--s-2);
+  margin: var(--s-4) 0 0;
+  padding: 0;
+  list-style: none;
+}
+.lp-family-points li {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+  font-weight: 600;
+}
+.lp-family-points .ds-icon {
+  color: var(--c-success);
+  flex: none;
+}

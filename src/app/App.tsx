@@ -41,6 +41,9 @@ import { settingsRoutes } from '../features/settings/settings-routes'
 import { learningPathRoutes } from '../features/learning-path/learning-path-routes'
 // (redesign v3) Khu Ngữ pháp: /grammar, /grammar/:topicId
 import { grammarRoutes } from '../features/grammar/grammar-routes'
+// (29/10) Khu Luyện thi IELTS tách riêng (/ielts) + đổi màu giao diện theo track đang học
+import { ieltsHomeRoutes } from '../features/ielts-home/ielts-home-routes'
+import { TrackThemeSync } from '../features/ielts-home/TrackThemeSync'
 import { AppShellRoute } from './layout/AppShellRoute'
 import { skillTaskRoutes } from '../features/skill-writing/skill-writing-routes'
 import { lessonPlayerRoutes } from '../features/lesson-player/lesson-player-routes'
@@ -85,6 +88,7 @@ function RequireLogin() {
   return (
     <RealtimeProvider>
       <GameWatchers />
+      <TrackThemeSync />
       <WelcomeModal />
       <ChatWidget />
       <Suspense fallback={<FullPageLoading />}>
@@ -122,6 +126,7 @@ export function App() {
                           giữ nguyên markup — giao diện mới đến từ biến CSS trong styles/global.css */}
                       <Route element={<AppShellRoute />}>
                         {learningPathRoutes()}
+                        {ieltsHomeRoutes()}
                         {vocabularyReviewRoutes()}
                         {grammarRoutes()}
                         {mistakesNotebookRoutes()}
