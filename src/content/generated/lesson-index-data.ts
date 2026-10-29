@@ -5,7 +5,7 @@
  */
 import type { LessonSummary } from '../lesson-index'
 
-/** 236 bài */
+/** 237 bài */
 export const LESSON_INDEX_DATA: LessonSummary[] = [
   {"id":"l1-vocab-01","source":"level-1-beginner/vocabulary-lessons","unitId":"u1-01-hello","skill":"vocabulary","mode":"practice","title":{"vi":"Chào hỏi & giới thiệu","en":"Greetings & introductions"},"estimatedMinutes":6,"exerciseCount":10,"wordCount":8},
   {"id":"l1-vocab-02","source":"level-1-beginner/vocabulary-lessons","unitId":"u1-02-people","skill":"vocabulary","mode":"practice","title":{"vi":"Thành viên gia đình","en":"Family members"},"estimatedMinutes":6,"exerciseCount":10,"wordCount":8},
@@ -115,6 +115,7 @@ export const LESSON_INDEX_DATA: LessonSummary[] = [
   {"id":"l2b-g-02-listen","source":"level-2-bridge/general/listening-lessons","unitId":"u2-g02-work","skill":"listening","mode":"listening","title":{"vi":"Nghe: ngày đầu đi làm, cuộc gọi và lịch họp","en":"Listening: a first day, a phone call and a meeting"},"estimatedMinutes":15,"exerciseCount":9,"wordCount":0},
   {"id":"l2b-g-03-listen","source":"level-2-bridge/general/listening-lessons","unitId":"u2-g03-school","skill":"listening","mode":"listening","title":{"vi":"Nghe: bài tập, thời khoá biểu và dự án nhóm","en":"Listening: homework, timetables and a group project"},"estimatedMinutes":15,"exerciseCount":9,"wordCount":0},
   {"id":"l2b-g-04-listen","source":"level-2-bridge/general/listening-lessons","unitId":"u2-g04-media","skill":"listening","mode":"listening","title":{"vi":"Nghe: chọn phim và nói về âm nhạc","en":"Listening: choosing a film and talking about music"},"estimatedMinutes":15,"exerciseCount":9,"wordCount":0},
+  {"id":"l2b-g-05-listen","source":"level-2-bridge/general/listening-lessons","unitId":"u2-g05-people-places","skill":"listening","mode":"listening","title":{"vi":"Nghe: khu phố mới và cuối tuần ở quê","en":"Listening: a new neighbourhood and a weekend in the countryside"},"estimatedMinutes":14,"exerciseCount":6,"wordCount":0},
   {"id":"l2b-g-01-read","source":"level-2-bridge/general/reading-lessons","unitId":"u2-g01-travel","skill":"reading","mode":"reading","title":{"vi":"Đọc: blog về chuyến đi nước ngoài đầu tiên","en":"Reading: a blog about a first trip abroad"},"estimatedMinutes":15,"exerciseCount":8,"wordCount":0},
   {"id":"l2b-g-02-read","source":"level-2-bridge/general/reading-lessons","unitId":"u2-g02-work","skill":"reading","mode":"reading","title":{"vi":"Đọc: nói chuyện xã giao ở chỗ làm","en":"Reading: small talk at work"},"estimatedMinutes":15,"exerciseCount":8,"wordCount":0},
   {"id":"l2b-g-03-read","source":"level-2-bridge/general/reading-lessons","unitId":"u2-g03-school","skill":"reading","mode":"reading","title":{"vi":"Đọc: hai ngôi trường, hai thế giới","en":"Reading: two schools, two worlds"},"estimatedMinutes":15,"exerciseCount":9,"wordCount":0},

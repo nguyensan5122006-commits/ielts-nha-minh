@@ -16,6 +16,7 @@
  *   order 23  u2-g04-media   Phim, nhạc, tin tức (thể loại, ý kiến, bản tin, giới thiệu phim)
  *   order 24  u2-g05-people-places  (thêm 29/10) Thành phố, thiên nhiên, gia đình + cụm động từ thường ngày
  *             — 4 bài TỪ VỰNG chủ đề IELTS còn thiếu (xem docs/redesign-v3/11-CONTENT-GAPS.md)
+ *             + 1 bài NGHE ôn lại các từ đó (l2b-g-05-listen, nằm trong listening-lessons.ts)
  *
  * icon = tên emoji Fluent (dạng slug) — nhóm tài sản tải ảnh 3D theo tên này.
  * Nội dung bài nằm ở các file *-lessons.ts cùng thư mục.
@@ -78,7 +79,7 @@ export const level2BridgeGeneralUnits: Unit[] = [
     lessonIds: ['l2b-g-04-vocab', 'l2b-g-04-listen', 'l2b-g-04-read', 'l2b-g-04-speak', 'l2b-g-04-write'],
   },
   // (thêm 29/10) Chặng từ vựng: các chủ đề IELTS còn thiếu ở Level 2 + cụm động từ (phrasal verbs) hằng ngày.
-  // Bài nằm ở topic-vocabulary-lessons.ts và phrasal-verb-lessons.ts.
+  // Bài nằm ở topic-vocabulary-lessons.ts, phrasal-verb-lessons.ts và (bài nghe cuối chặng) listening-lessons.ts.
   {
     id: 'u2-g05-people-places',
     levelId: 'level-2',
@@ -90,6 +91,6 @@ export const level2BridgeGeneralUnits: Unit[] = [
       vi: 'Sau chặng này bạn có thể tả khu phố và thành phố của mình, nói về thiên nhiên, con vật, các mối quan hệ trong gia đình và dùng những cụm động từ hằng ngày.',
       en: 'After this unit, you can describe your neighbourhood and city, talk about nature, animals and family relationships, and use everyday phrasal verbs.',
     },
-    lessonIds: ['l2b-g-05-city', 'l2b-g-05-nature', 'l2b-g-05-family', 'l2b-g-05-phrasal'],
+    lessonIds: ['l2b-g-05-city', 'l2b-g-05-nature', 'l2b-g-05-family', 'l2b-g-05-phrasal', 'l2b-g-05-listen'],
   },
 ]

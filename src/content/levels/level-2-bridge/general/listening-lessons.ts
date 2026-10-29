@@ -6,14 +6,16 @@
  *
  * Cấu trúc 1 bài nghe v3:
  *   teachingCards (chiến thuật nghe) → exercises (khởi động, có nghe – chọn, nghe – gõ, nói)
- *   → listeningTask: 3 đoạn hội thoại tự nhiên (segments), mỗi câu hỏi gắn segmentId
+ *   → listeningTask: 2–3 đoạn hội thoại tự nhiên (segments), mỗi câu hỏi gắn segmentId
  *     để người học bấm "Nghe lại đoạn này". Transcript chỉ hiện sau khi nộp bài.
  *
- * File này chứa 4 bài (mỗi chặng 1 bài):
+ * File này chứa 5 bài (mỗi chặng 1 bài):
  *   1. l2b-g-01-listen : Du lịch — làm thủ tục bay, nhận phòng khách sạn, gọi lễ tân nhờ sửa đồ + hỏi đường
  *   2. l2b-g-02-listen : Công việc — ngày đầu đi làm, ghi lời nhắn điện thoại, thông báo đổi lịch họp
  *   3. l2b-g-03-listen : Trường học — hỏi nhau bài tập, cô giáo giao dự án, nhóm phân công việc
  *   4. l2b-g-04-listen : Phim & nhạc — chọn phim, giới thiệu ban nhạc, điểm phim trên radio
+ *   5. l2b-g-05-listen : (thêm 29/10) Khu phố mới + cuối tuần về quê thăm ông bà — chỉ 2 đoạn, ôn lại từ
+ *                        của 4 bài từ vựng chặng u2-g05 (thành phố, thiên nhiên, gia đình, cụm động từ)
  *
  * Giọng đọc: chỉ dùng giọng Anh-Anh (gb-female, gb-male). Số viết bằng chữ như người nói
  * (VD "four-one-six") để máy đọc không đọc sai.
@@ -1423,6 +1425,337 @@ export const level2BridgeGeneralListeningLessons: Lesson[] = [
           explanation: {
             vi: "'I'd recommend it for families with older children.'",
             en: "'I'd recommend it for families with older children.'",
+          },
+        },
+      ],
+    },
+    miniTest: [],
+  },
+  /* ==========================================================================
+   * BÀI 5 — NGHE: KHU PHỐ MỚI VÀ CUỐI TUẦN Ở QUÊ  (thêm 29/10, chặng u2-g05-people-places)
+   * Bài nghe ôn lại từ của 4 bài từ vựng trong chặng (thành phố, thiên nhiên, gia đình,
+   * cụm động từ). 2 đoạn, 2 người bạn nói chuyện với nhau:
+   * Đoạn 1: Daisy kể về căn hộ mới và khu phố mới (bẫy: "crowded" là chỗ CŨ).
+   * Đoạn 2: Daisy rủ Sam về quê thăm ông bà (bẫy: ông đã bỏ lái xe → dì ra đón).
+   * ======================================================================== */
+  {
+    id: 'l2b-g-05-listen',
+    skill: 'listening',
+    mode: 'listening',
+    estimatedMinutes: 14,
+    title: { vi: 'Nghe: khu phố mới và cuối tuần ở quê', en: 'Listening: a new neighbourhood and a weekend in the countryside' },
+    description: {
+      vi: 'Nghe hai người bạn trò chuyện về khu phố mới, gia đình và chuyến về quê cuối tuần — ôn lại từ vựng cả chặng.',
+      en: 'Listen to two friends talking about a new neighbourhood, family and a weekend trip to the countryside.',
+    },
+    teachingCards: [
+      {
+        title: { vi: 'Cẩn thận bẫy "nghe thấy từ"', en: 'Watch out for word traps' },
+        body: {
+          vi: "Trong một đoạn, người nói thường nhắc tới **nhiều thứ**, nhưng chỉ **một thứ** đúng với câu hỏi.\nVD: 'My old flat was **crowded**, but this area is much more **peaceful**.' → khu **mới** yên tĩnh, còn 'crowded' là nói về chỗ **cũ**.\nHãy để ý các từ **but, though, actually, instead, much more... than** — đáp án thường nằm **ngay sau** chúng.\nĐừng vội chọn đáp án chỉ vì nó có từ bạn vừa nghe thấy!",
+          en: "Speakers often mention **several things**, but only **one** answers the question.\nE.g. 'My old flat was **crowded**, but this area is much more **peaceful**.' → the **new** area is peaceful; 'crowded' is about the **old** one.\nListen for **but, though, actually, instead, much more... than** — the answer often comes **right after** them.\nDon't choose an option just because you heard one of its words!",
+        },
+        examples: [
+          {
+            en: 'My grandad gave up driving last year, so my aunt will pick us up.',
+            vi: 'Ông mình đã thôi lái xe từ năm ngoái, nên dì mình sẽ ra đón tụi mình.',
+          },
+        ],
+      },
+      {
+        title: { vi: 'Cụm động từ nghe bị "dính" vào nhau', en: 'Phrasal verbs sound joined together' },
+        body: {
+          vi: "Khi nói nhanh, người Anh **nối** động từ với từ nhỏ đi sau thành một khối:\n• **pick us up** → nghe như 'pi-kơ-sắp'\n• **put on** → nghe như 'pu-tôn'\n• **look after** → nghe như 'lu-kaaf-tə'\nMẹo: nghe thấy **pick, put, look, give, grow, bring**… thì hãy chờ thêm **một từ nhỏ** (up, on, after…) theo sau — cả cụm thường mang **nghĩa khác hẳn** động từ gốc.",
+          en: "In fast speech, the verb and the small word after it are **linked** into one sound:\n• **pick us up** → sounds like 'pi-kə-sup'\n• **put on** → 'pu-ton'\n• **look after** → 'lu-kaaf-tə'\nTip: when you hear **pick, put, look, give, grow, bring**…, wait for **a small word** (up, on, after…) — the whole phrase often has a **completely different meaning**.",
+        },
+        examples: [
+          { en: 'Put on your old boots. It gets muddy after rain.', vi: 'Mang đôi ủng cũ vào nhé. Sau mưa đường hay lầy lội lắm.' },
+          { en: 'My grandparents brought me up in a small village.', vi: 'Ông bà nuôi mình lớn ở một ngôi làng nhỏ.' },
+        ],
+      },
+    ],
+    exercises: [
+      {
+        id: 'l2b-g-05-listen-ex01',
+        type: 'listen-choose',
+        audioText: 'My old flat was really crowded, but this neighbourhood is very peaceful.',
+        question: 'What is the NEW neighbourhood like?',
+        options: ['Crowded', 'Peaceful', 'Noisy', 'Expensive'],
+        correctIndex: 1,
+        explanation: {
+          vi: "'crowded' là nói về căn hộ CŨ. Sau 'but' mới là khu phố mới: 'very peaceful' = rất yên tĩnh.",
+          en: "'Crowded' describes the OLD flat. After 'but' comes the new neighbourhood: 'very peaceful'.",
+        },
+      },
+      {
+        id: 'l2b-g-05-listen-ex02',
+        type: 'listen-choose',
+        audioText: 'It takes ten minutes to walk to the station, but the bus only takes four.',
+        question: 'How long does the bus take?',
+        options: ['4 minutes', '10 minutes', '14 minutes', '40 minutes'],
+        correctIndex: 0,
+        explanation: {
+          vi: "10 phút là đi bộ. Sau 'but' là xe buýt: 'the bus only takes four' = chỉ mất 4 phút.",
+          en: "Ten minutes is the walk. After 'but': 'the bus only takes four' (minutes).",
+        },
+      },
+      {
+        id: 'l2b-g-05-listen-ex03',
+        type: 'listen-type',
+        audioText: 'My aunt will pick us up from the station.',
+        acceptedAnswers: ['My aunt will pick us up from the station.', "My aunt'll pick us up from the station."],
+        explanation: {
+          vi: "'pick us up' đọc nối thành 'pi-kơ-sắp' = đón (ai đó). aunt = cô/dì.",
+          en: "'Pick us up' is linked: 'pi-kə-sup'. It means collect us (by car).",
+        },
+      },
+      {
+        id: 'l2b-g-05-listen-ex04',
+        type: 'match-pairs',
+        instruction: { vi: 'Nối cụm từ trong bài nghe với nghĩa của nó.', en: 'Match the phrases with their meanings.' },
+        pairs: [
+          { left: 'bring up', right: 'raise a child until they are grown up' },
+          { left: 'grow up', right: 'become an adult' },
+          { left: 'look for', right: 'try to find' },
+          { left: 'put on', right: 'start wearing (clothes, shoes)' },
+          { left: 'give up', right: 'stop doing something' },
+        ],
+        explanation: {
+          vi: 'bring up = nuôi lớn; grow up = lớn lên; look for = tìm; put on = mặc/mang vào; give up = bỏ, thôi (làm gì).',
+          en: 'These five phrasal verbs all appear in the conversations.',
+        },
+      },
+      {
+        id: 'l2b-g-05-listen-ex05',
+        type: 'fill-blank',
+        sentence: 'Red squirrels are an ___ species, so the reserve protects their habitat.',
+        acceptedAnswers: ['endangered'],
+        hint: 'in danger of disappearing',
+        explanation: {
+          vi: 'endangered species = loài có nguy cơ tuyệt chủng. habitat = môi trường sống.',
+          en: 'An endangered species might disappear forever. Habitat = the place where it lives.',
+        },
+      },
+      {
+        id: 'l2b-g-05-listen-ex06',
+        type: 'speak-sentence',
+        sentence: 'Public transport is very convenient here.',
+        translationVi: 'Giao thông công cộng ở đây rất tiện.',
+        explanation: {
+          vi: "Nhấn 'PUB-lic TRANS-port' và 'con-VEN-ient' (/kənˈviːniənt/).",
+          en: "Stress 'PUB-lic TRANS-port' and 'con-VEN-ient'.",
+        },
+      },
+    ],
+    listeningTask: {
+      instructions:
+        'Questions 1–8. Listen to two conversations between friends. Write ONE WORD AND/OR A NUMBER, or choose the correct answer.',
+      strategyTip: {
+        vi: "Đọc hết 8 câu hỏi trước khi nghe. Khi nghe 'but', 'actually', 'instead' — tập trung cao nhất: thông tin sắp thay đổi.",
+        en: "Read all eight questions first. When you hear 'but', 'actually' or 'instead', listen carefully — the information is about to change.",
+      },
+      segments: [
+        {
+          id: 'l2b-g-05-listen-s1',
+          lines: [
+            { speaker: 'Sam', voice: 'gb-male', text: "Hi, Daisy! How's the new flat? Have you settled in yet?" },
+            {
+              speaker: 'Daisy',
+              voice: 'gb-female',
+              text: "Hi, Sam! It's lovely, thanks. I only moved in last Saturday, so most of my things are still in boxes.",
+            },
+            {
+              speaker: 'Sam',
+              voice: 'gb-male',
+              text: "What's the neighbourhood like? Your old place was right in the city centre, wasn't it?",
+            },
+            {
+              speaker: 'Daisy',
+              voice: 'gb-female',
+              text: 'Yes, and it was always so crowded and noisy. This area is much more peaceful. I can actually hear birds when I wake up in the morning.',
+            },
+            { speaker: 'Sam', voice: 'gb-male', text: "That sounds nice. But isn't it a long way from work?" },
+            {
+              speaker: 'Daisy',
+              voice: 'gb-female',
+              text: "Not really. Public transport is very convenient here. There's a bus stop two minutes from my door, and the bus gets me to the office in about twenty-five minutes.",
+            },
+            {
+              speaker: 'Sam',
+              voice: 'gb-male',
+              text: "Twenty-five minutes? That's quicker than driving. I sat in a traffic jam for an hour yesterday.",
+            },
+            { speaker: 'Daisy', voice: 'gb-female', text: "Exactly. That's why I leave my car at home now." },
+            { speaker: 'Sam', voice: 'gb-male', text: 'And what about facilities? Are there any shops nearby?' },
+            {
+              speaker: 'Daisy',
+              voice: 'gb-female',
+              text: "There's a small supermarket on the corner and a library opposite the park. There isn't a gym, though, so I'm looking for a swimming pool instead.",
+            },
+            {
+              speaker: 'Sam',
+              voice: 'gb-male',
+              text: "There's a good one near my office. I'll find out the opening times for you.",
+            },
+            { speaker: 'Daisy', voice: 'gb-female', text: 'Thanks, that would be great.' },
+          ],
+        },
+        {
+          id: 'l2b-g-05-listen-s2',
+          lines: [
+            {
+              speaker: 'Sam',
+              voice: 'gb-male',
+              text: 'So, are you free this weekend? We could try that new café in town.',
+            },
+            {
+              speaker: 'Daisy',
+              voice: 'gb-female',
+              text: "Sorry, I'm visiting my grandparents in the countryside. Actually, why don't you come with me?",
+            },
+            { speaker: 'Sam', voice: 'gb-male', text: 'Really? I\'d love to. Where do they live?' },
+            {
+              speaker: 'Daisy',
+              voice: 'gb-female',
+              text: 'In a small village near the hills. My grandparents brought me up there, so it feels like a second home.',
+            },
+            { speaker: 'Sam', voice: 'gb-male', text: "I didn't know that! You must be very close to them." },
+            {
+              speaker: 'Daisy',
+              voice: 'gb-female',
+              text: "Oh, yes. I call them every Sunday. And my cousin Ellie lives next door. We get on really well. She's like a sister to me.",
+            },
+            { speaker: 'Sam', voice: 'gb-male', text: 'And what is there to do in the village?' },
+            {
+              speaker: 'Daisy',
+              voice: 'gb-female',
+              text: "There's a nature reserve nearby. It's one of the few places in the area where you can still see red squirrels. They're endangered, so the reserve protects their habitat.",
+            },
+            { speaker: 'Sam', voice: 'gb-male', text: "Red squirrels! I've never seen one." },
+            {
+              speaker: 'Daisy',
+              voice: 'gb-female',
+              text: "If we're lucky, you will. Oh, and put on your old boots. It's always muddy after the rain.",
+            },
+            { speaker: 'Sam', voice: 'gb-male', text: 'OK. How do we get there?' },
+            {
+              speaker: 'Daisy',
+              voice: 'gb-female',
+              text: 'We can take the train on Saturday morning. It leaves at eight fifteen.',
+            },
+            { speaker: 'Sam', voice: 'gb-male', text: 'And will your grandad meet us at the station?' },
+            {
+              speaker: 'Daisy',
+              voice: 'gb-female',
+              text: "No, he gave up driving last year. But my aunt, Ellie's mum, will pick us up.",
+            },
+            {
+              speaker: 'Sam',
+              voice: 'gb-male',
+              text: "Eight fifteen on a Saturday. I'll need two alarms! But it sounds great. Count me in.",
+            },
+          ],
+        },
+      ],
+      questions: [
+        {
+          kind: 'gap-fill',
+          id: 'l2b-g-05-listen-q1',
+          segmentId: 'l2b-g-05-listen-s1',
+          number: 1,
+          prompt: 'Daisy moved into her new flat last ___.',
+          acceptedAnswers: ['Saturday', 'Sat'],
+          explanation: {
+            vi: "Daisy nói: 'I only moved in last Saturday' → cô ấy chuyển đến vào thứ Bảy tuần trước.",
+            en: "Daisy says: 'I only moved in last Saturday.'",
+          },
+        },
+        {
+          kind: 'choice',
+          id: 'l2b-g-05-listen-q2',
+          segmentId: 'l2b-g-05-listen-s1',
+          number: 2,
+          prompt: "How is Daisy's new area different from her old one?",
+          options: ['It is more crowded.', 'It is more peaceful.', 'It is closer to the city centre.', 'It is noisier.'],
+          correctIndex: 1,
+          explanation: {
+            vi: "Bẫy! 'crowded and noisy' là nói về chỗ CŨ ở trung tâm. Khu mới: 'This area is much more peaceful' = yên tĩnh hơn nhiều.",
+            en: "Trap! 'Crowded and noisy' describes the OLD place. The new area is 'much more peaceful'.",
+          },
+        },
+        {
+          kind: 'gap-fill',
+          id: 'l2b-g-05-listen-q3',
+          segmentId: 'l2b-g-05-listen-s1',
+          number: 3,
+          prompt: "The bus takes Daisy to the office in about ___ minutes.",
+          acceptedAnswers: ['25', 'twenty-five', 'twenty five'],
+          explanation: {
+            vi: "Bẫy số: '2 phút' là từ nhà ra trạm xe buýt. Xe buýt đến văn phòng mất 'about twenty-five minutes' = khoảng 25 phút.",
+            en: "Number trap: two minutes is the walk to the bus stop. The bus takes 'about twenty-five minutes'.",
+          },
+        },
+        {
+          kind: 'choice',
+          id: 'l2b-g-05-listen-q4',
+          segmentId: 'l2b-g-05-listen-s1',
+          number: 4,
+          prompt: 'What is opposite the park?',
+          options: ['A supermarket', 'A library', 'A gym', 'A swimming pool'],
+          correctIndex: 1,
+          explanation: {
+            vi: "'a library opposite the park' = thư viện đối diện công viên. Siêu thị ở góc phố; khu này không có phòng gym; hồ bơi thì Daisy vẫn đang tìm.",
+            en: "'A library opposite the park.' The supermarket is on the corner, there isn't a gym, and Daisy is still looking for a pool.",
+          },
+        },
+        {
+          kind: 'choice',
+          id: 'l2b-g-05-listen-q5',
+          segmentId: 'l2b-g-05-listen-s2',
+          number: 5,
+          prompt: 'Who brought Daisy up?',
+          options: ['Her parents', 'Her grandparents', 'Her aunt', 'Her cousin Ellie'],
+          correctIndex: 1,
+          explanation: {
+            vi: "'My grandparents brought me up there' → ông bà nuôi Daisy lớn. (bring up = nuôi nấng)",
+            en: "'My grandparents brought me up there.' Bring up = raise a child until they are grown up.",
+          },
+        },
+        {
+          kind: 'gap-fill',
+          id: 'l2b-g-05-listen-q6',
+          segmentId: 'l2b-g-05-listen-s2',
+          number: 6,
+          prompt: 'The nature reserve protects the habitat of red ___.',
+          acceptedAnswers: ['squirrels', 'squirrel'],
+          explanation: {
+            vi: "'you can still see red squirrels... the reserve protects their habitat' → khu bảo tồn bảo vệ nơi sống của sóc đỏ, một loài đang nguy cấp (endangered).",
+            en: "'You can still see red squirrels... the reserve protects their habitat.'",
+          },
+        },
+        {
+          kind: 'gap-fill',
+          id: 'l2b-g-05-listen-q7',
+          segmentId: 'l2b-g-05-listen-s2',
+          number: 7,
+          prompt: 'The train leaves at ___ on Saturday morning.',
+          acceptedAnswers: ['8.15', '8:15', '8.15 am', '8:15 am', '8.15am', '8:15am', 'eight fifteen', 'eight-fifteen', 'quarter past eight'],
+          explanation: {
+            vi: "'It leaves at eight fifteen' = 8 giờ 15 (cũng có thể nói 'quarter past eight').",
+            en: "'It leaves at eight fifteen' = 8.15.",
+          },
+        },
+        {
+          kind: 'choice',
+          id: 'l2b-g-05-listen-q8',
+          segmentId: 'l2b-g-05-listen-s2',
+          number: 8,
+          prompt: 'Who will pick Daisy and Sam up from the station?',
+          options: ["Daisy's grandad", "Daisy's cousin Ellie", "Daisy's aunt", 'Nobody — they will walk.'],
+          correctIndex: 2,
+          explanation: {
+            vi: "Bẫy! Sam hỏi về ông của Daisy, nhưng 'he gave up driving' = ông đã thôi lái xe. Sau 'But' mới là đáp án: 'my aunt, Ellie's mum, will pick us up' → dì của Daisy (mẹ của Ellie) ra đón.",
+            en: "Trap! The grandad 'gave up driving'. After 'But' comes the answer: 'my aunt, Ellie's mum, will pick us up'.",
           },
         },
       ],
