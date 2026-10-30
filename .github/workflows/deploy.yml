@@ -1,0 +1,40 @@
+# =============================================================================
+# deploy.yml — TỰ ĐỘNG DEPLOY LÊN CLOUDFLARE MỖI LẦN PUSH
+# - Push lên nhánh "main" -> GitHub build web rồi đưa lên Cloudflare Pages
+#   (project "ielts-nha-minh", cùng project đang dùng, giữ nguyên D1 và secrets).
+# - Push nhánh khác -> Cloudflare tạo bản xem thử (preview) với link riêng.
+# - Cần 2 secret trong GitHub (Settings -> Secrets and variables -> Actions):
+#     + CLOUDFLARE_API_TOKEN : token có quyền "Cloudflare Pages: Edit"
+#     + CLOUDFLARE_ACCOUNT_ID: mã tài khoản Cloudflare
+# - Database: workflow này KHÔNG chạy migration. Khi thêm file mới trong
+#   database/migrations, vẫn chạy tay: npm run db:migrate:remote
+# =============================================================================
+name: Deploy to Cloudflare
+
+on:
+  push:
+  workflow_dispatch: # cho phép bấm "Run workflow" bằng tay trên GitHub
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Cài thư viện
+        run: npm ci
+
+      - name: Build web (kiểm tra TypeScript + vite build)
+        run: npm run build
+
+      - name: Đưa lên Cloudflare Pages
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy dist --project-name ielts-nha-minh --branch ${{ github.ref_name }}
