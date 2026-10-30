@@ -3,7 +3,7 @@
 # - pages_build_output_dir: thư mục web đã build (vite build -> dist)
 # - d1_databases: database D1. Sau khi chạy "npx wrangler d1 create ielts-nha-minh-db",
 #   Cloudflare trả về database_id -> dán vào dòng database_id bên dưới.
-# - Bí mật (GEMINI_API_KEY, INVITE_CODE) KHÔNG để ở đây:
+# - Bí mật (GEMINI_API_KEY, ANTHROPIC_API_KEY, INVITE_CODE) KHÔNG để ở đây:
 #     + chạy local: ghi vào file .dev.vars
 #     + trên Cloudflare: Settings -> Variables and Secrets
 # =============================================================================
@@ -22,6 +22,9 @@ migrations_dir = "database/migrations"
 GEMINI_MODEL = "gemini-flash-latest"
 # Model dự phòng: tự dùng khi model chính đang quá tải (503)
 GEMINI_FALLBACK_MODEL = "gemini-flash-lite-latest"
+# Claude dự phòng: chỉ dùng khi cả 2 model Gemini đều lỗi / hết lượt (cần bí mật ANTHROPIC_API_KEY).
+# Chỉ chấm được bài viết và "tại sao sai?" — Claude không nghe được ghi âm.
+CLAUDE_MODEL = "claude-haiku-5-5"
 # Mỗi người được gọi AI tối đa bao nhiêu lần / ngày (bảo vệ quota miễn phí)
 AI_DAILY_LIMIT = "40"
 

@@ -14,10 +14,10 @@ import { readLoggedInUser } from '../../../backend-helpers/read-logged-in-user'
 import {
   AiError,
   GRADING_JSON_FORMAT,
-  askGeminiForJson,
   countAiUsageOrReject,
   type GeminiPart,
 } from '../../../backend-helpers/gemini-client'
+import { askAiForJson } from '../../../backend-helpers/ai-client'
 
 const MAX_TOTAL_BASE64 = 14_000_000 // ~10MB audio; Gemini giới hạn 20MB / yêu cầu
 
@@ -61,7 +61,7 @@ export const onRequestPost: ApiHandler = async ({ request, env, data }) => {
 
   try {
     await countAiUsageOrReject(env, user.id)
-    const result = await askGeminiForJson(env, SYSTEM_INSTRUCTION, parts)
+    const result = await askAiForJson(env, SYSTEM_INSTRUCTION, parts)
     return jsonResponse({ result })
   } catch (error) {
     if (error instanceof AiError) return errorResponse(error.message, error.status)

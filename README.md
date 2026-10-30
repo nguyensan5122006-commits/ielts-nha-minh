@@ -28,7 +28,7 @@ IELTS_ThienThao/
 ├── package.json                Danh sách thư viện + các lệnh npm run ...
 ├── vite.config.ts              Cấu hình công cụ build Vite
 ├── wrangler.toml               Cấu hình Cloudflare cho trang web (D1, Gemini, nối tới realtime)
-├── .dev.vars                   Bí mật khi chạy local: GEMINI_API_KEY, INVITE_CODE (không đưa lên git)
+├── .dev.vars                   Bí mật khi chạy local: GEMINI_API_KEY, ANTHROPIC_API_KEY (không bắt buộc), INVITE_CODE (không đưa lên git)
 │
 ├── docs/                       ===== TÀI LIỆU =====
 │   ├── redesign-v3/            Thiết kế bản v3: kiến trúc, nội dung, dữ liệu, giao diện, âm thanh, phòng thi
@@ -126,7 +126,7 @@ npm install                 # cài thư viện (lần đầu)
 npm run db:migrate          # tạo / nâng cấp database local
 ```
 
-Mở file `.dev.vars` rồi điền `GEMINI_API_KEY` và `INVITE_CODE`.
+Mở file `.dev.vars` rồi điền `GEMINI_API_KEY` và `INVITE_CODE`. Muốn có AI dự phòng khi Gemini lỗi thì điền thêm `ANTHROPIC_API_KEY`.
 
 Cần 2 cửa sổ terminal:
 
@@ -167,7 +167,7 @@ npm run deploy:realtime
 
 Thứ tự khi cập nhật cả 3: `db:migrate:remote` → `deploy:realtime` → `deploy`.
 
-Mã bí mật (`GEMINI_API_KEY`, `INVITE_CODE`) đổi ở **Cloudflare → Workers & Pages → ielts-thienthao → Settings → Variables and Secrets**. Đổi xong chạy `npm run deploy` để áp dụng.
+Mã bí mật (`GEMINI_API_KEY`, `ANTHROPIC_API_KEY`, `INVITE_CODE`) đổi ở **Cloudflare → Workers & Pages → ielts-nha-minh → Settings → Variables and Secrets** (chọn loại **Secret**). Đổi xong vào **GitHub → Actions → Deploy to Cloudflare → Run workflow** để áp dụng.
 
 ---
 

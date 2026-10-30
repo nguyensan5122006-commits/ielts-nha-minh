@@ -6,6 +6,8 @@
  *   - GEMINI_API_KEY  : khoá API Gemini (bí mật, không bao giờ gửi xuống trình duyệt)
  *   - INVITE_CODE     : mã mời gia đình, cần khi đăng ký
  *   - GEMINI_MODEL    : tên model Gemini
+ *   - ANTHROPIC_API_KEY: khoá API Claude (bí mật) — dự phòng khi Gemini lỗi / hết lượt
+ *   - CLAUDE_MODEL    : tên model Claude dự phòng (VD claude-haiku-5-5)
  *   - AI_DAILY_LIMIT  : số lượt AI tối đa / người / ngày
  *   - FAMILY_HUB      : "phòng sinh hoạt chung" realtime (Durable Object)
  * ----------------------------------------------------------------------------
@@ -16,6 +18,8 @@ export interface ServerEnvironment {
   INVITE_CODE?: string
   GEMINI_MODEL?: string
   GEMINI_FALLBACK_MODEL?: string
+  ANTHROPIC_API_KEY?: string
+  CLAUDE_MODEL?: string
   AI_DAILY_LIMIT?: string
   /** Durable Object xử lý realtime (chat, online, thi đấu) — nằm ở realtime-worker */
   FAMILY_HUB?: DurableObjectNamespace

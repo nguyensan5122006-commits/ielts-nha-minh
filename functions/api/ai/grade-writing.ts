@@ -11,7 +11,8 @@
  */
 import { errorResponse, jsonResponse, type ApiHandler } from '../../../backend-helpers/server-environment'
 import { readLoggedInUser } from '../../../backend-helpers/read-logged-in-user'
-import { AiError, GRADING_JSON_FORMAT, askGeminiForJson, countAiUsageOrReject } from '../../../backend-helpers/gemini-client'
+import { askAiForJson } from '../../../backend-helpers/ai-client'
+import { AiError, GRADING_JSON_FORMAT, countAiUsageOrReject } from '../../../backend-helpers/gemini-client'
 
 const SYSTEM_INSTRUCTION = `You are an experienced, fair IELTS Writing examiner and a kind teacher for Vietnamese learners.
 Grade strictly with the official public IELTS Writing band descriptors.
@@ -38,7 +39,7 @@ export const onRequestPost: ApiHandler = async ({ request, env, data }) => {
   try {
     await countAiUsageOrReject(env, user.id)
     const wordCount = answer.split(/\s+/).filter(Boolean).length
-    const result = await askGeminiForJson(env, SYSTEM_INSTRUCTION, [
+    const result = await askAiForJson(env, SYSTEM_INSTRUCTION, [
       {
         text: [
           `TASK KIND: ${body.taskKind ?? 'lesson'}`,

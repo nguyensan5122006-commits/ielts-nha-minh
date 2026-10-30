@@ -19,6 +19,7 @@
     "deploy:realtime": "cd realtime-worker && wrangler deploy"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^1.3.0",
     "@google/model-viewer": "^4.4.0",
     "react": "^19.3.0",
     "react-dom": "^19.3.0",

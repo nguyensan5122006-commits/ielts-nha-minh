@@ -5,7 +5,8 @@
  */
 import { errorResponse, jsonResponse, type ApiHandler } from '../../../backend-helpers/server-environment'
 import { readLoggedInUser } from '../../../backend-helpers/read-logged-in-user'
-import { AiError, askGeminiForJson, countAiUsageOrReject } from '../../../backend-helpers/gemini-client'
+import { askAiForJson } from '../../../backend-helpers/ai-client'
+import { AiError, countAiUsageOrReject } from '../../../backend-helpers/gemini-client'
 
 const SYSTEM_INSTRUCTION = `You are a patient English teacher for Vietnamese learners (IELTS band 0-6.5).
 Explain why the learner's answer is wrong and why the correct answer is right.
@@ -24,7 +25,7 @@ export const onRequestPost: ApiHandler = async ({ request, env, data }) => {
 
   try {
     await countAiUsageOrReject(env, user.id)
-    const result = await askGeminiForJson(env, SYSTEM_INSTRUCTION, [
+    const result = await askAiForJson(env, SYSTEM_INSTRUCTION, [
       {
         text: [
           body.context ? `CONTEXT (passage/audio script):\n${body.context.slice(0, 6000)}` : '',

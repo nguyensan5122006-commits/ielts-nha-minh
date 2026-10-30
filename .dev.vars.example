@@ -1,3 +1,5 @@
 # Copy file này thành ".dev.vars" rồi điền giá trị thật (file .dev.vars không đưa lên git)
 GEMINI_API_KEY=dan-key-lay-tu-aistudio.google.com
 INVITE_CODE=giadinh2026
+# Không bắt buộc: khoá Claude, dùng dự phòng khi Gemini lỗi / hết lượt (lấy ở platform.claude.com)
+ANTHROPIC_API_KEY=
