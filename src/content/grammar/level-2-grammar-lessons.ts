@@ -21,8 +21,9 @@
  * ----------------------------------------------------------------------------
  */
 import type { Lesson } from '../content-types'
+import { withGrammarMiniTests } from './grammar-mini-tests'
 
-export const level2GrammarLessons: Lesson[] = [
+export const level2GrammarLessons: Lesson[] = withGrammarMiniTests([
   // ==========================================================================
   // BÀI 1: Các cách nói tương lai
   // ==========================================================================
@@ -782,4 +783,4 @@ export const level2GrammarLessons: Lesson[] = [
     ],
     miniTest: [],
   },
-]
+])

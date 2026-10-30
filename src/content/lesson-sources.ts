@@ -80,6 +80,11 @@ export const LESSON_SOURCES = {
   '../grammar/level-2-grammar-lessons-part2': () => import('./grammar/level-2-grammar-lessons-part2').then((m) => m.level2GrammarLessonsPart2),
   '../grammar/level-3-grammar-lessons': () => import('./grammar/level-3-grammar-lessons').then((m) => m.level3GrammarLessons),
   '../grammar/level-3-grammar-lessons-part2': () => import('./grammar/level-3-grammar-lessons-part2').then((m) => m.level3GrammarLessonsPart2),
+  '../grammar/level-1-grammar-lessons-part2': () => import('./grammar/level-1-grammar-lessons-part2').then((m) => m.level1GrammarLessonsPart2),
+  '../grammar/level-1-grammar-lessons-part3': () => import('./grammar/level-1-grammar-lessons-part3').then((m) => m.level1GrammarLessonsPart3),
+  '../grammar/level-2-grammar-lessons-part3': () => import('./grammar/level-2-grammar-lessons-part3').then((m) => m.level2GrammarLessonsPart3),
+  '../grammar/level-3-grammar-lessons-part3': () => import('./grammar/level-3-grammar-lessons-part3').then((m) => m.level3GrammarLessonsPart3),
+  '../grammar/grammar-level-tests': () => import('./grammar/grammar-level-tests').then((m) => m.grammarLevelTests),
 } satisfies Record<string, () => Promise<Lesson[]>>
 
 /** Tên 1 nguồn (VD 'level-1-beginner/vocabulary-lessons'). */

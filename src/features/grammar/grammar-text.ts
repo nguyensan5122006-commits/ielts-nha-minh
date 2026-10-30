@@ -17,7 +17,7 @@ const VI = {
   /* ---------- trang danh sách /grammar ---------- */
   eyebrow: 'Ngữ pháp',
   title: 'Ngữ pháp từ gốc tới 6.5',
-  intro: 'Mỗi điểm ngữ pháp có lý thuyết ngắn và bài luyện. Học theo thứ tự, hoặc chọn đúng điểm bạn còn yếu.',
+  intro: 'Mỗi điểm ngữ pháp có lý thuyết ngắn, bài luyện và mini-test. Học theo thứ tự, hoặc chọn đúng điểm bạn còn yếu.',
   levelTabsLabel: 'Chọn trình độ ngữ pháp',
   levelTab: (level: number) => `Level ${level}`,
   levelHeading: (level: number, name: string) => `Level ${level} · ${name}`,
@@ -30,6 +30,11 @@ const VI = {
   statusStarted: 'Đang học',
   newLessonBadge: 'Bài mới',
   openTopic: 'Xem',
+  /* thẻ bài kiểm tra cuối level */
+  testTitle: (level: number) => `Bài kiểm tra Level ${level}`,
+  testText: '15 câu trộn mọi điểm ở trình độ này. Đạt từ 80% là bạn đã vững.',
+  testStart: 'Làm bài kiểm tra',
+  testRedo: 'Làm lại',
   /* cột phải */
   nextTitle: 'Học tiếp ngữ pháp',
   nextText: 'Điểm nên học tiếp theo ở trình độ này:',
@@ -71,7 +76,7 @@ type GrammarText = typeof VI
 const EN: GrammarText = {
   eyebrow: 'Grammar',
   title: 'Grammar from zero to 6.5',
-  intro: 'Each grammar point has a short explanation and practice. Follow the order, or pick the points you find hard.',
+  intro: 'Each grammar point has a short explanation, practice and a mini-test. Follow the order, or pick the points you find hard.',
   levelTabsLabel: 'Choose a grammar level',
   levelTab: (level) => `Level ${level}`,
   levelHeading: (level, name) => `Level ${level} · ${name}`,
@@ -84,6 +89,10 @@ const EN: GrammarText = {
   statusStarted: 'In progress',
   newLessonBadge: 'New lesson',
   openTopic: 'Open',
+  testTitle: (level) => `Level ${level} test`,
+  testText: '15 questions mixing every point at this level. Score 80% or more and you have mastered it.',
+  testStart: 'Take the test',
+  testRedo: 'Retake',
   nextTitle: 'Next grammar point',
   nextText: 'The point to study next at this level:',
   nextAllDone: "You've studied every point at this level. Try the next level!",

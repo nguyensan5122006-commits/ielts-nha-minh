@@ -19,8 +19,9 @@
  * ----------------------------------------------------------------------------
  */
 import type { Lesson } from '../content-types'
+import { withGrammarMiniTests } from './grammar-mini-tests'
 
-export const level1GrammarLessons: Lesson[] = [
+export const level1GrammarLessons: Lesson[] = withGrammarMiniTests([
   // ==========================================================================
   // BÀI 1: Danh từ đếm được / không đếm được + từ chỉ số lượng
   // ==========================================================================
@@ -516,4 +517,4 @@ export const level1GrammarLessons: Lesson[] = [
     ],
     miniTest: [],
   },
-]
+])

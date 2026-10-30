@@ -106,6 +106,34 @@
 .gr-grid > li {
   display: flex;
 }
+
+/* ---------- thẻ bài kiểm tra cuối level ---------- */
+.gr-test {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-4);
+  margin-top: var(--s-5);
+}
+.gr-test__body {
+  flex: 1 1 260px;
+  min-width: 0;
+}
+.gr-test__title {
+  margin: 0 0 var(--s-1);
+  font-size: var(--fs-lg);
+}
+.gr-test__text {
+  margin: 0;
+  color: var(--c-ink-2);
+}
+.gr-test__best {
+  margin: var(--s-1) 0 0;
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  color: var(--c-success);
+}
 .gr-topic {
   display: flex;
   flex-direction: column;

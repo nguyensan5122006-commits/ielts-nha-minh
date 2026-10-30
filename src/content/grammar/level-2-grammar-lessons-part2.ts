@@ -20,8 +20,9 @@
  * ----------------------------------------------------------------------------
  */
 import type { Lesson } from '../content-types'
+import { withGrammarMiniTests } from './grammar-mini-tests'
 
-export const level2GrammarLessonsPart2: Lesson[] = [
+export const level2GrammarLessonsPart2: Lesson[] = withGrammarMiniTests([
   /* ==========================================================================
    * BÀI 1 — ĐỘNG TỪ + V-ING HAY + TO V?
    * ======================================================================== */
@@ -824,4 +825,4 @@ export const level2GrammarLessonsPart2: Lesson[] = [
     ],
     miniTest: [],
   },
-]
+])

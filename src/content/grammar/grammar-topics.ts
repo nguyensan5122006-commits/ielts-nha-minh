@@ -12,6 +12,7 @@
  *                   các id khác là bài sẵn có trên lộ trình (Level 1–3) có dạy điểm này.
  *
  * Bảng đối chiếu đầy đủ (điểm nào có sẵn, điểm nào thiếu): docs/redesign-v3/11-CONTENT-GAPS.md
+ * Mỗi bài "gr-…" có bài luyện (exercises) + mini-test cuối bài; mỗi nhóm có 1 bài kiểm tra tổng hợp (GRAMMAR_LEVEL_TESTS).
  * Thêm điểm mới: thêm 1 mục vào GRAMMAR_TOPICS (id không trùng), bài mới thì soạn trong
  * src/content/grammar/ rồi đăng ký ở lesson-registry.ts + lesson-sources.ts như mọi bài khác.
  * ----------------------------------------------------------------------------
@@ -50,7 +51,7 @@ export const GRAMMAR_TOPICS: GrammarTopic[] = [
     summary: { vi: 'Giới thiệu bản thân, nói tuổi, nghề, cảm xúc.', en: 'Say who you are, your age, your job and how you feel.' },
     pattern: 'I am · he/she/it is · you/we/they are',
     example: 'My sister is a nurse and we are very close.',
-    lessonIds: ['l1-speak-01'],
+    lessonIds: ['gr-l1-be-verb', 'l1-speak-01'],
   },
   {
     id: 'present-simple',
@@ -59,7 +60,7 @@ export const GRAMMAR_TOPICS: GrammarTopic[] = [
     summary: { vi: 'Nói về thói quen, lịch trình và sự thật.', en: 'Talk about habits, timetables and facts.' },
     pattern: 'I/you/we/they + V · he/she/it + V-s/es',
     example: 'My father reads the news every morning.',
-    lessonIds: ['l1-write-05', 'l1-vocab-04', 'l1-speak-04'],
+    lessonIds: ['gr-l1-present-simple', 'l1-write-05', 'l1-vocab-04', 'l1-speak-04'],
   },
   {
     id: 'present-continuous',
@@ -68,7 +69,7 @@ export const GRAMMAR_TOPICS: GrammarTopic[] = [
     summary: { vi: 'Phân biệt việc đang xảy ra với thói quen; tránh "I am knowing".', en: 'Tell actions in progress from habits, and avoid "I am knowing".' },
     pattern: 'am / is / are + V-ing',
     example: 'I usually cycle, but this week I am taking the bus.',
-    lessonIds: ['l2-write-01', 'l2-speak-06'],
+    lessonIds: ['gr-l1-present-continuous', 'l2-write-01', 'l2-speak-06'],
   },
   {
     id: 'past-simple',
@@ -77,7 +78,7 @@ export const GRAMMAR_TOPICS: GrammarTopic[] = [
     summary: { vi: 'Kể lại việc đã xong trong quá khứ, cả động từ bất quy tắc.', en: 'Tell finished past events, including irregular verbs.' },
     pattern: 'V-ed / irregular V2 · did not + V · Did … + V?',
     example: 'We visited Hue last summer and ate a lot of street food.',
-    lessonIds: ['l2-write-02', 'l1-speak-09', 'l1-listen-07'],
+    lessonIds: ['gr-l1-past-simple', 'l2-write-02', 'l1-speak-09', 'l1-listen-07'],
   },
   {
     id: 'there-is-there-are',
@@ -86,7 +87,7 @@ export const GRAMMAR_TOPICS: GrammarTopic[] = [
     summary: { vi: 'Nói cái gì có ở đâu — hôm nay và ngày xưa.', en: 'Say what exists somewhere — now and in the past.' },
     pattern: 'There is + singular · There are + plural · There was / were',
     example: 'There are two parks near my house, but there was only one before.',
-    lessonIds: ['l1-write-06', 'l1-speak-05', 'l2-write-07'],
+    lessonIds: ['gr-l1-there-is', 'l1-write-06', 'l1-speak-05', 'l2-write-07'],
   },
   {
     id: 'articles-plurals',
@@ -95,7 +96,7 @@ export const GRAMMAR_TOPICS: GrammarTopic[] = [
     summary: { vi: 'Chọn a hay an, khi nào dùng the, cách thêm -s/-es.', en: 'Choose a or an, know when to use the, and form plurals.' },
     pattern: 'a + consonant sound · an + vowel sound · the + known thing',
     example: 'I have an uncle and two cousins. The uncle lives in Da Nang.',
-    lessonIds: ['l1-write-02'],
+    lessonIds: ['gr-l1-articles', 'l1-write-02'],
   },
   {
     id: 'countable-quantifiers',
@@ -122,7 +123,7 @@ export const GRAMMAR_TOPICS: GrammarTopic[] = [
     summary: { vi: 'in May, on Monday, at 7 o\'clock; in the city, at the station.', en: 'in May, on Monday, at 7 o\'clock; in the city, at the station.' },
     pattern: 'in + month/year · on + day/date · at + clock time',
     example: 'The class starts at eight on Monday, in Room 4.',
-    lessonIds: ['l1-write-08', 'l2-listen-08'],
+    lessonIds: ['gr-l1-prepositions', 'l1-write-08', 'l2-listen-08'],
   },
   {
     id: 'adjectives-adverbs',
@@ -140,7 +141,7 @@ export const GRAMMAR_TOPICS: GrammarTopic[] = [
     summary: { vi: 'So sánh 2 thứ hoặc chọn thứ "nhất" trong nhóm.', en: 'Compare two things or pick the "most" in a group.' },
     pattern: 'bigger than · more useful than · the biggest · the most useful',
     example: 'The bus is cheaper than the train, but the train is the fastest.',
-    lessonIds: ['l2-write-03', 'l2-speak-05', 'l2-speak-02'],
+    lessonIds: ['gr-l1-comparatives', 'l2-write-03', 'l2-speak-05', 'l2-speak-02'],
   },
   {
     id: 'wh-questions',
@@ -149,7 +150,7 @@ export const GRAMMAR_TOPICS: GrammarTopic[] = [
     summary: { vi: 'Hỏi what, where, when, who, why, how cho đúng thứ tự.', en: 'Ask what, where, when, who, why and how in the right order.' },
     pattern: 'Wh- + do/does/did + subject + V?',
     example: 'Where do you usually study at the weekend?',
-    lessonIds: ['l1-speak-08'],
+    lessonIds: ['gr-l1-wh-questions', 'l1-speak-08'],
   },
   {
     id: 'linking-basic',
@@ -158,7 +159,7 @@ export const GRAMMAR_TOPICS: GrammarTopic[] = [
     summary: { vi: 'Nối 2 ý thành câu dài hơn và có lý do.', en: 'Join two ideas into a longer sentence with a reason.' },
     pattern: 'idea + because / so / but + idea · Idea. However, idea.',
     example: 'I like my job because it is interesting. However, the pay is low.',
-    lessonIds: ['l1-write-03', 'l2-write-09'],
+    lessonIds: ['gr-l1-linking', 'l1-write-03', 'l2-write-09'],
   },
 
   /* ============================ LEVEL 2 (A2 – B1) ============================ */
@@ -205,7 +206,7 @@ export const GRAMMAR_TOPICS: GrammarTopic[] = [
     summary: { vi: 'Nói về luật lệ, sự bắt buộc, lời khuyên và khả năng.', en: 'Talk about rules, obligation, advice and ability.' },
     pattern: 'must / have to + V · should + V · can / can\'t + V',
     example: 'Students have to wear a uniform, and they should arrive early.',
-    lessonIds: ['l2-write-05', 'l2-speak-07', 'l1-read-08'],
+    lessonIds: ['gr-l2-modals', 'l2-write-05', 'l2-speak-07', 'l1-read-08'],
   },
   {
     id: 'gerund-infinitive',
@@ -324,7 +325,7 @@ export const GRAMMAR_TOPICS: GrammarTopic[] = [
     summary: { vi: 'Nối ý mạch lạc mà không lạm dụng từ nối — tiêu chí CC của IELTS.', en: 'Link ideas smoothly without overusing linkers — the CC criterion in IELTS.' },
     pattern: 'although + clause · despite + noun · whereas · therefore · this + noun',
     example: 'Although online courses are cheap, some students find them lonely.',
-    lessonIds: ['l3-i-wri-07', 'l3-g-u2-write', 'l2b-i-wri-04'],
+    lessonIds: ['gr-l3-cohesion', 'l3-i-wri-07', 'l3-g-u2-write', 'l2b-i-wri-04'],
   },
   {
     id: 'complex-comparisons',
@@ -333,7 +334,7 @@ export const GRAMMAR_TOPICS: GrammarTopic[] = [
     summary: { vi: 'much higher than, twice as many as, slightly fewer — để mô tả số liệu chính xác.', en: 'much higher than, twice as many as, slightly fewer — to describe data precisely.' },
     pattern: 'much / far / slightly + comparative · twice as … as',
     example: 'Twice as many people cycled to work in 2020 as in 2010.',
-    lessonIds: ['l3-i-wri-02', 'l3-i-spk-07'],
+    lessonIds: ['gr-l3-complex-comparisons', 'l3-i-wri-02', 'l3-i-spk-07'],
   },
 ]
 
@@ -352,4 +353,14 @@ export function grammarTopicsOfLevel(level: GrammarLevel): GrammarTopic[] {
 /** Bài này có phải bài mới viết riêng cho khu Ngữ pháp không (id bắt đầu bằng "gr-"). */
 export function isGrammarOnlyLesson(lessonId: string): boolean {
   return lessonId.startsWith('gr-')
+}
+
+/**
+ * Bài kiểm tra tổng hợp cuối mỗi nhóm (15 câu trộn mọi điểm của nhóm).
+ * Nội dung: src/content/grammar/grammar-level-tests.ts. Không thuộc điểm ngữ pháp nào.
+ */
+export const GRAMMAR_LEVEL_TESTS: Record<GrammarLevel, string> = {
+  1: 'gr-test-l1',
+  2: 'gr-test-l2',
+  3: 'gr-test-l3',
 }

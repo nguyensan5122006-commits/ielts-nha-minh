@@ -20,8 +20,9 @@
  * ----------------------------------------------------------------------------
  */
 import type { Lesson } from '../content-types'
+import { withGrammarMiniTests } from './grammar-mini-tests'
 
-export const level3GrammarLessonsPart2: Lesson[] = [
+export const level3GrammarLessonsPart2: Lesson[] = withGrammarMiniTests([
   /* ==========================================================================
    * BÀI 1 — MỆNH ĐỀ QUAN HỆ
    * ======================================================================== */
@@ -667,4 +668,4 @@ export const level3GrammarLessonsPart2: Lesson[] = [
     ],
     miniTest: [],
   },
-]
+])

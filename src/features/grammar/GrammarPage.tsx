@@ -6,6 +6,7 @@
  *   2. Tab chọn Level 1 / 2 / 3 (mặc định = level người học đang ở, theo track đang chọn)
  *   3. Đầu nhóm: huy hiệu level + CEFR/band + thanh tiến độ của level
  *   4. Lưới thẻ điểm ngữ pháp: tên, 1 câu tóm tắt, công thức, tiến độ "1/3 bài", nhãn "Bài mới"
+ *   5. Thẻ "Bài kiểm tra Level x": 15 câu tổng hợp cả level (GRAMMAR_LEVEL_TESTS) + điểm tốt nhất
  *   Cột phải: "Học tiếp ngữ pháp" (điểm nên học tiếp) + 3 bước học cho nhớ.
  *
  * Tiến độ CHỈ đọc từ progress.lessons (grammar-progress.ts) — không có kho lưu riêng.
@@ -14,7 +15,7 @@
  */
 import { useMemo, useState } from 'react'
 import { RightRail } from '../../app/layout'
-import { GRAMMAR_LEVELS, GRAMMAR_TOPICS, grammarTopicsOfLevel, isGrammarOnlyLesson, type GrammarLevel, type GrammarTopic } from '../../content/grammar/grammar-topics'
+import { GRAMMAR_LEVEL_TESTS, GRAMMAR_LEVELS, GRAMMAR_TOPICS, grammarTopicsOfLevel, isGrammarOnlyLesson, type GrammarLevel, type GrammarTopic } from '../../content/grammar/grammar-topics'
 import { Badge } from '../../design-system/components/Badge'
 import { Button } from '../../design-system/components/Button'
 import { Card } from '../../design-system/components/Card'
@@ -127,8 +128,32 @@ export function GrammarPage() {
             </li>
           ))}
         </ol>
+
+        <LevelTestCard level={level} />
       </section>
     </main>
+  )
+}
+
+/* ------------------------------ bài kiểm tra cuối level ------------------------------ */
+
+function LevelTestCard({ level }: { level: GrammarLevel }) {
+  const text = useGrammarText()
+  const { progress } = useProgress()
+  const testId = GRAMMAR_LEVEL_TESTS[level]
+  const record = progress.lessons[testId]
+
+  return (
+    <Card variant="soft" className="gr-test" padding="md">
+      <div className="gr-test__body">
+        <h3 className="gr-test__title">{text.testTitle(level)}</h3>
+        <p className="gr-test__text">{text.testText}</p>
+        {record && <p className="gr-test__best">{text.bestScore(Math.round(record.bestAccuracy * 100))}</p>}
+      </div>
+      <Button to={`/lesson/${testId}`} variant={record ? 'secondary' : 'primary'} iconRight="arrow-right">
+        {record ? text.testRedo : text.testStart}
+      </Button>
+    </Card>
   )
 }
 

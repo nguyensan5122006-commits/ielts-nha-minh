@@ -69,6 +69,11 @@ import { level2GrammarLessons } from './grammar/level-2-grammar-lessons'
 import { level2GrammarLessonsPart2 } from './grammar/level-2-grammar-lessons-part2'
 import { level3GrammarLessons } from './grammar/level-3-grammar-lessons'
 import { level3GrammarLessonsPart2 } from './grammar/level-3-grammar-lessons-part2'
+import { level1GrammarLessonsPart2 } from './grammar/level-1-grammar-lessons-part2'
+import { level1GrammarLessonsPart3 } from './grammar/level-1-grammar-lessons-part3'
+import { level2GrammarLessonsPart3 } from './grammar/level-2-grammar-lessons-part3'
+import { level3GrammarLessonsPart3 } from './grammar/level-3-grammar-lessons-part3'
+import { grammarLevelTests } from './grammar/grammar-level-tests'
 
 /** Bài cũ của Level 1 + Level 2 (100 bài). */
 export const LEGACY_LESSONS: Lesson[] = [
@@ -118,10 +123,15 @@ export const NEW_CONTENT_LESSONS: Lesson[] = [
 /** (v3) Bài của khu "Ngữ pháp" (/grammar). Mỗi bài có category: 'grammar', track: 'general'. */
 export const GRAMMAR_LESSONS: Lesson[] = [
   ...level1GrammarLessons,
+  ...level1GrammarLessonsPart2,
+  ...level1GrammarLessonsPart3,
   ...level2GrammarLessons,
   ...level2GrammarLessonsPart2,
+  ...level2GrammarLessonsPart3,
   ...level3GrammarLessons,
   ...level3GrammarLessonsPart2,
+  ...level3GrammarLessonsPart3,
+  ...grammarLevelTests,
 ]
 
 /** Toàn bộ bài học của web. */

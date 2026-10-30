@@ -21,7 +21,7 @@ import { ALL_LESSONS, LEGACY_LESSONS } from '../src/content/lesson-registry'
 import { buildLessonIndex, renderLessonIndexFile } from '../src/content/lesson-index-builder'
 import { LESSON_SOURCE_IDS, LESSON_SOURCES, type LessonSourceId } from '../src/content/lesson-sources'
 import { generateSpellingQuestions, listGameTopics } from '../src/game-questions/question-bank'
-import { GRAMMAR_TOPICS } from '../src/content/grammar/grammar-topics'
+import { GRAMMAR_LEVEL_TESTS, GRAMMAR_TOPICS } from '../src/content/grammar/grammar-topics'
 
 const problems: string[] = []
 const warnings: string[] = []
@@ -214,6 +214,11 @@ for (const lesson of ALL_LESSONS) if (!lessonsInUnits.has(lesson.id) && !LEGACY_
 
 /* ---- 3b. KHU NGỮ PHÁP (src/content/grammar/grammar-topics.ts) ---- */
 const grammarLessonsInTopics = new Set<string>()
+// bài kiểm tra cuối nhóm mở từ trang /grammar, không thuộc điểm nào
+for (const id of Object.values(GRAMMAR_LEVEL_TESTS)) {
+  if (!lessonIds.has(id)) problems.push(`Bài kiểm tra ngữ pháp "${id}" không có trong lesson-registry`)
+  grammarLessonsInTopics.add(id)
+}
 for (const topic of GRAMMAR_TOPICS) {
   checkId(`grammar:${topic.id}`, 'grammar-topics')
   if (topic.lessonIds.length === 0) problems.push(`Điểm ngữ pháp ${topic.id}: chưa có bài nào`)

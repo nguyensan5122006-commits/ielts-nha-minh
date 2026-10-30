@@ -5,7 +5,7 @@
  */
 import type { LessonSummary } from '../lesson-index'
 
-/** 237 bài */
+/** 253 bài */
 export const LESSON_INDEX_DATA: LessonSummary[] = [
   {"id":"l1-vocab-01","source":"level-1-beginner/vocabulary-lessons","unitId":"u1-01-hello","skill":"vocabulary","mode":"practice","title":{"vi":"Chào hỏi & giới thiệu","en":"Greetings & introductions"},"estimatedMinutes":6,"exerciseCount":10,"wordCount":8},
   {"id":"l1-vocab-02","source":"level-1-beginner/vocabulary-lessons","unitId":"u1-02-people","skill":"vocabulary","mode":"practice","title":{"vi":"Thành viên gia đình","en":"Family members"},"estimatedMinutes":6,"exerciseCount":10,"wordCount":8},
@@ -244,4 +244,20 @@ export const LESSON_INDEX_DATA: LessonSummary[] = [
   {"id":"gr-l3-reported-speech","source":"../grammar/level-3-grammar-lessons-part2","unitId":null,"skill":"writing","mode":"practice","title":{"vi":"Câu tường thuật","en":"Reported speech"},"estimatedMinutes":13,"exerciseCount":12,"wordCount":0},
   {"id":"gr-l3-modals-deduction","source":"../grammar/level-3-grammar-lessons-part2","unitId":null,"skill":"writing","mode":"practice","title":{"vi":"Suy đoán: must, might, could, can't","en":"Deduction: must, might, could, can't"},"estimatedMinutes":12,"exerciseCount":12,"wordCount":0},
   {"id":"gr-l3-nominalisation","source":"../grammar/level-3-grammar-lessons-part2","unitId":null,"skill":"writing","mode":"practice","title":{"vi":"Cụm danh từ & danh từ hoá","en":"Noun phrases & nominalisation"},"estimatedMinutes":13,"exerciseCount":12,"wordCount":0},
+  {"id":"gr-l1-be-verb","source":"../grammar/level-1-grammar-lessons-part2","unitId":null,"skill":"writing","mode":"practice","title":{"vi":"Luyện tập: am / is / are","en":"Practice: am / is / are"},"estimatedMinutes":7,"exerciseCount":8,"wordCount":0},
+  {"id":"gr-l1-present-simple","source":"../grammar/level-1-grammar-lessons-part2","unitId":null,"skill":"writing","mode":"practice","title":{"vi":"Luyện tập: thì hiện tại đơn","en":"Practice: present simple"},"estimatedMinutes":8,"exerciseCount":8,"wordCount":0},
+  {"id":"gr-l1-present-continuous","source":"../grammar/level-1-grammar-lessons-part2","unitId":null,"skill":"writing","mode":"practice","title":{"vi":"Luyện tập: hiện tại tiếp diễn","en":"Practice: present continuous"},"estimatedMinutes":8,"exerciseCount":8,"wordCount":0},
+  {"id":"gr-l1-past-simple","source":"../grammar/level-1-grammar-lessons-part2","unitId":null,"skill":"writing","mode":"practice","title":{"vi":"Luyện tập: thì quá khứ đơn","en":"Practice: past simple"},"estimatedMinutes":9,"exerciseCount":8,"wordCount":0},
+  {"id":"gr-l1-there-is","source":"../grammar/level-1-grammar-lessons-part2","unitId":null,"skill":"writing","mode":"practice","title":{"vi":"Luyện tập: There is / There are","en":"Practice: There is / There are"},"estimatedMinutes":7,"exerciseCount":8,"wordCount":0},
+  {"id":"gr-l1-articles","source":"../grammar/level-1-grammar-lessons-part3","unitId":null,"skill":"writing","mode":"practice","title":{"vi":"Luyện tập: a / an / the & số nhiều","en":"Practice: a / an / the & plurals"},"estimatedMinutes":8,"exerciseCount":8,"wordCount":0},
+  {"id":"gr-l1-prepositions","source":"../grammar/level-1-grammar-lessons-part3","unitId":null,"skill":"writing","mode":"practice","title":{"vi":"Luyện tập: in / on / at","en":"Practice: in / on / at"},"estimatedMinutes":8,"exerciseCount":8,"wordCount":0},
+  {"id":"gr-l1-comparatives","source":"../grammar/level-1-grammar-lessons-part3","unitId":null,"skill":"writing","mode":"practice","title":{"vi":"Luyện tập: so sánh hơn & so sánh nhất","en":"Practice: comparatives & superlatives"},"estimatedMinutes":8,"exerciseCount":8,"wordCount":0},
+  {"id":"gr-l1-wh-questions","source":"../grammar/level-1-grammar-lessons-part3","unitId":null,"skill":"writing","mode":"practice","title":{"vi":"Luyện tập: câu hỏi Wh-","en":"Practice: Wh- questions"},"estimatedMinutes":8,"exerciseCount":8,"wordCount":0},
+  {"id":"gr-l1-linking","source":"../grammar/level-1-grammar-lessons-part3","unitId":null,"skill":"writing","mode":"practice","title":{"vi":"Luyện tập: and, but, because, so, however","en":"Practice: and, but, because, so, however"},"estimatedMinutes":8,"exerciseCount":8,"wordCount":0},
+  {"id":"gr-l2-modals","source":"../grammar/level-2-grammar-lessons-part3","unitId":null,"skill":"writing","mode":"practice","title":{"vi":"Luyện tập: must, have to, should, can","en":"Practice: must, have to, should, can"},"estimatedMinutes":9,"exerciseCount":8,"wordCount":0},
+  {"id":"gr-l3-cohesion","source":"../grammar/level-3-grammar-lessons-part3","unitId":null,"skill":"writing","mode":"practice","title":{"vi":"Luyện tập: although, despite, whereas, therefore","en":"Practice: although, despite, whereas, therefore"},"estimatedMinutes":10,"exerciseCount":8,"wordCount":0},
+  {"id":"gr-l3-complex-comparisons","source":"../grammar/level-3-grammar-lessons-part3","unitId":null,"skill":"writing","mode":"practice","title":{"vi":"Luyện tập: so sánh nâng cao","en":"Practice: advanced comparisons"},"estimatedMinutes":9,"exerciseCount":8,"wordCount":0},
+  {"id":"gr-test-l1","source":"../grammar/grammar-level-tests","unitId":null,"skill":"writing","mode":"practice","title":{"vi":"Kiểm tra ngữ pháp Level 1","en":"Level 1 grammar test"},"estimatedMinutes":12,"exerciseCount":15,"wordCount":0},
+  {"id":"gr-test-l2","source":"../grammar/grammar-level-tests","unitId":null,"skill":"writing","mode":"practice","title":{"vi":"Kiểm tra ngữ pháp Level 2","en":"Level 2 grammar test"},"estimatedMinutes":12,"exerciseCount":15,"wordCount":0},
+  {"id":"gr-test-l3","source":"../grammar/grammar-level-tests","unitId":null,"skill":"writing","mode":"practice","title":{"vi":"Kiểm tra ngữ pháp Level 3","en":"Level 3 grammar test"},"estimatedMinutes":14,"exerciseCount":15,"wordCount":0},
 ]
