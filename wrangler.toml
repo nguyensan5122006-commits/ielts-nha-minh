@@ -4,7 +4,7 @@
 # - d1_databases: database D1. Sau khi chạy "npx wrangler d1 create ielts-nha-minh-db",
 #   Cloudflare trả về database_id -> dán vào dòng database_id bên dưới.
 # - Bí mật (GEMINI_API_KEY, ANTHROPIC_API_KEY, INVITE_CODE) KHÔNG để ở đây:
-#     + chạy local: ghi vào file .dev.vars
+#     + chạy local: ghi vào ../IELTS_ThienThao-secrets/.dev.vars (thư mục NGOÀI project)
 #     + trên Cloudflare: Settings -> Variables and Secrets
 # =============================================================================
 name = "ielts-nha-minh"

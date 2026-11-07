@@ -53,16 +53,16 @@ import { examRoomFocusRoutes, examRoomShellRoutes } from '../features/exam-room/
 
 
 // Các trang ít dùng / nặng (chủ đề Học vui, trò chơi chữ, chat…) chỉ tải khi mở tới -> web mở nhanh hơn
-const FunTopicsPage = lazy(() => import('../pages/FunTopicsPage').then((m) => ({ default: m.FunTopicsPage })))
-const FunFlashcardsPage = lazy(() => import('../pages/FunFlashcardsPage').then((m) => ({ default: m.FunFlashcardsPage })))
-const QuestsPage = lazy(() => import('../pages/QuestsPage').then((m) => ({ default: m.QuestsPage })))
-const ProfilePage = lazy(() => import('../pages/ProfilePage').then((m) => ({ default: m.ProfilePage })))
-const ChatPage = lazy(() => import('../pages/ChatPage').then((m) => ({ default: m.ChatPage })))
+const FunTopicsPage = lazy(() => import('../features/fun-topics/FunTopicsPage').then((m) => ({ default: m.FunTopicsPage })))
+const FunFlashcardsPage = lazy(() => import('../features/fun-topics/FunFlashcardsPage').then((m) => ({ default: m.FunFlashcardsPage })))
+const QuestsPage = lazy(() => import('../features/family-achievements/QuestsPage').then((m) => ({ default: m.QuestsPage })))
+const ProfilePage = lazy(() => import('../features/family-achievements/ProfilePage').then((m) => ({ default: m.ProfilePage })))
+const ChatPage = lazy(() => import('../chat/ChatPage').then((m) => ({ default: m.ChatPage })))
 // 3 trò chơi chữ: Spelling Bee, Nối từ (chơi với máy), Thử thách từ mỗi ngày (kiểu Wordle)
-const SpellingBeePage = lazy(() => import('../pages/SpellingBeePage').then((m) => ({ default: m.SpellingBeePage })))
-const WordChainSoloPage = lazy(() => import('../pages/WordChainSoloPage').then((m) => ({ default: m.WordChainSoloPage })))
-const DailyWordPage = lazy(() => import('../pages/DailyWordPage').then((m) => ({ default: m.DailyWordPage })))
-const LeaderboardPage = lazy(() => import('../pages/LeaderboardPage').then((m) => ({ default: m.LeaderboardPage })))
+const SpellingBeePage = lazy(() => import('../features/word-games/SpellingBeePage').then((m) => ({ default: m.SpellingBeePage })))
+const WordChainSoloPage = lazy(() => import('../features/word-games/WordChainSoloPage').then((m) => ({ default: m.WordChainSoloPage })))
+const DailyWordPage = lazy(() => import('../features/word-games/DailyWordPage').then((m) => ({ default: m.DailyWordPage })))
+const LeaderboardPage = lazy(() => import('../features/family-achievements/LeaderboardPage').then((m) => ({ default: m.LeaderboardPage })))
 // Sổ tay giao diện sống (/design) — xem mọi component của hệ thiết kế, không cần đăng nhập
 const StyleGuidePage = lazy(() => import('../design-system/StyleGuidePage').then((m) => ({ default: m.StyleGuidePage })))
 

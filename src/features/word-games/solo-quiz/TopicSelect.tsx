@@ -2,9 +2,9 @@
  * TopicSelect.tsx — Ô CHỌN CHỦ ĐỀ CÂU HỎI (nhóm: Học vui / Bài học / Tổng hợp)
  * (v3) Dùng kiểu ô chọn "pg-select" của Sân chơi (src/features/playground/styles/play-kit.css).
  */
-import { listGameTopics } from '../game-questions/question-bank'
-import { useLanguage } from '../translations/language-context'
-import '../features/playground/styles/play-kit.css'
+import { listGameTopics } from './question-bank'
+import { useLanguage } from '../../../translations/language-context'
+import '../../playground/styles/play-kit.css'
 
 const TOPICS = listGameTopics()
 

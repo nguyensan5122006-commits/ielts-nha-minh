@@ -5,7 +5,7 @@
  *   <AudioButton src="/audio/abc.mp3" size="lg" />       // phát file có sẵn
  *   <AudioButton text="apple" size="sm" showSlow={false} />
  *
- * text-to-speech.ts tự tìm file mp3 đã tạo sẵn (npm run tts); không có thì
+ * text-to-speech.ts tự tìm file mp3 đã tạo sẵn (npm run tts:v3); không có thì
  * dùng giọng đọc của trình duyệt. Đang phát -> nút hiện sóng âm nhỏ; bấm lần
  * nữa để dừng. Phím Space/R để "nghe lại" do màn bài học tự gắn (không ở đây).
  * ----------------------------------------------------------------------------

@@ -28,13 +28,13 @@ IELTS_ThienThao/
 ├── package.json                Danh sách thư viện + các lệnh npm run ...
 ├── vite.config.ts              Cấu hình công cụ build Vite
 ├── wrangler.toml               Cấu hình Cloudflare cho trang web (D1, Gemini, nối tới realtime)
-├── .dev.vars                   Bí mật khi chạy local: GEMINI_API_KEY, ANTHROPIC_API_KEY (không bắt buộc), INVITE_CODE (không đưa lên git)
+├── .dev.vars.example           Mẫu bí mật. File thật nằm NGOÀI project (xem mục "Bí mật" bên dưới)
+├── .github/workflows/deploy.yml  Push lên GitHub -> tự build + đưa lên Cloudflare Pages
 │
 ├── docs/                       ===== TÀI LIỆU =====
 │   ├── redesign-v3/            Thiết kế bản v3: kiến trúc, nội dung, dữ liệu, giao diện, âm thanh, phòng thi
 │   ├── research/               Ghi chú + báo cáo nghiên cứu, OPEN-QUESTIONS (không đưa lên git)
 │   └── review/                 Trang xem 6 bài mẫu để duyệt nội dung
-├── private/tai-khoan/          3 tài khoản gia đình + file SQL thêm tài khoản (KHÔNG đưa lên git)
 ├── art-blender/                Xưởng 3D: script Blender dựng mascot Ki, file .blend, ảnh render (xem README trong đó)
 │
 ├── database/migrations/        Các bước tạo / nâng cấp database (chạy theo thứ tự 0001, 0002...)
@@ -46,10 +46,10 @@ IELTS_ThienThao/
 │   ├── xp.ts                   Ghi XP (cho bảng xếp hạng)
 │   ├── users.ts, profile.ts    Danh sách thành viên, trang cá nhân
 │   ├── chat/                   Lịch sử tin nhắn, số tin chưa đọc
-│   ├── games/                  Kỷ lục trò chơi chữ (records), Thử thách từ mỗi ngày (daily-word)
+│   ├── games/                  Kỷ lục trò chơi chữ (records, board), Thử thách từ mỗi ngày (daily-word)
 │   ├── realtime.ts             Mở kết nối WebSocket -> chuyển sang worker realtime
 │   ├── exam-results.ts         Lưu / xem kết quả thi
-│   └── ai/                     grade-writing / grade-speaking / explain-mistake (gọi Gemini)
+│   └── ai/                     grade-writing / grade-speaking / explain-mistake (Gemini, lỗi thì dùng Claude)
 │
 ├── realtime-worker/            ===== MÁY CHỦ REALTIME (worker riêng "ielts-realtime") =====
 │   ├── wrangler.toml
@@ -60,14 +60,20 @@ IELTS_ThienThao/
 │   ├── password-and-session.ts Băm mật khẩu, phiên đăng nhập
 │   ├── chat-queries.ts         Truy vấn chat
 │   ├── vietnam-time.ts         Ngày / tuần theo giờ Việt Nam
+│   ├── ai-client.ts            Cửa chung gọi AI: thử Gemini trước, lỗi thì chuyển Claude (chỉ bài chữ)
 │   ├── gemini-client.ts        Gọi Gemini (có thử lại + model dự phòng), giới hạn lượt AI
+│   ├── claude-client.ts        Gọi Claude (dự phòng, cần ANTHROPIC_API_KEY)
+│   ├── word-game-names.ts      Danh sách tên trò chơi chữ hợp lệ
 │   └── server-environment.ts, read-logged-in-user.ts
 │
-├── scripts/
+├── scripts/                    ===== CÔNG CỤ CHẠY BẰNG LỆNH npm run ... =====
 │   ├── generate-audio-v3.ts         Tạo file mp3 giọng AI cho mọi câu cần nghe (npm run tts:v3)
-│   ├── generate-listening-audio.ts  Script tạo audio cũ (npm run tts) — giữ để tham khảo
+│   ├── audio-v3/                    Phần ruột của script trên: gom câu, gọi giọng Edge, đọc độ dài mp3
+│   ├── generate-lesson-index.ts     Tạo mục lục bài học src/content/generated (tự chạy khi npm run build)
 │   ├── validate-content.ts          Kiểm tra lỗi dữ liệu (npm run validate)
-│   └── test-progress-migration.ts   Kiểm thử kho tiến độ v2 + chuyển đổi dữ liệu cũ (npm run test:progress)
+│   ├── test-progress-migration.ts   Kiểm thử kho tiến độ v2 + chuyển đổi dữ liệu cũ (npm run test:progress)
+│   ├── check-word-images.ts         Kiểm tra ảnh minh hoạ từ vựng có đủ không
+│   └── generate-app-icons.mjs       Tạo icon ứng dụng từ ảnh đầu mascot
 │
 ├── public/
 │   ├── audio/                  File mp3 bài nghe + manifest.json
@@ -78,24 +84,41 @@ IELTS_ThienThao/
 │
 └── src/                        ===== GIAO DIỆN (React) =====
     ├── main.tsx, app/App.tsx   Điểm khởi động, bảng định tuyến URL -> trang
-    ├── features/               Các khu giao diện v3 (mỗi thư mục 1 khu): landing, placement-test (/start), auth,
-    │                           learning-path (/learn), lesson-player, skill-*, vocabulary-review, mistakes-notebook,
-    │                           progress-dashboard, exam-room, exam-ui, playground (/play), right-rail, settings
-    ├── pages/                  Trang cũ (đã làm lại giao diện): chat, Học vui, nhiệm vụ, xếp hạng, hồ sơ,
-    │                           3 trò chơi chữ (DailyWordPage, SpellingBeePage, WordChainSoloPage)
+    ├── features/               ===== CÁC KHU GIAO DIỆN — mỗi thư mục 1 khu, có file *-routes.tsx riêng =====
+    │   ├── landing/            Trang giới thiệu (chưa đăng nhập)
+    │   ├── auth/               Đăng nhập / đăng ký
+    │   ├── placement-test/     Bài xếp lớp (/start)
+    │   ├── ielts-home/         Trang chủ sau đăng nhập, chọn lộ trình IELTS / tổng quát
+    │   ├── learning-path/      Bản đồ chặng học (/learn)
+    │   ├── lesson-player/      Màn chơi 1 bài học (bài tập, gợi ý, kết quả)
+    │   ├── skill-listening/    Bài nghe   ┐
+    │   ├── skill-reading/      Bài đọc    │ 4 kỹ năng: mỗi thư mục lo 1 dạng bài lớn
+    │   ├── skill-speaking/     Bài nói    │ (trong lesson-player và phòng thi)
+    │   ├── skill-writing/      Bài viết   ┘ + AI chấm
+    │   ├── grammar/            Ngữ pháp (/grammar): chủ đề, bài luyện, mini-test, test level
+    │   ├── vocabulary-review/  Ôn từ vựng FSRS, sổ từ
+    │   ├── mistakes-notebook/  Sổ lỗi sai + hỏi AI "vì sao sai"
+    │   ├── progress-dashboard/ Biểu đồ tiến độ
+    │   ├── exam-room/          Phòng thi: danh sách đề, làm bài, kết quả, mini-test
+    │   ├── exam-ui/            Mảnh giao diện thi kiểu máy tính (đồng hồ, chia đôi màn hình, tô sáng...)
+    │   ├── playground/         Khu vui chơi /play (trang tổng)
+    │   ├── word-games/         Trò chơi chữ: Thử thách từ mỗi ngày, Spelling Bee, Nối từ, Đoán chữ...
+    │   │   └── solo-quiz/      Ngân hàng câu hỏi + bộ chạy 1 lượt chơi một mình
+    │   ├── fun-topics/         Học vui: danh sách chủ đề + thẻ từ
+    │   ├── family-achievements/ Bảng xếp hạng gia đình, nhiệm vụ, hồ sơ cá nhân
+    │   ├── right-rail/         Cột phải (chuỗi ngày, nhiệm vụ, xếp hạng nhỏ)
+    │   └── settings/           Cài đặt
     ├── components/             Mảnh giao diện dùng lại (avatar, thông báo nổi, bảng chào mừng...)
     ├── design-system/          Hệ thiết kế v3: màu, chữ, component (Button, Card, Mascot...) — xem /design
-    ├── exercise-types/         (v2) dạng bài tập cũ; exercise-shared.ts vẫn dùng để chấm đáp án
     ├── exam-engine/            Chấm điểm & quy đổi band (exam-scoring.ts)
     ├── learning-progress/      Tiến độ v2: XP, chuỗi ngày (freeze, sửa chuỗi), ôn tập FSRS, sổ lỗi sai,
     │                           tự nâng cấp dữ liệu cũ — tài liệu: docs/redesign-v3/03-DATA-LAYER.md
     ├── family-members/         Danh sách thành viên gia đình
     ├── realtime/               Kết nối WebSocket (ai online, chat), "ngôn ngữ" tin nhắn realtime, tiếng "ting"
-    ├── chat/                   Khung chat, bong bóng chat, nén ảnh
-    ├── games/                  Câu hỏi Spelling Bee, chạy 1 lượt chơi một mình, chọn chủ đề
-    ├── game-questions/         Ngân hàng câu hỏi trò chơi chữ (lấy từ theo chủ đề)
+    ├── chat/                   Trang chat, khung chat, bong bóng chat, nén ảnh
     ├── gamification/           LUẬT TRÒ CHƠI HOÁ: level tài khoản, nhiệm vụ (thưởng XP), huy hiệu
-    ├── services/               Gọi API, đăng nhập, phát âm thanh, nhận giọng nói, ghi âm
+    ├── services/               Gọi API, đăng nhập, phát âm thanh, nhận giọng nói, ghi âm,
+    │                           chấm đáp án bài tập (exercise-shared.ts, answer-checking.ts)
     ├── translations/           Song ngữ Việt / Anh (ui-text.ts = từ điển chữ giao diện)
     ├── styles/                 global.css (giao diện chung) + gamification.css (phần trò chơi)
     └── content/                ===== NỘI DUNG HỌC =====
@@ -106,14 +129,16 @@ IELTS_ThienThao/
         ├── all-exams.ts        Danh sách đề thi
         ├── all-fun-topics.ts   Danh sách chủ đề Học vui
         ├── levels/             level-1-beginner, level-2-foundation, level-2-bridge, level-3-general, level-3-ielts
+        ├── grammar/            Chủ đề ngữ pháp, bài luyện từng level, mini-test, test level
         ├── fun-topics/         16 chủ đề thẻ từ (632 thẻ)
-        └── exams/              Bài xếp lớp, test Level 1, test Level 2, đề thi thử IELTS số 1
+        ├── exams/              Bài xếp lớp, test Level 1, test Level 2, đề thi thử IELTS số 1 và 2
+        └── generated/          Mục lục bài học do script tự tạo — KHÔNG sửa tay
 ```
 
 **Gợi ý đọc code để học:**
 1. Phần học: `content-types.ts` → `all-levels.ts` → `content/path-selectors.ts` → `features/lesson-player/LessonPlayerPage.tsx` → `learning-progress/progress-updates.ts` → `learning-progress/progress-store.tsx` → `functions/api/progress.ts`
 2. Phần chat realtime: `realtime/realtime-protocol.ts` → `realtime/realtime-store.tsx` → `functions/api/realtime.ts` → `realtime-worker/src/family-hub.ts`
-3. Trò chơi chữ: `features/playground/game-catalog.ts` → `pages/SpellingBeePage.tsx` (+ `game-questions/question-bank.ts`) → `functions/api/games/records.ts`
+3. Trò chơi chữ: `features/playground/game-catalog.ts` → `features/word-games/SpellingBeePage.tsx` (+ `features/word-games/solo-quiz/question-bank.ts`) → `functions/api/games/records.ts`
 
 ---
 
@@ -126,7 +151,16 @@ npm install                 # cài thư viện (lần đầu)
 npm run db:migrate          # tạo / nâng cấp database local
 ```
 
-Mở file `.dev.vars` rồi điền `GEMINI_API_KEY` và `INVITE_CODE`. Muốn có AI dự phòng khi Gemini lỗi thì điền thêm `ANTHROPIC_API_KEY`.
+**Bí mật (API key) để NGOÀI project** — để không bao giờ lỡ đưa lên GitHub:
+
+```
+E:\IELTS_ThienThao\                      project — đưa lên GitHub
+E:\IELTS_ThienThao-secrets\              KHÔNG đưa lên đâu cả
+├── .dev.vars                            GEMINI_API_KEY, INVITE_CODE, ANTHROPIC_API_KEY (không bắt buộc)
+└── tai-khoan\                           3 tài khoản gia đình + file SQL thêm tài khoản
+```
+
+Máy mới: tạo thư mục `IELTS_ThienThao-secrets` cạnh project, chép `.dev.vars.example` vào đó, đổi tên thành `.dev.vars` rồi điền mã thật. `npm run api` (file `scripts/run-local-api.mjs`) tự đọc file này.
 
 Cần 2 cửa sổ terminal:
 
@@ -147,11 +181,15 @@ Lưu ý khi chạy local: 2 tiến trình cùng dùng 1 file database. Thỉnh t
 
 ## 3. Đưa lên mạng (đã làm 1 lần — giờ chỉ cần cập nhật)
 
-**Cập nhật thông thường** (sửa giao diện, nội dung):
+**Cập nhật thông thường** (sửa giao diện, nội dung): push lên nhánh `main`, GitHub Actions tự build và deploy (1–3 phút, xem ở tab **Actions**).
 
 ```bash
-npm run deploy
+git add .
+git commit -m "mô tả thay đổi"
+git push
 ```
+
+Không muốn qua GitHub thì vẫn deploy thẳng từ máy được: `npm run deploy`.
 
 **Khi có thay đổi database** (thêm file trong `database/migrations/`):
 

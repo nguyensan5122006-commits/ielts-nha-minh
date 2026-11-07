@@ -1,5 +1,5 @@
-# Copy file này thành ".dev.vars" rồi điền giá trị thật (file .dev.vars không đưa lên git)
-GEMINI_API_KEY=dan-key-lay-tu-aistudio.google.com
-INVITE_CODE=giadinh2026
+# Mẫu bí mật. File thật nằm NGOÀI project: ../IELTS_ThienThao-secrets/.dev.vars (không bao giờ đưa lên GitHub)
+GEMINI_API_KEY=dien-khoa-gemini-o-day
+INVITE_CODE=dien-ma-moi-o-day
 # Không bắt buộc: khoá Claude, dùng dự phòng khi Gemini lỗi / hết lượt (lấy ở platform.claude.com)
 ANTHROPIC_API_KEY=

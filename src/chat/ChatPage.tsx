@@ -6,9 +6,9 @@
  */
 import { useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
-import { directChannel, FAMILY_CHANNEL } from '../chat/chat-channels'
-import { ChatChannelList } from '../chat/ChatChannelList'
-import { ChatPanel } from '../chat/ChatPanel'
+import { directChannel, FAMILY_CHANNEL } from './chat-channels'
+import { ChatChannelList } from './ChatChannelList'
+import { ChatPanel } from './ChatPanel'
 import { PlayerAvatar } from '../components/PlayerIdentity'
 import { Badge, Button } from '../design-system'
 import { GameArt } from '../features/playground/components/GameArt'

@@ -21,7 +21,7 @@ import type { Exercise, Lesson, LevelId, SkillName, TrackId } from '../../../con
 import { findExercise } from '../../../content/content-lookup'
 import { findLessonById } from '../../../content/lesson-registry'
 import { pathLessonIds } from '../../../content/path-selectors'
-import { checkExerciseAnswer } from '../../../exercise-types/exercise-shared'
+import { checkExerciseAnswer } from '../../../services/exercise-shared'
 import { autoRating, createSrsCard, dueCards, type SrsRating } from '../../../learning-progress/fsrs-scheduler'
 import { createEmptyProgress, type LearningProgress, type NewMistake } from '../../../learning-progress/progress-types'
 import * as update from '../../../learning-progress/progress-updates'

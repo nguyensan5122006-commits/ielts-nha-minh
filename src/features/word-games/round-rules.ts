@@ -24,7 +24,7 @@
  * Sai cả 2 lần / bỏ qua / hết giờ = 0 điểm, chuỗi về 0.
  * ----------------------------------------------------------------------------
  */
-import { createRandom } from '../../game-questions/question-bank'
+import { createRandom } from './solo-quiz/question-bank'
 
 export type Difficulty = 'easy' | 'medium' | 'hard'
 

@@ -18,7 +18,7 @@
  */
 import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties } from 'react'
 import { Button, Icon, IconButton, Kbd, Mascot, playSound, ProgressBar } from '../../../design-system'
-import { TimerBar, TimerBarIdle } from '../../../games/GameQuestionView'
+import { TimerBar, TimerBarIdle } from '../solo-quiz/GameQuestionView'
 import { useProgress } from '../../../learning-progress/progress-store'
 import { speak } from '../../../services/text-to-speech'
 import { GameArt } from '../../playground/components/GameArt'

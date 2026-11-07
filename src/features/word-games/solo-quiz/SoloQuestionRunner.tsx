@@ -9,10 +9,10 @@
  * ----------------------------------------------------------------------------
  */
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { isGameAnswerCorrect, pointsForAnswer, type GameQuestion } from '../game-questions/question-bank'
-import { Icon, playSound, ProgressBar } from '../design-system'
-import { usePlayText } from '../features/playground/playground-text'
-import { useLanguage } from '../translations/language-context'
+import { isGameAnswerCorrect, pointsForAnswer, type GameQuestion } from './question-bank'
+import { Icon, playSound, ProgressBar } from '../../../design-system'
+import { usePlayText } from '../../playground/playground-text'
+import { useLanguage } from '../../../translations/language-context'
 import { GameQuestionView, TimerBar, TimerBarIdle } from './GameQuestionView'
 
 const REVEAL_MS = 1200

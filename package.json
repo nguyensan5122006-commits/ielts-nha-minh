@@ -6,8 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "npm run content:index && tsc --noEmit -p . && tsc --noEmit -p functions && vite build",
-    "api": "wrangler pages dev dist --port 8788",
-    "tts": "esbuild scripts/generate-listening-audio.ts --bundle --platform=node --format=esm --packages=external --outfile=node_modules/.cache/tts.mjs --log-level=warning && node node_modules/.cache/tts.mjs",
+    "api": "node scripts/run-local-api.mjs",
     "tts:v3": "esbuild scripts/generate-audio-v3.ts --bundle --platform=node --format=esm --packages=external --outfile=node_modules/.cache/tts-v3.mjs --log-level=warning && node node_modules/.cache/tts-v3.mjs",
     "deploy": "npm run build && wrangler pages deploy dist --project-name ielts-nha-minh --branch main --commit-dirty=true",
     "validate": "esbuild scripts/validate-content.ts --bundle --platform=node --format=esm --outfile=node_modules/.cache/validate.mjs --log-level=warning && node node_modules/.cache/validate.mjs",

@@ -9,12 +9,12 @@
  * ----------------------------------------------------------------------------
  */
 import { useEffect, useRef, useState, type FormEvent } from 'react'
-import type { GameQuestion } from '../game-questions/question-bank'
-import { CardImage } from '../components/PlayerIdentity'
-import { Button, IconButton } from '../design-system'
-import { speak } from '../services/text-to-speech'
-import { useLanguage } from '../translations/language-context'
-import '../features/playground/styles/game.css'
+import type { GameQuestion } from './question-bank'
+import { CardImage } from '../../../components/PlayerIdentity'
+import { Button, IconButton } from '../../../design-system'
+import { speak } from '../../../services/text-to-speech'
+import { useLanguage } from '../../../translations/language-context'
+import '../../playground/styles/game.css'
 
 interface GameQuestionViewProps {
   question: GameQuestion

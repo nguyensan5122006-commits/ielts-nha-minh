@@ -12,10 +12,10 @@
  *    (trang chơi dùng seed ngẫu nhiên; kiểm tra "đủ câu chưa" dùng seed cố định).
  * ----------------------------------------------------------------------------
  */
-import { ALL_FUN_TOPICS, findFunTopic } from '../content/all-fun-topics'
-import { ALL_LEVELS_V3 } from '../content/all-levels'
-import type { BilingualText, FunCardImage, Lesson } from '../content/content-types'
-import { findLessonById } from '../content/lesson-registry'
+import { ALL_FUN_TOPICS, findFunTopic } from '../../../content/all-fun-topics'
+import { ALL_LEVELS_V3 } from '../../../content/all-levels'
+import type { BilingualText, FunCardImage, Lesson } from '../../../content/content-types'
+import { findLessonById } from '../../../content/lesson-registry'
 
 export interface GameTopic {
   id: string

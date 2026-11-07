@@ -20,7 +20,7 @@ import type { Exercise, ExamQuestion, Lesson, TrackId } from '../src/content/con
 import { ALL_LESSONS, LEGACY_LESSONS } from '../src/content/lesson-registry'
 import { buildLessonIndex, renderLessonIndexFile } from '../src/content/lesson-index-builder'
 import { LESSON_SOURCE_IDS, LESSON_SOURCES, type LessonSourceId } from '../src/content/lesson-sources'
-import { generateSpellingQuestions, listGameTopics } from '../src/game-questions/question-bank'
+import { generateSpellingQuestions, listGameTopics } from '../src/features/word-games/solo-quiz/question-bank'
 import { GRAMMAR_LEVEL_TESTS, GRAMMAR_TOPICS } from '../src/content/grammar/grammar-topics'
 
 const problems: string[] = []

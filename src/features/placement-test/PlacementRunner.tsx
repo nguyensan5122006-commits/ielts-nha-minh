@@ -24,7 +24,7 @@ import {
   type PlacementItem,
 } from '../../content/exams/index-v3'
 import { Button, IconButton, Kbd, Mascot, type MascotPose, Modal, playSound, ProgressBar, useReducedMotion } from '../../design-system'
-import { stableOptionOrder } from '../../exercise-types/exercise-shared'
+import { stableOptionOrder } from '../../services/exercise-shared'
 import { useLanguage } from '../../translations/language-context'
 import { PlacementAudio } from './PlacementAudio'
 import { saveDraft, type PlacementDraft } from './placement-storage'

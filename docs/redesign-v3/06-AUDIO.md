@@ -112,8 +112,7 @@ Bước kiểm tra cuối (mỗi lần chạy) đọc lại MỌI file: < 1 KB, 
 
 Thời gian: ~2 100 file mất khoảng 20 phút (≈ 110 file/phút). Các lần sau chỉ vài giây đến vài phút.
 
-`npm run tts` (script cũ `generate-listening-audio.ts`) vẫn còn nhưng **hiện không chạy được** (lỗi 403, xem mục 10)
-và không cần nữa: `tts:v3` đã làm hết việc của nó.
+Script cũ `generate-listening-audio.ts` (`npm run tts`) đã xoá ngày 07/11/2026 — `tts:v3` làm hết việc của nó.
 
 ## 8. Dùng trong code (cho các nhóm giao diện)
 

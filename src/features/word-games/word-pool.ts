@@ -23,9 +23,9 @@ import { ALL_FUN_TOPICS } from '../../content/all-fun-topics'
 import { findWord } from '../../content/content-lookup'
 import { findLessonById } from '../../content/lesson-registry'
 import { findWordImage, type WordImageCatalog } from '../../content/word-image-catalog'
-import { createRandom, levelWordEntries } from '../../game-questions/question-bank'
+import { createRandom, levelWordEntries } from './solo-quiz/question-bank'
 import type { LearningProgress } from '../../learning-progress/progress-types'
-import { readSeenCards } from '../../pages/FunFlashcardsPage'
+import { readSeenCards } from '../fun-topics/FunFlashcardsPage'
 import { DIFFICULTY_RULES, type Difficulty } from './round-rules'
 
 export interface PoolWord {

@@ -35,7 +35,7 @@ import {
   type AudioManifestV3,
 } from './audio-clip-keys'
 
-// Giữ tên cũ để code cũ (và scripts/generate-listening-audio.ts) vẫn import được từ file này
+// Giữ tên cũ để code cũ vẫn import được từ file này
 export { hashAudioText, splitIntoSpeakerTurns } from './audio-clip-keys'
 
 /** 3 tốc độ của trình nghe: chậm / thường / nhanh. */

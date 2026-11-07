@@ -8,7 +8,7 @@
 import { Link } from 'react-router-dom'
 import { ProgressBar } from '../../../design-system'
 import { ALL_FUN_TOPICS } from '../../../content/all-fun-topics'
-import { readSeenCards } from '../../../pages/FunFlashcardsPage'
+import { readSeenCards } from '../../fun-topics/FunFlashcardsPage'
 import { useLanguage } from '../../../translations/language-context'
 import { GameArt } from '../components/GameArt'
 import { usePlayText } from '../playground-text'

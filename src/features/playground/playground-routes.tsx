@@ -15,7 +15,7 @@ import { lazy } from 'react'
 import { Route } from 'react-router-dom'
 
 const PlaygroundPage = lazy(() => import('./PlaygroundPage').then((module) => ({ default: module.PlaygroundPage })))
-const ProfilePage = lazy(() => import('../../pages/ProfilePage').then((module) => ({ default: module.ProfilePage })))
+const ProfilePage = lazy(() => import('../family-achievements/ProfilePage').then((module) => ({ default: module.ProfilePage })))
 const PictureWordPage = lazy(() => import('../word-games/PictureWordPage').then((module) => ({ default: module.PictureWordPage })))
 const MissingLettersPage = lazy(() => import('../word-games/MissingLettersPage').then((module) => ({ default: module.MissingLettersPage })))
 

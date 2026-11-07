@@ -13,7 +13,7 @@
  * ----------------------------------------------------------------------------
  */
 import type { Exercise } from '../content/content-types'
-import { matchesAnyAnswer, sentenceSimilarity } from '../services/answer-checking'
+import { matchesAnyAnswer, sentenceSimilarity } from './answer-checking'
 
 export interface ExerciseComponentProps<T extends Exercise = Exercise> {
   exercise: T

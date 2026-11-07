@@ -6,16 +6,16 @@
  *      trỏ tới chủ đề đang xem dở (bước tiếp theo rõ ràng).
  */
 import { Link } from 'react-router-dom'
-import { ALL_FUN_TOPICS } from '../content/all-fun-topics'
-import { Badge, buttonClassName, Icon, ProgressBar } from '../design-system'
-import { GameArt } from '../features/playground/components/GameArt'
-import { PlayPageHeader } from '../features/playground/components/PlayPageHeader'
-import { PLAY_ART } from '../features/playground/game-catalog'
-import { usePlayText } from '../features/playground/playground-text'
-import { useLanguage } from '../translations/language-context'
+import { ALL_FUN_TOPICS } from '../../content/all-fun-topics'
+import { Badge, buttonClassName, Icon, ProgressBar } from '../../design-system'
+import { GameArt } from '../playground/components/GameArt'
+import { PlayPageHeader } from '../playground/components/PlayPageHeader'
+import { PLAY_ART } from '../playground/game-catalog'
+import { usePlayText } from '../playground/playground-text'
+import { useLanguage } from '../../translations/language-context'
 import { readSeenCards } from './FunFlashcardsPage'
-import '../features/playground/styles/play-kit.css'
-import '../features/playground/styles/fun.css'
+import '../playground/styles/play-kit.css'
+import '../playground/styles/fun.css'
 
 export function FunTopicsPage() {
   const { t, pick } = useLanguage()

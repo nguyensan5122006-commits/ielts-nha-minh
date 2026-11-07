@@ -11,7 +11,7 @@
  */
 import { useEffect } from 'react'
 import { useLocation } from 'react-router-dom'
-import { vietnamDay, vietnamWeekId } from '../../backend-helpers/vietnam-time'
+import { vietnamDay, vietnamWeekId } from '../../../backend-helpers/vietnam-time'
 import {
   ACHIEVEMENTS,
   FAMILY_WEEKLY_QUEST,
@@ -20,20 +20,20 @@ import {
   type AchievementDefinition,
   type ActivityMetric,
   type QuestDefinition,
-} from '../gamification/quests-and-achievements'
-import { PlayerAvatar } from '../components/PlayerIdentity'
-import { Badge, Button, Icon, playSound, ProgressBar, ProgressRing } from '../design-system'
-import { GameArt } from '../features/playground/components/GameArt'
-import { PlayPageHeader } from '../features/playground/components/PlayPageHeader'
-import { PLAY_ART } from '../features/playground/game-catalog'
-import { usePlayText } from '../features/playground/playground-text'
-import { useFamily } from '../family-members/family-store'
-import { achievementMetricValue } from '../learning-progress/activity-stats'
-import { useProgress } from '../learning-progress/progress-store'
-import { useAuth } from '../services/auth-context'
-import { useLanguage } from '../translations/language-context'
-import '../features/playground/styles/play-kit.css'
-import '../features/playground/styles/quests.css'
+} from '../../gamification/quests-and-achievements'
+import { PlayerAvatar } from '../../components/PlayerIdentity'
+import { Badge, Button, Icon, playSound, ProgressBar, ProgressRing } from '../../design-system'
+import { GameArt } from '../playground/components/GameArt'
+import { PlayPageHeader } from '../playground/components/PlayPageHeader'
+import { PLAY_ART } from '../playground/game-catalog'
+import { usePlayText } from '../playground/playground-text'
+import { useFamily } from '../../family-members/family-store'
+import { achievementMetricValue } from '../../learning-progress/activity-stats'
+import { useProgress } from '../../learning-progress/progress-store'
+import { useAuth } from '../../services/auth-context'
+import { useLanguage } from '../../translations/language-context'
+import '../playground/styles/play-kit.css'
+import '../playground/styles/quests.css'
 
 /** Ảnh 3D theo loại việc của nhiệm vụ */
 const METRIC_ART: Record<ActivityMetric, string> = {
